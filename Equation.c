@@ -62,6 +62,9 @@
 #define V_TWO		2		//Numerical value 02.
 #define V_ZERO		0		//Zero numeric value.
 
+//Symbolic Character Constants.
+#define NULL_CHARACTER	'\0'
+
 /*****************************************************************
  * Main work structures that contain the sensitive information	**
  * that is thrown by the calculations to obtain the roots of a	**
@@ -119,6 +122,29 @@ struct str_quadratic_equation
 	                dbl_second_root_x2;	//Second root. Value x2.
 
 	}	sqe = {V_ZERO};
+
+/*****************************************************************
+ ** Function:		getpause.				**
+ ** Explanation:	This function shows a specific message	**
+ **			on the screen to indicate a given pause,**
+ **			and returns the key that was pressed to	**
+ **			continue with the execution of the	**
+ **			program as a result.			**
+ ** Input Parms:	const char *str_Message,		**
+ ** Output Parms:	None.					**
+ ** Result:		The function returns the character	**
+ **			entered with the Enter key to have	**
+ **			paused this program.			**
+ ****************************************************************/
+char getpause (const char *str_Message)
+	{
+		static char chr_Car=NULL_CHARACTER;
+
+		printf("%s", str_Message);
+		scanf("%*c%c", &chr_Car);
+
+		return (chr_Car);
+	}
 
 /*****************************************************************
  ** Function:		absolute.				**
@@ -462,6 +488,7 @@ void view_info_quadratic_equation_discriminating(struct str_quadratic_equation s
  **			collected in the data structure used to **
  **			save all the calculations made of the	**
  **			quadratic equation.			**
+ **			+---|----+---|----+---|----+---|----+-- **
  ** Test Examples:	Coeff 'a'	Coeff 'b'	Coeff'c'**
  **			+1		-5		+6	**
  **			+2		-7		+3	**
@@ -562,6 +589,9 @@ int main(int int_argc, char *argv[])
 		scanf("%lf", &dbl_coefficient_c);
 
 		view_info_quadratic_equation(quadratic_equation(dbl_coefficient_a, dbl_coefficient_b, dbl_coefficient_c));
+
+		getpause("\nEste programa ha terminado con éxito.\n"
+		"Presione la tecla ENTRAR para finalizarlo...");
 
 		return V_ZERO;
 	}
