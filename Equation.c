@@ -529,7 +529,6 @@ void view_info_quadratic_equation(struct str_quadratic_equation sqeq)
 			view_info_quadratic_equation_discriminating(sqeq);
 
 		printf("+---+----+---+----+---+----+---+----+---+----+---+----+---+----+-\n");
-		printf("\n");
 	}
 
 /*****************************************************************
