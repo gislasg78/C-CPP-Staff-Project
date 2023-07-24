@@ -1,7 +1,7 @@
 /*************** Solution of a quadratic equation. ***************
  ** Source Code:	Equation.c				**
  ** Author:		Gustavo Islas Gálvez.			**
- ** Creation Date:	Monday, July 31, 2023.          	**
+ ** Creation Date:	Thursday, August 31, 2023.          	**
  ** +---+----+---+----+---+----+---+----+---+----+---+----+---+ **
  ** Purpose:		How to solve a quadratic equation whose **
  **			roots are negative:			**
@@ -51,15 +51,16 @@
  * 2. The discriminant of the equation and,			**
  * 3. the operation to obtain simple root.			**
  ****************************************************************/
-#define DENOMINATOR(c_a)		( 2 * (c_a) )
-#define DISCRIMINATE(c_a, c_b, c_c)	( ( (c_b) * (c_b) ) - ( 4 * (c_a) * (c_c) ) )
-#define SINGLE_ROOT(c_a, c_b)		( (-c_b) / ( 2 * (c_a) ) )
+#define DENOMINATOR(c_a)		( V_TWO * (c_a) )
+#define DISCRIMINATE(c_a, c_b, c_c)	( ( (c_b) * (c_b) ) - ( V_FOUR * (c_a) * (c_c) ) )
+#define SINGLE_ROOT(c_a, c_b)		( (-c_b) / ( V_TWO * (c_a) ) )
 #define UNIQUE_ROOT(c_b, c_c)		( (-c_c) / (c_b) )
 
 //Numeric Symbolic Constants.
+#define V_FOUR		4.0		//Intercalated discriminant.
 #define V_PR_TOL	0.000001;	//Base Precision tolerance.
 #define V_ONE		1		//Numerical value 01.
-#define V_TWO		2		//Numerical value 02.
+#define V_TWO		2.0		//Numerical value 02.0.
 #define V_ZERO		0		//Zero numeric value.
 
 //Symbolic Character Constants.
@@ -117,9 +118,9 @@ struct str_quadratic_equation
 		/* Both roots of the quadratic equation.		**
 		 * With their respective real parts and imaginary parts.*/
 	        struct	str_quadratic_equation_royal_imaginary_parts
-			dbl_first_root_x1;	//First root. Value x1.
+			dbl_first_root_x1;	//First root.	Value x1.
 	        struct str_quadratic_equation_royal_imaginary_parts
-	                dbl_second_root_x2;	//Second root. Value x2.
+	                dbl_second_root_x2;	//Second root.	Value x2.
 
 	}	sqe = {V_ZERO};
 
@@ -163,8 +164,8 @@ char getpause (const char *str_Message)
  ****************************************************************/
 double absolute(double dbl_value)
 	{
-		return	(dbl_value == V_ZERO) ? V_ZERO :
-			(dbl_value > V_ZERO) ? dbl_value : -dbl_value;
+		return	(dbl_value == V_ZERO) ? V_ZERO
+			: (dbl_value > V_ZERO) ? dbl_value : -dbl_value;
 	}
 
 /*****************************************************************
@@ -529,6 +530,7 @@ void view_info_quadratic_equation(struct str_quadratic_equation sqeq)
 			view_info_quadratic_equation_discriminating(sqeq);
 
 		printf("+---+----+---+----+---+----+---+----+---+----+---+----+---+----+-\n");
+		printf("\n");
 	}
 
 /*****************************************************************
@@ -568,14 +570,14 @@ void view_info_quadratic_equation(struct str_quadratic_equation sqeq)
  **			calculation of the quadratic equation to**
  **			finally print the result.		**
  ****************************************************************/
-int main(int int_argc, char *argv[])
+int main()
 	{
 		double dbl_coefficient_a = V_ZERO;
 		double dbl_coefficient_b = V_ZERO;
 		double dbl_coefficient_c = V_ZERO;
 
 		printf("+---+----+---+----+---+----+---+----+---+----+---+----+---+----+-\n");
-		printf("|	Solución de una ecuación de segundo grado.		|\n");
+		printf("|          Solución de una ecuación de segundo grado.           |\n");
 		printf("+---+----+---+----+---+----+---+----+---+----+---+----+---+----+-\n");
 
 		printf("Coeficiente 'a' : ");
@@ -589,7 +591,7 @@ int main(int int_argc, char *argv[])
 
 		view_info_quadratic_equation(quadratic_equation(dbl_coefficient_a, dbl_coefficient_b, dbl_coefficient_c));
 
-		getpause("\nEste programa ha terminado con éxito.\n"
+		getpause("Este programa ha terminado con éxito.\n"
 		"Presione la tecla ENTRAR para finalizarlo...");
 
 		return V_ZERO;
