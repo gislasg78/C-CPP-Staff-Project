@@ -1,7 +1,7 @@
 /***************** K-th root by Newton's Method. *****************
  ** Source Code:	Root.c					**
  ** Author:		Gustavo Islas Gálvez.			**
- ** Creation Date:	Friday, June 30, 2023.          	**
+ ** Creation Date:	Thursday, August 31, 2023.          	**
  ** Purpose:		This program obtains the k-th root of a	**
  **			given numerical coefficient by Newton's	**
  **			method through iterations of successive	**
@@ -31,41 +31,55 @@ struct strct_root_drvtv
 	} sd = {V_ZERO};
 
 /*****************************************************************
- ** Function:		absolute.				**
- ** Explanation:	Returns as a result the positive or 	**
- **			unsigned value of a certain value,	**
- **			as long as it is subjected to a series	**
- **			of conditions such as being greater	**
- **			than zero, to be positive; be zero,	**
- **			to be zero, and less than zero,		**
- **			to become positive by sign		**
- **			neutralization.				**
- ** Input Parms:	double dbl_value,			**
- ** Output Parms:	None.					**
- ** Result:		the base value (dbl_value) is		**
- **			sign-neutralized.			**
+ ** Function:           absolute.                               **
+ ** Explanation:        Returns as a result the positive or     **
+ **                     unsigned value of a certain value,      **
+ **                     as long as it is subjected to a series  **
+ **                     of conditions such as being greater     **
+ **                     than zero, to be positive; be zero,     **
+ **                     to be zero, and less than zero,         **
+ **                     to become positive by sign              **
+ **                     neutralization.                         **
+ ** Input Parms:        double dbl_value.                       **
+ ** Output Parms:       None.                                   **
+ ** Result:             the base value (int_value) is           **
+ **                     sign-neutralized.                       **
  ****************************************************************/
 double absolute(double dbl_value)
-    {
-	return	(dbl_value == V_ZERO) ? V_ZERO :
-		(dbl_value > V_ZERO) ? dbl_value : -dbl_value;
-    }
+	{
+		return  (dbl_value==V_ZERO) ? V_ZERO
+		: (dbl_value>V_ZERO) ? dbl_value : -dbl_value;
+	}
 
 /*****************************************************************
- ** Function:		potency.				**
- ** Explanation:	Returns a base coefficient raised to the**
- **			specified power recursively by means of	**
- **			successive multiplications.		**
- ** Input Parms:	double dbl_base,			**
- **			integer int_exp.			**
- ** Output Parms:	None.					**
- ** Result:		dbl_base raised to int_exp.		**
+ ** Function:           potency.                                **
+ ** Explanation:        Returns a base coefficient raised to the**
+ **                     specified power recursively by means of **
+ **                     successive multiplications or divisions.**
+ **                                                             **
+ **                     This function can also be programmed    **
+ **                     recursively in the form:                **
+ **                     (int_exp == V_ZERO) ? V_ONE : dbl_base  **
+ **                      * potency(dbl_base, int_exp - V_ONE);  **
+ **                                                             **
+ ** Input Parms:        double dbl_base,                        **
+ **                     integer int_exp.                        **
+ ** Output Parms:       None.                                   **
+ ** Result:             dbl_base raised to int_exp.             **
  ****************************************************************/
 double potency(double dbl_base, int int_exp)
-    {
-	return	(int_exp == V_ZERO) ? V_ONE :
-		 dbl_base * potency(dbl_base, int_exp - V_ONE);
-    }
+	{
+		double dbl_ret=V_ONE;
+		int int_exp_pow=absolute(int_exp);
+
+		for (int int_i=V_ZERO; int_i<int_exp_pow; int_i++)
+			{
+		        	dbl_ret = (int_exp > V_ZERO) ? dbl_ret * dbl_base :
+		                	  (int_exp < V_ZERO) ? dbl_ret / dbl_base : V_ONE;
+			}
+
+		return dbl_ret;
+        }
 
 /*****************************************************************
  ** Function:		root_derivative.			**
@@ -215,19 +229,32 @@ double root(double dbl_base, int int_exp)
  **			the result of the k-th root of a given	**
  **			value.					**
  ****************************************************************/
-int main(int int_argc, char *ch_argv[])
+int main()
 	{
-		double dbl_base = V_ZERO;
-		double dbl_root = V_ZERO;
-		int int_exp = V_ZERO;
+		double dbl_base=V_ZERO;
+		double dbl_root=V_ZERO;
+		int int_exp=V_ZERO;
 
+		printf("+---|----+---|----+---|----+---|----+---|----+\n");
+		printf("|  Raíces k-ésimas por el Método de Newton.  |\n");
+		printf("+---|----+---|----+---|----+---|----+---|----+\n");
 		printf("Base: ");
 		scanf("%lf", &dbl_base);
 		printf("Raíz: ");
 		scanf("%d", &int_exp);
 
-		dbl_root = root(dbl_base, int_exp);
-		printf("La raíz [%d]-ésima de [%lf] es: [%lf].\n", int_exp, dbl_base, dbl_root);
+		dbl_root=root(dbl_base, int_exp);
 
-		return dbl_root;
+		printf("\n");
+		printf("+---|----+---|----+---|----+---|----+---|----+-\n");
+		printf("| Resultados obtenidos para una raíz k-ésima. |\n");
+		printf("+---|----+---|----+---|----+---|----+---|----+.\n");
+		printf("| Base      : [%lf].\n", dbl_base);
+		printf("| Raíz      : [%d].\n", int_exp);
+		printf("+---|----+---|----+---|----+---|----+---|----+\n");
+		printf("| Resultado : [%lf].\n", dbl_root);
+		printf("+---|----+---|----+---|----+---|----+---|----+\n");
+		printf("\n");
+
+		return int_exp;
 	}
