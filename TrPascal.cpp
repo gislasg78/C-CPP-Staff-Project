@@ -90,7 +90,9 @@ class Pascal_s_Triangle
 			//Class destroyer.
 			~Pascal_s_Triangle();
 
-			//Visualize and construct Pascal's Triangle.
+			//Build Pascal's Triangle from scratch.
+			void create_new_Pascal_s_Triangle();
+			//Visualize Pascal's Triangle.
 			void view_Pascal_s_Triangle();
 	};
 
@@ -118,6 +120,7 @@ Pascal_s_Triangle::Pascal_s_Triangle(int int_number_Rows)
 		this->sttc_int_Counting_Pascal_s_Triangles++;
 
 		cout << "Pascal's Triangle. Object created # [" << this->sttc_int_Counting_Pascal_s_Triangles << "]." << endl;
+		cout << "Generation of a new 'Pascal's Triangle' object with [" << int_number_Rows << "] rows." << endl;
 
 		this->int_number_Rows=int_number_Rows;
 	};
@@ -148,9 +151,9 @@ Pascal_s_Triangle::Pascal_s_Triangle(const Pascal_s_Triangle &other_Pascal_s_Tri
 
 /*****************************************************************
  ** Class:		Pascal_s_Triangle.			**
- ** Method:		view_Pascal_s_Triangle().		**
- ** Explanation:	Calculates and displays the requested	**
- **			Pascal's Triangle on the screen from	**
+ ** Method:		create_new_Pascal_s_Triangle().		**
+ ** Explanation:	Calculates and bilds the requested	**
+ **			Pascal's Triangle on the pointer from	**
  **			the sum of the values of the preceding	**
  **			lines, in such a way that the first	**
  **			value and the last value of each line,	**
@@ -170,39 +173,72 @@ Pascal_s_Triangle::Pascal_s_Triangle(const Pascal_s_Triangle &other_Pascal_s_Tri
  **					+array[r - 1][c].	**
  **								**
  ** Arguments:		None.					**
- ** Result:		This method displays for each row of	**
- **			the generated Pascal's Triangle the	**
- **			line number, column number, and computed**
- **			value for this pointer of pointers,	**
- **			which is actually a two-dimensional	**
- **			array.					**
+ ** Result:		This method generate for each row of	**
+ **			the constructed Pascal's Triangle the	**
+ **			line number, column number, and 	**
+ **			computed value for this pointer of	**
+ **			pointers, which is actually a		**
+ **			two-dimensional array.			**
+ ****************************************************************/
+void Pascal_s_Triangle::create_new_Pascal_s_Triangle()
+	{
+		int int_coeff_value=V_ZERO;
+
+		cout << "Creation of a Pascal's Triangle of [" << int_number_Rows << "] rows." << endl;
+
+		if ((this->ptr_int_Pascal_s_Triangle = (int **) malloc(int_number_Rows * sizeof(int *))) != NULL)
+			for (int int_n_row=V_ZERO; int_n_row<int_number_Rows; int_n_row++)
+				if ((this->ptr_int_Pascal_s_Triangle[int_n_row] = (int *) malloc ((int_n_row+V_ONE) * sizeof(int))) != NULL)
+					{
+						for (int int_n_col=V_ZERO; int_n_col<=int_n_row; int_n_col++)
+							if (int_n_col==V_ZERO || int_n_col==int_n_row)
+								this->ptr_int_Pascal_s_Triangle[int_n_row][int_n_col]=V_ONE;
+							else
+								{
+									int_coeff_value = this->ptr_int_Pascal_s_Triangle[int_n_row + V_MINUS_ONE][int_n_col + V_MINUS_ONE]
+											+ this->ptr_int_Pascal_s_Triangle[int_n_row + V_MINUS_ONE][int_n_col];
+
+									this->ptr_int_Pascal_s_Triangle[int_n_row][int_n_col] = int_coeff_value;
+								}
+					}
+				else
+					cout << "Insufficient memory to create for row [" << int_n_row << "] of Pascal's Triangle." << endl;
+		else
+			cout << "Insufficient memory to create [" << int_number_Rows << "] rows of Pascal's Triangle." << endl;
+	};
+
+/*****************************************************************
+ ** Class:		Pascal_s_Triangle.			**
+ ** Method:		view_Pascal_s_Triangle().		**
+ ** Explanation:	This method displays each column of	**
+ **			each row of the Pascal's Triangle stored**
+ **			in the pointer pointer that is an	**
+ **			attribute of this same class, and if no	**
+ **			triangle has been created, it sends an	**
+ **			error message.				**
+ ** Arguments:		None.					**
+ ** Result:		Display the pointer of pointers,	**
+ **			attribute of this class, if and only if	**
+ **			it has some previously computed and	**
+ **			created content.			**
  ****************************************************************/
 void Pascal_s_Triangle::view_Pascal_s_Triangle()
 	{
 		int int_coeff_value=V_ZERO;
 
-		if ((ptr_int_Pascal_s_Triangle = (int **) malloc(int_number_Rows * sizeof(int *))) != NULL)
+		cout << "Visualization of a Pascal's Triangle of [" << int_number_Rows << "] rows." << endl;
+
+		if (this->ptr_int_Pascal_s_Triangle != NULL)
 			for (int int_n_row=V_ZERO; int_n_row<int_number_Rows; int_n_row++)
-				if ((ptr_int_Pascal_s_Triangle[int_n_row] = (int *) malloc ((int_n_row+V_ONE) * sizeof(int))) != NULL)
-					{
-						for (int int_n_col=V_ZERO; int_n_col<=int_n_row; int_n_col++)
-							{
-								if (int_n_col==V_ZERO || int_n_col==int_n_row)
-									ptr_int_Pascal_s_Triangle[int_n_row][int_n_col]=V_ONE;
-								else
-									{
-										int_coeff_value = ptr_int_Pascal_s_Triangle[int_n_row + V_MINUS_ONE][int_n_col + V_MINUS_ONE]
-												+ ptr_int_Pascal_s_Triangle[int_n_row + V_MINUS_ONE][int_n_col];
+				{
+					for (int int_n_col=V_ZERO; int_n_col<=int_n_row; int_n_col++)
+						cout << "Row: [" << int_n_row << "]. Col: [" << int_n_col << "]. Value = [" <<
+								*(*(this->ptr_int_Pascal_s_Triangle+int_n_row)+int_n_col) << "]." << endl;
 
-										ptr_int_Pascal_s_Triangle[int_n_row][int_n_col] = int_coeff_value;
-									}
-
-								cout << "Row: [" << int_n_row << "]. Col: [" << int_n_col << "]. Value = [" <<
-									*(*(ptr_int_Pascal_s_Triangle+int_n_row)+int_n_col) << "]." << endl;
-							}
-
-						cout << endl;
-					}
+					cout << endl;
+				}
+		else
+			cout << "Warning! No Pascal's Triangle has been generated. You must generate a new one to view it." << endl;
 	};
 
 /*****************************************************************
@@ -218,14 +254,13 @@ void Pascal_s_Triangle::view_Pascal_s_Triangle()
 Pascal_s_Triangle::~Pascal_s_Triangle()
 	{
 		cout << "Pascal's Triangle. Object destroyed # [" << this->sttc_int_Counting_Pascal_s_Triangles << "]." << endl;
-		cout << "Destroying the instantiated 'Pascal's Triangle' object." << endl;
 
 		/* Free the memory allocated to each of the rows. */
-		for (int int_n_row=V_ZERO; int_n_row<int_number_Rows; int_n_row++)
-			free(ptr_int_Pascal_s_Triangle[int_n_row]);
+		//for (int int_n_row=V_ZERO; int_n_row<int_number_Rows; int_n_row++)
+		//	free(this->ptr_int_Pascal_s_Triangle[int_n_row]);
 
 		/* Free the memory allocated to the array of pointers. */
-		free(ptr_int_Pascal_s_Triangle);
+		//free(this->ptr_int_Pascal_s_Triangle);
 
 		this->int_number_Rows=V_ZERO;
 		this->sttc_int_Counting_Pascal_s_Triangles--;
@@ -261,14 +296,23 @@ int main()
 
 		if (int_n_Levels >= LIM_MIN && int_n_Levels <= LIM_MAX)
 			{
+				/* First instance. It is called with number of rows. The Triangle is created and then displayed. */
 				Pascal_s_Triangle psTOld(int_n_Levels);
+				psTOld.create_new_Pascal_s_Triangle();
 				psTOld.view_Pascal_s_Triangle();
 
+				/* Second instance. It is called with a previously created Triangle and then displayed. */
 				Pascal_s_Triangle psTNew(psTOld);
 				psTNew.view_Pascal_s_Triangle();
+
+				/* Third instance. It is called with a given number of rows but without being created and its display is requested. */
+				Pascal_s_Triangle psTOther(int_n_Levels);
+				psTOther.view_Pascal_s_Triangle();
+				psTOther.create_new_Pascal_s_Triangle();
+				psTOther.view_Pascal_s_Triangle();
 			}
 		else
-			cout << "¡Error! The value [" << int_n_Levels << "] is not between [" << LIM_MIN << "] and [" << LIM_MAX << "]." << endl;
+			cout << "Error! The value [" << int_n_Levels << "] is not between [" << LIM_MIN << "] and [" << LIM_MAX << "]." << endl;
 
 		return V_ZERO;
 	}
