@@ -1,7 +1,7 @@
 /************** Basic multiplication table generator *************
  ** Source Code:	TableMul.c				**
  ** Author:		Gustavo Islas Gálvez.			**
- ** Creation Date:	Monday, July 31, 2023.			**
+ ** Creation Date:	Thursday, August 31, 2023.		**
  ** Purpose:		This program generates a set of		**
  **			multiplication tables from zero to ten	**
  **			using the creation of a pointer to a	**
@@ -83,12 +83,12 @@ int main()
 		int int_Y=V_ZERO;
 		int int_X=V_ZERO;
 
-		printf("+---|----+---|----+---|\n");
-		printf("|Tablas de multiplicar|\n");
-		printf("+---|----+---|----+---|\n");
-		printf("Filas    [%d] - [%d]: ", LIM_MIN, LIM_MAX);
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("|       Tablas de multiplicar.      |\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("Renglones desde [%d] hasta [%d]: ", LIM_MIN, LIM_MAX);
 		scanf("%i", &int_Y);
-		printf("Columnas [%d] - [%d]: ", LIM_MIN, LIM_MAX);
+		printf("Columnas  desde [%d] hasta [%d]: ", LIM_MIN, LIM_MAX);
 		scanf("%d", &int_X);
 
 		printf("\n");
@@ -100,7 +100,21 @@ int main()
 		 * -------------------------------------------- */
 		if (int_Y >= LIM_MIN && int_Y <= LIM_MAX)
 			if (int_X >= LIM_MIN && int_X <= LIM_MAX)
-				ppRec = tablemult(int_Y, int_X);
+				{
+					/* Call to the function that returns the pointer of pointer. */
+					ppRec=tablemult(int_Y, int_X);
+
+					/* Validate that the pointer of pointers has a valid memory address value */
+					if (ppRec!=NULL)
+						{
+							/* Free the memory allocated to each of the rows. */
+							for (int int_n_row=V_ZERO; int_n_row<int_Y; int_n_row++)
+								free(ppRec[int_n_row]);
+
+                                			/* Free the memory allocated to the array of pointers. */
+                                			free(ppRec);
+						}
+				}
 			else
 				printf("¡Error! [%d] columnas  no están entre [%d] y [%d].\n", int_X, LIM_MIN, LIM_MAX);
 		else
