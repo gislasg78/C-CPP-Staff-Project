@@ -37,6 +37,16 @@ class MyList
 int MyList::sttc_int_Counting=V_ZERO;
 
 
+template <typename T>
+void view_Collector(T &t_Collector_MyList)
+	{
+		std::cout << endl << "Collector size.\tRows:\t[" << t_Collector_MyList.size() << "]." << endl;
+
+		for (auto it_t_Collector_MyList=std::begin(t_Collector_MyList);
+			it_t_Collector_MyList!=std::end(t_Collector_MyList); ++it_t_Collector_MyList)
+				it_t_Collector_MyList->printItems();
+	};
+
 int main()
 	{
 		MyList *ptr_MyList=NULL;
@@ -69,13 +79,8 @@ int main()
 				delete ptr_MyList;
 			}
 
-		std::cout << endl << "List size.\tRows:\t[" << lst_MyList.size() << "]." << endl;
-		for (auto it=std::begin(lst_MyList); it!=std::end(lst_MyList); ++it)
-			it->printItems();
-
-		std::cout << endl << "Vector size.\tRows:\t[" << vec_MyList.size() << "]." << endl;
-		for (auto it=std::begin(vec_MyList); it!=std::end(vec_MyList); ++it)
-			it->printItems();
+		view_Collector(lst_MyList);
+		view_Collector(vec_MyList);
 
 		return V_ZERO;
 	}
