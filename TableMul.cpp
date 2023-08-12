@@ -19,12 +19,12 @@ class MyList
 					this->ptr_lst_int_data=new std::list<int>();
 				}
 
-			void addItem (int int_Item)
+			void addItem (const int int_Item)
 				{
 					this->ptr_lst_int_data->push_back(int_Item);
 				}
 
-			void printItems()
+			void printItems() const
 				{
 					for (auto it_ptr_lst_int_data=this->ptr_lst_int_data->begin();
 						it_ptr_lst_int_data!=this->ptr_lst_int_data->end(); ++it_ptr_lst_int_data)
@@ -38,7 +38,7 @@ int MyList::sttc_int_Counting=V_ZERO;
 
 
 template <typename T>
-void view_Collector(T &t_Collector_MyList)
+void view_Collector(const T &t_Collector_MyList)
 	{
 		std::cout << endl << "Collector size.\tRows:\t[" << t_Collector_MyList.size() << "]." << endl;
 
