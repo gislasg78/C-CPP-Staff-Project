@@ -12,7 +12,7 @@
  **			immediately right above them.		**
  **								**
  **			Example for a seven-row			**
- **			Pascal's Triangle.	(0..5):		**
+ **			Pascal's Triangle.	(0..6):		**
  **								**
  **				Row #0: 01			**
  **				Row #1: 01 01			**
@@ -62,7 +62,8 @@ using namespace std;
  **			rows from zero to 'n' that it will have	**
  **			and stores it in a pointer of pointers.	**
  **								**
- ** Attributes:		static int				**
+ ** Attributes:		private:
+ **			static int				**
  **			sttc_int_Counting_Pascal_s_Triangles;	**
  **			int int_number_Rows;			**
  **			int **ptr_int_Pascal_s_Triangle;	**
@@ -70,12 +71,16 @@ using namespace std;
  ** Methods:		protected:				**
  **			void generate_new_existing_		**
  **				Pascal_s_Triangle();		**
+ **			bool get_bool_Response_Regeneration()	**
+ **				const;				**
  **			void view_header_Pascal_s_Triangle	**
- **				(string str_name_Proc_Oper);	**
+ **				(const string			**
+ **				str_name_Proc_Oper) const;	**
  **								**
  **			public:					**
  **			Pascal_s_Triangle();			**
- **			Pascal_s_Triangle(int int_number_Rows);	**
+ **			Pascal_s_Triangle			**
+ **				(const int int_number_Rows);	**
  **			Pascal_s_Triangle			**
  **				(const Pascal_s_Triangle	**
  **				&other_Pascal_s_Triangle);	**
@@ -83,14 +88,15 @@ using namespace std;
  **								**
  **			void clear_Pascal_s_Triangle();		**
  **			void create_new_Pascal_s_Triangle	**
- **				(int int_number_Rows);		**
- **			int get_int_number_Rows();		**
- **			bool get_bool_Response_Regeneration();	**
+ **				(const int int_number_Rows);	**
+ **			int get_int_number_Rows() const;	**
  **			void set_int_number_Rows		**
- **				(int int_number_Rows);		**
- **			void view_detail_Pascal_s_Triangle();	**
+ **				(const int int_number_Rows);	**
+ **			void view_detail_Pascal_s_Triangle()	**
+ **				const;				**
  **			void					**
- **			view_info_class_Pascal_s_Triangle();	**
+ **			view_info_class_Pascal_s_Triangle()	**
+ **				const;				**
  **								**
  ** Result:		To create the class, it is necessary to	**
  **			provide from the beginning of its	**
@@ -114,16 +120,16 @@ class Pascal_s_Triangle
 			//It generates a Pascal's Triangle without releasing it previously.
 			void generate_new_existing_Pascal_s_Triangle();
 			//Gets a confirmation response to regenerate 'Pascal's Triangle'.
-			bool get_bool_Response_Regeneration();
+			bool get_bool_Response_Regeneration() const;
 			//Displays the main information attributes of the class 'Pascal's Triangle'
-			void view_header_Pascal_s_Triangle(string str_name_Proc_Oper);
+			void view_header_Pascal_s_Triangle(const string str_name_Proc_Oper) const;
 
 		//Public attributes and methods.
 		public:
 			//Create only the skeleton or shell of 'Pascal's Triangle'.
 			Pascal_s_Triangle();
 			//Class constructor with the number of rows.
-			Pascal_s_Triangle(int int_number_Rows);
+			Pascal_s_Triangle(const int int_number_Rows);
 			//Class constructor with another object of the same type.
 			Pascal_s_Triangle(const Pascal_s_Triangle &other_Pascal_s_Triangle);
 			//Class destroyer.
@@ -132,15 +138,15 @@ class Pascal_s_Triangle
 			//Clear the memory pointer that stores Pascal's Triangle.
 			void clear_Pascal_s_Triangle();
 			//Build Pascal's Triangle from scratch.
-			void create_new_Pascal_s_Triangle(int int_number_Rows);
+			void create_new_Pascal_s_Triangle(const int int_number_Rows);
 			//Gets the number of lines or rows contained in the row number attribute.
-			int get_int_number_Rows();
+			int get_int_number_Rows() const;
 			//Set the number of lines that Pascal's Triangle must have.
-			void set_int_number_Rows(int int_number_Rows);
+			void set_int_number_Rows(const int int_number_Rows);
 			//Visualize Pascal's Triangle.
-			void view_detail_Pascal_s_Triangle();
+			void view_detail_Pascal_s_Triangle() const;
 			//Presents general information on the created Pascal's Triangle on the screen.
-			void view_info_class_Pascal_s_Triangle();
+			void view_info_class_Pascal_s_Triangle() const;
 	};
 
 /* ---------------------------------------------------------------
@@ -185,7 +191,7 @@ Pascal_s_Triangle::Pascal_s_Triangle()
 /*****************************************************************
  ** Class:		Pascal_s_Triangle.			**
  ** Method:		Pascal_s_Triangle			**
- **				(int int_number_Rows).		**
+ **				(const int int_number_Rows).	**
  ** Explanation:	Assigns the number of rows received per	**
  **			current parameter to the number of rows	**
  **			attribute of this class.		**
@@ -194,7 +200,7 @@ Pascal_s_Triangle::Pascal_s_Triangle()
  **			to the row number attribute of the	**
  **			class.					**
  ****************************************************************/
-Pascal_s_Triangle::Pascal_s_Triangle(int int_number_Rows)
+Pascal_s_Triangle::Pascal_s_Triangle(const int int_number_Rows)
 	{
 		this->sttc_int_Counting_Pascal_s_Triangles++;
 		this->int_number_Rows=int_number_Rows;
@@ -318,7 +324,7 @@ void Pascal_s_Triangle::clear_Pascal_s_Triangle()
  **					 array[r - 1][c - 1]	**
  **					+array[r - 1][c].	**
  **								**
- ** Arguments:		int int_number_Rows.			**
+ ** Arguments:		const int int_number_Rows.		**
  ** Result:		This method generate for each row of	**
  **			the constructed Pascal's Triangle the	**
  **			line number, column number, and 	**
@@ -326,7 +332,7 @@ void Pascal_s_Triangle::clear_Pascal_s_Triangle()
  **			pointers, which is actually a		**
  **			two-dimensional array.			**
  ****************************************************************/
-void Pascal_s_Triangle::create_new_Pascal_s_Triangle(int int_number_Rows)
+void Pascal_s_Triangle::create_new_Pascal_s_Triangle(const int int_number_Rows)
 	{
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Creating new 'Pascal's Triangle'...");
 
@@ -412,7 +418,7 @@ void Pascal_s_Triangle::generate_new_existing_Pascal_s_Triangle()
 
 /*****************************************************************
  ** Class:		Pascal_s_Triangle.			**
- ** Method:		get_bool_Response_Regeneration().	**
+ ** Method:		get_bool_Response_Regeneration() const.	**
  ** Explanation:	This function returns a boolean true if	**
  **			the existing pointer pointer is required**
  **			to be regenerated and rewritten in the	**
@@ -429,7 +435,7 @@ void Pascal_s_Triangle::generate_new_existing_Pascal_s_Triangle()
  **			response will be taken as a boolean	**
  **			false value.				**
  ****************************************************************/
-bool Pascal_s_Triangle::get_bool_Response_Regeneration()
+bool Pascal_s_Triangle::get_bool_Response_Regeneration() const
 	{
 		char chr_response_Yy=NULL_CHARACTER;
 
@@ -445,7 +451,7 @@ bool Pascal_s_Triangle::get_bool_Response_Regeneration()
 
 /*****************************************************************
  ** Class:		Pascal_s_Triangle.			**
- ** Method:		get_int_number_Rows().			**
+ ** Method:		get_int_number_Rows() const.		**
  ** Explanation:	Returns as a result the number of lines	**
  **			or rows for which the generation of a	**
  **			Pascal's Triangle is ready.		**
@@ -455,7 +461,7 @@ bool Pascal_s_Triangle::get_bool_Response_Regeneration()
  **			number of lines of the			**
  **			'Pascal's Triangle' class.		**
  ****************************************************************/
-int Pascal_s_Triangle::get_int_number_Rows()
+int Pascal_s_Triangle::get_int_number_Rows() const
 	{
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Getting number of rows to 'Pascal's Triangle'...");
 
@@ -469,13 +475,14 @@ int Pascal_s_Triangle::get_int_number_Rows()
  **			Triangle should have. This method is	**
  **			ideally called when the current		**
  **			instantiated Triangle is initialized.	**
- ** Arguments:		int int_number_Rows.			**
+ ** Arguments:		const int int_number_Rows.		**
  ** Result:		Assigns to the attribute of the class	**
  **			that stores the number of rows of	**
  **			Pascal's Triangle the value passed by	**
  **			current parameter.			**
+ **			Protected is recommended.		**
  ****************************************************************/
-void Pascal_s_Triangle::set_int_number_Rows(int int_number_Rows)
+void Pascal_s_Triangle::set_int_number_Rows(const int int_number_Rows)
 	{
 		this->int_number_Rows=int_number_Rows;
 
@@ -484,7 +491,7 @@ void Pascal_s_Triangle::set_int_number_Rows(int int_number_Rows)
 
 /*****************************************************************
  ** Class:		Pascal_s_Triangle.			**
- ** Method:		view_detail_Pascal_s_Triangle().	**
+ ** Method:		view_detail_Pascal_s_Triangle() const.	**
  ** Explanation:	This method displays each column of	**
  **			each row of the Pascal's Triangle stored**
  **			in the pointer pointer that is an	**
@@ -497,7 +504,7 @@ void Pascal_s_Triangle::set_int_number_Rows(int int_number_Rows)
  **			it has some previously computed and	**
  **			created content.			**
  ****************************************************************/
-void Pascal_s_Triangle::view_detail_Pascal_s_Triangle()
+void Pascal_s_Triangle::view_detail_Pascal_s_Triangle() const
 	{
 		int int_coeff_value=V_ZERO;
 
@@ -528,7 +535,7 @@ void Pascal_s_Triangle::view_detail_Pascal_s_Triangle()
 
 /*****************************************************************
  ** Class:		Pascal_s_Triangle.			**
- ** Method:		view_header_Pascal_s_Triangle().	**
+ ** Method:		view_header_Pascal_s_Triangle() const.	**
  ** Explanation:	This method prints on the screen a	**
  **			header with the main attributes of the	**
  **			instantiated 'Pascal's Triangle' class.	**
@@ -537,7 +544,7 @@ void Pascal_s_Triangle::view_detail_Pascal_s_Triangle()
  **			screen messages with header information	**
  **			for other methods of the same		**
  **			instantiated class.			**
- ** Arguments:		string str_name_Proc_Oper.		**
+ ** Arguments:		const string str_name_Proc_Oper.	**
  ** Result:		This method returns several screen	**
  **			messages displaying the main attributes	**
  **			of the 'Pascal's Triangle' class and the**
@@ -546,7 +553,7 @@ void Pascal_s_Triangle::view_detail_Pascal_s_Triangle()
  **			This method is highly recommended	**
  **			protected.				**
  ****************************************************************/
-void Pascal_s_Triangle::view_header_Pascal_s_Triangle(string str_name_Proc_Oper)
+void Pascal_s_Triangle::view_header_Pascal_s_Triangle(const string str_name_Proc_Oper) const
 	{
 		cout << endl;
 		cout << "+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+" << endl;
@@ -565,7 +572,8 @@ void Pascal_s_Triangle::view_header_Pascal_s_Triangle(string str_name_Proc_Oper)
 
 /*****************************************************************
  ** Class:              Pascal_s_Triangle.			**
- ** Method:             view_info_class_Pascal_s_Triangle().	**
+ ** Method:             view_info_class_Pascal_s_Triangle()	**
+ **				const.				**
  ** Explanation:	The purpose of this method is to display**
  **			general information on the value of the	**
  **			attributes of the 'Pascal's Triangle'	**
@@ -576,7 +584,7 @@ void Pascal_s_Triangle::view_header_Pascal_s_Triangle(string str_name_Proc_Oper)
  **			information of the attributes contained	**
  **			in the class 'Pascal's Triangle'.	**
  ****************************************************************/
-void Pascal_s_Triangle::view_info_class_Pascal_s_Triangle()
+void Pascal_s_Triangle::view_info_class_Pascal_s_Triangle() const
 	{
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Viewing Info Class 'Pascal's Triangle'...");
 
