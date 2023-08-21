@@ -23,6 +23,8 @@
 //Work Symbolic Constants.
 #define	V_LIM_MIN	1
 #define V_LIM_MAX	45
+#define	V_MINUS_ONE	-1
+#define	V_ONE		1
 #define V_ZERO		0
 
 //Using the standard space name.
@@ -36,10 +38,41 @@ using namespace std;
  *--------------------------------------------------------------*/
 struct strct_record_Fibonacci
 	{
-		int int_idx;
-		int int_First_Number;
-		int int_Second_Number;
-		int int_Addition;
+		int int_idx;		//Calculated record number of the Fibonacci series.
+		int int_First_Number;	//First game number of the series.
+		int int_Second_Number;	//Second starting number of the series.
+		int int_Addition;	//Sum of both previous numbers.
+	};
+
+/*****************************************************************
+ ** Function:		getFibonacci.				**
+ **				(const int int_Quantity,	**
+ **				 const int int_First_Number,	**
+ **				 const int int_Second_Number).	**
+ ** Explanation:	This function calculates the last number**
+ **			of the Fibonacci series given a given	**
+ **			number of series to generate, and	**
+ **			obtains it discursively, exchanging the	**
+ **			first value for the second and the	**
+ **			latter for the sum of the first and	**
+ **			second values, until reaching a		**
+ **			iteration such that the value is less	**
+ **			than or equal to unity (1).		**
+ ** Input Parms:	const int int_Quantity.			**
+ **			const int int_First_Number.		**
+ **			const int int_Second_Number.		**
+ ** Output Parms:	None.					**
+ ** Result:		Returns the last number of the Fibonacci**
+ **			series given a series of given terms.	**
+ **								**
+ **			The calculation procedure is as follows:**
+ **			x=0, y=1; sum from '0' to 'n':		**
+ **				{z=x+y; x=y; y=z}.		**
+ ****************************************************************/
+int getFibonacci(const int int_Quantity, const int int_First_Number, const int int_Second_Number)
+	{
+		return (int_Quantity <= V_ONE) ? int_First_Number + int_Second_Number
+		: getFibonacci(int_Quantity + V_MINUS_ONE, int_Second_Number, int_First_Number + int_Second_Number);
 	};
 
 /*****************************************************************
@@ -173,6 +206,9 @@ int main()
 
 				vec_st_rec_Fibo=getVectorFiboSeries(int_Quantity, int_First_Number, int_Second_Number);
 				viewVectorFiboSeries(vec_st_rec_Fibo);
+
+				cout<<"For the number [" << int_Quantity << "] the Fibonacci series last value is: ["
+				<<getFibonacci(int_Quantity, int_First_Number, int_Second_Number)<<"]."<<endl;
 			}
 		else
 			cout << "The number [" << int_Quantity << "] is out of range from [" << V_LIM_MIN << "] to [" << V_LIM_MAX << "]." << endl;
