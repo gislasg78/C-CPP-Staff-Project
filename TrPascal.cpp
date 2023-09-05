@@ -39,18 +39,18 @@
 #include <iostream>
 
 //Symbolic constants of minimum and maximum limits.
-#define LIM_MIN			0
-#define LIM_MAX			11
+#define V_LIM_MIN		0	//Minimum limit
+#define V_LIM_MAX		11	//Maximum limit.
 
 //C Standard Libraries.
-#define V_MINUS_ONE		-1
-#define V_ONE			1
-#define V_ZERO			0
+#define V_MINUS_ONE		-1	//Constant minus one.
+#define V_ONE			1	//Constant unit.
+#define V_ZERO			0	//Absolute zero constant
 
 //Symbolic Character Constants.
-#define CHAR_Y_LOWER_CASE	'y'
-#define CHAR_Y_UPPER_CASE	'Y'
-#define NULL_CHARACTER		'\0'
+#define CHAR_Y_LOWER_CASE	'y'	//Lowercase 'Y'.
+#define CHAR_Y_UPPER_CASE	'Y'	//Capital 'Y'
+#define NULL_CHARACTER		'\0'	//Null character.
 
 //Using the namespace 'std'.
 using namespace std;
@@ -108,12 +108,14 @@ class Pascal_s_Triangle
 	{
 		//Private attributes and methods.
 		private:
-			//Number of instantiated objects of a given class 'Pascal's Triangle'.
-			static int sttc_int_Counting_Pascal_s_Triangles;
 			//Number of lines.
 			int int_number_Rows=V_ZERO;
 			//Double pointer with the arrangement of Pascal's Triangle.
 			int **ptr_int_Pascal_s_Triangle=NULL;
+			//Number of instantiated objects of a given class 'Pascal's Triangle'.
+			static int sttc_int_Counting_Pascal_s_Triangles;
+			// Declaration as a friend of the non-member overload.
+			friend std::ostream &operator<<(std::ostream &os, const Pascal_s_Triangle &psT);
 
 		//Protected attributes and methods.
 		protected:
@@ -402,7 +404,9 @@ void Pascal_s_Triangle::generate_new_existing_Pascal_s_Triangle()
 										int_coeff_value = this->ptr_int_Pascal_s_Triangle[int_n_row + V_MINUS_ONE][int_n_col + V_MINUS_ONE]
 												+ this->ptr_int_Pascal_s_Triangle[int_n_row + V_MINUS_ONE][int_n_col];
 
-									cout << int_coeff_value << ", ";
+									cout << int_coeff_value;
+
+									if (int_n_col<int_n_row) cout << ", ";
 
 									this->ptr_int_Pascal_s_Triangle[int_n_row][int_n_col] = int_coeff_value;
 								}
@@ -616,6 +620,55 @@ void Pascal_s_Triangle::view_info_class_Pascal_s_Triangle() const
 			cout << "Information! Pascal's Triangle is empty or has not been generated before." << endl;
 	};
 
+/*****************************************************************
+ ** Class:              std::ostream.				**
+ ** Method:             &operator<<.				**
+ **				(std::ostream &os,		**
+ **				const Pascal_s_Triangle &psT)	**
+ ** Explanation:	Declaration as a friend of the		**
+ **			non-member overload.			**
+ **			This overloaded friend function takes	**
+ **			care of using the << operator when	**
+ **			calling the std::cout function to	**
+ **			directly send the 'Pascal's Triangle'	**
+ **			class to standard output and display	**
+ **			basic information on its three main	**
+ **			attributes: instantiated object number,	**
+ **			number of rows and coefficients of the	**
+ **			generated Pascal's triangle.		**
+ ** Arguments:          (std::ostream &os,			**
+ **				const Pascal_s_Triangle &psT)	**
+ ** Result:		This overloaded external function of	**
+ **			the Pascal's Triangle friend class uses	**
+ **			its own flow and displays the		**
+ **			information of the main attributes of	**
+ **			the aforementioned instantiated class,	**
+ **			briefly, in order to know its content	**
+ **			without resorting to so much detailed	**
+ **			information.				**
+ ****************************************************************/
+inline std::ostream &operator<< (std::ostream &os, const Pascal_s_Triangle &psT)
+	{
+		if (psT.ptr_int_Pascal_s_Triangle != NULL)
+			if (psT.int_number_Rows > V_ZERO)
+				{
+					os << endl;
+
+					for (int int_n_row=V_ZERO; int_n_row<psT.int_number_Rows; int_n_row++)
+						{
+							for (int int_n_col=V_ZERO; int_n_col<=int_n_row; int_n_col++)
+								os << " " << psT.ptr_int_Pascal_s_Triangle[int_n_row][int_n_col] << " ";
+
+							os << endl;
+						}
+				}
+			else
+				os << "Warning! There is no reported number of rows to display Pascal's Triangle." << endl;
+		else
+			os << "Warning! Pascal's Triangle is empty or non-existent. Generate it!" << endl;
+
+		return os;
+	};
 
 /*****************************************************************
  ** Function:		main.					**
@@ -643,16 +696,17 @@ int main()
 		cout << "+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+" << endl;
 		cout << "|                           Pascal's Triangle Generator.                         |" << endl;
 		cout << "+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+" << endl;
-		cout << "Levels of First Pascal's Triangle between ["<< LIM_MIN << "] and [" << LIM_MAX << "] : ";
+		cout << "Levels of First Pascal's Triangle between ["<< V_LIM_MIN << "] and [" << V_LIM_MAX << "] : ";
 		cin  >> int_n_Levels_First;
-		cout << "Levels of Second Pascal's Triangle between ["<< LIM_MIN << "] and [" << LIM_MAX << "] : ";
+		cout << "Levels of Second Pascal's Triangle between ["<< V_LIM_MIN << "] and [" << V_LIM_MAX << "] : ";
 		cin  >> int_n_Levels_Second;
 
-		if (int_n_Levels_First>=LIM_MIN && int_n_Levels_First<=LIM_MAX)
-			if (int_n_Levels_Second>=LIM_MIN && int_n_Levels_Second<=LIM_MAX)
+		if (int_n_Levels_First>=V_LIM_MIN && int_n_Levels_First<=V_LIM_MAX)
+			if (int_n_Levels_Second>=V_LIM_MIN && int_n_Levels_Second<=V_LIM_MAX)
 				{
 					/* First instance. It is called with number of rows. The Triangle is created and then displayed. */
 					Pascal_s_Triangle pstFirst(int_n_Levels_First);
+					cout << pstFirst << endl;
 
 					pstFirst.get_int_number_Rows();
 					pstFirst.view_info_class_Pascal_s_Triangle();
@@ -678,6 +732,7 @@ int main()
 
 					/* Second instance. It is called with a previously created Triangle and then displayed. */
 					Pascal_s_Triangle pstSecond(pstFirst);
+					cout << pstSecond << endl;
 
 					pstSecond.get_int_number_Rows();
 					pstSecond.view_info_class_Pascal_s_Triangle();
@@ -715,6 +770,7 @@ int main()
 
 					/* Third instance. It is called with no arguments 'Pascal's Triangle'. */
 					Pascal_s_Triangle pstThird;
+					cout << pstThird << endl;
 
 					pstThird.get_int_number_Rows();
 					pstThird.view_info_class_Pascal_s_Triangle();
@@ -751,9 +807,9 @@ int main()
 					pstThird.view_detail_Pascal_s_Triangle();
 				}
 			else
-				cout << "Error! The second value [" << int_n_Levels_Second << "] is not between [" << LIM_MIN << "] and [" << LIM_MAX << "]." << endl;
+				cout << "Error! The second value [" << int_n_Levels_Second << "] is not between [" << V_LIM_MIN << "] and [" << V_LIM_MAX << "]." << endl;
 		else
-			cout << "Error! The first value [" << int_n_Levels_First << "] is not between [" << LIM_MIN << "] and [" << LIM_MAX << "]." << endl;
+			cout << "Error! The first value [" << int_n_Levels_First << "] is not between [" << V_LIM_MIN << "] and [" << V_LIM_MAX << "]." << endl;
 
 		return V_ZERO;
 	}
