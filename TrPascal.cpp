@@ -39,8 +39,8 @@
 #include <iostream>
 
 //Symbolic constants of minimum and maximum limits.
+#define V_LIM_MAX		13	//Maximum limit.
 #define V_LIM_MIN		0	//Minimum limit
-#define V_LIM_MAX		11	//Maximum limit.
 
 //C Standard Libraries.
 #define V_MINUS_ONE		-1	//Constant minus one.
@@ -62,11 +62,14 @@ using namespace std;
  **			rows from zero to 'n' that it will have	**
  **			and stores it in a pointer of pointers.	**
  **								**
- ** Attributes:		private:
+ ** Attributes:		private:				**
  **			static int				**
- **			sttc_int_Counting_Pascal_s_Triangles;	**
+ **			friend std::ostream &operator<<		**
+ **				(std::ostream &os,		**
+ **				 const Pascal_s_Triangle &psT);	**
  **			int int_number_Rows;			**
  **			int **ptr_int_Pascal_s_Triangle;	**
+ **			sttc_int_Counting_Pascal_s_Triangles;	**
  **								**
  ** Methods:		protected:				**
  **			void generate_new_existing_		**
@@ -86,6 +89,7 @@ using namespace std;
  **				&other_Pascal_s_Triangle);	**
  **			~Pascal_s_Triangle();			**
  **								**
+ **			void capture_int_number_Rows();		**
  **			void clear_Pascal_s_Triangle();		**
  **			void create_new_Pascal_s_Triangle	**
  **				(const int int_number_Rows);	**
@@ -108,14 +112,14 @@ class Pascal_s_Triangle
 	{
 		//Private attributes and methods.
 		private:
+			// Declaration as a friend of the non-member overload.
+			friend std::ostream &operator<< (std::ostream &os, const Pascal_s_Triangle &psT);
 			//Number of lines.
 			int int_number_Rows=V_ZERO;
 			//Double pointer with the arrangement of Pascal's Triangle.
 			int **ptr_int_Pascal_s_Triangle=NULL;
 			//Number of instantiated objects of a given class 'Pascal's Triangle'.
 			static int sttc_int_Counting_Pascal_s_Triangles;
-			// Declaration as a friend of the non-member overload.
-			friend std::ostream &operator<<(std::ostream &os, const Pascal_s_Triangle &psT);
 
 		//Protected attributes and methods.
 		protected:
@@ -137,6 +141,8 @@ class Pascal_s_Triangle
 			//Class destroyer.
 			~Pascal_s_Triangle();
 
+			//Keyboard capture of the number of rows of Pascal's Triangle.
+			void capture_int_number_Rows();
 			//Clear the memory pointer that stores Pascal's Triangle.
 			void clear_Pascal_s_Triangle();
 			//Build Pascal's Triangle from scratch.
@@ -250,6 +256,40 @@ Pascal_s_Triangle::~Pascal_s_Triangle()
 
 		this->int_number_Rows=V_ZERO;
 		this->sttc_int_Counting_Pascal_s_Triangles--;
+	};
+
+/*****************************************************************
+ ** Class:		Pascal_s_Triangle.			**
+ ** Method:		capture_int_number_Rows().		**
+ ** Explanation:	The purpose of this method is to	**
+ **			capture the number of lines that the	**
+ **			Pascal's Triangle must have to generate	**
+ **			through the pointer of pointers or	**
+ **			double pointer, which is part of the	**
+ **			attribute of the instantiated class.	**
+ ** Arguments:		None.					**
+ ** Result:		This routine returns as a result the	**
+ **			number of lines that the pointer of	**
+ **			pointers will have that contains the	**
+ **			Pascal's Triangle to be generated in	**
+ **			this class or its instance.		**
+ ****************************************************************/
+void Pascal_s_Triangle::capture_int_number_Rows()
+	{
+		int int_number_Rows=V_ZERO;
+
+		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Capturing number of rows of Pascal's Triangle...");
+
+		cout << "Manually enter the number of rows that the Pascal's Triangle will have to generate: ";
+		cin >> int_number_Rows;
+
+		if (int_number_Rows > V_ZERO)
+			if (int_number_Rows <= this->int_number_Rows)
+				Pascal_s_Triangle::set_int_number_Rows(int_number_Rows);
+			else
+				cout << "Alert! The number of rows entered is greater than the previously generated Pascal's Triangle." << endl;
+		else
+			cout << "Careful! An attempt was made to set the number of rows in Pascal's Triangle to an invalid number." << endl;
 	};
 
 /*****************************************************************
@@ -657,7 +697,7 @@ inline std::ostream &operator<< (std::ostream &os, const Pascal_s_Triangle &psT)
 					for (int int_n_row=V_ZERO; int_n_row<psT.int_number_Rows; int_n_row++)
 						{
 							for (int int_n_col=V_ZERO; int_n_col<=int_n_row; int_n_col++)
-								os << " " << psT.ptr_int_Pascal_s_Triangle[int_n_row][int_n_col] << " ";
+								os << psT.ptr_int_Pascal_s_Triangle[int_n_row][int_n_col] << "\t";
 
 							os << endl;
 						}
@@ -726,6 +766,7 @@ int main()
 					pstFirst.set_int_number_Rows(int_n_Levels_Second);
 					pstFirst.create_new_Pascal_s_Triangle(int_n_Levels_Second);
 
+					pstFirst.capture_int_number_Rows();
 					pstFirst.get_int_number_Rows();
 					pstFirst.view_info_class_Pascal_s_Triangle();
 					pstFirst.view_detail_Pascal_s_Triangle();
@@ -764,6 +805,7 @@ int main()
 					pstSecond.set_int_number_Rows(int_n_Levels_Second);
 					pstSecond.create_new_Pascal_s_Triangle(int_n_Levels_Second);
 
+					pstSecond.capture_int_number_Rows();
 					pstSecond.get_int_number_Rows();
 					pstSecond.view_info_class_Pascal_s_Triangle();
 					pstSecond.view_detail_Pascal_s_Triangle();
@@ -802,6 +844,7 @@ int main()
 					pstThird.set_int_number_Rows(int_n_Levels_Second);
 					pstThird.create_new_Pascal_s_Triangle(int_n_Levels_Second);
 
+					pstThird.capture_int_number_Rows();
 					pstThird.get_int_number_Rows();
 					pstThird.view_info_class_Pascal_s_Triangle();
 					pstThird.view_detail_Pascal_s_Triangle();
