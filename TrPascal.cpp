@@ -78,8 +78,6 @@ using namespace std;
  **				Pascal_s_Triangle();		**
  **			bool get_bool_Response_Regeneration()	**
  **				const;				**
- **			void set_int_number_Rows		**
- **				(const int int_number_Rows);	**
  **			void view_header_Pascal_s_Triangle	**
  **				(const string			**
  **				str_name_Proc_Oper) const;	**
@@ -98,6 +96,8 @@ using namespace std;
  **			void create_new_Pascal_s_Triangle	**
  **				(const int int_number_Rows);	**
  **			int get_int_number_Rows() const;	**
+ **			void set_int_number_Rows		**
+ **				(const int int_number_Rows);	**
  **			void view_detail_Pascal_s_Triangle()	**
  **				const;				**
  **			void					**
@@ -129,8 +129,6 @@ class Pascal_s_Triangle
 			void generate_new_existing_Pascal_s_Triangle();
 			//Gets a confirmation response to regenerate 'Pascal's Triangle'.
 			bool get_bool_Response_Regeneration() const;
-			//Set the number of lines that Pascal's Triangle must have.
-			void set_int_number_Rows(const int int_number_Rows);
 			//Displays the main information attributes of the class 'Pascal's Triangle'
 			void view_header_Pascal_s_Triangle(const string str_name_Proc_Oper) const;
 
@@ -153,6 +151,8 @@ class Pascal_s_Triangle
 			void create_new_Pascal_s_Triangle(const int int_number_Rows);
 			//Gets the number of lines or rows contained in the row number attribute.
 			int get_int_number_Rows() const;
+			//Set the number of lines that Pascal's Triangle must have.
+			void set_int_number_Rows(const int int_number_Rows);
 			//Visualize Pascal's Triangle.
 			void view_detail_Pascal_s_Triangle() const;
 			//Presents general information on the created Pascal's Triangle on the screen.
@@ -734,8 +734,7 @@ inline std::ostream &operator<< (std::ostream &os, const Pascal_s_Triangle &psT)
  **-------------------------------------------------------------*/
 enum enm_Options_Pascal_s_Triangle
 	{
-		enm_opt_capture_int_number_Rows=V_ONE,
-		enm_opt_clear_Pascal_s_Triangle,
+		enm_opt_clear_Pascal_s_Triangle=V_ONE,
 		enm_opt_create_new_Pascal_s_Triangle,
 		enm_opt_get_int_number_Rows,
 		enm_opt_view_detail_Pascal_s_Triangle,
@@ -775,15 +774,14 @@ int int_unit_Testing_Pascal_s_Triangle(int int_Quantity, Pascal_s_Triangle psT)
 				cout << "+---|----+---|----+---|----+---|----+---|" << endl;
 				cout << "| Menu to maneuver Pascal's Triangles.  |" << endl;
 				cout << "+---|----+---|----+---|----+---|----+---|" << endl;
-				cout << "| [1]. Capture number of rows.          |" << endl;
-				cout << "| [2]. Clear the Triangle.              |" << endl;
-				cout << "| [3]. Create a new one.                |" << endl;
-				cout << "| [4]. Get number of rows.              |" << endl;
-				cout << "| [5]. View details info.               |" << endl;
-				cout << "| [6]. View general info.               |" << endl;
-				cout << "| [7]. View single  info.               |" << endl;
+				cout << "| [1]. Clear the Triangle.              |" << endl;
+				cout << "| [2]. Create a new one.                |" << endl;
+				cout << "| [3]. Get number of rows.              |" << endl;
+				cout << "| [4]. View details info.               |" << endl;
+				cout << "| [5]. View general info.               |" << endl;
+				cout << "| [6]. View single  info.               |" << endl;
 				cout << "|---------------------------------------|" << endl;
-				cout << "| [8]. Exit treatment.                  |" << endl;
+				cout << "| [7]. Exit treatment.                  |" << endl;
 				cout << "+---|----+---|----+---|----+---|----+---|" << endl;
 
 				cout << "Option: ";
@@ -791,17 +789,13 @@ int int_unit_Testing_Pascal_s_Triangle(int int_Quantity, Pascal_s_Triangle psT)
 
 				switch (int_number_Option)
 					{
-						case enm_opt_capture_int_number_Rows:
-							int_number_Rows = psT.capture_int_number_Rows();
-							int_number_Operations++;
-							break;
-
 						case enm_opt_clear_Pascal_s_Triangle:
 							psT.clear_Pascal_s_Triangle();
 							int_number_Operations++;
 							break;
 
 						case enm_opt_create_new_Pascal_s_Triangle:
+							int_number_Rows = psT.capture_int_number_Rows();
 							psT.create_new_Pascal_s_Triangle(int_number_Rows);
 							int_number_Operations++;
 							break;
@@ -827,7 +821,7 @@ int int_unit_Testing_Pascal_s_Triangle(int int_Quantity, Pascal_s_Triangle psT)
 							break;
 
 						case enm_opt_exit:
-							cout << "Pascal's Triangle exiting..." << endl;
+							cout << "Pascal's Triangle is exiting..." << endl;
 							break;
 
 						default:
@@ -874,18 +868,27 @@ int main()
 		cout << "Number of Pascal's Triangles to generate between ["<< V_LIM_MIN << "] and [" << V_LIM_MAX << "] : ";
 		cin  >> int_Quantity;
 
-		/* -------------------------------------------------------------------------------
-		 * -- Dynamically create pointers of the Pascal's Triangle class, store		--
-		 * -- each one in a vector class, and destroy each class pointer.		--
-		 * -----------------------------------------------------------------------------*/
+		/* -----------------------------------------------------------------------
+		 * -- Dynamically create pointers of the Pascal's Triangle class, store	--
+		 * -- each one in a vector class, and destroy each class pointer.	--
+		 * ---------------------------------------------------------------------*/
 		if (int_Quantity>=V_LIM_MIN && int_Quantity<=V_LIM_MAX)
 			{
 				/* Each instance of Pascal's Triangle is created dynamically. */
-				for (int int_n=V_LIM_MIN; int_n<=int_Quantity; int_n++)
+				for (int int_n=V_ZERO; int_n<int_Quantity; int_n++)
 					{
+						cout << "Creating 'Pascal's Triangle' instance # [" << int_n << "] of [" << int_Quantity << "]." << endl;
+
+						cout << "Assigning new instance..." << endl;
 						ptr_obj_Pascal_s_Triangle=new Pascal_s_Triangle();
+
+						cout << "Storing it in vector..." << endl;
 						vec_Pascal_s_Triangle.push_back(*ptr_obj_Pascal_s_Triangle);
+
+						cout << "Destroying created instance..." << endl;
 						delete ptr_obj_Pascal_s_Triangle;
+
+						cout << "Instance of Pascal's Triangle # [" << int_n << "] of [" << int_Quantity << "] consolidated..." << endl;
 					}
 
 				/* Each created instance of Pascal's Triangle is traversed one by one. */
