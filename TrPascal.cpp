@@ -41,7 +41,7 @@
 #include <vector>
 
 //Symbolic constants of minimum and maximum limits.
-#define V_LIM_MAX		13	//Maximum limit.
+#define V_LIM_MAX		23	//Maximum limit.
 #define V_LIM_MIN		1	//Minimum limit
 
 //C Standard Libraries.
@@ -65,12 +65,17 @@ using namespace std;
  **			and stores it in a pointer of pointers.	**
  **								**
  ** Attributes:		private:				**
- **			static int				**
+ **			friend int				**
+ **			int_unit_Testing_Pascal_s_Triangle	**
+ **				(int int_Quantity,		**
+ **				 Pascal_s_Triangle &psT);	**
  **			friend std::ostream &operator<<		**
  **				(std::ostream &os,		**
  **				 const Pascal_s_Triangle &psT);	**
+ **								**
  **			int int_number_Rows;			**
  **			int **ptr_int_Pascal_s_Triangle;	**
+ **			static int				**
  **			sttc_int_Counting_Pascal_s_Triangles;	**
  **								**
  ** Methods:		protected:				**
@@ -112,10 +117,13 @@ using namespace std;
  ****************************************************************/
 class Pascal_s_Triangle
 	{
-		//Private attributes and methods.
+		//Private methods and attributes. Friendly non-member functions.
 		private:
-			// Declaration as a friend of the non-member overload.
+			//Non-member function for unit testing of Pascal's Triangle.
+			friend int int_unit_Testing_Pascal_s_Triangle(int int_Quantity, Pascal_s_Triangle &psT);
+			//Non-member function to send content to the output stream 'std::ostream'.
 			friend std::ostream &operator<< (std::ostream &os, const Pascal_s_Triangle &psT);
+
 			//Number of lines.
 			int int_number_Rows=V_ZERO;
 			//Double pointer with the arrangement of Pascal's Triangle.
@@ -327,8 +335,8 @@ void Pascal_s_Triangle::clear_Pascal_s_Triangle()
 						for (int int_n_row=V_ZERO; int_n_row<this->int_number_Rows; int_n_row++)
 							{
 								cout << "Area # [" << int_n_row << "] of [" << this->int_number_Rows
-								<< "]. Memory Address: [" << this->ptr_int_Pascal_s_Triangle[int_n_row]
-								<< "]. Released!" << endl;
+								<< "].\tMemory Address: [" << this->ptr_int_Pascal_s_Triangle[int_n_row]
+								<< "].\tReleased!" << endl;
 
 								free(this->ptr_int_Pascal_s_Triangle[int_n_row]);
 							}
@@ -445,7 +453,7 @@ void Pascal_s_Triangle::generate_new_existing_Pascal_s_Triangle()
 
 				for (int int_n_row=V_ZERO; int_n_row<this->int_number_Rows; int_n_row++)
 					{
-						cout << "# " << int_n_row << " [";
+						cout << "# " << int_n_row << " of " << this->int_number_Rows << "\t[";
 
 						if ((this->ptr_int_Pascal_s_Triangle[int_n_row] = (int *) malloc((int_n_row+V_ONE) * sizeof(int))) != NULL)
 							for (int int_n_col=V_ZERO; int_n_col<=int_n_row; int_n_col++)
@@ -458,14 +466,14 @@ void Pascal_s_Triangle::generate_new_existing_Pascal_s_Triangle()
 
 									cout << int_coeff_value;
 
-									if (int_n_col<int_n_row) cout << ", ";
+									if (int_n_col<int_n_row) cout << ",\t";
 
 									this->ptr_int_Pascal_s_Triangle[int_n_row][int_n_col] = int_coeff_value;
 								}
 						else
 							cout << "Insufficient memory to create for row: [" << int_n_row << "] of [" << int_number_Rows << "] of Pascal's Triangle." << endl;
 
-						cout << "]" << endl;
+						cout << "]." << endl;
 					}
 			}
 		else
@@ -577,8 +585,8 @@ void Pascal_s_Triangle::view_detail_Pascal_s_Triangle() const
 					for (int int_n_row=V_ZERO; int_n_row<this->int_number_Rows; int_n_row++)
 						{
 							for (int int_n_col=V_ZERO; int_n_col<=int_n_row; int_n_col++)
-								cout << "Row: [" << int_n_row << "]. Col: ["
-								<< int_n_col << "]. Value = ["
+								cout << "Row: [" << int_n_row << "] of [" << this->int_number_Rows << "].\tCol: ["
+								<< int_n_col << "] of [" << int_n_row << "].\tValue = ["
 								<< *(*(this->ptr_int_Pascal_s_Triangle+int_n_row)+int_n_col)
 								<< "]." << endl;
 
@@ -656,13 +664,13 @@ void Pascal_s_Triangle::view_info_class_Pascal_s_Triangle() const
 
 					for (int int_n_row=V_ZERO; int_n_row<this->int_number_Rows; int_n_row++)
 						{
-							cout << "+ Row: [" << int_n_row << "].\tMemory address: ["
+							cout << "+ Row: [" << int_n_row << "] of [" << this->int_number_Rows << "].\tMemory address: ["
 							<< this->ptr_int_Pascal_s_Triangle[int_n_row]
 							<< "]." << endl;
 
 							for (int int_n_col=V_ZERO; int_n_col<=int_n_row; int_n_col++)
 
-								cout << "  - Col: [" << int_n_col << "].\tMemory address: ["
+								cout << "  - Col: [" << int_n_col << "] of [" << int_n_row << "].\tMemory address: ["
 								<< &this->ptr_int_Pascal_s_Triangle[int_n_row][int_n_col]
 								<< "].\tValue = [" << *(*(this->ptr_int_Pascal_s_Triangle+int_n_row)+int_n_col)
 								<< "]." << endl;
@@ -677,7 +685,7 @@ void Pascal_s_Triangle::view_info_class_Pascal_s_Triangle() const
 	};
 
 /*****************************************************************
- ** Class:              std::ostream.				**
+ ** Class:              inline std::ostream			**
  ** Method:             &operator<<.				**
  **				(std::ostream &os,		**
  **				const Pascal_s_Triangle &psT)	**
@@ -734,17 +742,20 @@ inline std::ostream &operator<< (std::ostream &os, const Pascal_s_Triangle &psT)
  **-------------------------------------------------------------*/
 enum enm_Options_Pascal_s_Triangle
 	{
-		enm_opt_clear_Pascal_s_Triangle=V_ONE,
+		enm_opt_capture_int_number_Rows=V_ONE,
+		enm_opt_clear_Pascal_s_Triangle,
 		enm_opt_create_new_Pascal_s_Triangle,
 		enm_opt_get_int_number_Rows,
 		enm_opt_view_detail_Pascal_s_Triangle,
 		enm_opt_view_info_class_Pascal_s_Triangle,
-		enm_opt_view_single_info,
+		enm_opt_view_quick_info,
 		enm_opt_exit
 	};
 
 /*****************************************************************
- ** Function:           int int_unit_Testing_Pascal_s_Triangle.	**
+ ** Function:           int int_unit_Testing_Pascal_s_Triangle	**
+ **				(int int_Quantity,		**
+ **				 Pascal_s_Triangle &psT).	**
  ** Explanation:	This is a unit testing function that	**
  **			puts a simple menu for the user to make	**
  **			combinations of all the methods used by	**
@@ -752,7 +763,7 @@ enum enm_Options_Pascal_s_Triangle
  **			class, and change each such instance	**
  **			according to the user's preferences.	**
  ** Input Parms:        int int_Quantity,			**
- **			Pascal_s_Triangle psT.			**
+ **			Pascal_s_Triangle &psT.			**
  ** Output Parms:       None.                                   **
  ** Result:		This function that returns the number of**
  **			operations performed on a Pascal's	**
@@ -762,7 +773,7 @@ enum enm_Options_Pascal_s_Triangle
  **			manipulate the instantiated class	**
  **			received from Pascal's Triangle.	**
  ****************************************************************/
-int int_unit_Testing_Pascal_s_Triangle(int int_Quantity, Pascal_s_Triangle psT)
+int int_unit_Testing_Pascal_s_Triangle(int int_Quantity, Pascal_s_Triangle &psT)
 	{
 		int int_number_Rows=V_ZERO;
 		int int_number_Operations=V_ZERO;
@@ -771,31 +782,42 @@ int int_unit_Testing_Pascal_s_Triangle(int int_Quantity, Pascal_s_Triangle psT)
 		do
 			{
 				cout << endl;
-				cout << "+---|----+---|----+---|----+---|----+---|" << endl;
+				cout << "+===|====+===|====+===|====+===|====+===+" << endl;
+				cout << "| Current Managed Instances: # ["
+					<< psT.sttc_int_Counting_Pascal_s_Triangles
+					<< "].     |" << endl;
+				cout << "+---------------------------------------+" << endl;
 				cout << "| Menu to maneuver Pascal's Triangles.  |" << endl;
-				cout << "+---|----+---|----+---|----+---|----+---|" << endl;
-				cout << "| [1]. Clear the Triangle.              |" << endl;
-				cout << "| [2]. Create a new one.                |" << endl;
-				cout << "| [3]. Get number of rows.              |" << endl;
-				cout << "| [4]. View details info.               |" << endl;
-				cout << "| [5]. View general info.               |" << endl;
-				cout << "| [6]. View single  info.               |" << endl;
-				cout << "|---------------------------------------|" << endl;
-				cout << "| [7]. Exit treatment.                  |" << endl;
-				cout << "+---|----+---|----+---|----+---|----+---|" << endl;
+				cout << "+---|----+---|----+---|----+---|----+---+" << endl;
+				cout << "| [1]. Capture its number of rows.      |" << endl;
+				cout << "| [2]. Clear the Triangle.              |" << endl;
+				cout << "| [3]. Create/generate a new one.       |" << endl;
+				cout << "+---------------------------------------+" << endl;
+				cout << "| [4]. Get number of rows.              |" << endl;
+				cout << "| [5]. View details  info.              |" << endl;
+				cout << "| [6]. View general  info.              |" << endl;
+				cout << "| [7]. View quick    info.              |" << endl;
+				cout << "+---------------------------------------+" << endl;
+				cout << "| [8]. Exit treatment.                  |" << endl;
+				cout << "+===|====+===|====+===|====+===|====+===+" << endl;
 
 				cout << "Option: ";
 				cin >> int_number_Option;
 
+				/* Selection of cases according to the given option. */
 				switch (int_number_Option)
 					{
+						case enm_opt_capture_int_number_Rows:
+							int_number_Rows = psT.capture_int_number_Rows();
+							int_number_Operations++;
+							break;
+
 						case enm_opt_clear_Pascal_s_Triangle:
 							psT.clear_Pascal_s_Triangle();
 							int_number_Operations++;
 							break;
 
 						case enm_opt_create_new_Pascal_s_Triangle:
-							int_number_Rows = psT.capture_int_number_Rows();
 							psT.create_new_Pascal_s_Triangle(int_number_Rows);
 							int_number_Operations++;
 							break;
@@ -815,7 +837,7 @@ int int_unit_Testing_Pascal_s_Triangle(int int_Quantity, Pascal_s_Triangle psT)
 							int_number_Operations++;
 							break;
 
-						case enm_opt_view_single_info:
+						case enm_opt_view_quick_info:
 							cout << psT << endl;
 							int_number_Operations++;
 							break;
@@ -877,7 +899,7 @@ int main()
 				/* Each instance of Pascal's Triangle is created dynamically. */
 				for (int int_n=V_ZERO; int_n<int_Quantity; int_n++)
 					{
-						cout << "Creating 'Pascal's Triangle' instance # [" << int_n << "] of [" << int_Quantity << "]." << endl;
+						cout << "Creating 'Pascal's Triangle' instance # [" << int_n << "] of [" << int_Quantity << "]..." << endl;
 
 						cout << "Assigning new instance..." << endl;
 						ptr_obj_Pascal_s_Triangle=new Pascal_s_Triangle();
@@ -895,6 +917,7 @@ int main()
 				for (it_vec_Pascal_s_Triangle=std::begin(vec_Pascal_s_Triangle);
 					it_vec_Pascal_s_Triangle!=std::end(vec_Pascal_s_Triangle); it_vec_Pascal_s_Triangle++)
 					{
+						cout << "Starting unit tests of Pascal's Triangle..." << endl;
 						int_number_Operations=int_unit_Testing_Pascal_s_Triangle(int_Quantity, *it_vec_Pascal_s_Triangle);
 						cout << "Triangle's Pascal operations number performed: [" << int_number_Operations << "]." << endl;
 					}
