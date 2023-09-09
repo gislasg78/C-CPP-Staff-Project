@@ -304,6 +304,7 @@ int Pascal_s_Triangle::capture_int_number_Rows()
 
 		if (int_number_Rows > V_ZERO)
 			{
+				Pascal_s_Triangle::clear_Pascal_s_Triangle();
 				Pascal_s_Triangle::set_int_number_Rows(int_number_Rows);
 
 				cout << "Warning! The Pascal's Triangle should be generated with the new number of rows: # ["<< int_number_Rows << "] entered." << endl;
@@ -581,7 +582,9 @@ vector<vector<int>> Pascal_s_Triangle::get_vec_vec_matrix_Pascal_s_Triangle() co
 							for (int int_x=V_ZERO; int_x<=int_y; int_x++)
 								{
 									int_coeff_value=*(*(this->ptr_int_Pascal_s_Triangle+int_y)+int_x);
-									cout << "(" << int_x << ", " << int_y << ") = [" << int_coeff_value << "].\t" << endl;
+
+									cout << "(" << int_y << ", " << int_x << ") :\t<" << &this->ptr_int_Pascal_s_Triangle[int_y][int_x]
+									 << "> =\t[" << int_coeff_value << "]." << endl;
 
 									vec_columns_Pascal_s_Triangle.push_back(int_coeff_value);
 								}
@@ -592,7 +595,7 @@ vector<vector<int>> Pascal_s_Triangle::get_vec_vec_matrix_Pascal_s_Triangle() co
 						}
 
 					cout << "Visualizing vector of 'Pascal's Triangle' vectors. Object # [" << this->sttc_int_Counting_Pascal_s_Triangles
-					<< "] with [" << this->int_number_Rows << "] rows from memory address: [" << this->ptr_int_Pascal_s_Triangle << "]..." << endl << endl;
+					<< "] with [" << this->int_number_Rows << "] rows from memory address: [" << this->ptr_int_Pascal_s_Triangle << "]..." << endl;
 
 					for (int int_row=V_ZERO; int_row<this->int_number_Rows; int_row++)
 						{
