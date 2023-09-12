@@ -1,7 +1,7 @@
 /****** Exchange values between any two variables in C++. ********
  ** Source Code:	SwapVals.cpp				**
  ** Author:		Gustavo Islas Gálvez.			**
- ** Creation Date:	Monday, July 31, 2023.			**
+ ** Creation Date:	Saturday, September 30, 2023.		**
  ** Purpose:		This program uses a function that uses	**
  **			templates in its formal parameters and	**
  **			that specifically takes care of		**
@@ -29,7 +29,8 @@ using namespace	std;
  **			addresses of said variables.		**
  ** Input Parms:	T &left_value,				**
  **			T &right_value.				**
- ** Output Parms:	None.					**
+ ** Outputt Parms:	T &left_value,				**
+ **			T &right_value.				**
  ** Result:		This function primarily swaps the values**
  **			of two variables passed as current	**
  **			parameters and returns them in the same **
@@ -76,9 +77,9 @@ int main()
 		cout << "+---|----+---|----+---|----+---|" << endl;
 
 		cout << "Enter two numeric values:" << endl;
-		cout << " First  Value : ";
+		cout << "First  Value : ";
 		cin >> t_val1;
-		cout << " Second Value : ";
+		cout << "Second Value : ";
 		cin >> t_val2;
 
 		/* Messages before the exchange of values. */
@@ -86,8 +87,8 @@ int main()
 		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
 		cout << "|Starting initials. Before the exchange.|" << endl;
 		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
-		cout << "| Left  value : [" << t_val1 << "]." << endl;
-		cout << "| Right value : [" << t_val2 << "]." << endl;
+		cout << "| Left  value : [" << &t_val1 << "] = [" << t_val1 << "]." << endl;
+		cout << "| Right value : [" << &t_val2 << "] = [" << t_val2 << "]." << endl;
 		cout << "+---|----+---|----+---|----+---|----+---+\n" << endl ;
 
 		swapper(t_val1, t_val2); //Function that swaps variables.
@@ -96,8 +97,19 @@ int main()
 		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
 		cout << "| Values exchanged. After the exchange. |" << endl;
 		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
-		cout << "| Left  value : [" << t_val1 << "]." << endl;
-		cout << "| Right value : [" << t_val2 << "]." << endl;
+		cout << "| Left  value : [" << &t_val1 << "] = [" << t_val1 << "]." << endl;
+		cout << "| Right value : [" << &t_val2 << "] = [" << t_val2 << "]." << endl;
+		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
+		cout << endl;
+
+		swapper(t_val1, t_val2); //Function that swaps variables.
+
+		/* Value restore messages. */
+		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
+		cout << "| Restoring initial values.             |" << endl;
+		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
+		cout << "| Left  value : [" << &t_val1 << "] = [" << t_val1 << "]." << endl;
+		cout << "| Right value : [" << &t_val2 << "] = [" << t_val2 << "]." << endl;
 		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
 		cout << endl;
 
