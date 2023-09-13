@@ -27,28 +27,61 @@ using namespace	std;
  **			and swaps them between them, so it uses	**
  **			a template and references to the memory	**
  **			addresses of said variables.		**
- ** Input Parms:	T &left_value,				**
- **			T &right_value.				**
- ** Outputt Parms:	T &left_value,				**
- **			T &right_value.				**
+ ** Input Parms:	T *ptr_t_left_value,			**
+ **			T *ptr_t_right_value.			**
+ ** Outputt Parms:	T *ptr_t_left_value,			**
+ **			T *ptr_t_right_value.			**
  ** Result:		This function primarily swaps the values**
  **			of two variables passed as current	**
  **			parameters and returns them in the same **
  **			way in the same variables.		**
  ****************************************************************/
 template <typename T>
-void swapper (T &left_value, T &right_value)
+void swapper(T *ptr_t_left_value, T *ptr_t_right_value)
 	{
-		T temp_value;	//Template' variable declaration.
+		T t_aux_value, *ptr_t_aux_value=&t_aux_value;
 
 		/*------------------------------------------------
 		 * Variables occupying an intermediate temporary--
 		 * variable in the scope of this function are	--
 		 * swapped.					--
 		 *----------------------------------------------*/
-		temp_value = left_value;
-		left_value = right_value;
-		right_value = temp_value;
+		*ptr_t_aux_value = *ptr_t_left_value;
+		*ptr_t_left_value = *ptr_t_right_value;
+		*ptr_t_right_value = *ptr_t_aux_value;
+	}
+
+/*****************************************************************
+ ** Function:		swapper.				**
+ ** Explanation:	This function doesn't actually return	**
+ **			any value, it just swaps two variables	**
+ **			that are passed to that function as	**
+ **			formal parameters in its function header**
+ **			and swaps them between them, so it uses	**
+ **			a template and references to the memory	**
+ **			addresses of said variables.		**
+ ** Input Parms:	T &t_left_value,			**
+ **			T &t_right_value.			**
+ ** Outputt Parms:	T &t_left_value,			**
+ **			T &t_right_value.			**
+ ** Result:		This function primarily swaps the values**
+ **			of two variables passed as current	**
+ **			parameters and returns them in the same **
+ **			way in the same variables.		**
+ ****************************************************************/
+template <typename T>
+void swapper (T &t_left_value, T &t_right_value)
+	{
+		T t_aux_value;	//Template' variable declaration.
+
+		/*------------------------------------------------
+		 * Variables occupying an intermediate temporary--
+		 * variable in the scope of this function are	--
+		 * swapped.					--
+		 *----------------------------------------------*/
+		t_aux_value = t_left_value;
+		t_left_value = t_right_value;
+		t_right_value = t_aux_value;
 	}
 
 /*****************************************************************
@@ -70,46 +103,45 @@ void swapper (T &left_value, T &right_value)
 int main()
 	{
 		/* Initialization of preliminary variables. */
-		float t_val1 = V_ZERO, t_val2 = V_ZERO;
+		float flt_t_val_x=V_ZERO, flt_t_val_y=V_ZERO;
 
-		cout << "+---|----+---|----+---|----+---|" << endl;
-		cout << "|Change of place of any values.|" << endl;
-		cout << "+---|----+---|----+---|----+---|" << endl;
-
+		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
+		cout << "|     Change of place of any values.    |" << endl;
+		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
 		cout << "Enter two numeric values:" << endl;
-		cout << "First  Value : ";
-		cin >> t_val1;
-		cout << "Second Value : ";
-		cin >> t_val2;
+		cout << "Value [x] : ";
+		cin >> flt_t_val_x;
+		cout << "Value [y] : ";
+		cin >> flt_t_val_y;
 
 		/* Messages before the exchange of values. */
 		cout << endl;
 		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
 		cout << "|Starting initials. Before the exchange.|" << endl;
 		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
-		cout << "| Left  value : [" << &t_val1 << "] = [" << t_val1 << "]." << endl;
-		cout << "| Right value : [" << &t_val2 << "] = [" << t_val2 << "]." << endl;
-		cout << "+---|----+---|----+---|----+---|----+---+\n" << endl ;
+		cout << "| Value [x] : [" << &flt_t_val_x << "] = [" << flt_t_val_x << "]." << endl;
+		cout << "| Value [y] : [" << &flt_t_val_y << "] = [" << flt_t_val_y << "]." << endl;
+		cout << "+---|----+---|----+---|----+---|----+---|\n" << endl ;
 
-		swapper(t_val1, t_val2); //Function that swaps variables.
+		swapper(flt_t_val_x, flt_t_val_y); //First Function that swaps variables.
 
 		/* Messages after the exchange of values. */
 		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
 		cout << "| Values exchanged. After the exchange. |" << endl;
 		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
-		cout << "| Left  value : [" << &t_val1 << "] = [" << t_val1 << "]." << endl;
-		cout << "| Right value : [" << &t_val2 << "] = [" << t_val2 << "]." << endl;
+		cout << "| Value [x] : [" << &flt_t_val_x << "] = [" << flt_t_val_x << "]." << endl;
+		cout << "| Value [y] : [" << &flt_t_val_y << "] = [" << flt_t_val_y << "]." << endl;
 		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
 		cout << endl;
 
-		swapper(t_val1, t_val2); //Function that swaps variables.
+		swapper(&flt_t_val_x, &flt_t_val_y); //Second Function that swaps variables.
 
 		/* Value restore messages. */
 		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
-		cout << "| Restoring initial values.             |" << endl;
+		cout << "|       Restoring initial values.       |" << endl;
 		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
-		cout << "| Left  value : [" << &t_val1 << "] = [" << t_val1 << "]." << endl;
-		cout << "| Right value : [" << &t_val2 << "] = [" << t_val2 << "]." << endl;
+		cout << "| Value [x] : [" << &flt_t_val_x << "] = [" << flt_t_val_x << "]." << endl;
+		cout << "| Value [y] : [" << &flt_t_val_y << "] = [" << flt_t_val_y << "]." << endl;
 		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
 		cout << endl;
 

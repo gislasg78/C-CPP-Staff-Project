@@ -61,7 +61,9 @@ int main()
 		int int_num_X=V_ZERO, int_num_Y=V_ZERO;
 		int *ptr_int_num_X=&int_num_X, *ptr_int_num_Y=&int_num_Y;
 
-		printf("Change of place of any values.\n");
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+                printf("|     Change of place of any values.    |\n");
+                printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("Enter two numeric values:\n");
 		printf("Value [x] : ");
 		scanf("%d", &int_num_X);
@@ -71,25 +73,34 @@ int main()
 
 		/* Messages before the exchange of values. */
 		printf("\n");
-		printf("Starting initials. Before the exchange.\n");
-		printf("Value [x] : [%p] = [%d].\n", ptr_int_num_X, *ptr_int_num_X);
-		printf("Value [y] : [%p] = [%d].\n", ptr_int_num_Y, *ptr_int_num_Y);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("|Starting initials. Before the exchange.|\n");
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [x] : [%p] = [%d].\n", ptr_int_num_X, *ptr_int_num_X);
+		printf("| Value [y] : [%p] = [%d].\n", ptr_int_num_Y, *ptr_int_num_Y);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
 
-		swapper(ptr_int_num_X, ptr_int_num_Y);
+		swapper(ptr_int_num_X, ptr_int_num_Y);	//First Function that swaps variables.
 
 		/* Messages after the exchange of values. */
 		printf("\n");
-		printf("Values exchanged. After the exchange.\n");
-		printf("Value [x] : [%p] = [%d].\n", ptr_int_num_X, *ptr_int_num_X);
-		printf("Value [y] : [%p] = [%d].\n", ptr_int_num_Y, *ptr_int_num_Y);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Values exchanged. After the exchange. |\n");
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [x] : [%p] = [%d].\n", ptr_int_num_X, *ptr_int_num_X);
+		printf("| Value [y] : [%p] = [%d].\n", ptr_int_num_Y, *ptr_int_num_Y);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
 
-		swapper(&int_num_X, &int_num_Y);
+		swapper(&int_num_X, &int_num_Y);	//Second Function that swaps variables.
 
 		/* Value restore messages. */
 		printf("\n");
-		printf("Restoring initial values.\n");
-		printf("Value [x] : [%p] = [%d].\n", ptr_int_num_X, *ptr_int_num_X);
-		printf("Value [y] : [%p] = [%d].\n", ptr_int_num_Y, *ptr_int_num_Y);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("|       Restoring initial values.       |\n");
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [x] : [%p] = [%d].\n", ptr_int_num_X, *ptr_int_num_X);
+		printf("| Value [y] : [%p] = [%d].\n", ptr_int_num_Y, *ptr_int_num_Y);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("\n");
 
 		return V_ZERO;
