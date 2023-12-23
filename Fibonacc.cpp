@@ -1,7 +1,7 @@
-/****************** Fibonacci Number Generator *******************
+/****************** Fibonacci Number Generator. ******************
  ** Source Code:	Fibonacc.cpp				**
  ** Author:		Gustavo Islas Gálvez.			**
- ** Creation Date:	Saturday, September 30, 2023.		**
+ ** Creation Date:	Saturday, December 23, 2023.		**
  ** Purpose:		The purpose of this program is to	**
  **			generate a vector whose structure stores**
  **			the numbers used to calculate each	**
@@ -207,7 +207,7 @@ int main()
 				vec_st_rec_Fibo=getVectorFiboSeries(int_Quantity, int_First_Number, int_Second_Number);
 				viewVectorFiboSeries(vec_st_rec_Fibo);
 
-				cout<<"For the number [" << int_Quantity << "] the Fibonacci series last value is: ["
+				cout<<"For the number ["<<int_Quantity<<"] the Fibonacci series with the initial values ["<<int_First_Number<<"] & ["<<int_Second_Number<<"], the last value calculated is: ["
 				<<getFibonacci(int_Quantity, int_First_Number, int_Second_Number)<<"]."<<endl;
 			}
 		else
