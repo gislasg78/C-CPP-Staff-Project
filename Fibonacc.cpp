@@ -1,7 +1,7 @@
 /****************** Fibonacci Number Generator. ******************
  ** Source Code:	Fibonacc.cpp				**
  ** Author:		Gustavo Islas Gálvez.			**
- ** Creation Date:	Saturday, December 23, 2023.		**
+ ** Creation Date:	Saturday, December 30, 2023.		**
  ** Purpose:		The purpose of this program is to	**
  **			generate a vector whose structure stores**
  **			the numbers used to calculate each	**
@@ -105,8 +105,7 @@ vector<struct strct_record_Fibonacci> getVectorFiboSeries(const int int_Quantity
 		st_rec_Fibo.int_First_Number=int_First_Number;
 		st_rec_Fibo.int_Second_Number=int_Second_Number;
 
-		cout << endl;
-		cout << "Generating the Fibonacci Series..." << endl;
+		cout << endl << "Generating the Fibonacci Series..." << endl;
 
 		for (int int_idx=V_ZERO; int_idx<int_Quantity; int_idx++)
 			{
@@ -169,8 +168,8 @@ void viewVectorFiboSeries(vector<struct strct_record_Fibonacci> vec_st_rec_Fibo)
  **			Third and last, the second reference	**
  **			value. With these current parameters,	**
  **			the functions 'getVectorFiboSeries' and	**
- **			'setVectorFiboSeries' will be called to	**
- **			observe the detailed calculations of	**
+ **			'viewVectorFiboSeries' will be called	**
+ **			to observe the detailed calculations of	**
  **			each record of the Fibonacci series.	**
  ** Input Parms:	None.					**
  ** Output Parms:	None.					**
@@ -207,8 +206,8 @@ int main()
 				vec_st_rec_Fibo=getVectorFiboSeries(int_Quantity, int_First_Number, int_Second_Number);
 				viewVectorFiboSeries(vec_st_rec_Fibo);
 
-				cout<<"For the number ["<<int_Quantity<<"] the Fibonacci series with the initial values ["<<int_First_Number<<"] & ["<<int_Second_Number<<"], the last value calculated is: ["
-				<<getFibonacci(int_Quantity, int_First_Number, int_Second_Number)<<"]."<<endl;
+				cout<<"["<<int_Quantity<<"] Records generated from the initial values: ["<<int_First_Number<<"] & ["<<int_Second_Number<<"]." << endl;
+				cout<<"Final value: ["<<getFibonacci(int_Quantity, int_First_Number, int_Second_Number)<<"]."<<endl;
 			}
 		else
 			cout << "The number [" << int_Quantity << "] is out of range from [" << V_LIM_MIN << "] to [" << V_LIM_MAX << "]." << endl;
