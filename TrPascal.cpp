@@ -1,7 +1,7 @@
 /****************** Pascal's Triangle Generator. *****************
  ** Source Code:	TrPascal.cpp				**
  ** Author:		Gustavo Islas Gálvez.			**
- ** Creation Date:	Saturday February 3, 2024.		**
+ ** Creation Date:	Saturday, February 3, 2024.		**
  ** Purpose:		This program generates Pascal's Triangle**
  **			as a result up to a certain number of	**
  **			rows or levels, following as a pattern	**
@@ -338,7 +338,7 @@ void Pascal_s_Triangle::clear_Pascal_s_Triangle()
 	{
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Clearing existing Pascal's Triangle...");
 
-		if (this->ptr_int_Pascal_s_Triangle != NULL)
+		if (this->ptr_int_Pascal_s_Triangle)
 			{
 				if (this->int_number_Rows>=V_LOWER_LIMIT_ROWS && this->int_number_Rows<=V_UPPER_LIMIT_ROWS)
 					{
@@ -407,7 +407,7 @@ void Pascal_s_Triangle::create_new_Pascal_s_Triangle(const int int_number_Rows)
 	{
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Creating new 'Pascal's Triangle'...");
 
-		if (this->ptr_int_Pascal_s_Triangle != NULL)
+		if (this->ptr_int_Pascal_s_Triangle)
 			if (this->int_number_Rows>=V_LOWER_LIMIT_ROWS && this->int_number_Rows<=V_UPPER_LIMIT_ROWS)
 				{
 					if (Pascal_s_Triangle::get_bool_Response_Regeneration())
@@ -577,7 +577,7 @@ vector<vector<int>> Pascal_s_Triangle::get_vec_vec_matrix_Pascal_s_Triangle() co
 
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Generating the vector of vectors from 'Pascal's Triangle' double pointer...");
 
-		if (this->ptr_int_Pascal_s_Triangle != NULL)
+		if (this->ptr_int_Pascal_s_Triangle)
 			if (this->int_number_Rows>=V_LOWER_LIMIT_ROWS && this->int_number_Rows<=V_UPPER_LIMIT_ROWS)
 				{
 					cout << "Loading vector of 'Pascal's Triangle' vectors. Object # [" << this->sttc_int_Counting_Pascal_s_Triangles
@@ -664,7 +664,7 @@ void Pascal_s_Triangle::view_detail_Pascal_s_Triangle() const
 
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Viewing Detail 'Pascal's Triangle'...");
 
-		if (this->ptr_int_Pascal_s_Triangle != NULL)
+		if (this->ptr_int_Pascal_s_Triangle)
 			if (this->int_number_Rows>=V_LOWER_LIMIT_ROWS && this->int_number_Rows<=V_UPPER_LIMIT_ROWS)
 				{
 					cout << "+ Generating on screen 'Pascal's Triangle' object # [" << this->sttc_int_Counting_Pascal_s_Triangles
@@ -744,7 +744,7 @@ void Pascal_s_Triangle::view_info_class_Pascal_s_Triangle() const
 	{
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Viewing Info Class 'Pascal's Triangle'...");
 
-		if (this->ptr_int_Pascal_s_Triangle != NULL)
+		if (this->ptr_int_Pascal_s_Triangle)
 			if (this->int_number_Rows>=V_LOWER_LIMIT_ROWS && this->int_number_Rows<=V_UPPER_LIMIT_ROWS)
 				{
 					cout << "+ Generating on screen 'Pascal's Triangle' object # [" << this->sttc_int_Counting_Pascal_s_Triangles
@@ -801,7 +801,7 @@ void Pascal_s_Triangle::view_info_class_Pascal_s_Triangle() const
  ****************************************************************/
 inline std::ostream &operator<< (std::ostream &os, const Pascal_s_Triangle &psT)
 	{
-		if (psT.ptr_int_Pascal_s_Triangle != NULL)
+		if (psT.ptr_int_Pascal_s_Triangle)
 			if (psT.int_number_Rows>=V_LOWER_LIMIT_ROWS && psT.int_number_Rows<=V_UPPER_LIMIT_ROWS)
 				{
 					os << endl;
