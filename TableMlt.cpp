@@ -93,6 +93,8 @@ class MyList
 					size_t szt_Item_Counting = V_ZERO;
 
 					//Here is the list of the 'MyList' class instance.
+					std::cout << " - List:\t";
+
 					for (auto it_ptr_lst_szt_Item = this->ptr_lst_szt_Item->begin();
 						it_ptr_lst_szt_Item != this->ptr_lst_szt_Item->end();
 						++it_ptr_lst_szt_Item)
@@ -102,6 +104,7 @@ class MyList
 
 					//Here is the vector of the 'MyList' class instance.
 					szt_Item_Counting = V_ZERO;
+					std::cout << " - Vector:\t";
 
 					for (auto it_ptr_vec_szt_Item = this->ptr_vec_szt_Item->begin();
 						it_ptr_vec_szt_Item != this->ptr_vec_szt_Item->end();
@@ -219,7 +222,7 @@ int main()
 							//Process of saving values in each collection.
 							for (size_t szt_col = V_ZERO; szt_col < szt_Cols; szt_col++)
 								{
-									szt_Item=szt_row*szt_col;
+									szt_Item=szt_row * szt_col;
 									ptr_MyList->addItem(szt_Item);
 
 									lst_szt_Items.push_back(szt_Item);
@@ -239,7 +242,7 @@ int main()
 						it_ptr_lst_MyList != std::end(*ptr_lst_MyList);
 						it_ptr_lst_MyList++)
 							{
-								std::cout << "List:\t[" << szt_List_Counting++ << "]." << std::endl;
+								std::cout << "+ List:\t[" << szt_List_Counting++ << "]." << std::endl;
 								it_ptr_lst_MyList->printItems();
 							}
 
@@ -250,7 +253,7 @@ int main()
 						it_ptr_vec_MyList != std::end(*ptr_vec_MyList);
 						it_ptr_vec_MyList++)
 							{
-								std::cout << "Vector:\t[" << szt_Vector_Counting++ << "]." << std::endl;
+								std::cout << "+ Vector:\t[" << szt_Vector_Counting++ << "]." << std::endl;
 								it_ptr_vec_MyList->printItems();
 							}
 
