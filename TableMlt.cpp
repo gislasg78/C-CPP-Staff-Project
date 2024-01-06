@@ -1,4 +1,3 @@
-
 /************** Generator for multiple value tables. *************
  ** Source Code:	TableMlt.cpp				**
  ** Author:		Gustavo Islas Gálvez.			**
@@ -16,7 +15,7 @@
  **			these collectors and adds them in its	**
  **			methods and displays them on the screen.**
 *****************************************************************/
-//C Standard Libraries.
+//C++ Standard Libraries.
 #include <iostream>
 #include <list>
 #include <vector>
@@ -24,8 +23,8 @@
 //Symbolic constants of minimum and maximum limits.
 #define	V_LOWER_LIMIT_COLS	1
 #define	V_LOWER_LIMIT_ROWS	1
-#define	V_UPPER_LIMIT_COLS	10
-#define	V_UPPER_LIMIT_ROWS	10
+#define	V_UPPER_LIMIT_COLS	11
+#define	V_UPPER_LIMIT_ROWS	11
 
 //Symbolic work constants.
 #define	V_ZERO			0
@@ -41,6 +40,8 @@
  **				static size_t sttc_szt_Counting;**
  **				std::list<size_t>		**
  **					*ptr_lst_szt_Item;	**
+ **				std::vector<size_t>		**
+ **					*ptr_vec_szt_Item;	**
  **			public:					**
  **				MyList();			**
  **				addItem(const size_t szt_Item);	**
@@ -54,11 +55,13 @@ class MyList
 			static size_t sttc_szt_Counting;
 			//Pointer to a list that will store unsigned integer numeric values.
 			std::list<size_t> *ptr_lst_szt_Item = nullptr;
+			//Pointer to a vector that will store unsigned integer numeric values.
+			std::vector<size_t> *ptr_vec_szt_Item = nullptr;
 
-		//Protected attributes and methods.
+		//Public attributes and methods.
 		public:
 			/* ---------------------------------------------------------------------------- **
-			 * Constructor of the 'My List' class that increments the instance counter	**
+			 * Constructor of the 'MyList' class that increments the instance counter	**
 			 * and initializes the list that will store the numeric values.			**
 			 * -----------------------------------------------------------------------------**/
 			MyList()
@@ -67,6 +70,9 @@ class MyList
 
 					/* Create list of unsigned integer numeric type pointers. */
 					this->ptr_lst_szt_Item = new std::list<size_t>();
+
+					/* Create vector of unsigned integer numeric type pointers. */
+					this->ptr_vec_szt_Item = new std::vector<size_t>();
 				}
 
 			/* ---------------------------------------------------------------------------- **
@@ -74,34 +80,44 @@ class MyList
 			 * -----------------------------------------------------------------------------**/
 			void addItem (const size_t szt_Item)
 				{
-					this->ptr_lst_szt_Item->push_back(szt_Item);	//Enter element.
+					this->ptr_lst_szt_Item->push_back(szt_Item);	//Enter new element.
+					this->ptr_vec_szt_Item->push_back(szt_Item);	//Enter the element.
 				}
 
-			/* ---------------------------------------------------------------------------- **
-			 * Display the elements contained in the list pointer of unsigned integer	**
-			 * numeric values..								**
-			 * -----------------------------------------------------------------------------**/
+			/* ---------------------------------------------------------------------**
+			 * Display the elements contained in the list and vector pointer of	**
+			 * unsigned integer numeric values.					**
+			 * ---------------------------------------------------------------------**/
 			void printItems() const
 				{
-					size_t szt_Item_Counting=V_ZERO;
+					size_t szt_Item_Counting = V_ZERO;
 
 					//Here is the list of the 'MyList' class instance.
 					for (auto it_ptr_lst_szt_Item = this->ptr_lst_szt_Item->begin();
 						it_ptr_lst_szt_Item != this->ptr_lst_szt_Item->end();
 						++it_ptr_lst_szt_Item)
-								std::cout << "# " << szt_Item_Counting++ <<":\t[" << *it_ptr_lst_szt_Item << "].\t";
+							std::cout << "# " << szt_Item_Counting++ <<":\t[" << *it_ptr_lst_szt_Item << "].\t";
 
-					std::cout << "<" << this->ptr_lst_szt_Item->size() << "> items per row." << std::endl;
+					std::cout << std::endl;
+
+					//Here is the vector of the 'MyList' class instance.
+					szt_Item_Counting = V_ZERO;
+
+					for (auto it_ptr_vec_szt_Item = this->ptr_vec_szt_Item->begin();
+						it_ptr_vec_szt_Item != this->ptr_vec_szt_Item->end();
+						++it_ptr_vec_szt_Item)
+							std::cout << "# " << szt_Item_Counting++ <<":\t[" << *it_ptr_vec_szt_Item << "].\t";
+
+					std::cout << std::endl << std::endl;
 				}
 	};
 
-/* ---------------------------------------
- * size_t MyList::sttc_szt_Counting.	--
- * +---|----+---|----+---|----+---|----+--
- * It is used to initialize the value	--
- * of the number of instances of the	--
- * 'MyList' class to absolute zero.	--
- * -------------------------------------*/
+/* ------------------------------------------------------------ --
+ * 		size_t MyList::sttc_szt_Counting.		--
+ * +---|----+---|----+---|----+---|----+---|----+---|----+---|- --
+ * It is used to initialize the value of the number of		--
+ * instances of the 'MyList' class to absolute zero.		--
+ * ------------------------------------------------------------ */
 size_t MyList::sttc_szt_Counting=V_ZERO;
 
 
@@ -150,14 +166,26 @@ void view_Collector (const T &t_Collector)
 *****************************************************************/
 int main()
 	{
+		/* Declaration of main working variables. */
 		size_t szt_Rows = V_ZERO;
 		size_t szt_Cols = V_ZERO;
 		size_t szt_Item = V_ZERO;
 
-		MyList *ptr_MyList=nullptr;
+		/* ------------------------------------------------------------	**
+		 * Declaration of pointers of the class 'My List', as well as	**
+		 * two types of collectors in which instances of the mentioned	**
+		 * class will be stored: lists and vectors.			**
+		 * ------------------------------------------------------------ */
+		MyList *ptr_MyList = nullptr;
 		std::list<MyList> *ptr_lst_MyList = {nullptr};
 		std::list<MyList>::iterator it_ptr_lst_MyList;
+		size_t szt_List_Counting = V_ZERO;
 
+		std::vector<MyList> *ptr_vec_MyList = {nullptr};
+		std::vector<MyList>::iterator it_ptr_vec_MyList;
+		size_t szt_Vector_Counting = V_ZERO;
+
+		/* One-dimensional lists and vectors. */
 		std::list<size_t> lst_szt_Items = {V_ZERO};
 		std::vector<size_t> vec_szt_Items = {V_ZERO};
 
@@ -176,19 +204,20 @@ int main()
 			if (szt_Cols >= V_LOWER_LIMIT_COLS && szt_Cols <= V_UPPER_LIMIT_COLS)
 				{
 					/* -------------------------------------------------------------------- --
-					 * A pointer to a list of object type 'My List' is first generated	--
-					 * so that it in turn stores pointers to independent objects of the	--
-					 * same type 'My List'.							--
+					 * A pointer to a list and vector of object type 'MyList' is first	--
+					 * generated so that it in turn stores pointers to independent objects	--
+					 * of the same type 'MyList'.						--
 					 * --------------------------------------------------------------------	*/
 					ptr_lst_MyList = new std::list<MyList>();
+					ptr_vec_MyList = new std::vector<MyList>();
 
-					for (size_t szt_row = V_ZERO; szt_row <= szt_Rows; szt_row++)
+					for (size_t szt_row = V_ZERO; szt_row < szt_Rows; szt_row++)
 						{
-							// Each object pointer of type 'My List' is created.
+							// Each object pointer of type 'MyList' is created.
 							ptr_MyList = new MyList();
 
 							//Process of saving values in each collection.
-							for (size_t szt_col = V_ZERO; szt_col <= szt_Cols; szt_col++)
+							for (size_t szt_col = V_ZERO; szt_col < szt_Cols; szt_col++)
 								{
 									szt_Item=szt_row*szt_col;
 									ptr_MyList->addItem(szt_Item);
@@ -197,25 +226,41 @@ int main()
 									vec_szt_Items.push_back(szt_Item);
 								}
 
-							//Each created object pointer of type 'My List' is stored.
+							//Each created object pointer of type 'MyList' is stored.
 							ptr_lst_MyList->push_back(*ptr_MyList);
+							ptr_vec_MyList->push_back(*ptr_MyList);
 
-							//The pointer to an object of type 'My List' is destroyed every time.
+							//The pointer to an object of type 'MyList' is destroyed every time.
 							delete ptr_MyList;
 						}
 
-					//Visualization of the contents stored in the different objects.
+					//Visualization of the contents stored in the different collection objects as lists.
 					for (it_ptr_lst_MyList = std::begin(*ptr_lst_MyList);
 						it_ptr_lst_MyList != std::end(*ptr_lst_MyList);
 						it_ptr_lst_MyList++)
-							it_ptr_lst_MyList->printItems();
+							{
+								std::cout << "List:\t[" << szt_List_Counting++ << "]." << std::endl;
+								it_ptr_lst_MyList->printItems();
+							}
+
+					//Visualization of the contents stored in the different collection objects as vectors.
+					std::cout << std::endl;
+
+					for (it_ptr_vec_MyList = std::begin(*ptr_vec_MyList);
+						it_ptr_vec_MyList != std::end(*ptr_vec_MyList);
+						it_ptr_vec_MyList++)
+							{
+								std::cout << "Vector:\t[" << szt_Vector_Counting++ << "]." << std::endl;
+								it_ptr_vec_MyList->printItems();
+							}
 
 					//Sequentially view numerical values stored in lists and vectors.
 					view_Collector(lst_szt_Items);
 					view_Collector(vec_szt_Items);
 
-					//The pointer to an object of type list 'My List' is destroyed every time.
+					//The pointer to an object of types list and vector 'MyList' are destroyed every time.
 					delete ptr_lst_MyList;
+					delete ptr_vec_MyList;
 				}
 			else
 				std::cout << "Mistake! The [" << szt_Cols << "] value for the columns is outside the range of [" << V_LOWER_LIMIT_COLS << "] and [" << V_UPPER_LIMIT_COLS << "]." << std::endl;
