@@ -1,46 +1,70 @@
 #include <iostream>
+#include <list>
 #include <vector>
 
-using namespace std;
+#define V_LOWER_LIMIT_COLS	1
+#define V_LOWER_LIMIT_ROWS	1
+#define V_UPPER_LIMIT_COLS	11
+#define V_UPPER_LIMIT_ROWS	11
 
-#define V_ZERO      0
+#define V_ZERO	0
 
 int main()
 	{
-		vector<vector<int>> vec_vec_matrix;
+		std::list<std::list<size_t>> lst_lst_matrix_szt_Items;
+		std::vector<std::vector<size_t>> vec_vec_matrix_szt_Items;
 
-		int int_Columns=V_ZERO;
-		int int_Rows=V_ZERO;
+		size_t szt_Counting = V_ZERO;
+		size_t szt_Columns = V_ZERO;
+		size_t szt_Item = V_ZERO;
+		size_t szt_Rows = V_ZERO;
 
-		cout << "Number of rows: ";
-		cin >> int_Rows;
-		cout << "Number of columns: ";
-		cin >> int_Columns;
+		std::cout << "+---|----+---|----+---|" << std::endl;
+		std::cout << "|Random Values Tables.|" << std::endl;
+		std::cout << "+---|----+---|----+---|" << std::endl;
+		std::cout << "Rows    between [" << V_LOWER_LIMIT_ROWS << "] and [" << V_UPPER_LIMIT_ROWS << "]: ";
+		std::cin >> szt_Rows;
+		std::cout << "Columns between [" << V_LOWER_LIMIT_COLS << "] and [" << V_UPPER_LIMIT_ROWS << "]: ";
+		std::cin >> szt_Columns;
 
-		cout << endl;
-		cout << "+----------------------+" << endl;
-		cout << "|Multiplication tables.|" << endl;
-		cout << "+----------------------+" << endl;
+		if (szt_Rows >= V_LOWER_LIMIT_ROWS && szt_Rows <= V_UPPER_LIMIT_ROWS)
+			if (szt_Columns >= V_LOWER_LIMIT_COLS && szt_Columns <= V_UPPER_LIMIT_COLS)
+				{
+					std::cout << std::endl;
 
-		for (int int_y=V_ZERO; int_y<int_Rows; int_y++)
-			{
-				vector<int> vec_columns;
+					for (size_t szt_Y = V_ZERO; szt_Y < szt_Rows; szt_Y++)
+						{
+							std::list<size_t> lst_columns_szt_Items;
+							std::vector<size_t> vec_columns_szt_Items;
 
-				for (int int_x=V_ZERO; int_x<int_Columns; int_x++)
-					vec_columns.push_back(int_y * int_x);
+							for (size_t szt_X = V_ZERO; szt_X < szt_Columns; szt_X++)
+								{
+									szt_Item = szt_X * szt_Y;
 
-				vec_vec_matrix.push_back(vec_columns);
-			}
+									lst_columns_szt_Items.push_back(szt_Item);
+									vec_columns_szt_Items.push_back(szt_Item);
+								}
 
-		for (int int_row=V_ZERO; int_row<int_Rows; int_row++)
-			{
-				for (int int_col=V_ZERO; int_col<int_Columns; int_col++)
-					cout << "[" << vec_vec_matrix[int_row][int_col] << "]\t";
+							lst_lst_matrix_szt_Items.push_back(lst_columns_szt_Items);
+							vec_vec_matrix_szt_Items.push_back(vec_columns_szt_Items);
+						}
 
-				cout << endl;
-			}
+					for (size_t szt_row = V_ZERO; szt_row < szt_Rows; szt_row++)
+						{
+							std::cout << "Table #\t[" << szt_row << "] of [" << szt_Rows << "]." << std::endl;
 
-		cout << endl;
+							for (size_t szt_col = V_ZERO; szt_col < szt_Columns; szt_col++)
+								std::cout << "# " << szt_Counting++ << "\t(" << szt_row << ", " << szt_col << ")\t=\t[" << vec_vec_matrix_szt_Items[szt_row][szt_col] << "]." << std::endl;
+
+							std::cout << std::endl;
+						}
+
+					std::cout << std::endl;
+				}
+			else
+				std::cout << "Error! [" << szt_Columns << "] Columns are not beetween [" << V_LOWER_LIMIT_COLS << "] and [" << V_UPPER_LIMIT_COLS << "]." << std::endl;
+		else
+			std::cout << "Error! [" << szt_Columns << "] Rows    are not beetween [" << V_LOWER_LIMIT_ROWS << "] and [" << V_UPPER_LIMIT_ROWS << "]." << std::endl;
 
 		return V_ZERO;
 	}
