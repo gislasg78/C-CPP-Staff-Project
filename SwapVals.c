@@ -32,7 +32,8 @@
  ****************************************************************/
 void swapper(int *ptr_int_left_value, int *ptr_int_right_value)
 	{
-		int int_aux_value=V_ZERO, *ptr_int_aux_value = &int_aux_value;
+		int int_aux_value = V_ZERO;
+		int *ptr_int_aux_value = &int_aux_value;
 
 		*ptr_int_aux_value = *ptr_int_left_value;
 		*ptr_int_left_value = *ptr_int_right_value;
@@ -78,8 +79,8 @@ int main()
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("|Starting initials. Before the exchange.|\n");
 		printf("+---|----+---|----+---|----+---|----+---|\n");
-		printf("| Value [x] : [%p] = [%d].\n", &int_num_X, *ptr_int_num_X);
-		printf("| Value [y] : [%p] = [%d].\n", &int_num_Y, *ptr_int_num_Y);
+		printf("| Value [x] : [%p] = [%d].\n", &int_num_X, int_num_X);
+		printf("| Value [y] : [%p] = [%d].\n", &int_num_Y, int_num_Y);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 
 		swapper(ptr_int_num_X, ptr_int_num_Y);	//First Function that swaps variables.
@@ -100,8 +101,8 @@ int main()
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("|       Restoring initial values.       |\n");
 		printf("+---|----+---|----+---|----+---|----+---|\n");
-		printf("| Value [x] : [%p] = [%d].\n", ptr_int_num_X, *ptr_int_num_X);
-		printf("| Value [y] : [%p] = [%d].\n", ptr_int_num_Y, *ptr_int_num_Y);
+		printf("| Value [x] : [%p] = [%d].\n", &int_num_X, *ptr_int_num_X);
+		printf("| Value [y] : [%p] = [%d].\n", &int_num_Y, *ptr_int_num_Y);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("\n");
 
