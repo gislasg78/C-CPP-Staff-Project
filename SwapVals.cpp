@@ -15,9 +15,6 @@
 //Work Symbolic Constants.
 #define V_ZERO	0
 
-//Using the namespace 'std'.
-using namespace	std;
-
 /*****************************************************************
  ** Function:		swapper.				**
  ** Explanation:	This function doesn't actually return	**
@@ -72,7 +69,7 @@ void swapper(T *ptr_t_left_value, T *ptr_t_right_value)
 template <typename T>
 void swapper (T &t_left_value, T &t_right_value)
 	{
-		T t_aux_value;	//Template' variable declaration.
+		T t_aux_value;	//Template variable declaration.
 
 		/*------------------------------------------------
 		 * Variables occupying an intermediate temporary--
@@ -103,47 +100,72 @@ void swapper (T &t_left_value, T &t_right_value)
 int main()
 	{
 		/* Initialization of preliminary variables. */
-		float flt_t_val_x=V_ZERO, flt_t_val_y=V_ZERO;
+		float flt_t_val_x = V_ZERO;
+		float flt_t_val_y = V_ZERO;
+		float *ptr_flt_t_val_x = &flt_t_val_x;
+		float *ptr_flt_t_val_y = &flt_t_val_y;
 
-		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
-		cout << "|     Change of place of any values.    |" << endl;
-		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
-		cout << "Enter two numeric values:" << endl;
-		cout << "Value [x] : ";
-		cin >> flt_t_val_x;
-		cout << "Value [y] : ";
-		cin >> flt_t_val_y;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << "|     Change of place of any values.    |" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << "Enter two numeric values:" << std::endl;
+		std::cout << "Value [x] : ";
+		std::cin >> flt_t_val_x;
+		std::cout << "Value [y] : ";
+		std::cin >> flt_t_val_y;
 
 		/* Messages before the exchange of values. */
-		cout << endl;
-		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
-		cout << "|Starting initials. Before the exchange.|" << endl;
-		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
-		cout << "| Value [x] : [" << &flt_t_val_x << "] = [" << flt_t_val_x << "]." << endl;
-		cout << "| Value [y] : [" << &flt_t_val_y << "] = [" << flt_t_val_y << "]." << endl;
-		cout << "+---|----+---|----+---|----+---|----+---|\n" << endl ;
+		std::cout << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << "|Starting initials. Before the exchange.|" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << "| Value [x] : [" << &flt_t_val_x << "] = [" << flt_t_val_x << "]." << std::endl;
+		std::cout << "| Value [y] : [" << &flt_t_val_y << "] = [" << flt_t_val_y << "]." << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|\n" << std::endl ;
 
-		swapper(flt_t_val_x, flt_t_val_y); //First Function that swaps variables.
+		swapper(flt_t_val_x, flt_t_val_y);		//First Function that swaps variables.
 
 		/* Messages after the exchange of values. */
-		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
-		cout << "| Values exchanged. After the exchange. |" << endl;
-		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
-		cout << "| Value [x] : [" << &flt_t_val_x << "] = [" << flt_t_val_x << "]." << endl;
-		cout << "| Value [y] : [" << &flt_t_val_y << "] = [" << flt_t_val_y << "]." << endl;
-		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
-		cout << endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << "| Values exchanged. After the exchange. |" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << "| Value [x] : [" << &flt_t_val_x << "] = [" << flt_t_val_x << "]." << std::endl;
+		std::cout << "| Value [y] : [" << &flt_t_val_y << "] = [" << flt_t_val_y << "]." << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << std::endl;
 
-		swapper(&flt_t_val_x, &flt_t_val_y); //Second Function that swaps variables.
+		swapper(&flt_t_val_x, &flt_t_val_y);		//Second Function that swaps variables.
 
 		/* Value restore messages. */
-		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
-		cout << "|       Restoring initial values.       |" << endl;
-		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
-		cout << "| Value [x] : [" << &flt_t_val_x << "] = [" << flt_t_val_x << "]." << endl;
-		cout << "| Value [y] : [" << &flt_t_val_y << "] = [" << flt_t_val_y << "]." << endl;
-		cout << "+---|----+---|----+---|----+---|----+---|" << endl;
-		cout << endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << "|       Restoring initial values.       |" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << "| Value [x] : [" << &flt_t_val_x << "] = [" << flt_t_val_x << "]." << std::endl;
+		std::cout << "| Value [y] : [" << &flt_t_val_y << "] = [" << flt_t_val_y << "]." << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << std::endl;
+
+		swapper(ptr_flt_t_val_x, ptr_flt_t_val_y);	//Third Function that swaaps variables.
+
+		/* Messages after the new exchange of values. */
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << "|    Values exchanged. New exchange.    |" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << "| Value [x] : [" << &flt_t_val_x << "] = [" << flt_t_val_x << "]." << std::endl;
+		std::cout << "| Value [y] : [" << &flt_t_val_y << "] = [" << flt_t_val_y << "]." << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << std::endl;
+
+		swapper(*ptr_flt_t_val_x, *ptr_flt_t_val_y);	//Fourth Function that swaaps variables.
+
+		/* Again value restore messages. */
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << "|    Again restoring initial values.    |" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << "| Value [x] : [" << &flt_t_val_x << "] = [" << flt_t_val_x << "]." << std::endl;
+		std::cout << "| Value [y] : [" << &flt_t_val_y << "] = [" << flt_t_val_y << "]." << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << std::endl;
 
 		return V_ZERO;
 	}
