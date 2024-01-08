@@ -2,24 +2,22 @@
 #include <list>
 #include <vector>
 
-#define RANDOM_GENERATOR(n_r)	((V_MULTIPLIER * (n_r) + V_INCREASER) % V_RESIDUAL_MODULUS)
+#define	RANDOM_GENERATOR(n_r)	((V_MULTIPLIER * (n_r) + V_INCREASER) % V_RESIDUAL_MODULUS)
 
-#define V_INCREASER		13849
-#define V_MULTIPLIER		25173
-#define V_RESIDUAL_MODULUS	65536
+#define	V_INCREASER		13849
+#define	V_MULTIPLIER		25173
+#define	V_RESIDUAL_MODULUS	65536
 
-#define V_LOWER_LIMIT_COLS	1
-#define V_LOWER_LIMIT_ROWS	1
-#define V_UPPER_LIMIT_COLS	11
-#define V_UPPER_LIMIT_ROWS	11
+#define	V_LOWER_LIMIT_COLS	1
+#define	V_LOWER_LIMIT_ROWS	1
+#define	V_UPPER_LIMIT_COLS	11
+#define	V_UPPER_LIMIT_ROWS	11
 
-#define V_ZERO			0
+#define	V_ZERO			0
 
-size_t szt_rnd (size_t *ptr_szt_randomly)
+static size_t szt_rnd (size_t *ptr_szt_randomly)
 	{
-		*ptr_szt_randomly = RANDOM_GENERATOR(*ptr_szt_randomly);
-
-		return *ptr_szt_randomly;
+		return (*ptr_szt_randomly = RANDOM_GENERATOR(*ptr_szt_randomly));
 	}
 
 int main()
@@ -27,9 +25,13 @@ int main()
 		std::list<std::list<size_t>> lst_lst_matrix_szt_Items;
 		std::vector<std::vector<size_t>> vec_vec_matrix_szt_Items;
 
-		size_t szt_Counting = V_ZERO;
+		size_t szt_List_Counting = V_ZERO;
+		size_t szt_Vector_Counting = V_ZERO;
+
 		size_t szt_Columns = V_ZERO;
 		size_t szt_Item = V_ZERO;
+		size_t szt_List_Col = V_ZERO;
+		size_t szt_List_Row = V_ZERO;
 		size_t szt_Randomly = V_ZERO;
 		size_t szt_Rows = V_ZERO;
 
@@ -65,17 +67,36 @@ int main()
 							vec_vec_matrix_szt_Items.push_back(vec_columns_szt_Items);
 						}
 
+					for (auto it_lst_lst_matrix_szt_Items = std::begin(lst_lst_matrix_szt_Items);
+						it_lst_lst_matrix_szt_Items != std::end(lst_lst_matrix_szt_Items);
+						it_lst_lst_matrix_szt_Items++)
+							{
+								std::cout << "List #\t[" << szt_List_Row << "]." << std::endl;
+
+								for (auto it_lst_lst_matrix_columns_szt_Items = std::begin(*it_lst_lst_matrix_szt_Items);
+										it_lst_lst_matrix_columns_szt_Items != std::end(*it_lst_lst_matrix_szt_Items);
+										it_lst_lst_matrix_columns_szt_Items++)
+											std::cout << "# " << szt_List_Counting++ << "\t(" << szt_List_Row << ", " << szt_List_Col++ << ")\t:\t" << "[" << *it_lst_lst_matrix_columns_szt_Items << "]." << std::endl;
+
+								std::cout << std::endl;
+
+								szt_List_Row++;
+								szt_List_Col = V_ZERO;
+							}
+
+					std::cout << "[" << szt_List_Counting << "] Generated list output logs." << std::endl << std::endl;
+
 					for (size_t szt_row = V_ZERO; szt_row < szt_Rows; szt_row++)
 						{
-							std::cout << "Table #\t[" << szt_row << "] of [" << szt_Rows << "]." << std::endl;
+							std::cout << "Vector #\t[" << szt_row << "] of [" << szt_Rows << "]." << std::endl;
 
 							for (size_t szt_col = V_ZERO; szt_col < szt_Columns; szt_col++)
-								std::cout << "# " << szt_Counting++ << "\t(" << szt_row << ", " << szt_col << ")\t=\t[" << vec_vec_matrix_szt_Items[szt_row][szt_col] << "]." << std::endl;
+								std::cout << "# " << szt_Vector_Counting++ << "\t(" << szt_row << ", " << szt_col << ")\t=\t[" << vec_vec_matrix_szt_Items[szt_row][szt_col] << "]." << std::endl;
 
 							std::cout << std::endl;
 						}
 
-					std::cout << "[" << szt_Counting << "] Generated output logs." << std::endl;
+					std::cout << "[" << szt_Vector_Counting << "] Generated vector output logs." << std::endl;
 				}
 			else
 				std::cout << "Error! [" << szt_Columns << "] Columns are not beetween [" << V_LOWER_LIMIT_COLS << "] and [" << V_UPPER_LIMIT_COLS << "]." << std::endl;
