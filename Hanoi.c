@@ -24,20 +24,20 @@
 #include <stdio.h>
 
 //Symbolic constants of minimum and maximum limits.
-#define V_MINUS_ONE	-1
-#define V_ONE		1
-#define V_ONE_HUNDRED	100.0
-#define V_TWO		2
-#define V_ZERO		0
+#define	V_MINUS_ONE		-1
+#define	V_ONE			1
+#define	V_ONE_HUNDRED		100.0
+#define	V_TWO			2
+#define	V_ZERO			0
 
 //Work Symbolic Constants.
-#define FIRST_TOWER	'A'
-#define SECOND_TOWER	'B'
-#define THIRD_TOWER	'C'
+#define	FIRST_TOWER		'A'
+#define	SECOND_TOWER		'B'
+#define	THIRD_TOWER		'C'
 
 //Minimum and maximum number of dishes on the pillars of the Towers of Hanoi.
-#define V_MAX_DISHES	28
-#define V_MIN_DISHES	1
+#define	V_LOWER_LIMIT_DISHES	1
+#define	V_UPPER_LIMIT_DISHES	28
 
 /*****************************************************************
  ** Function:           static size_t szt_potency.		**
@@ -107,7 +107,7 @@ static size_t szt_HanoiTowers(const size_t szt_num_dishes, const char chr_first_
 		 * of Hanoi.						--
 		 * ---------------------------------------------------- */
 		szt_num_loops_HanoiTowers++;
-		dbl_perc_advantage = (	(double) szt_num_loops_HanoiTowers / (double) (szt_num_maximum_cycles + V_MINUS_ONE) ) * V_ONE_HUNDRED;
+		dbl_perc_advantage = ( (double) szt_num_loops_HanoiTowers / (double) (szt_num_maximum_cycles + V_MINUS_ONE) ) * V_ONE_HUNDRED;
 
 		/* ----------------------------------------------------	--
 		 * It is validated for recursions if the number of	--
@@ -163,7 +163,7 @@ static size_t szt_HanoiTowers(const size_t szt_num_dishes, const char chr_first_
  **			algorithm of the Towers of Hanoi enigma.**
 *****************************************************************/
 int main()
-    {
+	{
 		/* Declaration of numerical work variables. */
 		size_t szt_num_dishes = V_ZERO;
 		size_t szt_num_loops_HanoiTowers = V_ZERO;
@@ -172,14 +172,14 @@ int main()
    		printf("|---|----+---|----+---|----+---|----+\n");
 		printf("|     Towers of Hanoi Algorithm.    |\n");
    		printf("|---|----+---|----+---|----+---|----+\n");
-		printf("Rings to move between [%2.d] and [%2.d]: ", V_MIN_DISHES, V_MAX_DISHES);
+		printf("Rings to move between [%2.d] and [%2.d]: ", V_LOWER_LIMIT_DISHES, V_UPPER_LIMIT_DISHES);
    		scanf("%ld", &szt_num_dishes);
 
 		/* ------------------------------------------------------------	--
 		 * It is validated that the number of disks is in a range	--
 		 * allowable and tolerable by the processor.			--
 		 * ------------------------------------------------------------	*/
-		if (szt_num_dishes >= V_MIN_DISHES && szt_num_dishes <= V_MAX_DISHES)
+		if (szt_num_dishes >= V_LOWER_LIMIT_DISHES && szt_num_dishes <= V_UPPER_LIMIT_DISHES)
 			{
 				/* ------------------------------------------------------------	--
 				 * The maximum number of processor cycles is determined to 	--
@@ -211,7 +211,7 @@ int main()
 			 * The more disks, the greater the probability that the		--
 			 * algorithm process never ends.				--
 			 * ------------------------------------------------------------	*/
-			printf("Mistake! Value [%2.ld] is not in the range of [%2.d] and [%2.d].\n", szt_num_dishes, V_MIN_DISHES, V_MAX_DISHES);
+			printf("Mistake! Value [%2.ld] is not in the range of [%2.d] and [%2.d].\n", szt_num_dishes, V_LOWER_LIMIT_DISHES, V_UPPER_LIMIT_DISHES);
 
-    	return V_ZERO;
-    }
+		return V_ZERO;
+	}
