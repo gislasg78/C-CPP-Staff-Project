@@ -35,11 +35,11 @@
  ** Explanation:	Gets the value of the factorial of any	**
  **			integer by iterativity multiplying	**
  **			it by its descendant surrogate numbers.	**
- ** Input Parms:	size_t szt_num.				**
+ ** Input Parms:	const size_t szt_num.			**
  ** Output Parms:	None.					**
  ** Result:		Factorial from 'i' to 'n'.		**
 *****************************************************************/
-static double dbl_factorial(size_t szt_num)
+static double dbl_factorial(const size_t szt_num)
 	{
 		return (szt_num < V_ONE) ? V_ONE : szt_num * dbl_factorial(szt_num + V_MINUS_ONE);
 	}
@@ -52,12 +52,12 @@ static double dbl_factorial(size_t szt_num)
  **			In such a way that it also resorts to	**
  **			the previously predefined and		**
  **			pre-established factorial formula.	**
- ** Input Parms:	size_t szt_num,				**
- **			size_t szt_r.				**
+ ** Input Parms:	const size_t szt_num,			**
+ **			const size_t szt_r.			**
  ** Output Parms:	None.					**
  ** Result:		nCr = n! / [(n - r)! * r!].		**
 *****************************************************************/
-static double dbl_combinations(size_t szt_num, size_t szt_r)
+static double dbl_combinations(const size_t szt_num, const size_t szt_r)
 	{
 		return dbl_factorial(szt_num) / (dbl_factorial(szt_num - szt_r) * dbl_factorial(szt_r));
 	}
@@ -69,14 +69,14 @@ static double dbl_combinations(size_t szt_num, size_t szt_r)
  **			mathematical formula:			**
  **			-Sum(from j=0 to m):                    **
  **                             mCj * (B[j] / (m + 1 - j)).	**
- ** Input Parms:	size_t szt_num.				**
+ ** Input Parms:	const size_t szt_num.			**
  ** Output Parms:	None.					**
  ** Result:		Repetitive loops & recursive iterations.**
  **			-Sum(from j=0 to m):			**
  **				(m!/((m!-j!)*j!) * (B[j] /	**
  **					(m + 1 - j)).		**
 *****************************************************************/
-static double Bernoulli(size_t szt_num)
+static double Bernoulli(const size_t szt_num)
 	{
 		double dbl_Bernoulli = V_ZERO;
 
@@ -114,7 +114,7 @@ int main()
 	{
 		size_t szt_nums = V_ZERO;
 
-		printf("Bernoulli numbers between [%d] and [%d] : ", V_LOWER_LIMIT_BERN, V_UPPER_LIMIT_BERN);
+		printf("Bernoulli numbers between [%d] and [%d]: ", V_LOWER_LIMIT_BERN, V_UPPER_LIMIT_BERN);
 		scanf("%ld", &szt_nums);
 
 		if (szt_nums >= V_LOWER_LIMIT_BERN && szt_nums <= V_UPPER_LIMIT_BERN)
