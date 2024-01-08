@@ -1,7 +1,7 @@
 /****************** Natural logarithm base 'e'. ******************
  ** Source Code:        Ln.c					**
  ** Author:             Gustavo Islas Gálvez.			**
- ** Creation Date:      Thursday, August 31, 2023.		**
+ ** Creation Date:      Saturday, December 30, 2023.		**
  ** Purpose:		This program calculates through the	**
  **			Taylor series the natural logarithm	**
  **			with a base 'x' determined at a certain	**
@@ -20,62 +20,38 @@
 #include <stdio.h>
 
 //Numeric Symbolic Constants.
-#define V_MINUS_ONE	-1.0
-#define V_NUM_TERMS	20
+#define V_MINUS_ONE	-1
+#define V_NUM_TERMS	65536
 #define V_TWO		2.0
-#define V_ONE		1.0
+#define V_ONE		1
 #define V_ZERO		0
 
 /*****************************************************************
- ** Function:           absolute.                               **
- ** Explanation:        Returns as a result the positive or     **
- **                     unsigned value of a certain value,      **
- **                     as long as it is subjected to a series  **
- **                     of conditions such as being greater     **
- **                     than zero, to be positive; be zero,     **
- **                     to be zero, and less than zero,         **
- **                     to become positive by sign              **
- **                     neutralization.                         **
- ** Input Parms:        double int_value.                       **
- ** Output Parms:       None.                                   **
- ** Result:             the base value (int_value) is           **
- **                     sign-neutralized.                       **
- ****************************************************************/
-double absolute(int int_value)
-	{
-		return  (int_value==V_ZERO) ? V_ZERO
-		: (int_value>V_ZERO) ? int_value : -int_value;
-	}
-
-/*****************************************************************
- ** Function:           potency.                                **
+ ** Function:           static double dbl_potency.		**
  ** Explanation:        Returns a base coefficient raised to the**
  **                     specified power recursively by means of **
  **                     successive multiplications or divisions.**
  **                                                             **
  **                     This function can also be programmed    **
  **                     recursively in the form:                **
- **                     (int_exp == V_ZERO) ? V_ONE : dbl_base  **
- **                      * potency(dbl_base, int_exp - V_ONE);  **
+ **                     (szt_exp == V_ZERO) ? V_ONE : dbl_base  **
+ **                      * dbl_potency(dbl_base,		**
+ **					szt_exp - V_ONE);	**
  **                                                             **
- ** Input Parms:        double dbl_base,                        **
- **                     integer int_exp.                        **
+ ** Input Parms:        const double dbl_base,			**
+ **                     const size_t szt_exp.			**
  ** Output Parms:       None.                                   **
  ** Result:             dbl_base raised to int_exp.             **
  ****************************************************************/
-double potency(double dbl_base, int int_exp)
+static double dbl_potency(double dbl_base, size_t szt_exp)
 	{
-		double dbl_ret=V_ONE;
-		int int_exp_pow=absolute(int_exp);
-
-		for (int int_i=V_ZERO; int_i<int_exp_pow; int_i++)
-			dbl_ret = (int_exp > V_ZERO) ? dbl_ret * dbl_base :
-				  (int_exp < V_ZERO) ? dbl_ret / dbl_base : V_ONE;
-
-		return dbl_ret;
+		return	(szt_exp > V_ZERO) ? dbl_base * dbl_potency(dbl_base, szt_exp + V_MINUS_ONE) :
+			(szt_exp == V_ZERO) ? V_ONE :
+			(szt_exp < V_ZERO) ? dbl_base / dbl_potency(dbl_base, szt_exp + V_ONE) : V_ONE;
 	}
+
 /*****************************************************************
- ** Function:           ln.					**
+ ** Function:		static double ln.			**
  ** Explanation:	Calculates the natural logarithm of a	**
  **			defined number of base 'x' through the	**
  **			Taylor power series, based on which as	**
@@ -91,21 +67,21 @@ double potency(double dbl_base, int int_exp)
  **			+ [(1/7) * ((x-1)/(x+1))^7] + [...] }	**
  **			For all 'x' -> (x>0).			**
  **								**
- ** Input Parms:        double dbl_x.				**
+ ** Input Parms:        const double dbl_x.			**
  ** Output Parms:       None.					**
  ** Result:		Returns the natural logarithm based on	**
  **			the exponential natural number 'e',	**
  **			that is, it is its inverse.		**
  ****************************************************************/
-double ln(double dbl_x)
+static double ln(const double dbl_x)
 	{
-		double dbl_ret=V_ZERO;
+		double dbl_outcome = V_ZERO;
 
-		for (int int_i=V_ZERO; int_i<V_NUM_TERMS; int_i++)
-			dbl_ret += (V_ONE / (V_TWO * int_i + V_ONE)) *
-				    potency(((dbl_x + V_MINUS_ONE) / (dbl_x + V_ONE)), (V_TWO * int_i + V_ONE));
+		for (size_t szt_idx = V_ZERO; szt_idx < V_NUM_TERMS; szt_idx++)
+			dbl_outcome += (V_ONE / (V_TWO * szt_idx + V_ONE)) *
+				dbl_potency(((dbl_x + V_MINUS_ONE) / (dbl_x + V_ONE)), (V_TWO * szt_idx + V_ONE));
 
-		return V_TWO * dbl_ret;
+		return V_TWO * dbl_outcome;
 	}
 
 /*****************************************************************
@@ -129,20 +105,24 @@ double ln(double dbl_x)
  ****************************************************************/
 int main()
 	{
-		double dbl_n=V_ZERO;
+		double dbl_ln = V_ZERO;
+		double dbl_n = V_ZERO;
 
-		printf("+---|----+---|----+---|----+---|---|----+---|---+\n");
-		printf("| Logaritmo natural base 'e' para una 'x' dada. |\n");
-		printf("+---|----+---|----+---|----+---|---|----+---|---+\n");
+		printf("+---|----+---|----+---|----+---|---|---\n");
+		printf("| Natural logarithm by Taylor series. |\n");
+		printf("+---|----+---|----+---|----+---|---|---\n");
 		printf("Base 'x' : ");
 		scanf("%lf", &dbl_n);
 
+		dbl_ln = ln(dbl_n);	//Call the natural logarithm function.
+
 		printf("\n");
-		printf("+---|----+---|----+---|----+---|---|----+---|---+\n");
-		printf("| Valor de la base 'e' para 'x' : [%lf].\n", dbl_n);
-		printf("| Logaritmo natural de base 'e' : [%lf].\n", ln(dbl_n));
-		printf("+---|----+---|----+---|----+---|---|----+---|---+\n");
+		printf("+---|----+---|----+---|----+---|---|---\n");
+		printf("| Base value\t: [%lf].\n", dbl_n);
+		printf("| Terms value\t: [%d].\n", V_NUM_TERMS);
+		printf("| Natural log\t: [%lf].\n", dbl_ln);
+		printf("+---|----+---|----+---|----+---|---|---\n");
 		printf("\n");
 
-		return dbl_n;
+		return V_ZERO;
 	}
