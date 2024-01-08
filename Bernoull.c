@@ -1,5 +1,5 @@
 /****************** Bernoulli Number Generator. ******************
- ** Source Code:	Bernoull.cc	               		**
+ ** Source Code:	Bernoull.c	               		**
  ** Author:		Gustavo Islas Gálvez.			**
  ** Creation Date:	Saturday, December 30, 2023.		**
  ** Purpose:		This program generates the sequence of	**
@@ -18,19 +18,20 @@
 #include <stdio.h>
 
 //Working Macros.
-#define	DENOMINATOR(v_n, v_k)	((v_n) - (v_k) + V_ONE)
+#define	DENOMINATOR(v_n, v_k)	((v_n) - (v_k) + V_ONE_1_0)
 
 //Limit constants for Bernoulli numbers.
-#define	V_UPPER_LIMIT_BERN	28
-#define	V_LOWER_LIMIT_BERN	0
+#define	V_LOWER_LIMIT_BERN	1
+#define	V_UPPER_LIMIT_BERN	29
 
 //Numeric Symbolic Constants.
 #define V_MINUS_ONE		-1
 #define V_ONE			1
+#define	V_ONE_1_0		1.0
 #define V_ZERO			0
 
 /*****************************************************************
- ** Function:		static size_t factorial.		**
+ ** Function:		static double dbl_factorial.		**
  ** Explanation:	Gets the value of the factorial of any	**
  **			integer by iterativity multiplying	**
  **			it by its descendant surrogate numbers.	**
@@ -38,13 +39,13 @@
  ** Output Parms:	None.					**
  ** Result:		Factorial from 'i' to 'n'.		**
 *****************************************************************/
-static size_t factorial(size_t szt_num)
+static double dbl_factorial(size_t szt_num)
 	{
-		return (szt_num < V_ONE) ? V_ONE : szt_num * factorial(szt_num + V_MINUS_ONE);
+		return (szt_num < V_ONE) ? V_ONE : szt_num * dbl_factorial(szt_num + V_MINUS_ONE);
 	}
 
 /*****************************************************************
- ** Function:		static size_t combinations.		**
+ ** Function:		static double dbl_combinations.		**
  ** Explanation:	Gets the total number of combinations	**
  **			arising from the mathematical formula:	**
  **			nCr = n! / [(n - r)! * r!].		**
@@ -56,9 +57,9 @@ static size_t factorial(size_t szt_num)
  ** Output Parms:	None.					**
  ** Result:		nCr = n! / [(n - r)! * r!].		**
 *****************************************************************/
-static size_t combinations(size_t szt_num, size_t szt_r)
+static double dbl_combinations(size_t szt_num, size_t szt_r)
 	{
-		return factorial(szt_num) / (factorial(szt_num - szt_r) * factorial(szt_r));
+		return dbl_factorial(szt_num) / (dbl_factorial(szt_num - szt_r) * dbl_factorial(szt_r));
 	}
 
 /*****************************************************************
@@ -81,8 +82,8 @@ static double Bernoulli(size_t szt_num)
 
 		if (szt_num > V_ZERO)
 			for (size_t szt_idx = V_ZERO; szt_idx <= (szt_num + V_MINUS_ONE); szt_idx++)
-				dbl_Bernoulli += (double) (combinations(szt_num, szt_idx)
-						* Bernoulli(szt_idx)) / DENOMINATOR(szt_num, szt_idx);
+				dbl_Bernoulli += dbl_combinations(szt_num, szt_idx)
+						* Bernoulli(szt_idx) / DENOMINATOR(szt_num, szt_idx);
 		else
 			dbl_Bernoulli = V_MINUS_ONE;
 
@@ -121,7 +122,7 @@ int main()
 				printf("[%ld] Bernoulli numbers:\n", szt_nums);
 
 				for (size_t szt_idx = V_ZERO; szt_idx <= szt_nums; szt_idx++)
-					printf("B:[%2.ld] = [%12.6lf].\n", szt_idx, Bernoulli(szt_idx));
+					printf("B:[%2.ld] = [%16.6lf].\n", szt_idx, Bernoulli(szt_idx));
 			}
 		else
 			printf("Error! The number [%ld] is out of range from [%d] to [%d].\n", szt_nums, V_LOWER_LIMIT_BERN, V_UPPER_LIMIT_BERN);
