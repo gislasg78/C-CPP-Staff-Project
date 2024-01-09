@@ -90,9 +90,9 @@ static double dbl_factorial(const size_t szt_num)
 *****************************************************************/
 static double dbl_potency(const double dbl_base, const size_t szt_exp)
 	{
-		return	(szt_exp > 0) ? dbl_base * dbl_potency(dbl_base, szt_exp + V_MINUS_ONE) :
-			(szt_exp == 0) ? V_ONE :
-			(szt_exp < 0) ? dbl_base / dbl_potency(dbl_base, szt_exp + V_ONE) : V_ONE;
+		return	(szt_exp > V_ZERO) ? dbl_base * dbl_potency(dbl_base, szt_exp + V_MINUS_ONE) :
+			(szt_exp == V_ZERO) ? V_ONE :
+			(szt_exp < V_ZERO) ? dbl_base / dbl_potency(dbl_base, szt_exp + V_ONE) : V_ONE;
 	}
 
 /*****************************************************************
