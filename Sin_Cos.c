@@ -197,9 +197,9 @@ int main()
 	{
 		double dbl_cosine = V_ZERO;
 		double dbl_radns = V_ZERO;
-		double dbl_value = V_ZERO;
 		double dbl_sine = V_ZERO;
 		double dbl_tangent = V_ZERO;
+		double dbl_value = V_ZERO;
 
 		printf("+---|----+---|----+---|----+---|----+---|----+---|----+-\n");
 		printf("|      Sine and cosine functions by Taylor series.     |\n");
