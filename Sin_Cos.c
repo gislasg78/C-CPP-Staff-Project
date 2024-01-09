@@ -143,7 +143,7 @@ static double sinus_cosinus(const double dbl_angle, const enum enm_fn_sin_cos en
 	}
 
 /*****************************************************************
- ** Function:		static double tang.			**
+ ** Function:		static double tangent.			**
  ** Explanation:	This function returns the trigonometric	**
  **			function of tangent by simply dividing	**
  **			the trigonometric functions of sine and	**
@@ -161,7 +161,7 @@ static double sinus_cosinus(const double dbl_angle, const enum enm_fn_sin_cos en
  ** Result:		Returns sine divided by cosine:		**
  **				sine(x)	/ cosine(x).		**
 *****************************************************************/
-static double tang(const double dbl_angle)
+static double tangent(const double dbl_angle)
 	{
 		return	sinus_cosinus(dbl_angle, enm_fn_sine) /
 			sinus_cosinus(dbl_angle, enm_fn_cosine);
@@ -195,8 +195,11 @@ static double tang(const double dbl_angle)
 *****************************************************************/
 int main()
 	{
-		double dbl_value = V_ZERO;
+		double dbl_cosine = V_ZERO;
 		double dbl_radns = V_ZERO;
+		double dbl_value = V_ZERO;
+		double dbl_sine = V_ZERO;
+		double dbl_tangent = V_ZERO;
 
 		printf("+---|----+---|----+---|----+---|----+---|----+---|----+-\n");
 		printf("|      Sine and cosine functions by Taylor series.     |\n");
@@ -206,17 +209,22 @@ int main()
 
 		dbl_radns = RADIANS(dbl_value);
 
+		dbl_sine = sinus_cosinus(dbl_radns, enm_fn_sine);
+		dbl_cosine = sinus_cosinus(dbl_radns, enm_fn_cosine);
+		dbl_tangent = tangent(dbl_radns);
+
 		printf("\n");
 		printf("+---|----+---|----+---|----+---|----+---|----+---|----+-\n");
 		printf("| Trigonometric functions of the sine and cosine: (x). |\n");
 		printf("+---|----+---|----+---|----+---|----+---|----+---|----+-\n");
 		printf("| Degrees value\t: [%lf].\n", dbl_value);
 		printf("| Radians value\t: [%lf].\n", dbl_radns);
+		printf("| Terms   value\t: [%d].\n", V_NUM_TERMS);
 		printf("+---|----+---|----+---|----+---|----+---|----+---|----+-\n");
-		printf("| Sine    value\t: [%lf].\n", sinus_cosinus(dbl_radns, enm_fn_sine));
-		printf("| Cosine  value\t: [%lf].\n", sinus_cosinus(dbl_radns, enm_fn_cosine));
+		printf("| Sine    value\t: [%lf].\n", dbl_sine);
+		printf("| Cosine  value\t: [%lf].\n", dbl_cosine);
 		printf("+---|----+---|----+---|----+---|----+---|----+---|----+-\n");
-		printf("| Tangent value\t: [%lf].\n", tang(dbl_radns));
+		printf("| Tangent value\t: [%lf].\n", dbl_tangent);
 		printf("+---|----+---|----+---|----+---|----+---|----+---|----+-\n");
 		printf("\n");
 
