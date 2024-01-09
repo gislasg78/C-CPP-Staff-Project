@@ -57,13 +57,16 @@ static char sttc_chr_Month_Name[V_TWELVE][V_ELEVEN] =
 int main()
 	{
 		/* Declaration of regular variables. */
-		long lng_clock_ticks = V_ZERO;
 		size_t szt_random_seed = V_ZERO;
 		size_t szt_values_number = V_ZERO;
 
+		/* Variable that contains the time spent by the processor. */
+		clock_t clck_clock_ticks_latency = V_ZERO;
+		clck_clock_ticks_latency = clock();
+
 		/* The 'time' function returns the number of seconds since zero hours on January 1, 1970. */
-		time_t t_t_seconds;
-		time(&t_t_seconds);
+		time_t t_tm_seconds = V_ZERO;
+		time(&t_tm_seconds);
 
 		/* ------------------------------------------------------------------------------------	--
 		 * The 'localtime' function converts the number d" seconds elapsed since 0 hours on	--
@@ -77,8 +80,8 @@ int main()
 		 * The 'localtime' function returns a pointer to the structure containing the result,	--
 		 * or a null pointer if the time cannot be interpreted.					--
 		 * ------------------------------------------------------------------------------------	*/
-		struct tm *strct_tm_fh = NULL;
-		strct_tm_fh = localtime(&t_t_seconds);
+		struct tm *strct_tm_dt = NULL;
+		strct_tm_dt = localtime(&t_tm_seconds);
 
 		/* Welcome messages from this program. */
 		printf("+---|----+---|----+---|----+---|----+---|----+\n");
@@ -91,7 +94,7 @@ int main()
 		 * The 'ctime' function converts a time stored as a value of type 'time_t' into a	--
 		 * character string of the form.							--
 		 * ------------------------------------------------------------------------------------	*/
-		printf("\n%s", ctime(&t_t_seconds));
+		printf("\n%s", ctime(&t_tm_seconds));
 
 		/* ------------------------------------------------------------------------------------	--
 		 * The 'srand' function sets the starting point for generating pseudorandom numbers;	--
@@ -102,7 +105,7 @@ int main()
 		 * number is always the same for each execution						--
 		 * (corresponds to an argument of value 1).						--
 		 * ------------------------------------------------------------------------------------ */
-		szt_random_seed = (unsigned) (t_t_seconds % V_RESIDUAL_MODULUS);
+		szt_random_seed = (unsigned) (t_tm_seconds % V_RESIDUAL_MODULUS);
 		srand(szt_random_seed);
 
 		/* Verification that the value is in a given range. */
@@ -114,19 +117,22 @@ int main()
 				printf("+---|----+---|----+---|----+---|----+---|----+\n");
 				printf("|       Seconds since January 1, 1970.       |\n");
 				printf("+---|----+---|----+---|----+---|----+---|----+\n");
-				printf("| Value:\t[%ld].\n", t_t_seconds);
-				printf("| Address:\t[%p].\n", &t_t_seconds);
+				printf("| Value:\t[%ld].\n", t_tm_seconds);
+				printf("| Address:\t[%p].\n", &t_tm_seconds);
+				printf("+--------------------------------------------+\n");
+				printf("| Latency:\t[%ld].\n", clck_clock_ticks_latency);
+				printf("| Tickness:\t[%ld].\n", CLOCKS_PER_SEC);
 				printf("+---|----+---|----+---|----+---|----+---|----+\n");
 				printf("|         PC date and time structure.        |\n");
 				printf("+---|----+---|----+---|----+---|----+---|----+\n");
-				printf("| Day of year:\t[%03d].\n", strct_tm_fh->tm_yday);
-				printf("| Day of week:\t[%d].\n", strct_tm_fh->tm_wday);
+				printf("| Day of year:\t[%03d].\n", strct_tm_dt->tm_yday);
+				printf("| Day of week:\t[%d].\n", strct_tm_dt->tm_wday);
 				printf("+--------------------------------------------+\n");
-				printf("| Date:\t\t[%02d/%02d/%04d].\n", strct_tm_fh->tm_mday, strct_tm_fh->tm_mon + V_ONE, strct_tm_fh->tm_year + V_REFERENCE_YEAR);
+				printf("| DD/MM/YYYY:\t[%02d/%02d/%04d].\n", strct_tm_dt->tm_mday, strct_tm_dt->tm_mon + V_ONE, strct_tm_dt->tm_year + V_REFERENCE_YEAR);
 				printf("+--------------------------------------------+\n");
-				printf("| [%s],\t[%s] [%02d], [%04d].\n", sttc_chr_Day_Week[strct_tm_fh->tm_wday], sttc_chr_Month_Name[strct_tm_fh->tm_mon], strct_tm_fh->tm_mday, strct_tm_fh->tm_year + V_REFERENCE_YEAR);
+				printf("| [%s],\t[%s] [%02d], [%04d].\n", sttc_chr_Day_Week[strct_tm_dt->tm_wday], sttc_chr_Month_Name[strct_tm_dt->tm_mon], strct_tm_dt->tm_mday, strct_tm_dt->tm_year + V_REFERENCE_YEAR);
 				printf("+--------------------------------------------+\n");
-				printf("| Time:\t\t[%02d:%02d:%02d].\n", strct_tm_fh->tm_hour, strct_tm_fh->tm_min, strct_tm_fh->tm_sec);
+				printf("| HH:MM:SS:\t[%02d:%02d:%02d].\n", strct_tm_dt->tm_hour, strct_tm_dt->tm_min, strct_tm_dt->tm_sec);
 				printf("+===|====+===|====+===|====+===|===+====|====+\n\n");
 
 				/* --------------------------------------------------------------------	--
@@ -146,8 +152,8 @@ int main()
 					{
 						/* Waiting time in clock cycles equal to one second. */
 						do
-							lng_clock_ticks = clock() / CLOCKS_PER_SEC;
-						while (lng_clock_ticks < szt_iter);
+							clck_clock_ticks_latency = clock() / CLOCKS_PER_SEC;
+						while (clck_clock_ticks_latency < szt_iter);
 
 						/* A value is generated every second. */
 						printf ("# [%ld]:\t[%d].\n", szt_iter, rand());
