@@ -37,22 +37,36 @@
 
 //Minimum and maximum number of dishes on the pillars of the Towers of Hanoi.
 #define	V_LOWER_LIMIT_DISHES	1
-#define	V_UPPER_LIMIT_DISHES	28
+#define	V_UPPER_LIMIT_DISHES	29
 
 /*****************************************************************
- ** Function:           static size_t szt_potency.		**
- ** Explanation:	The purpose of this function is to	**
- **			return a number raised to a given power,**
- **			through recursive iterations, calling	**
- **			the function itself and multiplying a	**
- **			base 'x' by an exponent 'y' in a	**
- **			cumulative manner.			**
- ** Input Parms:        const size_t szt_x,			**
- **			const size_t szt_y.			**
+ ** Function:           static double dbl_potency.              **
+ ** Explanation:        Returns a base coefficient raised to the**
+ **                     specified power recursively by means of **
+ **                     successive multiplications or divisions.**
+ **                                                             **
+ **                     This function can also be programmed    **
+ **                     recursively in the form:                **
+ **                             (int_exp > V_ZERO) ?            **
+ **                                     dbl_potency(dbl_base,   **
+ **                                     int_exp + V_MINUS_ONE)  **
+ **                                     * dbl_base :            **
+ **                             (int_exp == V_ZERO) ? V_ONE :   **
+ **                             (int_exp < V_ZERO) ?            **
+ **                                     dbl_potency(dbl_base,   **
+ **                                     int_exp + V_ONE)        **
+ **                                     / dbl_base :            **
+ **                                     V_ONE;                  **
+ ** Input Parms:        const double dbl_base,                  **
+ **                     const int int_exp.                      **
  ** Output Parms:       None.                                   **
- ** Result:		'potency' function that returns a number**
- **			raised to at a certain power.		**
- ****************************************************************/
+ ** Result:             The base raised to a positive power     **
+ **                     results in a series of products in      **
+ **                     sequence from 1 to 'n', while a base    **
+ **                     raised to a negative power results in a **
+ **                     series of quotients in sequence from 1  **
+ **                     to '-n' .                               **
+*****************************************************************/
 static size_t szt_potency(const size_t szt_x, const size_t szt_y)
 	{
 		return (szt_y < V_ONE) ? V_ONE : szt_x * szt_potency(szt_x, szt_y + V_MINUS_ONE);
@@ -169,9 +183,9 @@ int main()
 		size_t szt_num_loops_HanoiTowers = V_ZERO;
 		size_t szt_num_maximum_cycles_HanoiTowers = V_ZERO;
 
-   		printf("|---|----+---|----+---|----+---|----+\n");
-		printf("|     Towers of Hanoi Algorithm.    |\n");
-   		printf("|---|----+---|----+---|----+---|----+\n");
+   		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+     Towers of Hanoi Algorithm.    +\n");
+   		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("Rings to move between [%2.d] and [%2.d]: ", V_LOWER_LIMIT_DISHES, V_UPPER_LIMIT_DISHES);
    		scanf("%ld", &szt_num_dishes);
 
@@ -191,7 +205,12 @@ int main()
 				 * The number of movements that have been made is displayed on	--
 				 * the screen required to move the different disks.		--
 				 * ------------------------------------------------------------	*/
-				printf("\n[%10.ld] Necessary movements with [%2.ld] discs.\n", szt_num_maximum_cycles_HanoiTowers + V_MINUS_ONE, szt_num_dishes);
+				printf("\n");
+				printf("+---|----+---|----+---|----+---|----+\n");
+				printf("+  Hanoi Towers Algorithm Results.  +\n");
+				printf("+---|----+---|----+---|----+---|----+\n");
+				printf("| [%10.ld] Movements with [%2.ld] discs.\n", szt_num_maximum_cycles_HanoiTowers + V_MINUS_ONE, szt_num_dishes);
+				printf("+---|----+---|----+---|----+---|----+\n");
 
 				/* ------------------------------------------------------------	--
 				 * The 'HanoiTowers' function is called and returns as a result	--
@@ -203,7 +222,10 @@ int main()
 				 * The screen displays how many effective movements were made	--
 				 * with the specified number of disks.				--
 				 * ------------------------------------------------------------	*/
-				printf("\n[%10.ld] Movements performed with [%2.ld] displaced discs.\n", szt_num_loops_HanoiTowers, szt_num_dishes);
+				printf("\n");
+				printf("+---|----+---|----+---|----+---|----+\n");
+				printf("| [%10.ld] Movements with [%2.ld] displaced discs.\n", szt_num_loops_HanoiTowers, szt_num_dishes);
+				printf("+---|----+---|----+---|----+---|----+\n");
 			}
 		else
 			/* ------------------------------------------------------------	--

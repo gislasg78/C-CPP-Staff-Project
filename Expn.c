@@ -12,7 +12,7 @@
 
 //Numeric Symbolic Constants.
 #define	V_MINUS_ONE	-1
-#define V_NUM_TERMS	256
+#define V_NUM_TERMS	256	//2^8.
 #define V_ONE		1
 #define V_ZERO		0
 
@@ -31,46 +31,56 @@ static double dbl_factorial(const size_t szt_num)
 	}
 
 /*****************************************************************
- ** Function:		static double dbl_potency.		**
+ ** Function:           static double dbl_potency.              **
  ** Explanation:        Returns a base coefficient raised to the**
  **                     specified power recursively by means of **
  **                     successive multiplications or divisions.**
  **                                                             **
  **                     This function can also be programmed    **
  **                     recursively in the form:                **
- **                     (szt_exp == V_ZERO) ? V_ONE : dbl_base  **
- **                      * dbl_potency(dbl_base,		**
- **					szt_exp - V_ONE);	**
- **                                                             **
- ** Input Parms:        const double dbl_base,			**
- **                     const size_t szt_exp.			**
+ **                             (int_exp > V_ZERO) ?            **
+ **                                     dbl_potency(dbl_base,   **
+ **                                     int_exp + V_MINUS_ONE)  **
+ **                                     * dbl_base :            **
+ **                             (int_exp == V_ZERO) ? V_ONE :   **
+ **                             (int_exp < V_ZERO) ?            **
+ **                                     dbl_potency(dbl_base,   **
+ **                                     int_exp + V_ONE)        **
+ **                                     / dbl_base :            **
+ **                                     V_ONE;                  **
+ ** Input Parms:        const double dbl_base,                  **
+ **                     const int int_exp.                      **
  ** Output Parms:       None.                                   **
- ** Result:             dbl_base raised to int_exp.             **
- ****************************************************************/
+ ** Result:             The base raised to a positive power     **
+ **                     results in a series of products in      **
+ **                     sequence from 1 to 'n', while a base    **
+ **                     raised to a negative power results in a **
+ **                     series of quotients in sequence from 1  **
+ **                     to '-n' .                               **
+*****************************************************************/
 static double dbl_potency(const double dbl_base, const size_t szt_exp)
-	{
-		return	(szt_exp > V_ZERO) ? dbl_base * dbl_potency(dbl_base, szt_exp + V_MINUS_ONE) :
-			(szt_exp == V_ZERO) ? V_ONE :
-			(szt_exp < V_ZERO) ? dbl_base / dbl_potency(dbl_base, szt_exp + V_ONE) : V_ONE;
-	}
+        {
+                return  (szt_exp < V_ONE) ? V_ONE : dbl_potency(dbl_base, szt_exp + V_MINUS_ONE) * dbl_base;
+        }
 
 /*****************************************************************
- ** Function:           static double expn.			**
+ ** Function:           static double expn			**
+ **				(const double dbl_base).	**
  ** Explanation:	Computes Euler's natural number 'e'	**
  **			through power series given a specified	**
  **			number of terms, in such a way that the	**
  **			series is obtained: (x^0 / 0!) +	**
  **			(x^1 / 1!) + (x^2 / 2!) + (x^3 / 3!)...	**
- ** Input Parms:        const double dbl_x.			**
+ ** Input Parms:        const double dbl_base.			**
  ** Output Parms:       None.					**
- ** Result:             'e' raised to dbl_x.			**
+ ** Result:             'e' raised to dbl_base.			**
  ****************************************************************/
-static double expn(const double dbl_x)
+static double expn(const double dbl_base)
 	{
 		double dbl_outcome = V_ZERO;
 
 		for (size_t szt_idx = V_ZERO; szt_idx < V_NUM_TERMS; szt_idx++)
-			dbl_outcome += dbl_potency(dbl_x, szt_idx) / dbl_factorial(szt_idx);
+			dbl_outcome += dbl_potency(dbl_base, szt_idx) / dbl_factorial(szt_idx);
 
 		return dbl_outcome;
 	}
@@ -90,24 +100,27 @@ static double expn(const double dbl_x)
  ****************************************************************/
 int main()
 	{
-		double dbl_expn = V_ZERO;
-		double dbl_x = V_ZERO;
+		/* Initial declaration of work variables. */
+		double dbl_base = V_ZERO;
+		double dbl_exp = V_ZERO;
 
-		printf("+---|----+---|----+---|----+---|--\n");
-		printf("| Neperian Euler number. |\n");
-		printf("+---|----+---|----+---|----+---|--\n");
-		printf("Exponent : ");
-		scanf("%lf", &dbl_x);
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+   Taylor Series Neperian Euler.   +\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("Exp 'e' : ");
+		scanf("%lf", &dbl_base);
 
-		dbl_expn = expn(dbl_x);
+		/* Obtaining preliminary variables. */
+		dbl_exp = expn(dbl_base);	//Obtaining the number 'e' to the power of 'x'.
 
 		printf("\n");
-		printf("+---|----+---|----+---|----+---|--\n");
-		printf("| Exponent\t: [%lf].\n", dbl_x);
-		printf("| Terms\t\t: [%d].\n", V_NUM_TERMS);
-		printf("| Result\t: [%lf].\n", dbl_expn);
-		printf("+---|----+---|----+---|----+---|--\n");
-		printf("\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+ Results of the Exponential Number.+\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("| Exp.\t: [%lf].\n", dbl_base);
+		printf("| Terms\t: [%d].\n", V_NUM_TERMS);
+		printf("| Euler\t: [%lf].\n", dbl_exp);
+		printf("+---|----+---|----+---|----+---|----+\n");
 
 		return V_ZERO;
 	}

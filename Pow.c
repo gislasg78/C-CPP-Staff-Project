@@ -121,32 +121,34 @@ static double dbl_potw(const double dbl_base, const int int_exp)
 *****************************************************************/
 int main()
 	{
+		/* Initial declaration of work variables. */
 		double dbl_base = V_ZERO;
 		double dbl_potency_res = V_ZERO;
 		double dbl_potw_res = V_ZERO;
 		int int_exp = V_ZERO;
 
-		printf("+---!----+---!----+---!----+---!----+\n");
-		printf("|   Positive and negative powers.   |\n");
-		printf("+---!----+---!----+---!----+---!----+\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+   Positive and negative powers.   +\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("Base: ");
 		scanf("%lf", &dbl_base);
 		printf("Exponent: ");
 		scanf("%d", &int_exp);
 
-		dbl_potency_res = dbl_potency(dbl_base, int_exp);
-		dbl_potw_res = dbl_potw(dbl_base, int_exp);
+		/* Obtaining preliminary variables. */
+		dbl_potency_res = dbl_potency(dbl_base, int_exp);	//Obtaining a power through recursive calls to the function itself.
+		dbl_potw_res = dbl_potw(dbl_base, int_exp);		//Obtaining power through established cycles.
 
 		printf("\n");
-		printf("+---!----+---!----+---!----+---!----+\n");
-		printf("|     Powers of Numbers Results.    |\n");
-		printf("+---!----+---!----+---!----+---!----+\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+     Powers of Numbers Results.    +\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("| Base:\t\t[%lf].\n", dbl_base);
 		printf("| Exponent:\t[%d].\n", int_exp);
 		printf("+-----------------------------------+\n");
 		printf("| Potency:\t[%lf],\n", dbl_potency_res);
 		printf("! Power:\t[%lf].\n", dbl_potw_res);
-		printf("+---!----+---!----+---!----+---!----+\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
 
 		return V_ZERO;
 	}

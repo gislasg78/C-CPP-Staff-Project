@@ -78,21 +78,29 @@ static double dbl_factorial(const size_t szt_num)
  **								**
  **			This function can also be programmed	**
  **			recursively in the form:		**
- **								**
- **			(szt_exp == V_ZERO) ? V_ONE : dbl_base	**
- **			 * dbl_potency				**
- **				(dbl_base, szt_exp - V_ONE);	**
- **								**
+ **				(int_exp > V_ZERO) ? 		**
+ **					dbl_potency(dbl_base,	**
+ **					int_exp + V_MINUS_ONE)	**
+ **					* dbl_base :		**
+ **				(int_exp == V_ZERO) ? V_ONE :	**
+ **				(int_exp < V_ZERO) ?		**
+ **					dbl_potency(dbl_base,	**
+ **					int_exp + V_ONE)	**
+ **					/ dbl_base :		**
+ **					V_ONE;			**
  ** Input Parms:	const double dbl_base,			**
- **			const size_t szt_exp.			**
+ **			const int int_exp.			**
  ** Output Parms:	None.					**
- ** Result:		dbl_base raised to szt_exp.		**
+ ** Result:		The base raised to a positive power	**
+ **			results in a series of products in	**
+ **			sequence from 1 to 'n', while a base	**
+ **			raised to a negative power results in a	**
+ **			series of quotients in sequence from 1	**
+ **			to '-n' .				**
 *****************************************************************/
 static double dbl_potency(const double dbl_base, const size_t szt_exp)
 	{
-		return	(szt_exp > V_ZERO) ? dbl_base * dbl_potency(dbl_base, szt_exp + V_MINUS_ONE) :
-			(szt_exp == V_ZERO) ? V_ONE :
-			(szt_exp < V_ZERO) ? dbl_base / dbl_potency(dbl_base, szt_exp + V_ONE) : V_ONE;
+		return	(szt_exp < V_ONE) ? V_ONE : dbl_potency(dbl_base, szt_exp + V_MINUS_ONE) * dbl_base;
 	}
 
 /*****************************************************************
@@ -195,38 +203,40 @@ static double tangent(const double dbl_angle)
 *****************************************************************/
 int main()
 	{
+		/* Initial declaration of work variables. */
 		double dbl_cosine = V_ZERO;
 		double dbl_radns = V_ZERO;
 		double dbl_sine = V_ZERO;
 		double dbl_tangent = V_ZERO;
 		double dbl_value = V_ZERO;
 
-		printf("+---|----+---|----+---|----+---|----+---|----+---|----+-\n");
-		printf("|      Sine and cosine functions by Taylor series.     |\n");
-		printf("+---|----+---|----+---|----+---|----+---|----+---|----+-\n");
-		printf("Value in degrees: ");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+   Taylor Series Sine & Cosine.    +\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("Degrees: ");
 		scanf("%lf", &dbl_value);
 
-		dbl_radns = RADIANS(dbl_value);
+		/* Obtaining preliminary variables. */
+		dbl_radns = RADIANS(dbl_value);	//Obtaining the function 'radians' given a base 'x'.
 
-		dbl_sine = sinus_cosinus(dbl_radns, enm_fn_sine);
-		dbl_cosine = sinus_cosinus(dbl_radns, enm_fn_cosine);
-		dbl_tangent = tangent(dbl_radns);
+		dbl_sine = sinus_cosinus(dbl_radns, enm_fn_sine);	//Obtaining the function 'sine' given a base 'x'.
+		dbl_cosine = sinus_cosinus(dbl_radns, enm_fn_cosine);	//Obtaining the function 'cosine' given a base 'x'.
+		dbl_tangent = tangent(dbl_radns);			//Obtaining the function 'tangent' given a base 'x'.
 
 		printf("\n");
-		printf("+---|----+---|----+---|----+---|----+---|----+---|----+-\n");
-		printf("| Trigonometric functions of the sine and cosine: (x). |\n");
-		printf("+---|----+---|----+---|----+---|----+---|----+---|----+-\n");
-		printf("| Degrees value\t: [%lf].\n", dbl_value);
-		printf("| Radians value\t: [%lf].\n", dbl_radns);
-		printf("| Terms   value\t: [%d].\n", V_NUM_TERMS);
-		printf("+---|----+---|----+---|----+---|----+---|----+---|----+-\n");
-		printf("| Sine    value\t: [%lf].\n", dbl_sine);
-		printf("| Cosine  value\t: [%lf].\n", dbl_cosine);
-		printf("+---|----+---|----+---|----+---|----+---|----+---|----+-\n");
-		printf("| Tangent value\t: [%lf].\n", dbl_tangent);
-		printf("+---|----+---|----+---|----+---|----+---|----+---|----+-\n");
-		printf("\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+  Results of the Sine and Cosine.  +\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("| Degrees\t: [%lf].\n", dbl_value);
+		printf("| Radians\t: [%lf].\n", dbl_radns);
+		printf("+-----------------------------------+\n");
+		printf("| Terms\t\t: [%d].\n", V_NUM_TERMS);
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("| Sine\t\t: [%lf].\n", dbl_sine);
+		printf("| Cosine\t: [%lf].\n", dbl_cosine);
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("| Tangent\t: [%lf].\n", dbl_tangent);
+		printf("+---|----+---|----+---|----+---|----|\n");
 
 		return V_ZERO;
 	}

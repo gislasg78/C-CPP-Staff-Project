@@ -52,7 +52,6 @@ static double absolute(const double dbl_value)
 			(dbl_value == V_ZERO) ? V_ZERO :
 			(dbl_value < V_ZERO) ? -dbl_value : V_ZERO;
 	}
-
 /*****************************************************************
  ** Function:           static double dbl_potency.              **
  ** Explanation:        Returns a base coefficient raised to the**
@@ -61,21 +60,29 @@ static double absolute(const double dbl_value)
  **                                                             **
  **                     This function can also be programmed    **
  **                     recursively in the form:                **
- **                                                             **
- **                     (szt_exp == V_ZERO) ? V_ONE : dbl_base  **
- **                      * dbl_potency                          **
- **                             (dbl_base, szt_exp - V_ONE);    **
- **                                                             **
+ **                             (int_exp > V_ZERO) ?            **
+ **                                     dbl_potency(dbl_base,   **
+ **                                     int_exp + V_MINUS_ONE)  **
+ **                                     * dbl_base :            **
+ **                             (int_exp == V_ZERO) ? V_ONE :   **
+ **                             (int_exp < V_ZERO) ?            **
+ **                                     dbl_potency(dbl_base,   **
+ **                                     int_exp + V_ONE)        **
+ **                                     / dbl_base :            **
+ **                                     V_ONE;                  **
  ** Input Parms:        const double dbl_base,                  **
- **                     const size_t szt_exp.                   **
+ **                     const int int_exp.                      **
  ** Output Parms:       None.                                   **
- ** Result:             dbl_base raised to szt_exp.             **
+ ** Result:             The base raised to a positive power     **
+ **                     results in a series of products in      **
+ **                     sequence from 1 to 'n', while a base    **
+ **                     raised to a negative power results in a **
+ **                     series of quotients in sequence from 1  **
+ **                     to '-n' .                               **
 *****************************************************************/
 static double dbl_potency(const double dbl_base, const size_t szt_exp)
         {
-                return  (szt_exp > V_ZERO) ? dbl_base * dbl_potency(dbl_base, szt_exp + V_MINUS_ONE) :
-                        (szt_exp == V_ZERO) ? V_ONE :
-                        (szt_exp < V_ZERO) ? dbl_base / dbl_potency(dbl_base, szt_exp + V_ONE) : V_ONE;
+                return  (szt_exp < V_ONE) ? V_ONE : dbl_potency(dbl_base, szt_exp + V_MINUS_ONE) * dbl_base;
         }
 
 /*****************************************************************
@@ -120,7 +127,7 @@ static double dbl_potency(const double dbl_base, const size_t szt_exp)
  **			approximation, repeating the process	**
  **			until the desired precision is reached.	**
  ****************************************************************/
-static struct strct_root_drvtv root_derivative(const double dbl_initial_x, const double dbl_base, size_t szt_exp)
+static struct strct_root_drvtv root_derivative(const double dbl_initial_x, const double dbl_base, const size_t szt_exp)
 	{
 		/*------------------------------------------------
 		 ** Results obtained from the series of		--
@@ -178,7 +185,7 @@ static struct strct_root_drvtv root_derivative(const double dbl_initial_x, const
  ** Input Parms:	const double dbl_base,			**
  **			const size_t szt_exp.			**
  ** Output Parms:	None.					**
- ** Result:		The kth root (int_exp) of the given	**
+ ** Result:		The kth root (szt_exp) of the given	**
  **			base (dbl_base).			**
  ****************************************************************/
 static double root(const double dbl_base, const size_t szt_exp)
@@ -226,30 +233,31 @@ static double root(const double dbl_base, const size_t szt_exp)
  ****************************************************************/
 int main()
 	{
+		/* Initial declaration of work variables. */
 		double dbl_base = V_ZERO;
 		double dbl_root = V_ZERO;
 		size_t szt_exp = V_ZERO;
 
 		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("|   Kth roots by Newton's Method.   |\n");
+		printf("+   Kth roots by Newton's Method.   +\n");
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("Base: ");
 		scanf("%lf", &dbl_base);
 		printf("Root: ");
 		scanf("%ld", &szt_exp);
 
-		dbl_root = root(dbl_base, szt_exp);
+		/* Obtaining preliminary variables. */
+		dbl_root = root(dbl_base, szt_exp); //Obtaining the kth root of a base 'x'.
 
 		printf("\n");
 		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("| Results obtained for a kth root.  |\n");
+		printf("+ Results obtained for a Kth Root.  +\n");
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("| Base\t: [%lf].\n", dbl_base);
 		printf("| Root\t: [%ld].\n", szt_exp);
 		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("| Result: [%lf].\n", dbl_root);
+		printf("| Kth rt: [%lf].\n", dbl_root);
 		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("\n");
 
 		return V_ZERO;
 	}

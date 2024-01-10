@@ -206,7 +206,7 @@ double PI_Monte::abs(const double dbl_value) const
  ****************************************************************/
 double PI_Monte::rnd(size_t *ptr_szt_random_seed) const
 	{
-		return ( (double) (*ptr_szt_random_seed = RANDOM_GENERATOR(*ptr_szt_random_seed) ) / (double) V_RESIDUAL_MODULUS );
+		return ((double) (*ptr_szt_random_seed = RANDOM_GENERATOR(*ptr_szt_random_seed)) / (double) V_RESIDUAL_MODULUS);
 	};
 
 /*****************************************************************
@@ -355,26 +355,28 @@ double PI_Monte::get_dbl_PI_Monte(const size_t szt_points_counting)
  ****************************************************************/
 int main()
 	{
+		/* Initial declaration of work variables. */
 		double dbl_PI_MonteCarlo = V_ZERO;
 		size_t szt_points_counting = V_ZERO;
 
 		PI_Monte pi_monte;
 
-		std::cout << "+---|----+---|----+---|----+---|---" << std::endl;
-		std::cout << "| Results Monte Carlo PI Method.  |" << std::endl;
-		std::cout << "+---|----+---|----+---|----+---|---" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+		std::cout << "+  Monte Carlo PI Method Solving.   +" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
 		std::cout << "Points's Number to get PI: ";
 		std::cin >> szt_points_counting;
 
-		dbl_PI_MonteCarlo = pi_monte.get_dbl_PI_Monte(szt_points_counting);
+		/* Obtaining preliminary variables. */
+		dbl_PI_MonteCarlo = pi_monte.get_dbl_PI_Monte(szt_points_counting);	//Access to the class method to obtain PI by Monte Carlo.
 
 		std::cout << std::endl;
-		std::cout << "+---|----+---|----+---|----+---|---" << std::endl;
-		std::cout << "| Results Monte Carlo PI Method.  |" << std::endl;
-		std::cout << "+---|----+---|----+---|----+---|---" << std::endl;
-		std::cout << "| Terms PI :\t[" << szt_points_counting << "]." << std::endl;
-		std::cout << "| Value PI :\t[" << dbl_PI_MonteCarlo << "]." << std::endl;
-		std::cout << "+---|----+---|----+---|----+---|---" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+		std::cout << "+   Monte Carlo PI Method Results.  +" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+		std::cout << "| Terms\t: [" << szt_points_counting << "]." << std::endl;
+		std::cout << "| PI\t: [" << dbl_PI_MonteCarlo << "]." << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
 
 		return V_ZERO;
 	}

@@ -20,15 +20,14 @@
 #include <iostream>
 #include <vector>
 
-//Work Symbolic Constants.
-#define	V_LIM_MIN	1
-#define V_LIM_MAX	45
-#define	V_MINUS_ONE	-1
-#define	V_ONE		1
-#define V_ZERO		0
+//Lower and upper limit constants.
+#define	V_LOWER_LIMIT_FIBO	1
+#define V_UPPER_LIMIT_MAX	45
 
-//Using the standard space name.
-using namespace std;
+//Work Symbolic Constants.
+#define	V_MINUS_ONE		-1
+#define	V_ONE			1
+#define V_ZERO			0
 
 /*--------------------------------------------------------------**
  * Data structure that stores the generated calculation record	--
@@ -38,17 +37,17 @@ using namespace std;
  *--------------------------------------------------------------*/
 struct strct_record_Fibonacci
 	{
-		int int_idx;		//Calculated record number of the Fibonacci series.
-		int int_First_Number;	//First game number of the series.
-		int int_Second_Number;	//Second starting number of the series.
-		int int_Addition;	//Sum of both previous numbers.
+		size_t szt_idx;			//Calculated record number of the Fibonacci series.
+		size_t szt_First_Number;	//First game number of the series.
+		size_t szt_Second_Number;	//Second starting number of the series.
+		size_t szt_Addition;		//Sum of both previous numbers.
 	};
 
 /*****************************************************************
- ** Function:		getFibonacci.				**
- **				(const int int_Quantity,	**
- **				 const int int_First_Number,	**
- **				 const int int_Second_Number).	**
+ ** Function:		static size_t getsztFibonacci		**
+ **				(const size_t szt_Quantity,	**
+ **				 const size_t szt_First_Number,	**
+ **				 const size_t szt_Second_Number)**
  ** Explanation:	This function calculates the last number**
  **			of the Fibonacci series given a given	**
  **			number of series to generate, and	**
@@ -58,9 +57,9 @@ struct strct_record_Fibonacci
  **			second values, until reaching a		**
  **			iteration such that the value is less	**
  **			than or equal to unity (1).		**
- ** Input Parms:	const int int_Quantity.			**
- **			const int int_First_Number.		**
- **			const int int_Second_Number.		**
+ ** Input Parms:	const size_t szt_Quantity.		**
+ **			const size_t szt_First_Number.		**
+ **			const size_t szt_Second_Number.		**
  ** Output Parms:	None.					**
  ** Result:		Returns the last number of the Fibonacci**
  **			series given a series of given terms.	**
@@ -69,18 +68,19 @@ struct strct_record_Fibonacci
  **			x=0, y=1; sum from '0' to 'n':		**
  **				{z=x+y; x=y; y=z}.		**
  ****************************************************************/
-int getFibonacci(const int int_Quantity, const int int_First_Number, const int int_Second_Number)
+static int getsztFibonacci(const size_t szt_Quantity, const size_t szt_First_Number, const size_t szt_Second_Number)
 	{
-		return (int_Quantity <= V_ONE) ? int_First_Number + int_Second_Number
-		: getFibonacci(int_Quantity + V_MINUS_ONE, int_Second_Number, int_First_Number + int_Second_Number);
+		return	(szt_Quantity <= V_ONE) ? szt_First_Number + szt_Second_Number :
+			getsztFibonacci(szt_Quantity + V_MINUS_ONE, szt_Second_Number, szt_First_Number + szt_Second_Number);
 	};
 
 /*****************************************************************
- ** Function:		vector<struct strct_record_Fibonacci>	**
- **			getVectorFiboSeries			**
- **				(const int int_Quantity,	**
- **				 const int int_First_Number,	**
- **				 const int int_Second_Number)	**
+ ** Function:		std::vector				**
+ **			<struct strct_record_Fibonacci>		**
+ **			getVectorstrctFiboSeries		**
+ **				(const size_t szt_Quantity,	**
+ **				 const size_t szt_First_Number,	**
+ **				 const size_t szt_Second_Number)**
  ** Explanation:	This function's primary objective is to **
  **			generate a structure-type vector that	**
  **			stores the control fields for the	**
@@ -89,46 +89,51 @@ int getFibonacci(const int int_Quantity, const int int_First_Number, const int i
  **			record that was obtained from the	**
  **			calculation until the number of terms	**
  **			desired by the user is reached.		**
- ** Input Parms:	const int int_Quantity.			**
- **			const int int_First_Number.		**
- **			const int int_Second_Number.		**
+ ** Input Parms:	const size_t szt_Quantity.		**
+ **			const size_t szt_First_Number.		**
+ **			const size_t szt_Second_Number.		**
  ** Output Parms:	None.					**
  ** Result:		The calculation procedure is as follows:**
  **			x=0, y=1; sum from '0' to 'n':		**
  **				{z=x+y; x=y; y=z}.		**
  ****************************************************************/
-vector<struct strct_record_Fibonacci> getVectorFiboSeries(const int int_Quantity, const int int_First_Number, const int int_Second_Number)
+std::vector<struct strct_record_Fibonacci> getVectorstrctFiboSeries(const size_t szt_Quantity, const size_t szt_First_Number, const size_t szt_Second_Number)
 	{
 		struct strct_record_Fibonacci st_rec_Fibo = {V_ZERO};
-		vector<struct strct_record_Fibonacci> vec_st_rec_Fibo;
+		std::vector<struct strct_record_Fibonacci> vec_st_rec_Fibo;
 
-		st_rec_Fibo.int_First_Number=int_First_Number;
-		st_rec_Fibo.int_Second_Number=int_Second_Number;
+		st_rec_Fibo.szt_First_Number = szt_First_Number;
+		st_rec_Fibo.szt_Second_Number = szt_Second_Number;
 
-		cout << endl << "Generating the Fibonacci Series..." << endl;
+		std::cout << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+		std::cout << "+     Fibonnaci Number Creation.    +" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+		std::cout << "| Generating the Fibonacci Series..." << std::endl;
 
-		for (int int_idx=V_ZERO; int_idx<int_Quantity; int_idx++)
+		for (size_t szt_idx = V_ZERO; szt_idx < szt_Quantity; szt_idx++)
 			{
-				st_rec_Fibo.int_idx=int_idx;
-				st_rec_Fibo.int_Addition=st_rec_Fibo.int_First_Number+st_rec_Fibo.int_Second_Number;
+				st_rec_Fibo.szt_idx = szt_idx;
+				st_rec_Fibo.szt_Addition = st_rec_Fibo.szt_First_Number + st_rec_Fibo.szt_Second_Number;
 
 				vec_st_rec_Fibo.push_back(st_rec_Fibo);
 
-				cout << "# [" << st_rec_Fibo.int_idx << "]:\t[" << st_rec_Fibo.int_First_Number << "]\t+\t[" << st_rec_Fibo.int_Second_Number << "]\t=\t[" << st_rec_Fibo.int_Addition << "]." << endl;
+				std::cout << "| # [" << st_rec_Fibo.szt_idx << "]:\t[" << st_rec_Fibo.szt_First_Number << "]\t+\t[" << st_rec_Fibo.szt_Second_Number << "]\t=\t[" << st_rec_Fibo.szt_Addition << "]." << std::endl;
 
-				st_rec_Fibo.int_First_Number=st_rec_Fibo.int_Second_Number;
-				st_rec_Fibo.int_Second_Number=st_rec_Fibo.int_Addition;
+				st_rec_Fibo.szt_First_Number = st_rec_Fibo.szt_Second_Number;
+				st_rec_Fibo.szt_Second_Number = st_rec_Fibo.szt_Addition;
 			}
 
-		cout << endl;
+		std::cout << std::endl;
 
 		return vec_st_rec_Fibo;
 	};
 
 /*****************************************************************
- ** Function:		viewVectorFiboSeries			**
- **			(vector<struct strct_record_Fibonacci	**
- **			 vec_st_rec_Fibo>			**
+ ** Function:		viewVectorstrctFiboSeries		**
+ **				(std::vector			**
+ **				<struct strct_record_Fibonacci	**
+ **				vec_st_rec_Fibo>		**
  ** Explanation:	The final goal of this procedure is to	**
  **			display the vector generated in the	**
  **			'getVectorFiboSeries' function returned **
@@ -137,8 +142,9 @@ vector<struct strct_record_Fibonacci> getVectorFiboSeries(const int int_Quantity
  **			of the structure content stored in the	**
  **			vector of Fibonacci numbers by		**
  **			traversing an iterator.			**
- ** Input Parms:	vector<struct strct_record_Fibonacci	**
- **			 vec_st_rec_Fibo>			**
+ ** Input Parms:	std::vector<struct			**
+ **				strct_record_Fibonacci		**
+ **			 	vec_st_rec_Fibo>		**
  ** Output Parms:	None.					**
  ** Result:		Returns each calculation record for the **
  **			generation of Fibonacci series numbers. **
@@ -147,16 +153,20 @@ vector<struct strct_record_Fibonacci> getVectorFiboSeries(const int int_Quantity
  **			x=0, y=1; sum from '0' to 'n':		**
  **				{z=x+y; x=y; y=z}.		**
  ****************************************************************/
-void viewVectorFiboSeries(vector<struct strct_record_Fibonacci> vec_st_rec_Fibo)
+void viewVectorstrctFiboSeries(std::vector<struct strct_record_Fibonacci> vec_st_rec_Fibo)
 	{
-		vector<struct strct_record_Fibonacci>::iterator it_vec_st_rec_Fibo;
+		std::vector<struct strct_record_Fibonacci>::iterator it_vec_st_rec_Fibo;
 
-		cout << "Number of records calculated: [" << vec_st_rec_Fibo.size() << "]." << endl;
+		std::cout << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+		std::cout << "+Fibonacci Number Generator Results.+" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+		std::cout << "| Number of records calculated: [" << vec_st_rec_Fibo.size() << "]." << std::endl;
 
 		for (it_vec_st_rec_Fibo=begin(vec_st_rec_Fibo); it_vec_st_rec_Fibo!=end(vec_st_rec_Fibo); it_vec_st_rec_Fibo++)
-			cout << "# [" << it_vec_st_rec_Fibo->int_idx << "]:\t[" << it_vec_st_rec_Fibo->int_First_Number << "]\t+\t[" << it_vec_st_rec_Fibo->int_Second_Number << "]\t=\t[" << it_vec_st_rec_Fibo->int_Addition << "]." << endl;
+			std::cout << "| # [" << it_vec_st_rec_Fibo->szt_idx << "]:\t[" << it_vec_st_rec_Fibo->szt_First_Number << "]\t+\t[" << it_vec_st_rec_Fibo->szt_Second_Number << "]\t=\t[" << it_vec_st_rec_Fibo->szt_Addition << "]." << std::endl;
 
-		cout << endl;
+		std::cout << std::endl;
 	};
 
 /*****************************************************************
@@ -186,31 +196,40 @@ void viewVectorFiboSeries(vector<struct strct_record_Fibonacci> vec_st_rec_Fibo)
  ****************************************************************/
 int main()
 	{
-		vector<struct strct_record_Fibonacci> vec_st_rec_Fibo;
+		std::vector<struct strct_record_Fibonacci> vec_st_rec_Fibo;
 
-		int int_Quantity=V_ZERO;
-		int int_First_Number=V_ZERO;
-		int int_Second_Number=V_ZERO;
+		size_t szt_Quantity = V_ZERO;
+		size_t szt_First_Number = V_ZERO;
+		size_t szt_Second_Number = V_ZERO;
 
-		cout<<"Numbers of Fibonacci to generate from [" << V_LIM_MIN << "] to [" << V_LIM_MAX << "]: ";
-		cin>>int_Quantity;
+		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+		std::cout << "+     Fibonacci Number Generator.   +" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+		std::cout << "Numbers of Fibonacci to generate from [" << V_LOWER_LIMIT_FIBO << "] to [" << V_UPPER_LIMIT_MAX << "]: ";
+		std::cin >> szt_Quantity;
 
-		if (int_Quantity >= V_LIM_MIN && int_Quantity <= V_LIM_MAX)
+		if (szt_Quantity >= V_LOWER_LIMIT_FIBO && szt_Quantity <= V_UPPER_LIMIT_MAX)
 			{
-				cout<<"First  number: ";
-				cin>>int_First_Number;
+				std::cout << "First  number: ";
+				std::cin >> szt_First_Number;
 
-				cout<<"Second number: ";
-				cin>>int_Second_Number;
+				std::cout << "Second number: ";
+				std::cin >> szt_Second_Number;
 
-				vec_st_rec_Fibo=getVectorFiboSeries(int_Quantity, int_First_Number, int_Second_Number);
-				viewVectorFiboSeries(vec_st_rec_Fibo);
+				vec_st_rec_Fibo = getVectorstrctFiboSeries(szt_Quantity, szt_First_Number, szt_Second_Number);
+				viewVectorstrctFiboSeries(vec_st_rec_Fibo);
 
-				cout<<"["<<int_Quantity<<"] Records generated from the initial values: ["<<int_First_Number<<"] & ["<<int_Second_Number<<"]." << endl;
-				cout<<"Final value: ["<<getFibonacci(int_Quantity, int_First_Number, int_Second_Number)<<"]."<<endl;
+				std::cout << std::endl;
+				std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+				std::cout << "+ Direct Fibonnaci Number Generator.+" << std::endl;
+				std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+				std::cout << "| [" << szt_Quantity << "] Records from: [" << szt_First_Number << "] & [" << szt_Second_Number << "]." << std::endl;
+				std::cout << "+-----------------------------------+" << std::endl;
+				std::cout << "| Final value: [" << getsztFibonacci(szt_Quantity, szt_First_Number, szt_Second_Number) << "]." << std::endl;
+				std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
 			}
 		else
-			cout << "The number [" << int_Quantity << "] is out of range from [" << V_LIM_MIN << "] to [" << V_LIM_MAX << "]." << endl;
+			std::cout << "The number [" << szt_Quantity << "] is out of range from [" << V_LOWER_LIMIT_FIBO << "] to [" << V_UPPER_LIMIT_MAX << "]." << std::endl;
 
 		return V_ZERO;
 	}

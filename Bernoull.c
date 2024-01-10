@@ -112,17 +112,26 @@ static double Bernoulli(const size_t szt_num)
 *****************************************************************/
 int main()
 	{
+		/* Initial declaration of work variables. */
 		size_t szt_nums = V_ZERO;
 
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+    Bernoulli Number Generator.    +\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("Bernoulli numbers between [%d] and [%d]: ", V_LOWER_LIMIT_BERN, V_UPPER_LIMIT_BERN);
 		scanf("%ld", &szt_nums);
 
 		if (szt_nums >= V_LOWER_LIMIT_BERN && szt_nums <= V_UPPER_LIMIT_BERN)
 			{
-				printf("[%ld] Bernoulli numbers:\n", szt_nums);
+				printf("\n");
+				printf("+---|----+---|----+---|----+---|----+\n");
+				printf("+Bernoulli Number Generator Results.+\n");
+				printf("+---|----+---|----+---|----+---|----+\n");
+				printf("| [%ld] Bernoulli numbers: \n", szt_nums);
 
+				/* Obtaining preliminary variables. */
 				for (size_t szt_idx = V_ZERO; szt_idx <= szt_nums; szt_idx++)
-					printf("B:[%2.ld] = [%16.6lf].\n", szt_idx, Bernoulli(szt_idx));
+					printf("| B# [%2.ld]\t=\t[%16.6lf].\n", szt_idx, Bernoulli(szt_idx));
 			}
 		else
 			printf("Error! The number [%ld] is out of range from [%d] to [%d].\n", szt_nums, V_LOWER_LIMIT_BERN, V_UPPER_LIMIT_BERN);
