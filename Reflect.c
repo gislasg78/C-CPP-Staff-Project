@@ -1,7 +1,7 @@
 /************************* Reflect a byte ************************
  ** Source Code:	Reflect.c				**
  ** Author:		Gustavo Islas Gálvez.			**
- ** Creation Date:	Monday, July 31, 2023.			**
+ ** Creation Date:	Saturday, December 30, 2023.		**
  ** Purpose:		Display an entered character and	**
  **			reflects it in such a way that it	**
  **			reverses the order of the bits		**
@@ -32,71 +32,49 @@
 		 (((c)&0x40) >> 5) | (((c)&0x80) >> 7))
 
 /*****************************************************************
- ** Function:		getpause.				**
- ** Explanation:	This function shows a specific message	**
- **			on the screen to indicate a given pause,**
- **			and returns the key that was pressed to	**
- **			continue with the execution of the	**
- **			program as a result.			**
- ** Input Parms:	const char *str_Message,		**
- ** Output Parms:	None.					**
- ** Result:		The function returns the character	**
- **			entered with the Enter key to have	**
- **			paused this program.			**
- ****************************************************************/
-char getpause (const char *str_Message)
-	{
-		static char chr_Car=NULL_CHARACTER;
-
-		printf("%s", str_Message);
-		scanf("%*c%c", &chr_Car);
-
-		return (chr_Car);
-	}
-
-/*****************************************************************
- ** Function:		binary.					**
+ ** Function:		static char *ptr_chr_strbinary		**
+ **				(const unsigned char chr_chr).	**
  ** Explanation:	Reverses bit order of an entered	**
  **			character, such that bit 0 becomes bit 7**
  **			bit 1 becomes bit 6, bit 2 becomes bit 5**
  **			and so on.				**
- ** Input Parms:	unsigned char c.			**
+ ** Input Parms:	const unsigned char chr_chr.		**
  ** Output Parms:	None.					**
  ** Result:		Pointer to character with sequence of	**
  **			binary digits.				**
  ****************************************************************/
-char *binary (unsigned char chr)
+static char *ptr_chr_strbinary (const unsigned char chr_chr)
 	{
-		char *p_bn = NULL;
-		int int_idx = V_ZERO;
-		int int_ind = V_ZERO;
+		char *ptr_chr_str_binary = NULL;
 
-		if ( (p_bn = (char *) malloc(V_EIGHT * sizeof(char)) ) != NULL)
-			for (int_idx = V_SEVEN, int_ind = V_ZERO;
-			     int_idx >= V_ZERO && int_ind <= V_SEVEN;
-			     int_idx--, int_ind++)
-				*(p_bn+int_ind)=(chr & (V_ONE << int_idx))
-			 		? V_C_ONE : V_C_ZERO;
+		if ( (ptr_chr_str_binary = (char *) malloc(V_EIGHT * sizeof(char))) != NULL)
+			for (size_t szt_idx = V_SEVEN, szt_ind = V_ZERO;
+				szt_idx >= V_ZERO && szt_ind <= V_SEVEN;
+				szt_idx--, szt_ind++)
+					*(ptr_chr_str_binary + szt_ind) = (chr_chr & (V_ONE << szt_idx))
+					? V_C_ONE : V_C_ZERO;
 
-		return (p_bn);
+		return (ptr_chr_str_binary);
 	}
 
 /*****************************************************************
- ** Function:		viewbinary.				**
+ ** Function:		void viewbinary				**
+ **				(const unsigned char chr_chr).	**
  ** Explanation:	Display on screen the ascii, hexadecimal**
  **			octal and binary values of a given	**
  **			character.				**
- ** Input Parms:	unsigned char c.			**
+ ** Input Parms:	const unsigned char chr_chr.		**
  ** Output Parms:	None.					**
  ** Result:		View an informative chain on the screen.**
 *****************************************************************/
-void viewbinary(unsigned char chr)
+void viewbinary(const unsigned char chr_chr)
 	{
-		printf("| Char   : [%c].\n", chr);
-		printf("| Ascii  : [%3.u].\n", chr);
-		printf("| Hex    : [%3.x].\n", chr);
-		printf("| Octal  : [%3.o].\n", chr);
-		printf("| Binary : [%s].\n", binary(chr));
+		printf("| Char   : [%c].\n", chr_chr);
+		printf("| Ascii  : [%3.u].\n", chr_chr);
+		printf("| Hex    : [%3.x].\n", chr_chr);
+		printf("| Octal  : [%3.o].\n", chr_chr);
+		printf("| Binary : [%s].\n", ptr_chr_strbinary(chr_chr));
+		printf("+---|----+---|----+---|----+---|----+\n");
 	}
 
 /*****************************************************************
@@ -122,36 +100,30 @@ void viewbinary(unsigned char chr)
 *****************************************************************/
 int main()
 	{
-		unsigned char ch_c = V_ZERO;
+		/* Initial declaration of work variables. */
+		unsigned char chr_chr = NULL_CHARACTER;
 
 		/*------------------------------------------------
 		 * Mirror a given character by inverting its	--
 		 * extreme half-bits.				--
 		 *----------------------------------------------*/
-		printf("\n");
-		printf("+---|----+---|----+---|----+---|----+---|\n");
-		printf("| Mirror a given character by inverting.|\n");
-		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+     Mirror a given character.     +\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("Enter a unique valid character: ");
-		ch_c = getchar();
+		chr_chr = getchar();
 
 		printf("\n");
-		printf("+---|----+---|----+---|----+---|----+---|\n");
-		printf("|      Regular Binary Value of [%d].    |\n", ch_c);
-		printf("+---|----+---|----+---|----+---|----+---|\n");
-		viewbinary(ch_c);
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+    Regular Binary Value of [%d].  +\n", chr_chr);
+		printf("+---|----+---|----+---|----+---|----+\n");
+		viewbinary(chr_chr);
 
-		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("\n");
-		printf("+---|----+---|----+---|----+---|----+---|\n");
-		printf("| Turned around binary outcome of [%d]. |\n", ch_c);
-		printf("+---|----+---|----+---|----+---|----+---|\n");
-		viewbinary(THROWBACKCHAR(ch_c));
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+Turned around binary outcome: [%d].+\n", chr_chr);
+		printf("+---|----+---|----+---|----+---|----+\n");
+		viewbinary(THROWBACKCHAR(chr_chr));
 
-		printf("+---|----+---|----+---|----+---|----+---|\n");
-
-		getpause("\nEste programa ha terminado con éxito.\n"
-		"Presione la tecla ENTRAR para finalizarlo...");
-
-		return(ch_c);
+		return V_ZERO;
 	}
