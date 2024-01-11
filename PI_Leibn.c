@@ -1,13 +1,13 @@
 /****************** PI number by Leibniz series. *****************
  ** Source Code:	PI_Leibn.c	               		**
  ** Author:		Gustavo Islas Gálvez.			**
- ** Creation Date:	Saturday, December, 2023.          	**
+ ** Creation Date:	Saturday, December 30, 2023.          	**
  ** Purpose:		This program uses the Leibniz method to	**
  **			calculate a good approximation of the	**
  **			irrational number PI. It is highly	**
  **			recommended that the number of terms	**
  **			used in the calculation be at least	**
- **			1,048,576.				**
+ **			1,048,576 or 2^20.			**
 *****************************************************************/
 //C Standard Libraries.
 #include <stdio.h>
@@ -32,13 +32,13 @@
  **			iterative series as follows using	**
  **			reciprocals:				**
  **			+ [1 / (2 * i + 1)]			**
- **			- [1 / (2 * i + 1)] + ...		**
- ** Input Parms:	size_t szt_terms.			**
+ **			- [1 / (2 * i + 1)] + [...]		**
+ ** Input Parms:	const size_t szt_terms.			**
  ** Output Parms:	None.					**
  ** Result:		Approximation of the irrational number	**
  **			PI.					**
  ****************************************************************/
-static double PI_Leibniz(size_t szt_terms)
+static double PI_Leibniz(const size_t szt_terms)
 	{
 		double dbl_PI = V_ZERO;
 		double dbl_sign = V_ONE;
@@ -72,7 +72,7 @@ int main()
 	{
 		/* Initial declaration of work variables. */
 		double dbl_PI = V_ZERO;
-		size_t szt_terms=V_ZERO;
+		size_t szt_terms = V_ZERO;
 
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("+     PI by the Leibniz Method.     |\n");
