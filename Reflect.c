@@ -69,12 +69,20 @@ static char *ptr_chr_strbinary (const unsigned char chr_chr)
 *****************************************************************/
 void viewbinary(const unsigned char chr_chr)
 	{
-		printf("| Char   : [%c].\n", chr_chr);
-		printf("| Ascii  : [%3.u].\n", chr_chr);
-		printf("| Hex    : [%3.x].\n", chr_chr);
-		printf("| Octal  : [%3.o].\n", chr_chr);
-		printf("| Binary : [%s].\n", ptr_chr_strbinary(chr_chr));
+		printf("\n");
 		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+ Binary information of a character.+\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("| Char\t\t: [%c].\n", chr_chr);
+		printf("+-----------------------------------+\n");
+		printf("| Ascii\t\t: [%3.u].\n", chr_chr);
+		printf("| Hex\t\t: [%3.x].\n", chr_chr);
+		printf("| Octal\t\t: [%3.o].\n", chr_chr);
+		printf("+-----------------------------------+\n");
+		printf("| Binary\t: [%s].\n", ptr_chr_strbinary(chr_chr));
+		printf("| Reflected\t: [%s].\n", ptr_chr_strbinary(THROWBACKCHAR(chr_chr)));
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("\n");
 	}
 
 /*****************************************************************
@@ -107,23 +115,19 @@ int main()
 		 * Mirror a given character by inverting its	--
 		 * extreme half-bits.				--
 		 *----------------------------------------------*/
-		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("+     Mirror a given character.     +\n");
-		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+---|----+---|----+---|----+---|----+----+\n");
+		printf("+ Mirror a given character by inverting. +\n");
+		printf("+---|----+---|----+---|----+---|----+----+\n");
 		printf("Enter a unique valid character: ");
 		chr_chr = getchar();
 
 		printf("\n");
-		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("+    Regular Binary Value of [%d].  +\n", chr_chr);
-		printf("+---|----+---|----+---|----+---|----+\n");
-		viewbinary(chr_chr);
+		printf("Regular Binary Value of [%c] is [%d].\n", chr_chr,chr_chr);
+		viewbinary(chr_chr);	//Obtaining the binary information of a pressed character.
 
 		printf("\n");
-		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("+Turned around binary outcome: [%d].+\n", chr_chr);
-		printf("+---|----+---|----+---|----+---|----+\n");
-		viewbinary(THROWBACKCHAR(chr_chr));
+		printf("Turned around binary outcome of [%c] is [%d].\n", chr_chr, chr_chr);
+		viewbinary(THROWBACKCHAR(chr_chr));	//Obtaining the binary information of a pressed character.
 
 		return V_ZERO;
 	}
