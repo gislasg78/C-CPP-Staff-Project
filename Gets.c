@@ -23,7 +23,7 @@
 #define NULL_CHARACTER		'\0'
 
 /*****************************************************************
- ** Function:		char *gets (*ptr_szt_idx_chat,		**
+ ** Function:		char *gets (size_t *ptr_szt_idx_chat,	**
  **				const size_t szt_num_chars,	**
  **				const char chr_exit_char).	**
  ** Explanation:	In this function, a contiguous memory	**
@@ -46,7 +46,7 @@
  ** Input Parms:	size_t *ptr_szt_idx_char,		**
  **			const size_t szt_num_chars,		**
  **			const char chr_exit_char.		**
- ** Output Parms:	None.					**
+ ** Output Parms:	size_t *ptr_szt_idx_char.		**
  ** Result:		Function 'gets' that returns a string of**
  **			characters, whose characters are in a	**
  **			contiguous region of memory defined by	**
@@ -131,6 +131,9 @@ int main()
 		printf("| Hex\t\t: [%3.X].\n", CARRIAGE_RETURN);
 		printf("| Oct\t\t: [%3.o].\n", CARRIAGE_RETURN);
 		printf("+===|====+===|====+===|====+===|====+\n");
+
+		printf("Releasing pointer that points to created character string...\n");
+		free(ptr_chr_String_New);
 
 		return (V_ZERO);
 	}

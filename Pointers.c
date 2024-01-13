@@ -1,7 +1,7 @@
 /****************** Use of pointers of pointers. *****************
  ** Source Code:	Pointers.c				**
  ** Author:		Gustavo Islas Gálvez.			**
- ** Creation Date:	Friday, June 30, 2023.          	**
+ ** Creation Date:	Saturdar, December 30, 2023.          	**
  ** Purpose:		This program makes examples of pointers	**
  **			pointing to other pointers with the	**
  **			address of a static integer variable	**
@@ -12,7 +12,7 @@
 #include <stdio.h>
 
 //Numeric Symbolic Constants.
-#define V_ZERO				0
+#define V_ZERO	0
 
 /*****************************************************************
  ** Function:		main.					**
@@ -28,62 +28,63 @@
  **			and reference them without incurring	**
  **			memory segment violations.		**
  ****************************************************************/
-int main(int int_argc, char *ch_argv[])
+int main()
 	{
-		// Work variables.
-		int num = V_ZERO;	// Numeric integer variable 'num'.
-		int *ptr = &num;	// Pointer to address of integer.
-		int **ptrPtr = &ptr;    // Pointer to another pointer.
+		//Work variables.
+		int int_num = V_ZERO;			//Numeric integer variable 'num'.
+		int *ptr_int_num = &int_num;		//Pointer to address of integer.
+		int **ptr_ptr_int_num = &ptr_int_num;	//Pointer to another pointer.
 
 		/* ------------------------------------------------------------ **
 		** The entry of a value for an integer numeric variable         **
 		** is requested and getting its memory address at compile	**
 		** time.							**
 		** -------------------------------------------------------------*/
-		printf("Valor entero: ");
-		scanf("%d", &num);
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+    Examples of use of pointers.   +\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("Integer value: ");
+		scanf("%d", &int_num);
 
 		/* ------------------------------------------------------------ **
 		** An integer numeric variable whose memory address is assigned	**
 		** at compile time and which is obtained using the 'address of'	**
 		** operator.							**
 		** ------------------------------------------------------------ */
-		printf("\n");
-		printf("+---|----+---|----+---|----+---|----+----|---+----|\n");
-		printf("Variable  : 'num'.\n");
-		printf("+---|----+---|----+---|----+---|----+----|---+----|\n");
-		printf("Valor     : [%d].\n", num);
-		printf("Dirección : [%p].\n", &num);
-		printf("+--------+--------+--------+--------+--------+----|\n");
-
 		/* ------------------------------------------------------------ **
 		** A pointer that stores the memory address of a static integer **
 		** variable that was assigned its memory address at compile	**
 		** time.							**
 		** ------------------------------------------------------------ */
-		printf("\n");
-		printf("+---|----+---|----+---|----+---|----+----|---+----|\n");
-		printf("Apuntador a 'num'.\n");
-		printf("+---|----+---|----+---|----+---|----+----|---+----|\n");
-		printf("Apuntador : 'ptr'.\n");
-		printf("Valor     : [%d].\n", *ptr);
-		printf("Dirección : [%p].\n", ptr);
-		printf("+--------+--------+--------+--------+--------+----|\n");
-
 		/* ------------------------------------------------------------ **
 		** A pointer that holds the memory address of another pointer	**
 		** that holds the memory address of an integer variable that was**
 		** assigned an address at compile time.				**
 		** ------------------------------------------------------------ */
 		printf("\n");
-		printf("+---|----+---|----+---|----+---|----+----|---+----|\n");
-		printf("Apuntador de apuntador a 'num'.\n");
-		printf("+---|----+---|----+---|----+---|----+----|---+----|\n");
-		printf("Apuntador : 'ptrPtr'.\n");
-		printf("Valor     : [%d]\n", **ptrPtr);
-		printf("Dirección : [%p]\n", *ptrPtr);
-		printf("Dirección : [%p]\n", ptrPtr);
-		printf("+--------+--------+--------+--------+--------+----|\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
+		printf("+ Pointers of pointers Information. +\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
+		printf("+        Variable: 'int_num'.       +\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("| Value int\t: [%d].\n", int_num);
+		printf("| Own Address\t: [%p].\n", &int_num);
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+      Variable: 'ptr_int_num'.     +\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("| Value int\t: [%d].\n", *ptr_int_num);
+		printf("| Stored Address: [%p].\n", ptr_int_num);
+		printf("|-----------------------------------|\n");
+		printf("| Self Address\t: [%p].\n", &ptr_int_num);
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+   Variable: 'ptr_ptr_int_num'.    +\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("| Value int\t: [%d].\n", **ptr_ptr_int_num);
+		printf("| First Address\t: [%p].\n", *ptr_ptr_int_num);
+		printf("| Second Address: [%p].\n", ptr_ptr_int_num);
+		printf("|-----------------------------------|\n");
+		printf("| Self Address\t: [%p].\n", &ptr_ptr_int_num);
+		printf("+===|====+===|====+===|====+===|====+\n");
 
-		return num;
+		return V_ZERO;
 	}
