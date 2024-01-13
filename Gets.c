@@ -1,88 +1,136 @@
-/*************************************************************************
-** Programa: 	Gets.c							**
-** Autor:	Gustavo Islas Gálvez.					**
-** Fecha:	Domingo 01 de agosto de 2021.				**
-** Descripción:	Reemplaza a la antigua función 'gets' con una versión	**
-**		personalizada que captura carácter a carácter una	**
-**		cadena de caracteres y la guarda en una zona de memoria	**
-**		contigua.						**
-*************************************************************************/
-/* Librerías estándar de trabajo. */
+/**************** Generator of a character string. ***************
+ ** Source Code:	Gets.c					**
+ ** Author:		Gustavo Islas Gálvez.			**
+ ** Creation Date:	Saturday, December 30, 2023.		**
+ ** Purpose:		This program attempts to replace the old**
+ **			C function 'gets' with a custom		**
+ **			prototype that takes as arguments the	**
+ **			maximum number of characters to store	**
+ **			in a character pointer and limits the	**
+ **			string input until a specific output	**
+ **			character is pressed.			**
+*****************************************************************/
+//C Standard Libraries.
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-/* Constantes simbólicas numéricas de trabajo. */
-#define ZERO_V			0
-#define ONE_V			1
+//Work Symbolic Constants.
+#define V_ZERO			0
+#define V_ONE			1
 
-/* Constantes simbólicas tipo 'carácter' de trabajo. */
-#define NULL_CHARACTER		'\0'
+//Symbolic Character Constants.
 #define CARRIAGE_RETURN		'\n'
+#define NULL_CHARACTER		'\0'
 
-
-/* Función 'getpause' que devuelve el carácter presionado como parte de la pausa solicitada. */
-char getpause (const char *str_Message)
-    {
-        static char chr_Car=NULL_CHARACTER;
-
-	printf("%s", str_Message);
-	scanf("%*c%c", &chr_Car);
-
-        return (chr_Car);
-    }
-
-/**************************************************************************
-** Función 'gets' que devuelve una cadena de caracteres, cuyos caracteres**
-** en una región contigua de memoria definida por el usuario.		 **
-**************************************************************************/
-char *gets(int int_nChars, char ch_ExitChar)
+/*****************************************************************
+ ** Function:		char *gets (*ptr_szt_idx_chat,		**
+ **				const size_t szt_num_chars,	**
+ **				const char chr_exit_char).	**
+ ** Explanation:	In this function, a contiguous memory	**
+ **			area is allocated for the character	**
+ **			string and the length given by		**
+ **			'szt_num_chars' plus the unit is	**
+ **			calculated, through a loop that is	**
+ **			responsible for obtaining the captured	**
+ **			character and subsequently validating	**
+ **			that it is different from a character	**
+ **			output provided as an argument to the	**
+ **			function.				**
+ **			In this function, the array notation is	**
+ **			used for the dynamically created pointer**
+ **			and the notation itself is used for the	**
+ **			given pointer.				**
+ **			At the end of the character string,	**
+ **			at position 'szt_num_chars' a null	**
+ **			character is placed or added.		**
+ ** Input Parms:	size_t *ptr_szt_idx_char,		**
+ **			const size_t szt_num_chars,		**
+ **			const char chr_exit_char.		**
+ ** Output Parms:	None.					**
+ ** Result:		Function 'gets' that returns a string of**
+ **			characters, whose characters are in a	**
+ **			contiguous region of memory defined by	**
+ **			the user.				**
+ **			They occupy or use local scope work	**
+ **			variables within the function.		**
+ ****************************************************************/
+char *gets(size_t *ptr_szt_idx_char, const size_t szt_num_chars, const char chr_exit_char)
 	{
-		/* Variables de trabajo de ámbito local de la función.	*/
-		char ch_OneCharGetty=NULL_CHARACTER;
-		char *ptr_StringNew=NULL;
-		int  int_nChar=ZERO_V;
+		char chr_OneCharGetty = NULL_CHARACTER;
+		char *ptr_chr_String_New = NULL;
+		size_t szt_idx_char = V_ZERO;
 
-		/* Asignar un área de memoria contigua para la cadena de caracteres.	*/
-		/* Se calcula la longitud dada por 'int_nChars' más la unidad.		*/
-		if ( (ptr_StringNew=(char*)malloc((int_nChars+ONE_V)*sizeof(char))) != NULL )
+		if ((ptr_chr_String_New = (char *) malloc( (szt_num_chars + V_ONE) * sizeof(char) ) ))
 			{
-				/* Ciclo mientras el carácter capturado sea distinto de un carácter de salida.	*/
-				/* Se utiliza la notación de arreglos para el apuntador creado dinámicamente.	*/
-				while ( ((ch_OneCharGetty=getchar()) != ch_ExitChar) && (int_nChar<int_nChars) )
-					ptr_StringNew[int_nChar++]=ch_OneCharGetty;
+				while ( ((chr_OneCharGetty = getchar()) != chr_exit_char) && (szt_idx_char < szt_num_chars) )
+					ptr_chr_String_New[szt_idx_char++] = chr_OneCharGetty;
 
-				/* Colocar al final de la cadena de caracteres creada un carácter nulo.	*/
-				ptr_StringNew[int_nChar]=NULL_CHARACTER;
+				*(ptr_chr_String_New + szt_idx_char) = NULL_CHARACTER;
 			}
 
-		return (ptr_StringNew);
+		*ptr_szt_idx_char = szt_idx_char;
+		return (ptr_chr_String_New);
 	}
 
-
-/* Función principal. */
+/*****************************************************************
+ ** Function:		main.					**
+ ** Explanation:	In this main function, what is sought is**
+ **			for the user to enter by keyboard the	**
+ **			number of characters that the memory	**
+ **			area where the string will be stored	**
+ **			will have, and subsequently, the user is**
+ **			asked to enter each character that will	**
+ **			be stored until finishing with car	**
+ **			return.					**
+ ** Input Parms:	None.					**
+ ** Output Parms:	None.					**
+ ** Result:		The function returns as a result the	**
+ **			information generated by the memory	**
+ **			allocation to the string.		**
+ **			Such information is its maximum length,	**
+ **			its effective size, its memory address,	**
+ **			its content and the delimiter used for	**
+ **			this purpose.				**
+*****************************************************************/
 int main()
 	{
-		/* Variables de trabajo para alojar la cadena y su longitud máxima. */
-		char *ptr_String_New=NULL;
-		int  int_n_Chars=ZERO_V;
+		/* Initial declaration of work variables. */
+		char *ptr_chr_String_New = NULL;
+		size_t szt_idx_char = V_ZERO;
+		size_t szt_num_chars = V_ZERO;
 
-		printf("*************************************************************\n");
-		printf("** Capturar una cadena de caracteres de longitud variable. **\n");
-		printf("*************************************************************\n");
-		printf("Introduzca la longitud máxima de una cadena de caracteres: ");
-		scanf("%d%*c", &int_n_Chars);
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+  Generator of a character string. +\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("String length: ");
+		scanf("%ld%*c", &szt_num_chars);
 
-		/* Capturar desde el teclado la cadena de caracteres con una longitud dada.	*/
-		printf("\nIntroduzca enseguida una cadena de máximo [%d] caracteres: \n", int_n_Chars);
-		printf("==> ");
+		/* The character string is captured, character by character, into a dynamic buffer. */
+		printf("Text string: ");
+		ptr_chr_String_New = gets(&szt_idx_char, szt_num_chars, CARRIAGE_RETURN);
 
-		/* Se captura la cadena de caracteres, carácter a carácter en un búfer dinámico. */
-		ptr_String_New=gets(int_n_Chars, CARRIAGE_RETURN);
-		printf("\nDirección:\t[%p].\nLongitud:\t[%d].\nCadena:\t\t[%s].\n", ptr_String_New, strlen(ptr_String_New), ptr_String_New);
+		/* Obtaining the exact number of characters with which the string will be created. */
+		printf("\n");
+		printf("Text string of [%ld] caracteres.\n", szt_num_chars);
 
-		/* Pausa para terminar el programa. */
-		getpause("\nEste programa ha terminado con éxito.\nPresione la tecla ENTRAR para finalizarlo...");
+		printf("+===|====+===|====+===|====+===|====+\n");
+		printf("+   Character string information.   +\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
+		printf("+            Chain data.            +\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("| Address\t: [%p].\n", ptr_chr_String_New);
+		printf("+-----------------------------------+\n");
+		printf("| Size\t\t: [%ld].\n", szt_idx_char);
+		printf("| Maximum\t: [%ld].\n", szt_num_chars);
+		printf("+-----------------------------------+\n");
+		printf("| Text\t\t: [%s].\n", ptr_chr_String_New);
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+            Delimiter.             +\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("| ASCII\t\t: [%3.u].\n", CARRIAGE_RETURN);
+		printf("| Hex\t\t: [%3.X].\n", CARRIAGE_RETURN);
+		printf("| Oct\t\t: [%3.o].\n", CARRIAGE_RETURN);
+		printf("+===|====+===|====+===|====+===|====+\n");
 
-		return (ZERO_V);
+		return (V_ZERO);
 	}
