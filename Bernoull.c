@@ -31,7 +31,8 @@
 #define V_ZERO			0
 
 /*****************************************************************
- ** Function:		static double dbl_factorial.		**
+ ** Function:		static double dbl_factorial		**
+ **				(const size_t szt_num).		**
  ** Explanation:	Gets the value of the factorial of any	**
  **			integer by iterativity multiplying	**
  **			it by its descendant surrogate numbers.	**
@@ -45,7 +46,9 @@ static double dbl_factorial(const size_t szt_num)
 	}
 
 /*****************************************************************
- ** Function:		static double dbl_combinations.		**
+ ** Function:		static double dbl_combinations		**
+ **				(const size_t szt_num,		**
+ **				 const size_t szt_r).		**
  ** Explanation:	Gets the total number of combinations	**
  **			arising from the mathematical formula:	**
  **			nCr = n! / [(n - r)! * r!].		**
@@ -63,7 +66,8 @@ static double dbl_combinations(const size_t szt_num, const size_t szt_r)
 	}
 
 /*****************************************************************
- ** Function:		static double Bernoulli.		**
+ ** Function:		static double Bernoulli			**
+ **				(const size_t szt_num).		**
  ** Explanation:	Returns as the result itself the	**
  **			Bernoulli number requested by the	**
  **			mathematical formula:			**
@@ -81,7 +85,7 @@ static double Bernoulli(const size_t szt_num)
 		double dbl_Bernoulli = V_ZERO;
 
 		if (szt_num > V_ZERO)
-			for (size_t szt_idx = V_ZERO; szt_idx <= (szt_num + V_MINUS_ONE); szt_idx++)
+			for (size_t szt_idx = V_ZERO; szt_idx < szt_num; szt_idx++)
 				dbl_Bernoulli += dbl_combinations(szt_num, szt_idx)
 						* Bernoulli(szt_idx) / DENOMINATOR(szt_num, szt_idx);
 		else
