@@ -15,13 +15,13 @@
 #include <stdio.h>
 
 //C Standard Constants.
-#define V_ASTERISK			0x2A
 #define	V_EIGHT				8
 #define	V_TWO				2
 #define	V_ZERO				0
 
 //Work Constants.
-#define	V_BLANK_SPACE			'\x20'
+#define	NULL_CHARACTER			'\0'
+#define V_ASTERISK			0x2A
 #define V_LETTER_B			'\x42'
 #define V_LETTER_W			'\x57'
 
@@ -30,6 +30,51 @@
 #define V_LOWER_LIMIT_ROW_CHESSBOARD	0
 #define V_UPPER_LIMIT_COLUMN_CHESSBOARD	7
 #define V_UPPER_LIMIT_ROW_CHESSBOARD	7
+
+/*****************************************************************
+ ** Function:		size_t szt_browse_sttc_chr_chessboard	**
+ **				(char sttc_chr_chessboard[][]);	**
+ ** Explanation:	The purpose of this function is to	**
+ **			display the content of the static matrix**
+ **			on the screen, both before and after the**
+ **			calculations to be carried out in each	**
+ **			of its cells or squares of the		**
+ **			trajectory of a bishop within a chess	**
+ **			board.					**
+ ** Input Parms:	char sttc_chr_chessboard[][].		**
+ ** Output Parms:	char sttc_chr_chessboard[][].		**
+ ** Result:		As a result, this function shows the	**
+ **			content of each cell of the fixed	**
+ **			two-dimensional array that simulates a	**
+ **			chessboard, both before and after the	**
+ **			calculations that are made to their	**
+ **			respective cells.			**
+ ****************************************************************/
+size_t szt_browse_sttc_chr_chessboard(char sttc_chr_chessboard[][V_EIGHT])
+	{
+		/* Initial declaration of work variables. */
+		size_t szt_box_counter = V_ZERO;	/* Board square counter. */
+		size_t szt_column_chessboard = V_ZERO; 	/* Current position of the chess board. */
+		size_t szt_row_chessboard = V_ZERO;	/* Current line of the chess board. */
+
+		/* Paint the chess board. */
+		printf("\n");
+
+		for (szt_row_chessboard = V_ZERO; szt_row_chessboard < V_EIGHT; szt_row_chessboard++)
+			{
+				for (szt_column_chessboard = V_ZERO; szt_column_chessboard < V_EIGHT; szt_column_chessboard++)
+					{
+						szt_box_counter++; /* Counting cells. */
+						printf("[%c]\t", sttc_chr_chessboard[szt_row_chessboard][szt_column_chessboard]);
+					}
+
+				printf("\n"); /* Change row. */
+			}
+
+		printf("[%ld] Chess Board Squares.\n", szt_box_counter);
+
+		return szt_box_counter;
+	}
 
 /*****************************************************************
  ** Function:		size_t szt_load_sttc_chr_chessboard	**
@@ -117,7 +162,7 @@ size_t szt_load_sttc_chr_chessboard(char sttc_chr_chessboard[][V_EIGHT], const s
 int main()
 	{
 		/* Initial declaration of work variables. */
-		static char sttc_chr_chessboard[V_EIGHT][V_EIGHT] = {V_BLANK_SPACE};
+		static char sttc_chr_chessboard[V_EIGHT][V_EIGHT] = {NULL_CHARACTER};
 
 		size_t szt_box_counter = V_ZERO;	/* Board square counter. */
 		size_t szt_column_bishop = V_ZERO;	/* Bishop position. */
@@ -139,19 +184,11 @@ int main()
 		if (szt_row_bishop >= V_LOWER_LIMIT_ROW_CHESSBOARD && szt_row_bishop <= V_UPPER_LIMIT_ROW_CHESSBOARD)
 			if (szt_column_bishop >= V_LOWER_LIMIT_COLUMN_CHESSBOARD && szt_column_bishop <= V_UPPER_LIMIT_COLUMN_CHESSBOARD)
 				{
+					szt_box_counter = szt_browse_sttc_chr_chessboard(sttc_chr_chessboard);
+
 					szt_box_counter = szt_load_sttc_chr_chessboard(sttc_chr_chessboard, szt_row_bishop, szt_column_bishop);
 
-					/* Paint the chess board. */
-					printf("\n");
-					for (szt_row_chessboard = V_ZERO; szt_row_chessboard < V_EIGHT; szt_row_chessboard++)
-						{
-							for (szt_column_chessboard = V_ZERO; szt_column_chessboard < V_EIGHT; szt_column_chessboard++)
-								printf("[%c]\t", sttc_chr_chessboard[szt_row_chessboard][szt_column_chessboard]);
-
-							printf("\n"); /* Change row. */
-						}
-
-					printf("[%ld] Chess Board Squares.\n", szt_box_counter);
+					szt_box_counter = szt_browse_sttc_chr_chessboard(sttc_chr_chessboard);
 				}
 			else
 				printf("Mistake! The value for column [%ld] is outside the range between [%d] and [%d].\n", szt_column_bishop, V_LOWER_LIMIT_COLUMN_CHESSBOARD, V_UPPER_LIMIT_COLUMN_CHESSBOARD);
