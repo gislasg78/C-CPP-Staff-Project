@@ -86,15 +86,14 @@ size_t *ptr_create_szt_remnant_lst(const size_t szt_cte_dividen, const size_t sz
 		/* Initial declaration of work variables. */
 		size_t *ptr_szt_remnant_list = NULL;
 
-		size_t szt_divisor = szt_cte_divisor;
 		size_t szt_quotient = V_ZERO;
 		size_t szt_remainder = szt_cte_dividen;
 		size_t szt_size_lst = szt_cte_dividen / szt_cte_divisor;
 
 		//Iterate until the dividend is less than the divisor.
 		if (ptr_szt_remnant_list = (size_t *) malloc(szt_size_lst * sizeof(size_t)))
-			while (szt_remainder >= szt_divisor)
-				*(ptr_szt_remnant_list + szt_quotient++) = (szt_remainder -= szt_divisor);
+			while (szt_remainder >= szt_cte_divisor)
+				*(ptr_szt_remnant_list + szt_quotient++) = (szt_remainder -= szt_cte_divisor);
 
 		/* Update the values of the referenced data. */
 		*ptr_szt_quotient = szt_quotient;
