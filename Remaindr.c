@@ -9,7 +9,7 @@
  **			and the second, through repetitive	**
  **			iterations to obtain the remainder of	**
  **			said division.				**
- **								**
+ ** +---!----+---!----+---!----++---!----+---!----+---!----+---	**
  **			Test Values:				**
  **				Dividend:	3,650,000.	**
  **				Divisor:	2,048.		**
@@ -21,6 +21,7 @@
 #include <stdlib.h>
 
 //C Standard Constants.
+#define V_ONE		1
 #define V_ZERO		0
 
 /*****************************************************************
@@ -49,7 +50,7 @@ size_t szt_remainder(const size_t szt_dividen, const size_t szt_divisor)
 	}
 
 /*****************************************************************
- ** Function:		size_t *ptr_create_szt_remnant_lst	**
+ ** Function:		size_t *ptr_create_szt_remnant_list	**
  **				(const size_t szt_cte_dividen,	**
  **				 const size_t szt_cte_divisor,	**
  **				 size_t *ptr_szt_quotient,	**
@@ -81,48 +82,58 @@ size_t szt_remainder(const size_t szt_dividen, const size_t szt_divisor)
  **			then we have a quotient and a remainder	**
  **			of that entire division.		**
  ****************************************************************/
-size_t *ptr_create_szt_remnant_lst(const size_t szt_cte_dividen, const size_t szt_cte_divisor, size_t *ptr_szt_quotient, size_t *ptr_szt_remainder)
+size_t *ptr_create_szt_remnant_list(const size_t szt_cte_dividen, const size_t szt_cte_divisor, size_t *ptr_szt_quotient, size_t *ptr_szt_remainder)
 	{
-		/* Initial declaration of work variables. */
+		/* Pointer that saves the list of residual calculations. */
 		size_t *ptr_szt_remnant_list = NULL;
 
+		/* Initial declaration of work variables. */
 		size_t szt_quotient = V_ZERO;
 		size_t szt_remainder = szt_cte_dividen;
-		size_t szt_size_lst = szt_cte_dividen / szt_cte_divisor;
+		size_t szt_size_list = (szt_cte_dividen / szt_cte_divisor) + V_ONE;
 
 		//Iterate until the dividend is less than the divisor.
-		if (ptr_szt_remnant_list = (size_t *) malloc(szt_size_lst * sizeof(size_t)))
-			while (szt_remainder >= szt_cte_divisor)
-				*(ptr_szt_remnant_list + szt_quotient++) = (szt_remainder -= szt_cte_divisor);
+		if (ptr_szt_remnant_list = (size_t *) malloc(szt_size_list * sizeof(size_t)))
+			{
+				while (szt_remainder >= szt_cte_divisor)
+					{
+						*(ptr_szt_remnant_list + szt_quotient++) = szt_remainder;
+						szt_remainder -= szt_cte_divisor;
+					}
+
+				ptr_szt_remnant_list[szt_quotient] = szt_remainder;
+			}
+		else
+			printf("Insufficient memory space to create the residual calculation pointer...\n");
 
 		/* Update the values of the referenced data. */
-		*ptr_szt_quotient = szt_quotient;
-		*ptr_szt_remainder = szt_remainder;
+		if (ptr_szt_quotient) *ptr_szt_quotient = szt_quotient;
+		if (ptr_szt_remainder) *ptr_szt_remainder = szt_remainder;
 
 		return ptr_szt_remnant_list;
 	}
 
 /*****************************************************************
- ** Function:		size_t szt_view_szt_remnant_lst		**
+ ** Function:		size_t szt_view_szt_remnant_list	**
  **				(const size_t *const		**
- **					ptr_szt_remnant_lst,	**
+ **					ptr_szt_remnant_list,	**
  **				 const size_t			**
- **					szt_size_limit_lst);	**
+ **					szt_size_limit_list);	**
  ** Explanation:	In this function, the pointer that	**
  **			stored each of the iterations of the	**
  **			residual calculations is read to arrive	**
  **			at both the quotient and the remainder	**
  **			of an integer division.			**
- ** Input Parms:	const size_t *ptr_szt_remnant_lst,	**
- **			const size_t szt_size_limit_lst.	**
- ** Output Parms:	const size_t *ptr_szt_remnant_lst.	**
+ ** Input Parms:	const size_t *ptr_szt_remnant_list,	**
+ **			const size_t szt_size_limit_list.	**
+ ** Output Parms:	const size_t *ptr_szt_remnant_list.	**
  ** Result:		The number of iterations made to reach	**
  **			the remainder, which is the quotient of	**
  **			the requested integer division, is	**
  **			returned as a result, as well as the	**
  **			results tracked on the screen.		**
  ****************************************************************/
-size_t szt_view_szt_remnant_lst(const size_t *const ptr_szt_remnant_lst, const size_t szt_size_limit_lst)
+size_t szt_view_szt_remnant_list(const size_t *const ptr_szt_remnant_list, const size_t szt_size_limit_list)
 	{
 		/* Initial declaration of work variables. */
 		size_t szt_idx_iters = V_ZERO;
@@ -132,8 +143,9 @@ size_t szt_view_szt_remnant_lst(const size_t *const ptr_szt_remnant_lst, const s
 		printf("+ Obtaining residual calculations.  +\n");
 		printf("+---|----+---|----+---|----+---|----+\n");
 
-		for (szt_idx_iters = V_ZERO; szt_idx_iters < szt_size_limit_lst; szt_idx_iters++)
-			printf("#[%ld]\t:\t[%ld].\n", szt_idx_iters, *(ptr_szt_remnant_lst + szt_idx_iters));
+		/* Show the content of the residual pointer. */
+		for (szt_idx_iters = V_ZERO; szt_idx_iters < szt_size_limit_list; szt_idx_iters++)
+			printf("#[%ld]\t:\t[%ld].\n", szt_idx_iters, *(ptr_szt_remnant_list + szt_idx_iters));
 
 		printf("[%ld] Obtained output results.\n", szt_idx_iters);
 
@@ -158,6 +170,12 @@ size_t szt_view_szt_remnant_lst(const size_t *const ptr_szt_remnant_lst, const s
  **			display various results returned by the	**
  **			various calls to the functions		**
  **			implemented in this program.		**
+ ** +---!----+---!----+---!----++---!----+---!----+---!----+---	**
+ **			Test Values:				**
+ **				Dividend:	3,650,000.	**
+ **				Divisor:	2,048.		**
+ **				Quotient:	1,782.		**
+ **				Remainder:	464.		**
 *****************************************************************/
 int main()
 	{
@@ -171,6 +189,7 @@ int main()
 		size_t szt_quotient = V_ZERO;
 		size_t szt_residuum = V_ZERO;
 		size_t szt_rest = V_ZERO;
+		size_t szt_size_limit_list = V_ZERO;
 
 		/* Requisition of the dividend and the division divisor. */
 		printf("+---|----+---|----+---|----+---|----+\n");
@@ -182,7 +201,7 @@ int main()
 		scanf("%ld", &szt_divisor);
 
 		/* Results of an iterative function to obtain the remainder. */
-		ptr_szt_residuum_list = ptr_create_szt_remnant_lst(szt_dividen, szt_divisor, &szt_quotient, &szt_rest);
+		ptr_szt_residuum_list = ptr_create_szt_remnant_list(szt_dividen, szt_divisor, &szt_quotient, &szt_rest);
 
 		printf("\n");
 		printf("+---|----+---|----+---|----+---|----+\n");
@@ -196,11 +215,15 @@ int main()
 		printf("+---|----+---|----+---|----+---|----+\n");
 
 		/* View the residual calculations for the entire division. */
-		szt_idx_iters = szt_view_szt_remnant_lst(ptr_szt_residuum_list, szt_dividen / szt_divisor);
+		szt_size_limit_list = szt_dividen / szt_divisor + V_ONE;
+		szt_idx_iters = szt_view_szt_remnant_list(ptr_szt_residuum_list, szt_size_limit_list);
 
 		/* Obtaining the remainder through a direct function. */
 		szt_residuum = szt_remainder(szt_dividen, szt_divisor);
 		printf("\nThe remainder of [%ld] divided by [%ld] is equal to: [%ld].\n", szt_dividen, szt_divisor, szt_residuum);
+
+		/* Free up memory space from the residual calculation pointer. */
+		free(ptr_szt_residuum_list);
 
 		return V_ZERO;
 	}
