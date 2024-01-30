@@ -7,6 +7,10 @@
  **			that specifically takes care of		**
  **			swapping any two values or addresses	**
  **			and returning them inverted.		**
+ ** +---!----+---!----+---!----++---!----+---!----+---!----+---	**
+ **			Test Values:				**
+ **				Left  Value [x] : 100.		**
+ **				Right Value [y] : 200.		**
 *****************************************************************/
 //C Standard Libraries.
 #include <stdio.h>
@@ -14,6 +18,7 @@
 
 //Work Symbolic Constants.
 #define V_ZERO	0
+
 
 /*****************************************************************
  ** Function:		void swap_int (int *ptr_int_left_value,	**
@@ -91,6 +96,7 @@ void swap_ptr_int(int **ptr_ptr_int_left_value, int **ptr_ptr_int_right_value)
                         printf("Insufficient memory space to create entire pointer pointer...\n");
         }
 
+
 /*****************************************************************
  ** Function:		main.					**
  ** Explanation:	The main function of this program shows	**
@@ -106,6 +112,10 @@ void swap_ptr_int(int **ptr_ptr_int_left_value, int **ptr_ptr_int_right_value)
  **			a series of messages before and after	**
  **			exchanging the value of two		**
  **			user-supplied variables.		**
+ ** +---!----+---!----+---!----++---!----+---!----+---!----+---	**
+ **			Test Values:				**
+ **				Left  Value [x] : 100.		**
+ **				Right Value [y] : 200.		**
  ****************************************************************/
 int main()
 	{
@@ -114,6 +124,8 @@ int main()
 		int int_right_value = V_ZERO;
 		int *ptr_int_left_value = &int_left_value;
 		int *ptr_int_right_value = &int_right_value;
+		int **ptr_ptr_int_left_value = &ptr_int_left_value;
+		int **ptr_ptr_int_right_value = &ptr_int_right_value;
 
 		/* Incomings request window. */
 		printf("+===|====+===|====+===|====+===|====+===|\n");
@@ -129,23 +141,31 @@ int main()
 
 		/* Call to the function that only changes the values of the specified variables. */
 		/* Messages before the exchange of values. */
-                printf("\n");
-                printf("+===|====+===|====+===|====+===|====+===|\n");
-                printf("| Starting values. Before the exchange. |\n");
-                printf("+===|====+===|====+===|====+===|====+===|\n");
-                printf("|         Source input variables.       |\n");
-                printf("+---|----+---|----+---|----+---|----+---|\n");
-                printf("| Value [x] : [%p] = [%d].\n", &int_left_value, int_left_value);
-                printf("| Value [y] : [%p] = [%d].\n", &int_right_value, int_right_value);
-                printf("+---|----+---|----+---|----+---|----+---|\n");
-                printf("|        Source mapping pointers.       |\n");
-                printf("+---|----+---|----+---|----+---|----+---|\n");
-                printf("| Value [x] : [%p].\n", &ptr_int_left_value);
-                printf("| Value [x] : [%p] = [%d].\n", ptr_int_left_value, *ptr_int_left_value);
-                printf("|---+----+---+----+---+----+---+----+---|\n");
-                printf("| Value [y] : [%p].\n", &ptr_int_right_value);
-                printf("| Value [y] : [%p] = [%d].\n", ptr_int_right_value, *ptr_int_right_value);
-                printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("\n");
+		printf("+===|====+===|====+===|====+===|====+===|\n");
+		printf("| Starting values. Before the exchange. |\n");
+		printf("+===|====+===|====+===|====+===|====+===|\n");
+		printf("|         Source input variables.       |\n");
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [x] : [%p] = [%d].\n", &int_left_value, int_left_value);
+		printf("| Value [y] : [%p] = [%d].\n", &int_right_value, int_right_value);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("|        Source mapping pointers.       |\n");
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [x] : [%p].\n", &ptr_int_left_value);
+		printf("| Value [x] : [%p] = [%d].\n", ptr_int_left_value, *ptr_int_left_value);
+		printf("|---+----+---+----+---+----+---+----+---|\n");
+		printf("| Value [y] : [%p].\n", &ptr_int_right_value);
+		printf("| Value [y] : [%p] = [%d].\n", ptr_int_right_value, *ptr_int_right_value);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("|    Source mapping double pointers.    |\n");
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [x] : [%p].\n", &ptr_ptr_int_left_value);
+		printf("| Value [x] : [%p] = [%d].\n", *ptr_ptr_int_left_value, **ptr_ptr_int_left_value);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [y] : [%p].\n", &ptr_ptr_int_right_value);
+		printf("| Value [y] : [%p] = [%d].\n", *ptr_ptr_int_right_value, **ptr_ptr_int_right_value);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
 
 		/* Messages after the exchange of values. */
 		swap_int(ptr_int_left_value, ptr_int_right_value);		//First Function that swaps variables.
@@ -167,6 +187,14 @@ int main()
                 printf("| Value [y] : [%p].\n", &ptr_int_right_value);
                 printf("| Value [y] : [%p] = [%d].\n", ptr_int_right_value, *ptr_int_right_value);
                 printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("|    Source mapping double pointers.    |\n");
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [x] : [%p].\n", &ptr_ptr_int_left_value);
+		printf("| Value [x] : [%p] = [%d].\n", *ptr_ptr_int_left_value, **ptr_ptr_int_left_value);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [y] : [%p].\n", &ptr_ptr_int_right_value);
+		printf("| Value [y] : [%p] = [%d].\n", *ptr_ptr_int_right_value, **ptr_ptr_int_right_value);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
 
 		/* Value restore messages. */
 		swap_int(&int_left_value, &int_right_value);			//Second Function that swaps variables.
@@ -188,10 +216,18 @@ int main()
                 printf("| Value [y] : [%p].\n", &ptr_int_right_value);
                 printf("| Value [y] : [%p] = [%d].\n", ptr_int_right_value, *ptr_int_right_value);
                 printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("|    Source mapping double pointers.    |\n");
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [x] : [%p].\n", &ptr_ptr_int_left_value);
+		printf("| Value [x] : [%p] = [%d].\n", *ptr_ptr_int_left_value, **ptr_ptr_int_left_value);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [y] : [%p].\n", &ptr_ptr_int_right_value);
+		printf("| Value [y] : [%p] = [%d].\n", *ptr_ptr_int_right_value, **ptr_ptr_int_right_value);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
 
 
 		/* Call to the function that only changes the addresses of the specified variables. */
-		/* Messages before the exchange of values. */
+		/* Messages before the exchange of addresses. */
                 printf("\n");
                 printf("+===|====+===|====+===|====+===|====+===|\n");
                 printf("|Starting addresses. Before the exchange|\n");
@@ -209,8 +245,16 @@ int main()
                 printf("| Value [y] : [%p].\n", &ptr_int_right_value);
                 printf("| Value [y] : [%p] = [%d].\n", ptr_int_right_value, *ptr_int_right_value);
                 printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("|    Source mapping double pointers.    |\n");
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [x] : [%p].\n", &ptr_ptr_int_left_value);
+		printf("| Value [x] : [%p] = [%d].\n", *ptr_ptr_int_left_value, **ptr_ptr_int_left_value);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [y] : [%p].\n", &ptr_ptr_int_right_value);
+		printf("| Value [y] : [%p] = [%d].\n", *ptr_ptr_int_right_value, **ptr_ptr_int_right_value);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
 
-		/* Messages after the exchange of values. */
+		/* Messages after the exchange of addresses. */
 		swap_ptr_int(&ptr_int_left_value, &ptr_int_right_value);	//First Function that swaps addresses.
 
                 printf("\n");
@@ -230,8 +274,16 @@ int main()
                 printf("| Value [y] : [%p].\n", &ptr_int_right_value);
                 printf("| Value [y] : [%p] = [%d].\n", ptr_int_right_value, *ptr_int_right_value);
                 printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("|    Source mapping double pointers.    |\n");
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [x] : [%p].\n", &ptr_ptr_int_left_value);
+		printf("| Value [x] : [%p] = [%d].\n", *ptr_ptr_int_left_value, **ptr_ptr_int_left_value);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [y] : [%p].\n", &ptr_ptr_int_right_value);
+		printf("| Value [y] : [%p] = [%d].\n", *ptr_ptr_int_right_value, **ptr_ptr_int_right_value);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
 
-		/* Value restore messages. */
+		/* Addresses restore messages. */
 		swap_ptr_int(&ptr_int_left_value, &ptr_int_right_value);	//Second Function that swaps addresses.
 
                 printf("\n");
@@ -251,6 +303,101 @@ int main()
                 printf("| Value [y] : [%p].\n", &ptr_int_right_value);
                 printf("| Value [y] : [%p] = [%d].\n", ptr_int_right_value, *ptr_int_right_value);
                 printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("|    Source mapping double pointers.    |\n");
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [x] : [%p].\n", &ptr_ptr_int_left_value);
+		printf("| Value [x] : [%p] = [%d].\n", *ptr_ptr_int_left_value, **ptr_ptr_int_left_value);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [y] : [%p].\n", &ptr_ptr_int_right_value);
+		printf("| Value [y] : [%p] = [%d].\n", *ptr_ptr_int_right_value, **ptr_ptr_int_right_value);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+
+
+		/* Call to the function that only changes the double pointers of the specified variables. */
+		/* Messages before the exchange of double pointers. */
+                printf("\n");
+                printf("+===|====+===|====+===|====+===|====+===|\n");
+                printf("|Starting pointers. Before the exchange.|\n");
+                printf("+===|====+===|====+===|====+===|====+===|\n");
+                printf("|         Source input variables.       |\n");
+                printf("+---|----+---|----+---|----+---|----+---|\n");
+                printf("| Value [x] : [%p] = [%d].\n", &int_left_value, int_left_value);
+                printf("| Value [y] : [%p] = [%d].\n", &int_right_value, int_right_value);
+                printf("+---|----+---|----+---|----+---|----+---|\n");
+                printf("|        Source mapping pointers.       |\n");
+                printf("+---|----+---|----+---|----+---|----+---|\n");
+                printf("| Value [x] : [%p].\n", &ptr_int_left_value);
+                printf("| Value [x] : [%p] = [%d].\n", ptr_int_left_value, *ptr_int_left_value);
+                printf("|---+----+---+----+---+----+---+----+---|\n");
+                printf("| Value [y] : [%p].\n", &ptr_int_right_value);
+                printf("| Value [y] : [%p] = [%d].\n", ptr_int_right_value, *ptr_int_right_value);
+                printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("|    Source mapping double pointers.    |\n");
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [x] : [%p].\n", &ptr_ptr_int_left_value);
+		printf("| Value [x] : [%p] = [%d].\n", *ptr_ptr_int_left_value, **ptr_ptr_int_left_value);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [y] : [%p].\n", &ptr_ptr_int_right_value);
+		printf("| Value [y] : [%p] = [%d].\n", *ptr_ptr_int_right_value, **ptr_ptr_int_right_value);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+
+		/* Messages after the exchange of double pointers. */
+		swap_ptr_int(ptr_ptr_int_left_value, ptr_ptr_int_right_value);	//First Function that swaps double pointers.
+
+                printf("\n");
+                printf("+===|====+===|====+===|====+===|====+===|\n");
+		printf("|Pointers exchanged. After the exchange.|\n");
+                printf("+===|====+===|====+===|====+===|====+===|\n");
+                printf("|         Source input variables.       |\n");
+                printf("+---|----+---|----+---|----+---|----+---|\n");
+                printf("| Value [x] : [%p] = [%d].\n", &int_left_value, int_left_value);
+                printf("| Value [y] : [%p] = [%d].\n", &int_right_value, int_right_value);
+                printf("+---|----+---|----+---|----+---|----+---|\n");
+                printf("|        Source mapping pointers.       |\n");
+                printf("+---|----+---|----+---|----+---|----+---|\n");
+                printf("| Value [x] : [%p].\n", &ptr_int_left_value);
+                printf("| Value [x] : [%p] = [%d].\n", ptr_int_left_value, *ptr_int_left_value);
+                printf("|---+----+---+----+---+----+---+----+---|\n");
+                printf("| Value [y] : [%p].\n", &ptr_int_right_value);
+                printf("| Value [y] : [%p] = [%d].\n", ptr_int_right_value, *ptr_int_right_value);
+                printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("|    Source mapping double pointers.    |\n");
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [x] : [%p].\n", &ptr_ptr_int_left_value);
+		printf("| Value [x] : [%p] = [%d].\n", *ptr_ptr_int_left_value, **ptr_ptr_int_left_value);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [y] : [%p].\n", &ptr_ptr_int_right_value);
+		printf("| Value [y] : [%p] = [%d].\n", *ptr_ptr_int_right_value, **ptr_ptr_int_right_value);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+
+		/* Double pointers restore messages. */
+		swap_ptr_int(ptr_ptr_int_left_value, ptr_ptr_int_right_value);	//Second Function that swaps double pointers.
+
+                printf("\n");
+                printf("+===|====+===|====+===|====+===|====+===|\n");
+		printf("|   Restoring initial double pointers.  |\n");
+                printf("+===|====+===|====+===|====+===|====+===|\n");
+                printf("|         Source input variables.       |\n");
+                printf("+---|----+---|----+---|----+---|----+---|\n");
+                printf("| Value [x] : [%p] = [%d].\n", &int_left_value, int_left_value);
+                printf("| Value [y] : [%p] = [%d].\n", &int_right_value, int_right_value);
+                printf("+---|----+---|----+---|----+---|----+---|\n");
+                printf("|        Source mapping pointers.       |\n");
+                printf("+---|----+---|----+---|----+---|----+---|\n");
+                printf("| Value [x] : [%p].\n", &ptr_int_left_value);
+                printf("| Value [x] : [%p] = [%d].\n", ptr_int_left_value, *ptr_int_left_value);
+                printf("|---+----+---+----+---+----+---+----+---|\n");
+                printf("| Value [y] : [%p].\n", &ptr_int_right_value);
+                printf("| Value [y] : [%p] = [%d].\n", ptr_int_right_value, *ptr_int_right_value);
+                printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("|    Source mapping double pointers.    |\n");
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [x] : [%p].\n", &ptr_ptr_int_left_value);
+		printf("| Value [x] : [%p] = [%d].\n", *ptr_ptr_int_left_value, **ptr_ptr_int_left_value);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Value [y] : [%p].\n", &ptr_ptr_int_right_value);
+		printf("| Value [y] : [%p] = [%d].\n", *ptr_ptr_int_right_value, **ptr_ptr_int_right_value);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
 
 		return V_ZERO;
 	}
