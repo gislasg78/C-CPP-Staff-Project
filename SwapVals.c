@@ -34,12 +34,20 @@
  ****************************************************************/
 void swap_int(int *ptr_int_left_value, int *ptr_int_right_value)
 	{
-		int int_aux_value = V_ZERO;
-		int *ptr_int_aux_value = &int_aux_value;
+		/* Initialization of preliminary variables. */
+		int *ptr_int_aux_value = NULL;
 
-		*ptr_int_aux_value = *ptr_int_left_value;
-		*ptr_int_left_value = *ptr_int_right_value;
-		*ptr_int_right_value = *ptr_int_aux_value;
+                /* Memory space is reserved for an entire pointer. */
+		if (ptr_int_aux_value = (int *) malloc(sizeof(int)))
+			{
+				*ptr_int_aux_value = *ptr_int_left_value;
+				*ptr_int_left_value = *ptr_int_right_value;
+				*ptr_int_right_value = *ptr_int_aux_value;
+
+				free(ptr_int_aux_value);
+			}
+		else
+                        printf("Insufficient memory space to create entire pointer...\n");
 	}
 
 /*****************************************************************
@@ -67,7 +75,7 @@ void swap_int(int *ptr_int_left_value, int *ptr_int_right_value)
  ****************************************************************/
 void swap_ptr_int(int **ptr_ptr_int_left_value, int **ptr_ptr_int_right_value)
         {
-                /* Initialization of preliminary variables. */
+		/* Initialization of preliminary variables. */
                 int **ptr_ptr_int_aux_value = NULL;
 
                 /* Memory space is reserved for an entire pointer of pointers. */
