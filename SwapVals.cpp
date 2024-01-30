@@ -7,7 +7,11 @@
  **			that specifically takes care of		**
  **			swapping any two values and returning	**
  **			them inverted.				**
-*****************************************************************/
+ ** +---!----+---!----+---!----++---!----+---!----+---!----+---	**
+ **			Test Values:				**
+ **				Left  Value [x] : 100.		**
+ **				Right Value [y] : 200.		**
+ ****************************************************************/
 //C Standard Libraries.
 #include <iostream>
 #include <stdio.h>
@@ -15,8 +19,11 @@
 //Work Symbolic Constants.
 #define V_ZERO	0
 
+
 /*****************************************************************
- ** Function:		swapper.				**
+ ** Function:		template <typename T> void swapper	**
+ **				(T *ptr_t_left_value,		**
+ **				 T *ptr_t_right_value).		**
  ** Explanation:	This function doesn't actually return	**
  **			any value, it just swaps two variables	**
  **			that are passed to that function as	**
@@ -36,7 +43,7 @@
 template <typename T>
 void swapper(T *ptr_t_left_value, T *ptr_t_right_value)
 	{
-		T t_aux_value, *ptr_t_aux_value=&t_aux_value;
+		T t_aux_value, *ptr_t_aux_value = &t_aux_value;
 
 		/*------------------------------------------------
 		 * Variables occupying an intermediate temporary--
@@ -49,7 +56,9 @@ void swapper(T *ptr_t_left_value, T *ptr_t_right_value)
 	}
 
 /*****************************************************************
- ** Function:		swapper.				**
+ ** Function:		template <typename T> void swapper	**
+ **				(T &t_left_value,		**
+ **				 T &t_right_value).		**
  ** Explanation:	This function doesn't actually return	**
  **			any value, it just swaps two variables	**
  **			that are passed to that function as	**
@@ -81,6 +90,7 @@ void swapper (T &t_left_value, T &t_right_value)
 		t_right_value = t_aux_value;
 	}
 
+
 /*****************************************************************
  ** Function:		main.					**
  ** Explanation:	The main function of this program shows	**
@@ -96,76 +106,135 @@ void swapper (T &t_left_value, T &t_right_value)
  **			a series of messages before and after	**
  **			exchanging the value of two		**
  **			user-supplied variables.		**
+ ** +---!----+---!----+---!----++---!----+---!----+---!----+---	**
+ **			Test Values:				**
+ **				Left  Value [x] : 100.		**
+ **				Right Value [y] : 200.		**
  ****************************************************************/
 int main()
 	{
 		/* Initialization of preliminary variables. */
-		float flt_t_val_x = V_ZERO;
-		float flt_t_val_y = V_ZERO;
-		float *ptr_flt_t_val_x = &flt_t_val_x;
-		float *ptr_flt_t_val_y = &flt_t_val_y;
+		int int_t_left_value = V_ZERO;
+		int int_t_right_value = V_ZERO;
+		int *ptr_int_t_left_value = &int_t_left_value;
+		int *ptr_int_t_right_value = &int_t_right_value;
 
-		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
-		std::cout << "|     Change of place of any values.    |" << std::endl;
-		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		/* Incomings request window. */
+		std::cout << "+===|====+===|====+===|====+===|====+===|" << std::endl;
+                std::cout << "|     Change of place of any values.    |" << std::endl;
+		std::cout << "+===|====+===|====+===|====+===|====+===|" << std::endl;
 		std::cout << "Enter two numeric values:" << std::endl;
 		std::cout << "Value [x] : ";
-		std::cin >> flt_t_val_x;
+		std::cin >> int_t_left_value;
 		std::cout << "Value [y] : ";
-		std::cin >> flt_t_val_y;
+		std::cin >> int_t_right_value;
 
+
+		/* Call to the function that only changes the values of the specified variables. */
 		/* Messages before the exchange of values. */
 		std::cout << std::endl;
+		std::cout << "+===|====+===|====+===|====+===|====+===|" << std::endl;
+		std::cout << "| Starting values. Before the exchange. |" << std::endl;
+		std::cout << "+===|====+===|====+===|====+===|====+===|" << std::endl;
+		std::cout << "|         Source input variables.       |" << std::endl;
 		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
-		std::cout << "|Starting initials. Before the exchange.|" << std::endl;
+		std::cout << "| Value [x] : [" << &int_t_left_value << "] = [" << int_t_left_value << "]." << std::endl;
+		std::cout << "| Value [y] : [" << &int_t_right_value << "] = [" << int_t_right_value << "]." << std::endl;
 		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
-		std::cout << "| Value [x] : [" << &flt_t_val_x << "] = [" << flt_t_val_x << "]." << std::endl;
-		std::cout << "| Value [y] : [" << &flt_t_val_y << "] = [" << flt_t_val_y << "]." << std::endl;
-		std::cout << "+---|----+---|----+---|----+---|----+---|\n" << std::endl ;
-
-		swapper(flt_t_val_x, flt_t_val_y);		//First Function that swaps variables.
+		std::cout << "|        Source mapping pointers.       |" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << "| Value [x] : [" << &ptr_int_t_left_value << "]." << std::endl;
+		std::cout << "| Value [x] : [" << ptr_int_t_left_value << "] = [" << *ptr_int_t_left_value << "]." << std::endl;
+		std::cout << "|---+----+---+----+---+----+---+----+---|" << std::endl;
+		std::cout << "| Value [y] : [" << &ptr_int_t_right_value << "]." << std::endl;
+		std::cout << "| Value [y] : [" << ptr_int_t_right_value << "] = [" << *ptr_int_t_right_value << "]." << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
 
 		/* Messages after the exchange of values. */
-		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
-		std::cout << "| Values exchanged. After the exchange. |" << std::endl;
-		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
-		std::cout << "| Value [x] : [" << &flt_t_val_x << "] = [" << flt_t_val_x << "]." << std::endl;
-		std::cout << "| Value [y] : [" << &flt_t_val_y << "] = [" << flt_t_val_y << "]." << std::endl;
-		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
-		std::cout << std::endl;
+		swapper(int_t_left_value, int_t_right_value);		//First Function that swaps variables.
 
-		swapper(&flt_t_val_x, &flt_t_val_y);		//Second Function that swaps variables.
+		std::cout << std::endl;
+		std::cout << "+===|====+===|====+===|====+===|====+===|" << std::endl;
+		std::cout << "| Values exchanged. After the exchange. |" << std::endl;
+		std::cout << "+===|====+===|====+===|====+===|====+===|" << std::endl;
+		std::cout << "|         Source input variables.       |" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << "| Value [x] : [" << &int_t_left_value << "] = [" << int_t_left_value << "]." << std::endl;
+		std::cout << "| Value [y] : [" << &int_t_right_value << "] = [" << int_t_right_value << "]." << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << "|        Source mapping pointers.       |" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << "| Value [x] : [" << &ptr_int_t_left_value << "]." << std::endl;
+		std::cout << "| Value [x] : [" << ptr_int_t_left_value << "] = [" << *ptr_int_t_left_value << "]." << std::endl;
+		std::cout << "|---+----+---+----+---+----+---+----+---|" << std::endl;
+		std::cout << "| Value [y] : [" << &ptr_int_t_right_value << "]." << std::endl;
+		std::cout << "| Value [y] : [" << ptr_int_t_right_value << "] = [" << *ptr_int_t_right_value << "]." << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
 
 		/* Value restore messages. */
-		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		swapper(&int_t_left_value, &int_t_right_value);		//Second Function that swaps variables.
+
+		std::cout << std::endl;
+		std::cout << "+===|====+===|====+===|====+===|====+===|" << std::endl;
 		std::cout << "|       Restoring initial values.       |" << std::endl;
+		std::cout << "+===|====+===|====+===|====+===|====+===|" << std::endl;
+		std::cout << "|         Source input variables.       |" << std::endl;
 		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
-		std::cout << "| Value [x] : [" << &flt_t_val_x << "] = [" << flt_t_val_x << "]." << std::endl;
-		std::cout << "| Value [y] : [" << &flt_t_val_y << "] = [" << flt_t_val_y << "]." << std::endl;
+		std::cout << "| Value [x] : [" << &int_t_left_value << "] = [" << int_t_left_value << "]." << std::endl;
+		std::cout << "| Value [y] : [" << &int_t_right_value << "] = [" << int_t_right_value << "]." << std::endl;
 		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << "|        Source mapping pointers.       |" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << "| Value [x] : [" << &ptr_int_t_left_value << "]." << std::endl;
+		std::cout << "| Value [x] : [" << ptr_int_t_left_value << "] = [" << *ptr_int_t_left_value << "]." << std::endl;
+		std::cout << "|---+----+---+----+---+----+---+----+---|" << std::endl;
+		std::cout << "| Value [y] : [" << &ptr_int_t_right_value << "]." << std::endl;
+		std::cout << "| Value [y] : [" << ptr_int_t_right_value << "] = [" << *ptr_int_t_right_value << "]." << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+
+
+		/* Call to the function that only changes the pointers of the specified variables. */
+		/* Messages before the exchange of values. */
+		swapper(ptr_int_t_left_value, ptr_int_t_right_value);	//First Function that swaps pointers.
+
 		std::cout << std::endl;
+		std::cout << "+===|====+===|====+===|====+===|====+===|" << std::endl;
+		std::cout << "| Values exchanged. After the exchange. |" << std::endl;
+		std::cout << "+===|====+===|====+===|====+===|====+===|" << std::endl;
+		std::cout << "|         Source input variables.       |" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << "| Value [x] : [" << &int_t_left_value << "] = [" << int_t_left_value << "]." << std::endl;
+		std::cout << "| Value [y] : [" << &int_t_right_value << "] = [" << int_t_right_value << "]." << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << "|        Source mapping pointers.       |" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
+		std::cout << "| Value [x] : [" << &ptr_int_t_left_value << "]." << std::endl;
+		std::cout << "| Value [x] : [" << ptr_int_t_left_value << "] = [" << *ptr_int_t_left_value << "]." << std::endl;
+		std::cout << "|---+----+---+----+---+----+---+----+---|" << std::endl;
+		std::cout << "| Value [y] : [" << &ptr_int_t_right_value << "]." << std::endl;
+		std::cout << "| Value [y] : [" << ptr_int_t_right_value << "] = [" << *ptr_int_t_right_value << "]." << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
 
-		swapper(ptr_flt_t_val_x, ptr_flt_t_val_y);	//Third Function that swaaps variables.
+		/* Value restore messages. */
+		swapper(*ptr_int_t_left_value, *ptr_int_t_right_value);	//Second Function that swaps pointers.
 
-		/* Messages after the new exchange of values. */
-		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
-		std::cout << "|    Values exchanged. New exchange.    |" << std::endl;
-		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
-		std::cout << "| Value [x] : [" << &flt_t_val_x << "] = [" << flt_t_val_x << "]." << std::endl;
-		std::cout << "| Value [y] : [" << &flt_t_val_y << "] = [" << flt_t_val_y << "]." << std::endl;
-		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
 		std::cout << std::endl;
-
-		swapper(*ptr_flt_t_val_x, *ptr_flt_t_val_y);	//Fourth Function that swaaps variables.
-
-		/* Again value restore messages. */
+		std::cout << "+===|====+===|====+===|====+===|====+===|" << std::endl;
+		std::cout << "|       Restoring initial values.       |" << std::endl;
+		std::cout << "+===|====+===|====+===|====+===|====+===|" << std::endl;
+		std::cout << "|         Source input variables.       |" << std::endl;
 		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
-		std::cout << "|    Again restoring initial values.    |" << std::endl;
+		std::cout << "| Value [x] : [" << &int_t_left_value << "] = [" << int_t_left_value << "]." << std::endl;
+		std::cout << "| Value [y] : [" << &int_t_right_value << "] = [" << int_t_right_value << "]." << std::endl;
 		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
-		std::cout << "| Value [x] : [" << &flt_t_val_x << "] = [" << flt_t_val_x << "]." << std::endl;
-		std::cout << "| Value [y] : [" << &flt_t_val_y << "] = [" << flt_t_val_y << "]." << std::endl;
+		std::cout << "|        Source mapping pointers.       |" << std::endl;
 		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
-		std::cout << std::endl;
+		std::cout << "| Value [x] : [" << &ptr_int_t_left_value << "]." << std::endl;
+		std::cout << "| Value [x] : [" << ptr_int_t_left_value << "] = [" << *ptr_int_t_left_value << "]." << std::endl;
+		std::cout << "|---+----+---+----+---+----+---+----+---|" << std::endl;
+		std::cout << "| Value [y] : [" << &ptr_int_t_right_value << "]." << std::endl;
+		std::cout << "| Value [y] : [" << ptr_int_t_right_value << "] = [" << *ptr_int_t_right_value << "]." << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|" << std::endl;
 
 		return V_ZERO;
 	}
