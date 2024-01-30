@@ -2,8 +2,8 @@
  ** Source Code:	Gets.c					**
  ** Author:		Gustavo Islas Gálvez.			**
  ** Creation Date:	Saturday, December 30, 2023.		**
- ** Purpose:		This program attempts to replace the old**
- **			C function 'gets' with a custom		**
+ ** Purpose:		This program attempts to replace the	**
+ **			old C function 'gets' with a custom	**
  **			prototype that takes as arguments the	**
  **			maximum number of characters to store	**
  **			in a character pointer and limits the	**
@@ -23,7 +23,8 @@
 #define NULL_CHARACTER		'\0'
 
 /*****************************************************************
- ** Function:		char *gets (size_t *ptr_szt_idx_chat,	**
+ ** Function:		char *gets (size_t *const		**
+ **					ptr_szt_idx_chars,	**
  **				const size_t szt_num_chars,	**
  **				const char chr_exit_char).	**
  ** Explanation:	In this function, a contiguous memory	**
@@ -43,10 +44,10 @@
  **			At the end of the character string,	**
  **			at position 'szt_num_chars' a null	**
  **			character is placed or added.		**
- ** Input Parms:	size_t *ptr_szt_idx_char,		**
+ ** Input Parms:	size_t *const ptr_szt_idx_chars,	**
  **			const size_t szt_num_chars,		**
  **			const char chr_exit_char.		**
- ** Output Parms:	size_t *ptr_szt_idx_char.		**
+ ** Output Parms:	size_t *const ptr_szt_idx_chars.	**
  ** Result:		Function 'gets' that returns a string of**
  **			characters, whose characters are in a	**
  **			contiguous region of memory defined by	**
@@ -54,21 +55,23 @@
  **			They occupy or use local scope work	**
  **			variables within the function.		**
  ****************************************************************/
-char *gets(size_t *ptr_szt_idx_char, const size_t szt_num_chars, const char chr_exit_char)
+char *gets(size_t *const ptr_szt_idx_chars, const size_t szt_num_chars, const char chr_exit_char)
 	{
 		char chr_OneCharGetty = NULL_CHARACTER;
 		char *ptr_chr_String_New = NULL;
-		size_t szt_idx_char = V_ZERO;
+		size_t szt_idx_chars = V_ZERO;
 
-		if ((ptr_chr_String_New = (char *) malloc( (szt_num_chars + V_ONE) * sizeof(char) ) ))
+		if (ptr_chr_String_New = (char *) malloc((szt_num_chars + V_ONE) * sizeof(char)))
 			{
-				while ( ((chr_OneCharGetty = getchar()) != chr_exit_char) && (szt_idx_char < szt_num_chars) )
-					ptr_chr_String_New[szt_idx_char++] = chr_OneCharGetty;
+				while ( ((chr_OneCharGetty = getchar()) != chr_exit_char) && (szt_idx_chars < szt_num_chars) )
+					ptr_chr_String_New[szt_idx_chars++] = chr_OneCharGetty;
 
-				*(ptr_chr_String_New + szt_idx_char) = NULL_CHARACTER;
+				*(ptr_chr_String_New + szt_idx_chars) = NULL_CHARACTER;
 			}
+		else
+			printf("Insufficient memory space to accommodate the character pointer...\n");
 
-		*ptr_szt_idx_char = szt_idx_char;
+		if (ptr_szt_idx_chars) *ptr_szt_idx_chars = szt_idx_chars;
 		return (ptr_chr_String_New);
 	}
 
@@ -96,43 +99,46 @@ int main()
 	{
 		/* Initial declaration of work variables. */
 		char *ptr_chr_String_New = NULL;
-		size_t szt_idx_char = V_ZERO;
+		size_t szt_idx_chars = V_ZERO;
 		size_t szt_num_chars = V_ZERO;
 
-		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("+  Generator of a character string. +\n");
-		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("String length: ");
+		/* Information entry window. */
+		printf("+===|====+===|====+===|====+===|====+===|\n");
+		printf("+  Generator of a character string.     +\n");
+		printf("+===|====+===|====+===|====+===|====+===|\n");
+		printf("String length : ");
 		scanf("%ld%*c", &szt_num_chars);
 
 		/* The character string is captured, character by character, into a dynamic buffer. */
-		printf("Text string: ");
-		ptr_chr_String_New = gets(&szt_idx_char, szt_num_chars, CARRIAGE_RETURN);
+		printf("Text string   : ");
+		ptr_chr_String_New = gets(&szt_idx_chars, szt_num_chars, CARRIAGE_RETURN);
 
 		/* Obtaining the exact number of characters with which the string will be created. */
 		printf("\n");
-		printf("Text string of [%ld] caracteres.\n", szt_num_chars);
+		printf("+===|====+===|====+===|====+===|====+===|\n");
+		printf("| General information about the string. |\n");
+		printf("+===|====+===|====+===|====+===|====+===|\n");
+		printf("|       Target output variables.        |\n");
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Lenght  : [%p] = [%ld].\n", &szt_idx_chars, szt_idx_chars);
+		printf("| Maximum : [%p] = [%ld].\n", &szt_num_chars, szt_num_chars);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("|     Target mapping string pointer.    |\n");
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("| Address : [%p].\n", &ptr_chr_String_New);
+		printf("| Pointer : [%p].\n", ptr_chr_String_New);
+		printf("| Content : [%s].\n", ptr_chr_String_New);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("+Dump the string character by character.+\n");
+		printf("+---|----+---|----+---|----+---|----+---|\n");
 
-		printf("+===|====+===|====+===|====+===|====+\n");
-		printf("+   Character string information.   +\n");
-		printf("+===|====+===|====+===|====+===|====+\n");
-		printf("+            Chain data.            +\n");
-		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("| Address\t: [%p].\n", ptr_chr_String_New);
-		printf("+-----------------------------------+\n");
-		printf("| Size\t\t: [%ld].\n", szt_idx_char);
-		printf("| Maximum\t: [%ld].\n", szt_num_chars);
-		printf("+-----------------------------------+\n");
-		printf("| Text\t\t: [%s].\n", ptr_chr_String_New);
-		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("+            Delimiter.             +\n");
-		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("| ASCII\t\t: [%3.u].\n", CARRIAGE_RETURN);
-		printf("| Hex\t\t: [%3.X].\n", CARRIAGE_RETURN);
-		printf("| Oct\t\t: [%3.o].\n", CARRIAGE_RETURN);
-		printf("+===|====+===|====+===|====+===|====+\n");
+		/* Character-by-character dump of the created character string. */
+		for (size_t szt_idx_char = V_ZERO; szt_idx_char < szt_idx_chars; szt_idx_char++)
+			printf("#[%ld]\t:\t[%p]\t=\t[%c].\n", szt_idx_char, ptr_chr_String_New + szt_idx_char, *(ptr_chr_String_New + szt_idx_char));
 
-		printf("Releasing pointer that points to created character string...\n");
+		printf("[%ld] Obtained output results.\n", szt_idx_chars);
+
+		/* Free memory area that stores the pointer to the created character string. */
 		free(ptr_chr_String_New);
 
 		return (V_ZERO);
