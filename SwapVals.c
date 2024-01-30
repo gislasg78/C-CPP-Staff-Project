@@ -161,9 +161,11 @@ int main()
 		printf("|    Source mapping double pointers.    |\n");
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("| Value [x] : [%p].\n", &ptr_ptr_int_left_value);
+		printf("| Value [x] : [%p].\n", ptr_ptr_int_left_value);
 		printf("| Value [x] : [%p] = [%d].\n", *ptr_ptr_int_left_value, **ptr_ptr_int_left_value);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("| Value [y] : [%p].\n", &ptr_ptr_int_right_value);
+		printf("| Value [y] : [%p].\n", ptr_ptr_int_right_value);
 		printf("| Value [y] : [%p] = [%d].\n", *ptr_ptr_int_right_value, **ptr_ptr_int_right_value);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 
@@ -190,9 +192,11 @@ int main()
 		printf("|    Source mapping double pointers.    |\n");
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("| Value [x] : [%p].\n", &ptr_ptr_int_left_value);
+		printf("| Value [x] : [%p].\n", ptr_ptr_int_left_value);
 		printf("| Value [x] : [%p] = [%d].\n", *ptr_ptr_int_left_value, **ptr_ptr_int_left_value);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("| Value [y] : [%p].\n", &ptr_ptr_int_right_value);
+		printf("| Value [y] : [%p].\n", ptr_ptr_int_right_value);
 		printf("| Value [y] : [%p] = [%d].\n", *ptr_ptr_int_right_value, **ptr_ptr_int_right_value);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 
@@ -219,9 +223,11 @@ int main()
 		printf("|    Source mapping double pointers.    |\n");
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("| Value [x] : [%p].\n", &ptr_ptr_int_left_value);
+		printf("| Value [x] : [%p].\n", ptr_ptr_int_left_value);
 		printf("| Value [x] : [%p] = [%d].\n", *ptr_ptr_int_left_value, **ptr_ptr_int_left_value);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("| Value [y] : [%p].\n", &ptr_ptr_int_right_value);
+		printf("| Value [y] : [%p].\n", ptr_ptr_int_right_value);
 		printf("| Value [y] : [%p] = [%d].\n", *ptr_ptr_int_right_value, **ptr_ptr_int_right_value);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 
@@ -248,9 +254,11 @@ int main()
 		printf("|    Source mapping double pointers.    |\n");
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("| Value [x] : [%p].\n", &ptr_ptr_int_left_value);
+		printf("| Value [x] : [%p].\n", ptr_ptr_int_left_value);
 		printf("| Value [x] : [%p] = [%d].\n", *ptr_ptr_int_left_value, **ptr_ptr_int_left_value);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("| Value [y] : [%p].\n", &ptr_ptr_int_right_value);
+		printf("| Value [y] : [%p].\n", ptr_ptr_int_right_value);
 		printf("| Value [y] : [%p] = [%d].\n", *ptr_ptr_int_right_value, **ptr_ptr_int_right_value);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 
@@ -277,9 +285,11 @@ int main()
 		printf("|    Source mapping double pointers.    |\n");
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("| Value [x] : [%p].\n", &ptr_ptr_int_left_value);
+		printf("| Value [x] : [%p].\n", ptr_ptr_int_left_value);
 		printf("| Value [x] : [%p] = [%d].\n", *ptr_ptr_int_left_value, **ptr_ptr_int_left_value);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("| Value [y] : [%p].\n", &ptr_ptr_int_right_value);
+		printf("| Value [y] : [%p].\n", ptr_ptr_int_right_value);
 		printf("| Value [y] : [%p] = [%d].\n", *ptr_ptr_int_right_value, **ptr_ptr_int_right_value);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 
@@ -306,9 +316,11 @@ int main()
 		printf("|    Source mapping double pointers.    |\n");
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("| Value [x] : [%p].\n", &ptr_ptr_int_left_value);
+		printf("| Value [x] : [%p].\n", ptr_ptr_int_left_value);
 		printf("| Value [x] : [%p] = [%d].\n", *ptr_ptr_int_left_value, **ptr_ptr_int_left_value);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("| Value [y] : [%p].\n", &ptr_ptr_int_right_value);
+		printf("| Value [y] : [%p].\n", ptr_ptr_int_right_value);
 		printf("| Value [y] : [%p] = [%d].\n", *ptr_ptr_int_right_value, **ptr_ptr_int_right_value);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 
@@ -335,9 +347,11 @@ int main()
 		printf("|    Source mapping double pointers.    |\n");
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("| Value [x] : [%p].\n", &ptr_ptr_int_left_value);
+		printf("| Value [x] : [%p].\n", ptr_ptr_int_left_value);
 		printf("| Value [x] : [%p] = [%d].\n", *ptr_ptr_int_left_value, **ptr_ptr_int_left_value);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("| Value [y] : [%p].\n", &ptr_ptr_int_right_value);
+		printf("| Value [y] : [%p].\n", ptr_ptr_int_right_value);
 		printf("| Value [y] : [%p] = [%d].\n", *ptr_ptr_int_right_value, **ptr_ptr_int_right_value);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 
@@ -364,9 +378,11 @@ int main()
 		printf("|    Source mapping double pointers.    |\n");
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("| Value [x] : [%p].\n", &ptr_ptr_int_left_value);
+		printf("| Value [x] : [%p].\n", ptr_ptr_int_left_value);
 		printf("| Value [x] : [%p] = [%d].\n", *ptr_ptr_int_left_value, **ptr_ptr_int_left_value);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("| Value [y] : [%p].\n", &ptr_ptr_int_right_value);
+		printf("| Value [y] : [%p].\n", ptr_ptr_int_right_value);
 		printf("| Value [y] : [%p] = [%d].\n", *ptr_ptr_int_right_value, **ptr_ptr_int_right_value);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 
@@ -393,9 +409,11 @@ int main()
 		printf("|    Source mapping double pointers.    |\n");
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("| Value [x] : [%p].\n", &ptr_ptr_int_left_value);
+		printf("| Value [x] : [%p].\n", ptr_ptr_int_left_value);
 		printf("| Value [x] : [%p] = [%d].\n", *ptr_ptr_int_left_value, **ptr_ptr_int_left_value);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("| Value [y] : [%p].\n", &ptr_ptr_int_right_value);
+		printf("| Value [y] : [%p].\n", ptr_ptr_int_right_value);
 		printf("| Value [y] : [%p] = [%d].\n", *ptr_ptr_int_right_value, **ptr_ptr_int_right_value);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 
