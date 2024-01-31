@@ -4,53 +4,44 @@
 #define	V_ONE	1
 #define	V_ZERO	0
 
-// Estructura para un nodo de la pila.
 struct Node
 	{
 		int data;
 		struct Node *nextNode;
 	};
 
-// Función para eliminar un elemento de la pila.
-struct Node *pop(int *data, struct Node *stack)
+struct Node *load(int numNodes, struct Node **stack);
+struct Node *pop(int *data, struct Node *stack);
+struct Node *push(int data, struct Node *stack);
+struct Node *unload(int *data, struct Node **stack);
+void view(struct Node *stack);
+
+
+int main()
 	{
-		struct Node *tempNode = NULL;
+		int data = V_ZERO;
+		int numNodes = V_ZERO;
+		struct Node *stack = NULL;
 
-		if (stack)
-			{
-				tempNode = stack;
-				*data = tempNode->data;
+		printf("Data number : ");
+		scanf("%i", &numNodes);
 
-				stack = stack->nextNode;
-				free(tempNode);
-			}
+		stack = load(numNodes, &stack);
+		view(stack);
+		stack = unload(&data, &stack);
 
-		return stack;
+		return V_ZERO;
 	}
 
-// Función para insertar un elemento en la stack
-struct Node *push(int data, struct Node *stack)
-	{
-		struct Node *newNode = NULL;
 
-		if (newNode = malloc(sizeof(struct Node)))
-			{
-				newNode->data = data;
-				newNode->nextNode = stack;
-			}
-
-		return newNode;
-	}
-
-// Función para cargar elementos a la stack.
-struct Node *load(int num, struct Node **stack)
+struct Node *load(int numNodes, struct Node **stack)
 	{
 		int data = V_ZERO;
 		struct Node *newNode = NULL;
 
-		for (int i = V_ZERO; i < num; i++)
+		for (int i = V_ZERO; i < numNodes; i++)
 			{
-				printf("Dato # [%d] de [%d] : ", i + V_ONE, num);
+				printf("Data # [%d] of [%d] : ", i + V_ONE, numNodes);
 				scanf("%d", &data);
 
 				newNode = push(data, newNode);
@@ -60,7 +51,46 @@ struct Node *load(int num, struct Node **stack)
 		return newNode;
 	}
 
-// Función para visualizar los elementos de la stack
+struct Node *pop(int *data, struct Node *stack)
+	{
+		struct Node *oldNode = NULL;
+
+		if (stack)
+			{
+				oldNode = stack;
+				*data = oldNode->data;
+
+				stack = stack->nextNode;
+				free(oldNode);
+			}
+
+		return stack;
+	}
+
+struct Node *push(int data, struct Node *stack)
+	{
+		struct Node *newNode = NULL;
+
+		if (newNode = (struct Node *) malloc(sizeof(struct Node)))
+			{
+				newNode->data = data;
+				newNode->nextNode = stack;
+			}
+
+		return newNode;
+	}
+
+struct Node *unload(int *data, struct Node **stack)
+	{
+		while (*stack)
+			{
+				*stack = pop(data, *stack);
+				view(*stack);
+			}
+
+		return *stack;
+	}
+
 void view(struct Node *stack)
 	{
 		int c = V_ZERO;
@@ -75,39 +105,4 @@ void view(struct Node *stack)
 			}
 
 		printf("\n");
-	}
-
-//Función para descargar elementos de la stack.
-struct Node *unload(int *data, struct Node **stack)
-	{
-		while (*stack)
-			{
-				*stack = pop(data, *stack);
-				view(*stack);
-			}
-
-		return *stack;
-	}
-
-
-//Función principal.
-int main()
-	{
-		int data = V_ZERO;
-		int num = V_ZERO;
-		struct Node *stack = NULL;
-
-		printf("Número de datos : ");
-		scanf("%i", &num);
-
-		// Operaciones de prueba.
-		stack = load(num, &stack);
-
-		// Ver el contenido actual de la pila.
-		view(stack);
-
-		// Liberar memoria al finalizar el programa.
-		stack = unload(&data, &stack);
-
-		return V_ZERO;
 	}
