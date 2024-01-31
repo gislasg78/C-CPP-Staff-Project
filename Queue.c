@@ -16,9 +16,9 @@ struct Queue
 		struct Node *final;
 	};
 
-struct Node *enqueueNode(int data, struct Queue *Queue);
-struct Node *dequeueNode(int *data, struct Queue *Queue);
-struct Queue *initializeQueue(struct Queue **);
+struct Node *enqueueNode(int data, struct Queue *queue);
+struct Node *dequeueNode(int *data, struct Queue *queue);
+struct Queue *initializeQueue(struct Queue **queue);
 struct Queue *load(int numNodes, struct Queue **queue);
 struct Queue *unload(int *data, struct Queue **queue);
 void view(struct Queue *Queue);
