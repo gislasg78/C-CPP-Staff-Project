@@ -134,7 +134,7 @@ void view(struct Queue *queue)
 
 		while (actual)
 			{
-				printf("\t#[%3d]\t[%p] : [%p] = [%5.d] -> [%p].\n", c++, &actual, actual, actual->data, actual->nextNode);
+				printf("\t#[%3d]\t[%p] : [%p] = [%10.d] -> [%p].\n", c++, &actual, actual, actual->data, actual->nextNode);
 				actual = actual->nextNode;
 			}
 

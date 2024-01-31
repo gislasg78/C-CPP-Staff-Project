@@ -100,7 +100,7 @@ void view(struct Node *stack)
 
 		while (stack)
 			{
-				printf("\t#[%3d]\t[%p] : [%p] = [%5.d] -> [%p].\n", c++, &stack, stack, stack->data, stack->nextNode);
+				printf("\t#[%3d]\t[%p] : [%p] = [%10.d] -> [%p].\n", c++, &stack, stack, stack->data, stack->nextNode);
 				stack = stack->nextNode;
 			}
 
