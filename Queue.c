@@ -20,7 +20,7 @@ struct Node *enqueueNode(int data, struct Queue *queue);
 struct Node *dequeueNode(int *data, struct Queue *queue);
 struct Queue *initializeQueue(struct Queue **queue);
 struct Queue *load(int numNodes, struct Queue **queue);
-struct Queue *unload(int *data, struct Queue **queue);
+struct Queue *unload(int *data, struct Queue *queue);
 void view(struct Queue *Queue);
 
 
@@ -35,7 +35,7 @@ int main()
 
 		queue = load(numNodes, &queue);
 		view(queue);
-		queue = unload(&data, &queue);
+		queue = unload(&data, queue);
 
 		free(queue);
 
@@ -100,42 +100,45 @@ struct Queue *load(int numNodes, struct Queue **queue)
 	{
 		int data = V_ZERO;
 		struct Queue *newQueue = initializeQueue(&newQueue);
+		struct Node *pushNode = NULL;
 
 		for (int i = V_ZERO; i < numNodes; i++)
-		{
-		        printf("Data # [%d] of [%d] : ", i + V_ONE, numNodes);
-		        scanf("%d", &data);
+			{
+		        	printf("Data # [%d] of [%d] : ", i + V_ONE, numNodes);
+		        	scanf("%d", &data);
 
-		        enqueueNode(data, newQueue);
-		}
+		        	pushNode = enqueueNode(data, newQueue);
+			}
 
 		if (queue) *queue = newQueue;
 		return newQueue;
 	}
 
-struct Queue *unload(int *data, struct Queue **queue)
+struct Queue *unload(int *data, struct Queue *queue)
 	{
-		while ((*queue)->front)
+		struct Node *popNode = NULL;
+
+		while (queue->front)
 			{
-				dequeueNode(data, *queue);
-				view(*queue);
+				popNode = dequeueNode(data, queue);
+				view(queue);
 			}
 
-		return *queue;
+		return queue;
 	}
 
 void view(struct Queue *queue)
 	{
 		int c = V_ZERO;
 		static int k = V_ZERO;
-		struct Node *actual = queue->front;
+		struct Node *frontNode = queue->front;
 
 		printf("\nQueue:\t#[%3d].\n", k++);
 
-		while (actual)
+		while (frontNode)
 			{
-				printf("\t#[%3d]\t[%p] : [%p] = [%10.d] -> [%p].\n", c++, &actual, actual, actual->data, actual->nextNode);
-				actual = actual->nextNode;
+				printf("\t#[%3d]\t[%p] : [%p] = [%10.d] -> [%p].\n", c++, &frontNode, frontNode, frontNode->data, frontNode->nextNode);
+				frontNode = frontNode->nextNode;
 			}
 
     		printf("\n");
