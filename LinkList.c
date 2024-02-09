@@ -5,8 +5,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define	V_FIVE	5
+#define	V_FOUR	4
 #define	V_ONE	1
 #define	V_SEVEN	7
+#define	V_SIX	6
+#define	V_THREE	3
+#define	V_TWO	2
 #define	V_ZERO	0
 
 /* Lista simplemente enlazada.
@@ -36,6 +41,7 @@ int main()	/* Función principal. */
 		while (int_option != V_SEVEN)
 			{
 				printf("\n");
+				printf("Simply linked list.\n");
 				printf("1. Add a data.\n");
 				printf("2. Delete a data.\n");
 				printf("3. Delete list.\n");
@@ -159,24 +165,24 @@ void menu(int int_option, t_Node **HeaderList)
 
 		switch(int_option)
 			{
-				case 1:
+				case V_ONE:
 					printf("Add item: ");
 					scanf("%d", &int_data);
 					addNode(int_data, HeaderList);
 					break;
 
-				case 2:
+				case V_TWO:
 					printf("Delete item: ");
 					scanf("%d", &int_data);
 					deleteNode(int_data, HeaderList);
 					break;
 
-				case 3:
+				case V_THREE:
 					printf("Clear list...\n");
 					clearList(HeaderList);
 					break;
 
-				case 4:
+				case V_FOUR:
 					printf("Change item: ");
 					scanf("%d", &int_data);
 
@@ -191,18 +197,18 @@ void menu(int int_option, t_Node **HeaderList)
 
 					break;
 
-				case 5:
+				case V_FIVE:
 					printf("Consult item: ");
 					scanf("%d", &int_data);
 					tempNode = searchNode(int_data, *HeaderList);
 					break;
 
-				case 6:
+				case V_SIX:
 					printf("Dump list...\n");
 					viewList(*HeaderList);
 					break;
 
-				case 7:
+				case V_SEVEN:
 					clearList(HeaderList);
 					break;
 
