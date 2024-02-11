@@ -1,187 +1,319 @@
-/*************************************************************************
-** Autor:	Gustavo Islas Gálvez.					**
-** Fecha:	Domingo 01 de agosto de 2021.				**
-** Programa:	Fourier.c						**
-** Descripción: Calcula la Transformada Discreta de Fourier para una	**
-**		serie de números reales (de punto flotante) dados.	**
-*************************************************************************/
-/* Librerías estándares de trabajo. */
+/****************** Discrete Fourier Transform. ******************
+ ** Source Code:        Fourier.c				**
+ ** Author:             Gustavo Islas Gálvez.                   **
+ ** Creation Date:      Saturday, December 30, 2023.            **
+ ** Purpose:		We have another way of characterizing	**
+ **			L.T.I systems very powerful tool for 	**
+ **			determine outputs when inputs.		**
+ **			They are sinusoids or a combination of	**
+ **			these.					**
+ **			It allows you to make applications that	**
+ **			in the temporal domain are difficult to	**
+ **			understand (e.g. filtering).		**
+ ** +---!----+---!----+---!----++---!----+---!----+---!----+---	**
+ **			Test Values:				**
+ **				1.5, 2.5, 3.5, 4.5, 5.5, 6.5.	**
+*****************************************************************/
+//C Standard Libraries.
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
-/* Definición de constantes simbólicas de trabajo. */
-#define ZERO_V		0
-#define ONE_V		1
-#define TWO_V		2
+//C Standard Constants.
+#define V_ONE		1
+#define V_TWO		2
+#define V_ZERO		0
 #define NULL_CHARACTER	'\0'
 
+//C Limit Constants.
+#define V_LOWER_LIMIT_DFT	1
+#define	V_UPPER_LIMIT_DFT	10
 
-/* Función 'getpause' que devuelve el carácter presionado como parte de la pausa solicitada. */
-char getpause (const char *str_Message)
-    {
-        static char chr_Car=NULL_CHARACTER;
-
-	printf("%s", str_Message);
-	scanf("%*c%c", &chr_Car);
-
-        return (chr_Car);
-    }
-
-/* Estructura de datos para un tipo definido de un número complejo determinado. */
-typedef struct
-	strct_ComplexNumber
+/* ------------------------------------------------------------	--
+ * The following is a structure defined to store a complex	--
+ * number, which contains a real part and an imaginary part.	--
+ * ------------------------------------------------------------	*/
+typedef struct strct_ComplexNumber
 	{
-          double real=ZERO_V,
-		 imag=ZERO_V;
-	} tpydf_strct_ComplexNumber;
+		double real;
+		double imag;
+	} t_s_ComplexNumber;
 
-
-/* Función 'addComplexNumbers' que adiciona números complejos determinados. */
-tpydf_strct_ComplexNumber addComplexNumbers(tpydf_strct_ComplexNumber a, tpydf_strct_ComplexNumber b)
+/*****************************************************************
+ ** Function:		t_s_ComplexNumber addComplexNumber	**
+ **				(t_s_ComplexNumber		**
+ **					firstNumber,		**
+ **				 t_s_ComplexNumber		**
+ **					secondNumber);		**
+ ** Explanation:	In this function, the primary objective	**
+ **			is to add two complex numbers, in such	**
+ **			a way that to perform its own addition	**
+ **			it is a requirement that their		**
+ **			respective real parts of each be added	**
+ **			simultaneously with the respective	**
+ **			imaginary parts of each.		**
+ ** Input Parms:	t_s_ComplexNumber firstNumber,		**
+ **			t_s_ComplexNumber secondNumber.		**
+ ** Output Parms:	None.					**
+ ** Result:		The result returned by this function is	**
+ **			a complex number that contains the real	**
+ **			parts and the imaginary parts duly added**
+ **			of two complex numbers previously passed**
+ **			by argument.				**
+ ****************************************************************/
+t_s_ComplexNumber addComplexNumbers(t_s_ComplexNumber firstNumber, t_s_ComplexNumber secondNumber)
 	{
-		tpydf_strct_ComplexNumber goal_ComplexNumber;
+		t_s_ComplexNumber goal_ComplexNumber;
 
-		goal_ComplexNumber.real = a.real + b.real;
-		goal_ComplexNumber.imag = a.imag + b.imag;
+		goal_ComplexNumber.real = firstNumber.real + secondNumber.real;
+		goal_ComplexNumber.imag = firstNumber.imag + secondNumber.imag;
 
 		return (goal_ComplexNumber);
 	}
 
-/* Función 'multiplyComplexNumbers' que multiplica números complejos determinados. */
-tpydf_strct_ComplexNumber multiplyComplexNumbers(tpydf_strct_ComplexNumber a, tpydf_strct_ComplexNumber b)
+/*****************************************************************
+ ** Function:		t_s_ComplexNumber multiplyComplexNumber	**
+ **				(t_s_ComplexNumber		**
+ **					firstNumber,		**
+ **				 t_s_ComplexNumber		**
+ **					secondNumber);		**
+ ** Explanation:	The purpose of this function is to	**
+ **			multiply two complex numbers, in such a	**
+ **			way that two key situations are met:	**
+ **			first, the new number returned in its	**
+ **			real part is returned the product of	**
+ **			the real parts of the two numbers passed**
+ **			as an argument and is subtracted from	**
+ **			the product of their respective		**
+ **			imaginary parts; the second,		**
+ **			the imaginary part of the complex number**
+ **			returned is the result of the product of**
+ **			the real part of the first by the	**
+ **			imaginary part of the second and said	**
+ **			product is added to the product of the	**
+ **			imaginary part of the first by the real	**
+ **			part of the second.			**
+ ** Input Parms:	t_s_ComplexNumber firstNumber,		**
+ **			t_s_ComplexNumber secondNumber.		**
+ ** Output Parms:	None.					**
+ ** Result:		This is summarized as follows:		**
+ **			c.real = a.real * b.real -		**
+ **				a.imag * b.imag;		**
+ **			c.imag = a.real * b.imag +		**
+ **				a.imag * b.real.		**
+ ****************************************************************/
+t_s_ComplexNumber multiplyComplexNumbers(t_s_ComplexNumber firstNumber, t_s_ComplexNumber secondNumber)
 	{
-		tpydf_strct_ComplexNumber goal_ComplexNumber;
+		t_s_ComplexNumber goal_ComplexNumber;
 
-		goal_ComplexNumber.real = a.real * b.real - a.imag * b.imag;
-		goal_ComplexNumber.imag = a.real * b.imag + a.imag * b.real;
+		goal_ComplexNumber.real = firstNumber.real * secondNumber.real - firstNumber.imag * secondNumber.imag;
+		goal_ComplexNumber.imag = firstNumber.real * secondNumber.imag + firstNumber.imag * secondNumber.real;
 
 		return (goal_ComplexNumber);
 	}
 
-/* Procedimiento 'getDFT' que captura desde el teclado cada elemento que compone el arreglo de números reales. */
-void getDFT(tpydf_strct_ComplexNumber *X, double *x, int N)
+/*****************************************************************
+ ** Function:		void calculateDFT			**
+ **				(t_s_ComplexNumber		**
+ **					*X_ComplexNumbers,	**
+ **				 const double *const 		**
+ **					x_realNumbers,		**
+ **				 const int int_NumItems);	**
+ ** Explanation:	The purpose of this function is to	**
+ **			calculate the Discrete Fourier Transform**
+ **			using two nested cycles.		**
+ **			The first, assigns to the first complex	**
+ **			number in its real part the value of the**
+ **			array of floating point numbers and in	**
+ **			its imaginary part the value zero.	**
+ **			The second calculates the value 't'	**
+ **			using the formula:			**
+ **				t = k * 2 * PI / N * n,		**
+ **			and to the second complex number,	**
+ **			in its real part it assigns the cosine	**
+ **			of -t and in its imaginary part the	**
+ **			sine of - t.				**
+ ** Input Parms:	t_s_ComplexNumber *X_ComplexNumber,	**
+ **			const double *const x_realNumbers,	**
+ **			const int int_NumItems.			**
+ ** Output Parms:	t_s_ComplexNumber *X_ComplexNumber.	**
+ ** Result:		The result of this function is to	**
+ **			overwrite the array containing the	**
+ **			complex number structure with the	**
+ **			calculations made with sines and cosines**
+ **			of the value 't' and return the results	**
+ **			to be displayed on the screen.		**
+ ****************************************************************/
+void calculateDFT(t_s_ComplexNumber *X_ComplexNumbers, const double *const x_realNumbers, const int int_NumItems)
 	{
-		int n=ZERO_V;
+		/* Declaration of local scope variables. */
+		double t = V_ZERO;
+		t_s_ComplexNumber firstNumber, secondNumber;
 
-		for (n=ZERO_V; n<N; n++)
+		/* Cycles for the calculation of each real value obtained in the captured array of real numbers. */
+		for (int int_idx = V_ZERO; int_idx < int_NumItems; int_idx++)
 			{
-				/* Se realiza una inicialización preventiva por elemento. */
-				x[n]=ZERO_V;
-
-				/* Solicitud de captura de cada valor del arreglo de números reales. */
-				printf("Valor real de punto flotante a introducir #[%d] de [%d]: ", n+ONE_V, N);
-				scanf("%lf", &x[n]);
-			}
-	}
-
-/* Procedimiento 'doDFT' para obtener la Transformada Discreta de FOURIER. */
-void doDFT(tpydf_strct_ComplexNumber *X, double *x, int N)
-	{
-		/* Declaración de variables de ámbito local. */
-		int 	n=ZERO_V, k=ZERO_V;
-		double 	t=ZERO_V;
-		tpydf_strct_ComplexNumber a, b;
-
-		/* Ciclos para el cálculo de cada valor real obtenido en el arreglo capturado de números reales. */
-		for (k=ZERO_V; k<N; k++)
-			{
-				X[k].real=ZERO_V;
-				X[k].imag=ZERO_V;
-
-				for (n=ZERO_V; n<N; n++)
+				for (int int_ind = V_ZERO; int_ind < int_NumItems; int_ind++)
 					{
-						/* El real de 'tpydf_strct_ComplexNumber' es el real pasado como argumento actual */
-						a.real=x[n];
-						a.imag=ZERO_V;
+						/* The real of 't_s_ComplexNumber' is the real passed as current argument. */
+						firstNumber.real = x_realNumbers[int_ind];
+						secondNumber.imag = V_ZERO;
 
-						/* El valor 'k' se multiplica por 2, por PI y dicho resultado se divide
-						   entre el producto de N x n. */
-						t=k*TWO_V*M_PI/N*n;
+						/* ----------------------------------------------------------------------------	--
+						 * The 'k' value is multiplied by 2, by PI and said result is divided by	--
+						 * the product of N x n.							--
+						 * ----------------------------------------------------------------------------	*/
+						t = int_idx * V_TWO * M_PI / int_NumItems * int_ind;
 
-						/* El nuevo 'tpydf_strct_ComplexNumber' tiene como real el coseno '-t' y
-						   en el imaginario el seno '-t'.*/
-						b.real=cos(-t);
-						b.imag=sin(-t);
+						/* ----------------------------------------------------------------------------	--
+						 * The new 't_s_ComplexNumber' has the real cosine '-t'				--
+						 * and the imaginary sine '-t'.							--
+						 * ---------------------------------------------------------------------------- */
+						secondNumber.real = cos(-t);
+						secondNumber.imag = sin(-t);
 
-						/* Multiplicación y sumatoria de los números 'tpydf_strct_ComplexNumbers' obtenidos. */
-						b=multiplyComplexNumbers(a,b);
-						X[k]=addComplexNumbers(X[k], b);
+						/* Multiplication and addition of the numbers 't_s_ComplexNumbers' obtained. */
+						secondNumber = multiplyComplexNumbers(firstNumber, secondNumber);
+						X_ComplexNumbers[int_idx] = addComplexNumbers(X_ComplexNumbers[int_idx], secondNumber);
 					}
 			}
-	}
 
-/* Función viewDFT que visualiza en pantalla los resultados de los cálculos obtenidos de la Transformada. */
-void viewDFT(tpydf_strct_ComplexNumber *X, double *x, int N)
-	{
-		int n=ZERO_V;
-
-		/* Imprimir en pantalla los resultados obtenidos del cálculo con los números reales. */
+		/* Print on the screen the results obtained from the calculation with the real numbers. */
 		printf("\n");
-		printf("Resultados:\n");
-		printf("+----|----+----|----+----|----+----|----+----|----+----|----+----|\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+    Obtaining DFT calculations.    +\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
 
-		/* Visualizar en pantalla propiamente los resultados de los arreglos calculados. */
-		for (n=ZERO_V; n<N; n++)
-			printf("Valor #[%d] de [%d] \t Capturado: [%8.4lf] \t Real: [%8.4g] \t Imaginario: [%+8.4g] \t <j> \n", n+ONE_V, N, x[n], X[n].real, X[n].imag);
-
+		/* Display the results of the calculated arrangements on the screen itself. */
+		for (int int_idx = V_ZERO; int_idx < int_NumItems; int_idx++)
+			printf("#: [%d] of [%d].\t:\tValue: [%lf].\t=\tReal: [%lf].\tImaginary: [%lf].\t<j>.\n", int_idx + V_ONE, int_NumItems, x_realNumbers[int_idx], X_ComplexNumbers[int_idx].real, X_ComplexNumbers[int_idx].imag);
 	}
 
-
-/* Programa Principal de la Transformada Discreta de Fourier. */
-int main()
+/*****************************************************************
+ ** Function:		void initializeDFT			**
+ **				(t_s_ComplexNumber		**
+ **				 **X_ComplexNumbers,		**
+ **				 double **x_realNumbers,	**
+ **				 const int int_NumItems);	**
+ ** Explanation:	The purpose of this function is to	**
+ **			create and initialize the pointer	**
+ **			structure of complex number pointers,	**
+ **			as well as to create, initialize and	**
+ **			capture the real number pointer pointer	**
+ **			that will be used to calculate the	**
+ **			Discrete Fourier Transform, taking into	**
+ **			account that in the same formal		**
+ **			parameters will override the respective	**
+ **			current parameters of this function.	**
+ ** Input Parms:	t_s_ComplexNumber **X_ComplexNumbers,	**
+ **			t_s_ComplexNumber **x_realNumbers,	**
+ **			const int int_NumItems.			**
+ ** Output Parms:	t_s_ComplexNumber **X_ComplexNumbers,	**
+ **                     t_s_ComplexNumber **x_realNumbers.	**
+ ** Result:		This function returns as results in its	**
+ **			own arguments of the function definition**
+ **			the array with the complex number	**
+ **			structure and the array with the created**
+ **			and initialized double precision	**
+ **			floating point numbers.			**
+ **			The latter, also captured.		**
+ ****************************************************************/
+void initializeDFT(t_s_ComplexNumber **X_ComplexNumbers, double **x_realNumbers, const int int_NumItems)
 	{
-		/* Variables de trabajo de ámbito local en el programa principal. */
-		tpydf_strct_ComplexNumber *X=NULL;
+		/* Initial declaration of work variables. */
+		double *x = NULL;
+		t_s_ComplexNumber *X = NULL;
 
-		double	*x=NULL;
-		int	N=ZERO_V;
-		int	int_exit_CODE=ZERO_V;
-
-		/* Mensajes principales de pantalla de presentación de este programa. */
-		printf("*****************************************************************\n");
-		printf("** Programa para calcular la Transformada Discreta de Fourier. **\n");
-		printf("*****************************************************************\n");
-		printf("¿Cuántos valores reales desea introducir?: ");
-		scanf("%d", &N);
-
-		/* Asignar memoria para el arreglo de números tpydf_strct_ComplexNumbers 'X'. */
-		if ( (X = (tpydf_strct_ComplexNumber *) malloc(N * sizeof(tpydf_strct_ComplexNumber)) ) != NULL )
-			{
-				/* Asignar memoria para el arreglo (vector) que almacenará la secuencia de números reales 'x'. */
-				if ( (x = (double *) malloc(N * sizeof(double)) ) != NULL )
-					{
-						/*****************************************************************************/
-						/* Bloque de sentencias que generan los arreglos, su captura y sus cálculos. */
-						/*****************************************************************************/
-						/* Introducir la secuencia de números reales contenida en el arreglo del mismo tipo 'x'. */
-						getDFT(X, x, N);
-
-						/* Calcular la transformada discreta de Fourier y devolverla en el arreglo complejo 'X'. */
-						doDFT(X, x, N);
-
-						/* Mostrar en pantalla los resultados obtenidos de la Transformada Discreta de Fourier. */
-						viewDFT(X, x, N);
-					}
-				else
-					{
-						getpause("\nInsuficiente memoria para asignación del arreglo a capturar de números reales.\nPresione ENTRAR para finalizar...");
-						int_exit_CODE=TWO_V;
-					}
-			}
+		/* Generation and initialization of the array of complex numbers. */
+		if (X = (t_s_ComplexNumber *) malloc(int_NumItems * sizeof(t_s_ComplexNumber)))
+			for (int int_idx = V_ZERO; int_idx < int_NumItems; int_idx++)
+				{
+					/* A preventive initialization is performed per element. */
+					X[int_idx].real = V_ZERO;
+					X[int_idx].imag = V_ZERO;
+				}
 		else
 			{
-
-				getpause("\nInsuficiente memoria para asignación del arreglo a calcular de números 'tpydf_strct_ComplexNumbers'.\nPresione ENTRAR para finalizar...");
-				int_exit_CODE=ONE_V;
+				perror("Insufficient memory to accommodate Complex Numbers pointer...");
+				exit(EXIT_FAILURE);
 			}
 
+		/* Generation and initialization of the array of floating point real numbers. */
+		if (x = (double *) malloc(int_NumItems * sizeof(double)))
+			for (int int_idx = V_ZERO; int_idx < int_NumItems; int_idx++)
+				{
+					/* A preventive initialization is performed per element. */
+					*(x + int_idx) = V_ZERO;
 
-		/* Hacer una pausa y presionar la tecla ENTRAR para continuar si el programa terminó satisfactoriamente. */
-		if (int_exit_CODE==ZERO_V)
-			/* Pausa para terminar el programa. */
-			getpause("\nEste programa ha terminado con éxito.\nPresione la tecla ENTRAR para finalizarlo...");
+					/* Request to capture each value of the array of numbers in double precision. */
+					printf("Floating point value to enter #: [%d] of [%d] : ", int_idx + V_ONE, int_NumItems);
+					scanf("%lf", &x[int_idx]);
+				}
+		else
+			{
+				perror("Insufficient memory to accommodate Real Numbers pointer...");
+				exit(EXIT_FAILURE);
+			}
 
-		/* Finalización por código de salida para este programa. */
-		return(int_exit_CODE);
+		/* Reassignment of locally created pointers to override the addresses of received arguments. */
+		*X_ComplexNumbers = X;
+		*x_realNumbers = x;
+	}
+
+
+/*****************************************************************
+ ** Function:		main.					**
+ ** Explanation:	In this main function we have a way to	**
+ **			express the signal as an infinite sum of**
+ **			sinusoids using this decomposition of	**
+ **			the signal together with the frequency	**
+ **			response we have a simple way to	**
+ **			determine the output of a stationary	**
+ **			system.					**
+ ** Input Parms:	None.					**
+ ** Output Parms:	None.					**
+ ** Result:		Relevant points:			**
+ **				1. Allocate memory for the array**
+ **				(vector) that will store the	**
+ **				sequence of real numbers 'x'.	**
+ **				2. Block of statements that	**
+ **				generate the arrays, their	**
+ **				capture and their calculations.	**
+ **				3. Enter the sequence of real	**
+ **				numbers contained in the array	**
+ **				of the same type 'x'.		**
+ **				4. Calculate the discrete	**
+ **				Fourier transform and return it	**
+ **				in the complex array 'X'.	**
+ **				5. Display on the screen the	**
+ **				results obtained from the	**
+ **				Discrete Fourier Transform	**
+ ** +---!----+---!----+---!----++---!----+---!----+---!----+---	**
+ **			Test Values:				**
+ **				1.5, 2.5, 3.5, 4.5, 5.5, 6.5.	**
+*****************************************************************/
+int main()
+	{
+		/* Local work variables in the main program. */
+		double *x_realNumbers = NULL;
+		int int_NumItems = V_ZERO;
+		t_s_ComplexNumber *X_ComplexNumbers = NULL;
+
+		/* Main splash screen messages of this program. */
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+    Discrete Fourier Transform.    +\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("Amount of real values to enter between [%d] and [%d] : ", V_LOWER_LIMIT_DFT, V_UPPER_LIMIT_DFT);
+		scanf("%d", &int_NumItems);
+
+		/* Allocate memory for t_s_ComplexNumbers number array 'X' and floating point number array 'x'. */
+		if (int_NumItems >= V_LOWER_LIMIT_DFT  && int_NumItems <= V_UPPER_LIMIT_DFT)
+			{
+				initializeDFT(&X_ComplexNumbers, &x_realNumbers, int_NumItems);
+				calculateDFT(X_ComplexNumbers, x_realNumbers, int_NumItems);
+			}
+		else
+			printf("Mistake! Value: [%d] is not in the range of [%d] and [%d].\n", int_NumItems, V_LOWER_LIMIT_DFT, V_UPPER_LIMIT_DFT);
+
+		return V_ZERO;
 	}
