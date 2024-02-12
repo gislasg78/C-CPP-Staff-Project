@@ -20,10 +20,10 @@
 #include <math.h>
 
 //C Standard Constants.
-#define V_ONE		1
-#define V_TWO		2
-#define V_ZERO		0
-#define NULL_CHARACTER	'\0'
+#define V_ONE			1
+#define V_TWO			2
+#define V_ZERO			0
+#define NULL_CHARACTER		'\0'
 
 //C Limit Constants.
 #define V_LOWER_LIMIT_DFT	1
