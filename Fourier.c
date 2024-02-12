@@ -161,7 +161,7 @@ void calculateDFT(t_s_ComplexNumber *X_ComplexNumbers, const double *const x_rea
 
 						/* ----------------------------------------------------------------------------	--
 						 * The 'k' value is multiplied by 2, by PI and said result is divided by	--
-						 * the product of N x n.							--
+						 * the product of 'N' x 'n'.							--
 						 * ----------------------------------------------------------------------------	*/
 						t = int_idx * V_TWO * M_PI / int_NumItems * int_ind;
 
@@ -311,6 +311,9 @@ int main()
 			{
 				initializeDFT(&X_ComplexNumbers, &x_realNumbers, int_NumItems);
 				calculateDFT(X_ComplexNumbers, x_realNumbers, int_NumItems);
+
+				free(X_ComplexNumbers);	/* Free memory from the array of complex numbers. */
+				free(x_realNumbers);	/* Free memory from the array of real numbers. */
 			}
 		else
 			printf("Mistake! Value: [%d] is not in the range of [%d] and [%d].\n", int_NumItems, V_LOWER_LIMIT_DFT, V_UPPER_LIMIT_DFT);
