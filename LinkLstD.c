@@ -217,7 +217,8 @@ void deleteNode(int int_data, DoubleLinkedList *listaD)
 									/* Modificar el enlace 'nextNode' */
 									previousNode->nextNode = currentNode->nextNode;
 									/* Modificar el enlace 'previousNode' excepto para el último */
-									previousNode->nextNode->previousNode = currentNode->previousNode;
+									if (previousNode->nextNode)
+										previousNode->nextNode->previousNode = currentNode->previousNode;
 								}
 
 							free(currentNode);
@@ -290,44 +291,48 @@ void viewList(DoubleLinkedList *listaD)
 		int int_option = V_ZERO;
 		t_ptr_Node q = NULL;
 
-		do
+		if (listaD->princ && listaD->final)
 			{
-				printf("\n");
-				printf("Sort the list display.\n");
-				printf("1. Descendingly.\n");
-				printf("2. Ascendingly.\n");
-				printf("Option: ");
-				scanf("%d", &int_option);
+				do
+					{
+						printf("\n");
+						printf("Sort the list display.\n");
+						printf("1. Descendingly.\n");
+						printf("2. Ascendingly.\n");
+						printf("Option: ");
+						scanf("%d", &int_option);
+					}
+				while (int_option < V_ONE || int_option > V_TWO);
+
+				switch (int_option)
+					{
+						case V_ONE:		/* listado descendente */
+							q = listaD->princ;
+
+							while (q)
+								{
+									printf("[%d].\t", q->int_data);
+									q = q->nextNode;
+								}
+
+							break;
+
+						case V_TWO:		/* listado ascendente */
+							q = listaD->final;
+
+							while (q)
+								{
+									printf("[%d].\t", q->int_data);
+									q = q->previousNode;
+								}
+
+							break;
+
+						default:
+							printf("Invalid option: [%d]...\n", int_option);
+							break;
+
+					}
 			}
-		while (int_option < V_ONE || int_option > V_TWO);
 
-		switch (int_option)
-			{
-				case V_ONE:		/* listado descendente */
-					q = listaD->princ;
-
-					while (q)
-						{
-							printf("[%d].\t", q->int_data);
-							q = q->nextNode;
-						}
-
-					break;
-
-				case V_TWO:		/* listado ascendente */
-					q = listaD->final;
-
-					while (q)
-						{
-							printf("[%d].\t", q->int_data);
-							q = q->previousNode;
-						}
-
-					break;
-
-				default:
-					printf("Invalid option: [%d]...\n", int_option);
-					break;
-
-			}
 	}
