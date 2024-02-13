@@ -27,9 +27,9 @@
 //Work Symbolic Constants.
 #define V_ELEVEN		11
 #define V_ONE			1
+#define V_SEVEN			7
 #define	V_TEN			10
 #define	V_TWELVE		12
-#define V_SEVEN			7
 #define V_ZERO			0
 
 /* Static array of characters with the names of the days of the week. */
@@ -114,6 +114,8 @@ int main()
 				/* Display of date and time information. */
 				printf("+===|====+===|====+===|====+===|===+====|====+\n");
 				printf("|         Date and time information.         |\n");
+				printf("+===|====+===|====+===|====+===|===+====|====+\n");
+				printf("| Date: [%s].\tTime: [%s].    |\n", __DATE__, __TIME__);
 				printf("+---|----+---|----+---|----+---|----+---|----+\n");
 				printf("|       Seconds since January 1, 1970.       |\n");
 				printf("+---|----+---|----+---|----+---|----+---|----+\n");
