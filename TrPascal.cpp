@@ -354,7 +354,7 @@ void Pascal_s_Triangle::clear_Pascal_s_Triangle()
 							{
 								std::cout << "Area # [" << int_n_row + V_ONE << "] of [" << this->int_number_Rows
 								<< "].\tMemory Address: [" << this->ptr_ptr_int_Pascal_s_Triangle[int_n_row]
-								<< "].\tReleased!" << std::endl;
+								<< "] : ["<< *(this->ptr_ptr_int_Pascal_s_Triangle + int_n_row) << "].\tReleased!" << std::endl;
 
 								free(this->ptr_ptr_int_Pascal_s_Triangle[int_n_row]);
 							}
@@ -604,8 +604,13 @@ std::vector<std::vector<int>> Pascal_s_Triangle::get_vec_vec_matrix_Pascal_s_Tri
 									int_coeff_value = *(*(this->ptr_ptr_int_Pascal_s_Triangle+int_y)+int_x);
 
 									std::cout << "#[" << int_counting_items++ << "].\t(" << int_y
-									<< ", " << int_x << ").\t<" << &this->ptr_ptr_int_Pascal_s_Triangle[int_y][int_x]
-									<< ">\t=\t[" << int_coeff_value << "]." << std::endl;
+									<< ", " << int_x
+									<< ").\t[" << &this->ptr_ptr_int_Pascal_s_Triangle[int_y][int_x]
+									<< "] : [" << this->ptr_ptr_int_Pascal_s_Triangle[int_y] + int_x
+									<< "] : [" << *(this->ptr_ptr_int_Pascal_s_Triangle + int_y) + int_x
+									<< "].\t[" << *(*(this->ptr_ptr_int_Pascal_s_Triangle + int_y) + int_x)
+									<< "]\t[" << this->ptr_ptr_int_Pascal_s_Triangle[int_y][int_x]
+									<< "]." << std::endl;
 
 									vec_columns_Pascal_s_Triangle.push_back(int_coeff_value);
 								}
@@ -687,10 +692,16 @@ void Pascal_s_Triangle::view_detail_Pascal_s_Triangle() const
 					for (int int_n_row = V_ZERO; int_n_row < this->int_number_Rows; int_n_row++)
 						{
 							for (int int_n_col = V_ZERO; int_n_col <= int_n_row; int_n_col++)
-								std::cout << "#[" << int_idx_counting++ << "].\t(Row: [" << int_n_row + V_ONE << "] of [" << this->int_number_Rows
-								<< "].\tColumn: [" << int_n_col << "] of [" << int_n_row
-								<< "]).\tAddress: [" << *(this->ptr_ptr_int_Pascal_s_Triangle+int_n_row)+int_n_col
-								<< "].\tValue = ["<< *(*(this->ptr_ptr_int_Pascal_s_Triangle+int_n_row)+int_n_col) << "]." << std::endl;
+								std::cout << "#[" << int_idx_counting++ << "].\t(Row: [" << int_n_row + V_ONE
+								<< "] of [" << this->int_number_Rows
+								<< "]. Column: [" << int_n_col + V_ONE
+								<< "] of [" << int_n_row + V_ONE
+								<< "])\t[" << this->ptr_ptr_int_Pascal_s_Triangle[int_n_row] + int_n_col
+								<< "] : [" << *(this->ptr_ptr_int_Pascal_s_Triangle + int_n_row) + int_n_col
+								<< "] : [" << &this->ptr_ptr_int_Pascal_s_Triangle[int_n_row][int_n_col]
+								<< "].\t["<< *(*(this->ptr_ptr_int_Pascal_s_Triangle + int_n_row) + int_n_col)
+								<< "]\t[" << this->ptr_ptr_int_Pascal_s_Triangle[int_n_row][int_n_col]
+								<< "]." << std::endl;
 
 							std::cout << std::endl;
 						}
@@ -766,14 +777,20 @@ void Pascal_s_Triangle::view_info_class_Pascal_s_Triangle() const
 
 					for (int int_n_row = V_ZERO; int_n_row < this->int_number_Rows; int_n_row++)
 						{
-							std::cout << "+ Row: [" << int_n_row + V_ONE << "] of [" << this->int_number_Rows << "].\tMemory address: ["
-							<< this->ptr_ptr_int_Pascal_s_Triangle[int_n_row] << "]." << std::endl;
+							std::cout << "+ Row: [" << int_n_row + V_ONE << "] of [" << this->int_number_Rows
+							<< "].\tAddresses: [" << this->ptr_ptr_int_Pascal_s_Triangle[int_n_row]
+							<< "] : [" << *(this->ptr_ptr_int_Pascal_s_Triangle + int_n_row)
+							<< "]." << std::endl;
 
 							for (int int_n_col = V_ZERO; int_n_col <= int_n_row; int_n_col++)
 
-								std::cout << "  - Col: [" << int_n_col << "] of [" << int_n_row << "].\tMemory address: ["
-								<< &this->ptr_ptr_int_Pascal_s_Triangle[int_n_row][int_n_col]
-								<< "].\tValue = [" << *(*(this->ptr_ptr_int_Pascal_s_Triangle+int_n_row)+int_n_col)
+								std::cout << "  - Col: [" << int_n_col + V_ONE
+								<< "] of [" << int_n_row + V_ONE
+								<< "].\t[" << &this->ptr_ptr_int_Pascal_s_Triangle[int_n_row][int_n_col]
+								<< "] : [" << this->ptr_ptr_int_Pascal_s_Triangle[int_n_row] + int_n_col
+								<< "] : [" << *(this->ptr_ptr_int_Pascal_s_Triangle + int_n_row) + int_n_col
+								<< "].\t[" << *(*(this->ptr_ptr_int_Pascal_s_Triangle + int_n_row) + int_n_col)
+								<< "]\t[" << this->ptr_ptr_int_Pascal_s_Triangle[int_n_row][int_n_col]
 								<< "]." << std::endl;
 
 							std::cout << std::endl;
