@@ -11,7 +11,11 @@
  **			matrix in order to exemplify its uses.	**
  ** +---!----+---!----+---!----++---!----+---!----+---!----+---	**
  **			Test Values:				**
- **				Rows: 4.	Columns: 4.	**
+ **				Rows: 3.	Columns: 3.	**
+ **				--------	-----------	**
+ **			[	-8	1	3	].	**
+ **			[	1	7	4	].	**
+ **			[	3	4	9	].	**
 *****************************************************************/
 //C Standard Libraries.
 #include <stdio.h>
@@ -25,10 +29,18 @@
 //Symbolic work constants.
 #define	V_ZERO			0
 
+
+/* ------------------------------------------------------------	--
+ * Data types that contain informative alphanumeric literals,	--
+ * options for displaying arrays, and the global integer static --
+ * array.							--
+ * ------------------------------------------------------------	*/
 //Enumeration of options to display the original matrix or the transposed matrix.
 enum enm_Options_matrix
 	{
+		enm_opt_matrix_equivalents,
 		enm_opt_matrix_original,
+		enm_opt_matrix_symmetrical,
 		enm_opt_matrix_transposed
 	};
 
@@ -36,7 +48,8 @@ enum enm_Options_matrix
 static int int_matrix[V_UPPER_LIMIT_ROWS][V_UPPER_LIMIT_COLS];
 
 //Label messages from exposed arrays.
-static char *str_Tags[] = { "Original matrix", "Transposed matrix" };
+static char *str_Tags[] = { "Matrix Equivalent Positions", "Original matrix", "Symmetrical matrix", "Transposed matrix" };
+
 
 /*****************************************************************
  ** Function:		int capture_int_matrix			**
@@ -72,7 +85,7 @@ int capture_int_matrix(const int int_Rows, const int int_Columns, int int_matrix
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("|    Capture of array elements.     +\n");
 		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("| (Rows: [%d], Columns: [%d]).\n", int_Rows, int_Columns);
+		printf("| (Rows: [%d],\tColumns: [%d]).\n", int_Rows, int_Columns);
 		printf("+--------+--------+--------+--------+\n");
 		printf("Capturing matrix...\n");
 
@@ -84,6 +97,7 @@ int capture_int_matrix(const int int_Rows, const int int_Columns, int int_matrix
 					scanf("%d", *(int_matrix + int_row) + int_col);
 				}
 
+		/* Informative message of output results. */
 		printf("[%d] Captured input results.\n", int_counting_items);
 
 		return int_counting_items;
@@ -118,10 +132,10 @@ int dump_int_matrix(const int int_Rows, const int int_Columns, const int int_mat
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("|  Matrix memory address breakdown. +\n");
 		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("| (Rows: [%d], Columns: [%d]).\n", int_Rows, int_Columns);
+		printf("| (Rows: [%d],\tColumns: [%d]).\n", int_Rows, int_Columns);
 		printf("+--------+--------+--------+--------+\n");
-		printf("| Address:\t[%p].\n", int_matrix);
-		printf("| Size:\t\t[%ld].\n", sizeof(int_matrix[V_LOWER_LIMIT_ROWS][V_LOWER_LIMIT_COLS]));
+		printf("| Matrix Address:\t[%p].\n", int_matrix);
+		printf("| Size by Item  :\t[%ld].\n", sizeof(int_matrix[V_LOWER_LIMIT_ROWS][V_LOWER_LIMIT_COLS]));
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("Memory address dump...\n");
 
@@ -135,7 +149,47 @@ int dump_int_matrix(const int int_Rows, const int int_Columns, const int int_mat
 						*(*(int_matrix + int_row) + int_col), int_matrix[int_row][int_col]);
 				}
 
+		/* Informative message of output results. */
 		printf("[%d] Obtained output results.\n", int_counting_items);
+
+		return int_counting_items;
+	}
+
+/*****************************************************************
+ ** Function:		int initialize_int_matrix		**
+ **				(int int_matrix[][]);		**
+ ** Explanation:	The primary purpose of this function is	**
+ **			to initialize with zero values each of	**
+ **			the row and column positions indicated	**
+ **			in the entire global static matrix of	**
+ **			this program to be certain that said	**
+ **			two-dimensional array has initially	**
+ **			correct values.				**
+ ** Input Parms:	int int_matrix[][].			**
+ ** Output Parms:	None.					**
+ ** Result:		The result returned by this function is	**
+ **			the effective number of elements that	**
+ **			were initialized to zeros in their	**
+ **			entirety, in accordance with the number	**
+ **			of actual rows and columns that the	**
+ **			entire global static matrix of this	**
+ **			program has.				**
+ ****************************************************************/
+int initialize_int_matrix(int int_matrix[][V_UPPER_LIMIT_COLS])
+	{
+		/* Initial declaration of work variables. */
+		int int_counting_items = V_ZERO;
+
+		/* Assigning initial values to the working integer global static array. */
+		for (int int_row = V_LOWER_LIMIT_ROWS; int_row < V_UPPER_LIMIT_ROWS; int_row++)
+			for (int int_col = V_LOWER_LIMIT_COLS; int_col < V_UPPER_LIMIT_COLS; int_col++)
+				{
+					int_counting_items++;
+					*(*(int_matrix + int_row) + int_col) = V_ZERO;
+				}
+
+		/* Informative message of output results. */
+		printf("[%d] Initialized array positions.\n", int_counting_items);
 
 		return int_counting_items;
 	}
@@ -165,35 +219,113 @@ int dump_int_matrix(const int int_Rows, const int int_Columns, const int int_mat
 int view_int_matrix(const int int_Rows, const int int_Columns, const int int_matrix[][V_UPPER_LIMIT_COLS], enum enm_Options_matrix enmOp)
 	{
 		/* Initial declaration of work variables. */
+		int int_counting_equivalences = V_ZERO;
 		int int_counting_items = V_ZERO;
+		int int_Limit_Columns = int_Columns;
+		int int_Limit_Rows = int_Rows;
+
+		/* The values of rows and columns are inverted in the case of a transposed matrix. */
+		if (enmOp == enm_opt_matrix_transposed)
+			{
+				int_Limit_Rows = int_Columns;
+				int_Limit_Columns = int_Rows;
+			}
 
 		/* Matrix presentation notification messages. */
 		printf("\n");
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("|    Display of matrix elements.    +\n");
 		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("| (Rows: [%d], Columns: [%d]).\n", int_Rows, int_Columns);
+		printf("| (Rows: [%d],\tColumns: [%d]).\n", int_Limit_Rows, int_Limit_Columns);
 		printf("+--------+--------+--------+--------+\n");
 		printf("[%s]...\n", str_Tags[(int) enmOp]);
 
 		/* Dump the matrix on the screen, depending on the option requested, whether the original or the transposed. */
-		for (int int_row = V_LOWER_LIMIT_ROWS; int_row < int_Rows; int_row++)
+		switch (enmOp)
 			{
-				for (int int_col = V_LOWER_LIMIT_COLS; int_col < int_Columns; int_col++, int_counting_items++)
-					switch (enmOp)
+				/* Equivalent positions of the original matrix and the transposed matrix. */
+				case enm_opt_matrix_equivalents:
+					for (int int_row = V_LOWER_LIMIT_ROWS; int_row < int_Limit_Rows; int_row++)
 						{
-							case enm_opt_matrix_original:
-								printf("[%3.d]\t", int_matrix[int_row][int_col]);
-								break;
+							for (int int_col = V_LOWER_LIMIT_COLS; int_col < int_Limit_Columns; int_col++)
+								{
+									printf("#[%d].\t(%d, %d) = [%d].\t(%d, %d) = [%d].\n",
+										int_counting_items++, int_row, int_col,
+										*(*(int_matrix + int_row) + int_col),
+										int_col, int_row,
+										int_matrix[int_col][int_row]);
 
-							case enm_opt_matrix_transposed:
-								printf("[%3.d]\t", *(*(int_matrix + int_col) + int_row));
-								break;
+									if (int_matrix[int_row][int_col] == *(*(int_matrix + int_col) + int_row))
+										int_counting_equivalences++;
+								}
+
+							printf("\n");
 						}
 
-				printf("\n");
+					/* Informational messages about the symmetry of a matrix. */
+					printf("+---|----+---|----+---|----+---|----+\n");
+					printf("+    Matrix symmetry information.   +\n");
+					printf("+---|----+---|----+---|----+---|----+\n");
+					printf("| Rows\t\t:\t[%d].\n", int_Limit_Rows);
+					printf("| Columns\t:\t[%d].\n", int_Limit_Columns);
+					printf("| Items\t\t:\t[%d].\n", int_counting_items);
+					printf("+--------+--------+--------+--------+\n");
+					printf("| Equivalences\t:\t[%d].\n", int_counting_equivalences);
+					printf("+---|----+---|----+---|----+---|----+\n");
+
+					break;
+
+				/* Show the positions of the original array. */
+				case enm_opt_matrix_original:
+					for (int int_row = V_LOWER_LIMIT_ROWS; int_row < int_Limit_Rows; int_row++)
+						{
+							for (int int_col = V_LOWER_LIMIT_COLS; int_col < int_Limit_Columns; int_col++, int_counting_items++)
+								printf("[%3.d]\t", int_matrix[int_row][int_col]);
+
+							printf("\n");
+						}
+
+					break;
+
+				/* Determination of whether an original matrix is symmetric relative to its transpose. */
+				case enm_opt_matrix_symmetrical:
+					for (int int_row = V_LOWER_LIMIT_ROWS; int_row < int_Limit_Rows; int_row++)
+						for (int int_col = V_LOWER_LIMIT_COLS; int_col < int_Limit_Columns; int_col++)
+							{
+								int_counting_items++;
+
+								if (int_matrix[int_row][int_col] == *(*(int_matrix + int_col) + int_row))
+									int_counting_equivalences++;
+							}
+
+					/* Detection if the matrix in the normal state is symmetric to its transpose. */
+					if (int_counting_equivalences == int_counting_items)
+						printf("Perfectly symmetrical array...\n");
+					else
+						printf("Asymmetrical unbalanced arrangement...\n");
+
+					break;
+
+				/* Show the positions of the transposed matrix. */
+				case enm_opt_matrix_transposed:
+					for (int int_row = V_LOWER_LIMIT_ROWS; int_row < int_Limit_Rows; int_row++)
+						{
+							for (int int_col = V_LOWER_LIMIT_COLS; int_col < int_Limit_Columns; int_col++, int_counting_items++)
+								printf("[%3.d]\t", *(*(int_matrix + int_col) + int_row));
+
+							printf("\n");
+						}
+
+					break;
+
+				/* In case of invalid option parameter. */
+				default:
+					printf("Invalid option typed: [%d].\n", enmOp);
+					break;
+
 			}
 
+		/* Informative message of output results. */
 		printf("[%d] Obtained output results.\n", int_counting_items);
 
 		return int_counting_items;
@@ -223,7 +355,11 @@ int view_int_matrix(const int int_Rows, const int int_Columns, const int int_mat
  **			positions.				**
  ** +---!----+---!----+---!----++---!----+---!----+---!----+---	**
  **			Test Values:				**
- **				Rows: 4.	Columns: 4.	**
+ **				Rows: 3.	Columns: 3.	**
+ **				--------	-----------	**
+ **			[	-8	1	3	].	**
+ **			[	1	7	4	].	**
+ **			[	3	4	9	].	**
 *****************************************************************/
 int main()
 	{
@@ -245,13 +381,16 @@ int main()
 		if (int_Rows >= V_LOWER_LIMIT_ROWS && int_Rows <= V_UPPER_LIMIT_ROWS)
 			if (int_Columns >= V_LOWER_LIMIT_COLS && int_Columns <= V_UPPER_LIMIT_COLS)
 				{
-					/* Captured and dumped the array. */
+					/* Initialized, captured and dumped the bidimensional array. */
+					int_counting_items = initialize_int_matrix(int_matrix);
 					int_counting_items = capture_int_matrix(int_Rows, int_Columns, int_matrix);
 					int_counting_items = dump_int_matrix(int_Rows, int_Columns, int_matrix);
 
 					/* Original matrix and transposed matrix. */
 					int_counting_items = view_int_matrix(int_Rows, int_Columns, int_matrix, enm_opt_matrix_original);
 					int_counting_items = view_int_matrix(int_Rows, int_Columns, int_matrix, enm_opt_matrix_transposed);
+					int_counting_items = view_int_matrix(int_Rows, int_Columns, int_matrix, enm_opt_matrix_equivalents);
+					int_counting_items = view_int_matrix(int_Rows, int_Columns, int_matrix, enm_opt_matrix_symmetrical);
 				}
 			else
 				printf("Mistake! The value for column: [%d] is not in the range [%d] to [%d]\n.", int_Columns, V_LOWER_LIMIT_COLS, V_UPPER_LIMIT_COLS);
