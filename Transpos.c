@@ -27,7 +27,12 @@
 #define V_UPPER_LIMIT_ROWS	100
 
 //Symbolic work constants.
+#define	V_ONE			1
 #define	V_ZERO			0
+
+//Alphanumeric symbolic constants.
+#define CARRIAGE_RETURN		'\n'
+#define NULL_CHARACTER		'\0'
 
 
 /* ------------------------------------------------------------	--
@@ -50,6 +55,9 @@ static int int_matrix[V_UPPER_LIMIT_ROWS][V_UPPER_LIMIT_COLS];
 //Label messages from exposed arrays.
 static char *str_Tags[] = { "Matrix Equivalent Positions", "Original matrix", "Symmetrical matrix", "Transposed matrix" };
 
+
+//Prototype of the function to receive and validate integer data.
+int enter_a_data(int *const);
 
 /*****************************************************************
  ** Function:		int capture_int_matrix			**
@@ -94,7 +102,7 @@ int capture_int_matrix(const int int_Rows, const int int_Columns, int int_matrix
 			for (int int_col = V_LOWER_LIMIT_COLS; int_col < int_Columns; int_col++)
 				{
 					printf("Enter data #[%03d] : (Row: [%03d], Column: [%03d]) : ", int_counting_items++, int_row, int_col);
-					scanf("%d", *(int_matrix + int_row) + int_col);
+					int_matrix[int_row][int_col] = enter_a_data(*(int_matrix + int_row) + int_col);
 				}
 
 		/* Informative message of output results. */
@@ -153,6 +161,47 @@ int dump_int_matrix(const int int_Rows, const int int_Columns, const int int_mat
 		printf("[%d] Obtained output results.\n", int_counting_items);
 
 		return int_counting_items;
+	}
+
+/*****************************************************************
+ ** Function:		int enter_a_data			**
+ **				(int *const ptr_int_data);	**
+ ** Explanation:	This function primarily covers the	**
+ **			purpose of validating that a data	**
+ **			entered by keyboard is an integer	**
+ **			numeric and does not contain invalid	**
+ **			characters, otherwise, said characters	**
+ **			will be eliminated from the input buffer**
+ **			until it is freed and can be requested	**
+ **			again without problems, the same	**
+ **			numerical entry.			**
+ ** Input Parms:	int *const ptr_int_data.		**
+ ** Output Parms:	int *const ptr_int_data.		**
+ ** Result:		The result returned by this function is	**
+ **			the perfectly validated numeric integer	**
+ **			value without special characters and	**
+ **			without overflowing the input buffer.	**
+ ****************************************************************/
+int enter_a_data(int *const ptr_int_data)
+	{
+		/* Initial declaration of work variables. */
+		char chr_chr = NULL_CHARACTER;
+		*ptr_int_data = V_ZERO;
+
+		/* Error handling can be done in data entry if necessary. */
+		if (scanf("%d", ptr_int_data) != V_ONE)	//Entry was successful with one only data.
+			{
+				/* The value returned by the 'scanf' function is initialized. */
+				*ptr_int_data = V_ZERO;
+
+				/* The input was not a valid integer. */
+				fprintf(stderr, "Mistake! The input is not a valid integer at address: [%p].\n", ptr_int_data);
+
+				/* Clear the input buffer of invalid characters. */
+				while ((chr_chr = getchar()) != CARRIAGE_RETURN && chr_chr != EOF);
+			}
+
+		return *ptr_int_data;
 	}
 
 /*****************************************************************
@@ -373,9 +422,9 @@ int main()
 		printf("+  Dumping fixed dimensions arrays. +\n");
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("Rows    from [%d] to [%d] : ", V_LOWER_LIMIT_ROWS, V_UPPER_LIMIT_ROWS);
-		scanf("%d", &int_Rows);
+		int_Rows = enter_a_data(&int_Rows);
 		printf("Columns from [%d] to [%d] : ", V_LOWER_LIMIT_COLS, V_UPPER_LIMIT_ROWS);
-		scanf("%d", &int_Columns);
+		int_Columns = enter_a_data(&int_Columns);
 
 		/* Review of the limits of the rows and columns of the matrix. */
 		if (int_Rows >= V_LOWER_LIMIT_ROWS && int_Rows <= V_UPPER_LIMIT_ROWS)
