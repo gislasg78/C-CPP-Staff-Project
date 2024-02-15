@@ -38,7 +38,12 @@
 //C Standard Libraries.
 #include <cstdlib>
 #include <iostream>
+#include <limits>
 #include <vector>
+
+//Symbolic literals of work.
+#define	CARRIAGE_RETURN		'\n'	//Carriage Return.
+#define NULL_CHARACTER		'\0'	//Null character.
 
 //Symbolic constants of minimum and maximum limits.
 #define V_LOWER_LIMIT_PST	1	//Lower limit of PST.
@@ -54,7 +59,6 @@
 //Symbolic Character Constants.
 #define V_CHAR_Y_LOWER_CASE	'y'	//Lowercase 'Y'.
 #define V_CHAR_Y_UPPER_CASE	'Y'	//Capital 'Y'.
-#define NULL_CHARACTER		'\0'	//Null character.
 
 /*****************************************************************
  ** Class:		Pascal_s_Triangle.			**
@@ -308,7 +312,21 @@ int Pascal_s_Triangle::capture_int_number_Rows()
 
 		/* Pretreatment to clear the option variable and input buffer. */
 		scanf("%*[^\n]%*c"); //Perfectly clear the input buffer.
-		std::cin >> int_number_Rows;
+
+		if (std::cin >> int_number_Rows)	//The entry was successful.
+			std::cout << "You have entered the value: [" << int_number_Rows << "]." << std::endl;
+		else
+			{
+				//The input was not a valid integer.
+				std::cerr << "Error: The input is not a valid integer." << std::endl;
+
+				//Clear the error state.
+				std::cin.clear();
+
+				//Discard invalid content in the input buffer.
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+			}
+
 		clearerr(stdin);
 
 		if (int_number_Rows >= V_LOWER_LIMIT_ROWS && int_number_Rows <= V_UPPER_LIMIT_ROWS)
@@ -347,7 +365,11 @@ void Pascal_s_Triangle::clear_Pascal_s_Triangle()
 				if (this->int_number_Rows >= V_LOWER_LIMIT_ROWS && this->int_number_Rows <= V_UPPER_LIMIT_ROWS)
 					{
 						std::cout << "+ Clearing memory regions of 'Pascal's Triangle' object # [" << this->sttc_int_Counting_Pascal_s_Triangles
-                                		<< "] with [" << this->int_number_Rows << "] rows at memory address: [" << this->ptr_ptr_int_Pascal_s_Triangle << "]..." << std::endl;
+                                		<< "] with [" << this->int_number_Rows << "] rows." << std::endl;
+
+						std::cout << "  At memory address: [" << this->ptr_ptr_int_Pascal_s_Triangle
+						<< "] with a total size of [" << sizeof(this->ptr_ptr_int_Pascal_s_Triangle)
+						<< "] bytes..." << std::endl;
 
 						/* Free the memory allocated to each of the rows. */
 						for (int int_n_row = V_ZERO; int_n_row < this->int_number_Rows; int_n_row++)
@@ -593,7 +615,11 @@ std::vector<std::vector<int>> Pascal_s_Triangle::get_vec_vec_matrix_Pascal_s_Tri
 			if (this->int_number_Rows >= V_LOWER_LIMIT_ROWS && this->int_number_Rows <= V_UPPER_LIMIT_ROWS)
 				{
 					std::cout << "Loading vector of 'Pascal's Triangle' vectors. Object # [" << this->sttc_int_Counting_Pascal_s_Triangles
-					<< "] with [" << this->int_number_Rows << "] rows from memory address: [" << this->ptr_ptr_int_Pascal_s_Triangle << "]..." << std::endl;
+					<< "] with [" << this->int_number_Rows << "] rows." << std::endl;
+
+					std::cout << "From memory address: [" << this->ptr_ptr_int_Pascal_s_Triangle
+					<< "] with a total size of [" << sizeof(this->ptr_ptr_int_Pascal_s_Triangle)
+					<< "] bytes..." << std::endl;
 
 					for (int int_y = V_ZERO; int_y < this->int_number_Rows; int_y++)
 						{
@@ -621,7 +647,11 @@ std::vector<std::vector<int>> Pascal_s_Triangle::get_vec_vec_matrix_Pascal_s_Tri
 						}
 
 					std::cout << "Visualizing vector of 'Pascal's Triangle' vectors. Object # [" << this->sttc_int_Counting_Pascal_s_Triangles
-					<< "] with [" << this->int_number_Rows << "] rows from memory address: [" << this->ptr_ptr_int_Pascal_s_Triangle << "]..." << std::endl;
+					<< "] with [" << this->int_number_Rows << "] rows." << std::endl;
+
+					std::cout << "From memory address: [" << this->ptr_ptr_int_Pascal_s_Triangle
+					<< "] with a total size of [" << sizeof(this->ptr_ptr_int_Pascal_s_Triangle)
+					<< "] bytes..." << std::endl;
 
 					for (int int_row = V_ZERO; int_row < this->int_number_Rows; int_row++)
 						{
@@ -687,7 +717,12 @@ void Pascal_s_Triangle::view_detail_Pascal_s_Triangle() const
 			if (this->int_number_Rows >= V_LOWER_LIMIT_ROWS && this->int_number_Rows <= V_UPPER_LIMIT_ROWS)
 				{
 					std::cout << "+ Generating on screen 'Pascal's Triangle' object # [" << this->sttc_int_Counting_Pascal_s_Triangles
-					<< "] detail with [" << this->int_number_Rows << "] rows at memory address: [" << this->ptr_ptr_int_Pascal_s_Triangle << "]." << std::endl;
+					<< "] detail with [" << this->int_number_Rows
+					<< "] rows." << std::endl;
+
+					std::cout << "  At memory address: [" << this->ptr_ptr_int_Pascal_s_Triangle
+					<< "] with a total size of [" << sizeof(this->ptr_ptr_int_Pascal_s_Triangle)
+                                        << "] bytes..." << std::endl;
 
 					for (int int_n_row = V_ZERO; int_n_row < this->int_number_Rows; int_n_row++)
 						{
@@ -746,6 +781,8 @@ void Pascal_s_Triangle::view_header_Pascal_s_Triangle(const std::string str_name
 			<< this->int_number_Rows << "]." << std::endl;
 		std::cout << "| Memory address of the pointer of pointers to hold the 'Pascal's Triangle':\t["
 			<< this->ptr_ptr_int_Pascal_s_Triangle << "]." << std::endl;
+		std::cout << "| Total size in bytes of the pointer of pointers of class 'Pascal's Triangle':\t["
+			<< sizeof(this->ptr_ptr_int_Pascal_s_Triangle) << "]." << std::endl;
 		std::cout << "| Running process of class 'Pascal's Triangle':\t\t\t\t\t[" << str_name_Proc_Oper << "]." << std::endl;
 		std::cout << "+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+" << std::endl;
 		std::cout << std::endl;
@@ -773,11 +810,17 @@ void Pascal_s_Triangle::view_info_class_Pascal_s_Triangle() const
 			if (this->int_number_Rows >= V_LOWER_LIMIT_ROWS && this->int_number_Rows <= V_UPPER_LIMIT_ROWS)
 				{
 					std::cout << "+ Generating on screen 'Pascal's Triangle' object # [" << this->sttc_int_Counting_Pascal_s_Triangles
-					<< "] info class with [" << this->int_number_Rows << "] rows at memory address: [" << this->ptr_ptr_int_Pascal_s_Triangle << "]." << std::endl;
+					<< "] info class with [" << this->int_number_Rows
+					<< "] rows." << std::endl;
+
+					std::cout << "  At memory address: [" << this->ptr_ptr_int_Pascal_s_Triangle
+					<< "] with a total size of [" << sizeof(this->ptr_ptr_int_Pascal_s_Triangle)
+                                        << "] bytes..." << std::endl;
 
 					for (int int_n_row = V_ZERO; int_n_row < this->int_number_Rows; int_n_row++)
 						{
-							std::cout << "+ Row: [" << int_n_row + V_ONE << "] of [" << this->int_number_Rows
+							std::cout << "+ Row: [" << int_n_row + V_ONE
+							<< "] of [" << this->int_number_Rows
 							<< "].\tAddresses: [" << this->ptr_ptr_int_Pascal_s_Triangle[int_n_row]
 							<< "] : [" << *(this->ptr_ptr_int_Pascal_s_Triangle + int_n_row)
 							<< "]." << std::endl;
@@ -1002,8 +1045,23 @@ int int_unit_Testing_Pascal_s_Triangle(Pascal_s_Triangle &psT)
 
 				/* Request the action option and convert it to an enumerated type. */
 				std::cout << "Option: ";
-				std::cin >> int_number_Option;
+
+				if (std::cin >> int_number_Option)        //The entry was successful.
+					std::cout << "You have entered the value: [" << int_number_Option << "]." << std::endl;
+				else
+					{
+						//The input was not a valid integer.
+						std::cerr << "Error: The input is not a valid integer." << std::endl;
+
+						//Clear the error state.
+						std::cin.clear();
+
+						//Discard invalid content in the input buffer.
+						std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+					}
+
 				enm_act_opt_PST = (enum enm_Action_Options_Pascal_s_Triangle) int_number_Option;
+
 				clearerr(stdin);
 
 				/* Selection of cases according to the given option. */
@@ -1088,7 +1146,20 @@ int main()
 		std::cout << "|                         Pascal's Triangle Generator.                           |" << std::endl;
 		std::cout << "+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+" << std::endl;
 		std::cout << "Number of Pascal's Triangles to generate between ["<< V_LOWER_LIMIT_PST << "] and [" << V_UPPER_LIMIT_PST << "] : ";
-		std::cin  >> int_Quantity;
+
+		if (std::cin >> int_Quantity)        //The entry was successful.
+			std::cout << "You have entered the value: [" << int_Quantity << "]." << std::endl;
+		else
+			{
+				//The input was not a valid integer.
+				std::cerr << "Error: The input is not a valid integer." << std::endl;
+
+				//Clear the error state.
+				std::cin.clear();
+
+				//Discard invalid content in the input buffer.
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+			}
 
 		/* -----------------------------------------------------------------------
 		 * -- Dynamically create pointers of the Pascal's Triangle class, store	--
