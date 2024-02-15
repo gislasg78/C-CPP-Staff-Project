@@ -81,6 +81,8 @@
  **			sttc_int_Counting_Pascal_s_Triangles;	**
  **								**
  ** Methods:		protected:				**
+ **			void enter_a_data			**
+ **				(int *const int_ptr_data) const;**
  **			void generate_new_existing_		**
  **				Pascal_s_Triangle();		**
  **			bool get_bool_Response_Regeneration()	**
@@ -140,6 +142,8 @@ class Pascal_s_Triangle
 
 		//Protected attributes and methods.
 		protected:
+			//Routine to enter and validate an integer piece of data.
+			void enter_a_data(int *const int_ptr_data) const;
 			//It generates a Pascal's Triangle without releasing it previously.
 			void generate_new_existing_Pascal_s_Triangle();
 			//Gets a confirmation response to regenerate 'Pascal's Triangle'.
@@ -310,24 +314,7 @@ int Pascal_s_Triangle::capture_int_number_Rows()
 
 		std::cout << "Manually enter the number of rows between [" << V_LOWER_LIMIT_ROWS << "] & [" << V_UPPER_LIMIT_ROWS << "] that the Pascal's Triangle will have to generate: ";
 
-		/* Pretreatment to clear the option variable and input buffer. */
-		scanf("%*[^\n]%*c"); //Perfectly clear the input buffer.
-
-		if (std::cin >> int_number_Rows)	//The entry was successful.
-			std::cout << "You have entered the value: [" << int_number_Rows << "]." << std::endl;
-		else
-			{
-				//The input was not a valid integer.
-				std::cerr << "Error: The input is not a valid integer." << std::endl;
-
-				//Clear the error state.
-				std::cin.clear();
-
-				//Discard invalid content in the input buffer.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
-			}
-
-		clearerr(stdin);
+		Pascal_s_Triangle::enter_a_data(&int_number_Rows);	//Request and validate specific data.
 
 		if (int_number_Rows >= V_LOWER_LIMIT_ROWS && int_number_Rows <= V_UPPER_LIMIT_ROWS)
 			{
@@ -457,6 +444,52 @@ void Pascal_s_Triangle::create_new_Pascal_s_Triangle(const int int_number_Rows)
 				}
 			else
 				std::cerr << "Careful! It is not possible to generate a new Pascal's Triangle without having informed its valid number of lines between [" << V_LOWER_LIMIT_ROWS << "] & [" << V_UPPER_LIMIT_ROWS << "]..." << std::endl;
+	};
+
+/*****************************************************************
+ ** Class:		Pascal_s_Triangle.			**
+ ** Method:		void enter_a_data			**
+ **				(int *const int_ptr_data) const.**
+ ** Explanation:	The purpose of this method is to request**
+ **			an integer data received as an integer	**
+ **			pointer in its argument and fully	**
+ **			validates that the user does not enter	**
+ **			invalid characters, preventing the	**
+ **			character buffer from being blocked or	**
+ **			saturated, as well as cleaning it and	**
+ **			resetting any error due to the entry	**
+ **			of data.				**
+ ** Arguments:		int *const int_ptr_data.		**
+ ** Result:		This routine receives the memory address**
+ **			of an integer value and validates that	**
+ **			what is received is indeed that, and not**
+ **			invalid characters that collapse the	**
+ **			input buffer.				**
+ ****************************************************************/
+void Pascal_s_Triangle::enter_a_data(int *const int_ptr_data) const
+	{
+		/* Pretreatment to clear the option variable and input buffer. */
+		scanf("%*[^\n]%*c");	//Perfectly clear the input buffer.
+
+		if (std::cin >> *int_ptr_data)	//The entry was successful.
+			std::cout << "You have entered the integer value: [" << *int_ptr_data
+			<< "] at memory address: [" << int_ptr_data << "]." << std::endl;
+		else
+			{
+				//Reset the option pressed by the user.
+				*int_ptr_data = V_ZERO;
+
+				//The input was not a valid integer.
+				std::cerr << "Error: The input is not a valid integer." << std::endl;
+
+				//Clear the error state.
+				std::cin.clear();
+
+				//Discard invalid content in the input buffer.
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+			}
+
+		clearerr(stdin);
 	};
 
 /*****************************************************************
@@ -1039,30 +1072,10 @@ int int_unit_Testing_Pascal_s_Triangle(Pascal_s_Triangle &psT)
 				std::cout << "| [Another value]. Exit treatment.      |" << std::endl;
 				std::cout << "*===|====+===|====+===|====+===|====+===*" << std::endl;
 
-				/* Pretreatment to clear the option variable and input buffer. */
-				scanf("%*[^\n]%*c"); //Perfectly clear the input buffer.
-				int_number_Option = V_ZERO; //Reset the option pressed by the user.
-
 				/* Request the action option and convert it to an enumerated type. */
 				std::cout << "Option: ";
-
-				if (std::cin >> int_number_Option)        //The entry was successful.
-					std::cout << "You have entered the value: [" << int_number_Option << "]." << std::endl;
-				else
-					{
-						//The input was not a valid integer.
-						std::cerr << "Error: The input is not a valid integer." << std::endl;
-
-						//Clear the error state.
-						std::cin.clear();
-
-						//Discard invalid content in the input buffer.
-						std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
-					}
-
+				psT.enter_a_data(&int_number_Option);	//Request and validate specific data.
 				enm_act_opt_PST = (enum enm_Action_Options_Pascal_s_Triangle) int_number_Option;
-
-				clearerr(stdin);
 
 				/* Selection of cases according to the given option. */
 				switch (enm_act_opt_PST)
@@ -1147,8 +1160,8 @@ int main()
 		std::cout << "+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+" << std::endl;
 		std::cout << "Number of Pascal's Triangles to generate between ["<< V_LOWER_LIMIT_PST << "] and [" << V_UPPER_LIMIT_PST << "] : ";
 
-		if (std::cin >> int_Quantity)        //The entry was successful.
-			std::cout << "You have entered the value: [" << int_Quantity << "]." << std::endl;
+		if (std::cin >> int_Quantity)  //The entry was successful.
+			std::cout << "You have entered the integer value: [" << int_Quantity << "]." << std::endl;
 		else
 			{
 				//The input was not a valid integer.
