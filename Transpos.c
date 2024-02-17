@@ -63,7 +63,9 @@ int enter_a_data(int *const);
  ** Function:		int capture_int_matrix			**
  **				(const int int_Rows,		**
  **				 const int int_Columns,		**
- **				 int int_matrix[][]);		**
+ **				 int int_matrix[][],		**
+ **				 const enum enm_Options_matrix	**
+ **					enmOp);			**
  ** Explanation:	The primary purpose of this function is	**
  **			to capture data by data each of the	**
  **			elements that will make up the entire	**
@@ -71,10 +73,11 @@ int enter_a_data(int *const);
  **			and columns that the user has specified	**
  **			without exceeding the maximum limits on	**
  **			rows and columns established in the	**
-**			static test matrix.			**
+ **			static test matrix.			**
  ** Input Parms:	const int int_Rows,			**
  **			const int int_Columns,			**
- **			int int_matrix[][].			**
+ **			int int_matrix[][],			**
+ **			const enum enm_Options_matrix enmOp.	**
  ** Output Parms:	int int_matrix[][].			**
  ** Result:		The result returned by this function is	**
  **			the number of elements actually		**
@@ -83,7 +86,7 @@ int enter_a_data(int *const);
  **			number of columns requested by the user	**
  **			to fill the static array of integers.	**
  ****************************************************************/
-int capture_int_matrix(const int int_Rows, const int int_Columns, int int_matrix[][V_UPPER_LIMIT_COLS])
+int capture_int_matrix(const int int_Rows, const int int_Columns, int int_matrix[][V_UPPER_LIMIT_COLS], const enum enm_Options_matrix enmOp)
 	{
 		/* Initial declaration of work variables. */
 		int int_counting_items = V_ZERO;
@@ -97,13 +100,39 @@ int capture_int_matrix(const int int_Rows, const int int_Columns, int int_matrix
 		printf("+--------+--------+--------+--------+\n");
 		printf("Capturing matrix...\n");
 
-		/* Capture request according to rows and columns. */
-		for (int int_row = V_LOWER_LIMIT_ROWS; int_row < int_Rows; int_row++)
-			for (int int_col = V_LOWER_LIMIT_COLS; int_col < int_Columns; int_col++)
-				{
-					printf("Enter data #[%03d] : (Row: [%03d], Column: [%03d]) : ", int_counting_items++, int_row, int_col);
-					int_matrix[int_row][int_col] = enter_a_data(*(int_matrix + int_row) + int_col);
-				}
+		switch (enmOp)
+			{
+				/* Capture request according to rows and columns. */
+				case enm_opt_matrix_original:
+					for (int int_row = V_LOWER_LIMIT_ROWS; int_row < int_Rows; int_row++)
+						for (int int_col = V_LOWER_LIMIT_COLS; int_col < int_Columns; int_col++)
+							{
+								printf("Enter data #[%03d] : (Row: [%03d], Column: [%03d]) : ", int_counting_items++, int_row, int_col);
+								int_matrix[int_row][int_col] = enter_a_data(*(int_matrix + int_row) + int_col);
+							}
+
+					break;
+
+				/* Capture a matrix to be created in a mirrored symmetric manner. */
+				case enm_opt_matrix_symmetrical:
+					for (int int_row = V_ZERO; int_row < int_Rows; int_row++)
+						for (int int_col = V_ZERO; int_col < int_Columns; int_col++)
+							if (int_matrix[int_row][int_col] == V_ZERO)
+								{
+									printf("Enter data #[%03d] : (Row: [%d], Column: [%d]; Row: [%d], Column: [%d]) : ", int_counting_items++, int_row, int_col, int_col, int_row);
+									int_matrix[int_row][int_col] = enter_a_data(&int_matrix[int_row][int_col]);
+
+									int_matrix[int_col][int_row] = int_matrix[int_row][int_col];
+								}
+
+					break;
+
+				/* In case of invalid option parameter. */
+				default:
+					printf("Invalid option typed: [%d].\n", enmOp);
+					break;
+
+			}
 
 		/* Informative message of output results. */
 		printf("[%d] Captured input results.\n", int_counting_items);
@@ -432,10 +461,21 @@ int main()
 				{
 					/* Initialized, captured and dumped the bidimensional array. */
 					int_counting_items = initialize_int_matrix(int_matrix);
-					int_counting_items = capture_int_matrix(int_Rows, int_Columns, int_matrix);
+					int_counting_items = capture_int_matrix(int_Rows, int_Columns, int_matrix, enm_opt_matrix_original);
 					int_counting_items = dump_int_matrix(int_Rows, int_Columns, int_matrix);
 
 					/* Original matrix and transposed matrix. */
+					int_counting_items = view_int_matrix(int_Rows, int_Columns, int_matrix, enm_opt_matrix_original);
+					int_counting_items = view_int_matrix(int_Rows, int_Columns, int_matrix, enm_opt_matrix_transposed);
+					int_counting_items = view_int_matrix(int_Rows, int_Columns, int_matrix, enm_opt_matrix_equivalents);
+					int_counting_items = view_int_matrix(int_Rows, int_Columns, int_matrix, enm_opt_matrix_symmetrical);
+
+					/* Initialized, captured and dumped the array as symmetric. */
+					int_counting_items = initialize_int_matrix(int_matrix);
+					int_counting_items = capture_int_matrix(int_Rows, int_Columns, int_matrix, enm_opt_matrix_symmetrical);
+					int_counting_items = dump_int_matrix(int_Rows, int_Columns, int_matrix);
+
+					/* Original matrix (symmetric) and transposed matrix. */
 					int_counting_items = view_int_matrix(int_Rows, int_Columns, int_matrix, enm_opt_matrix_original);
 					int_counting_items = view_int_matrix(int_Rows, int_Columns, int_matrix, enm_opt_matrix_transposed);
 					int_counting_items = view_int_matrix(int_Rows, int_Columns, int_matrix, enm_opt_matrix_equivalents);
