@@ -6,29 +6,29 @@
 
 struct Node
 	{
-		int data;
+		int int_data;
 		struct Node *nextNode;
 	};
 
 struct Node *load(int numNodes, struct Node **stack);
-struct Node *pop(int *data, struct Node *stack);
-struct Node *push(int data, struct Node *stack);
-struct Node *unload(int *data, struct Node **stack);
+struct Node *pop(int *int_data, struct Node *stack);
+struct Node *push(int int_data, struct Node *stack);
+struct Node *unload(int *int_data, struct Node **stack);
 void view(struct Node *stack);
 
 
 int main()
 	{
-		int data = V_ZERO;
+		int int_data = V_ZERO;
 		int numNodes = V_ZERO;
 		struct Node *stack = NULL;
 
-		printf("Data number : ");
+		printf("Enter a data number : ");
 		scanf("%i", &numNodes);
 
 		stack = load(numNodes, &stack);
 		view(stack);
-		stack = unload(&data, &stack);
+		stack = unload(&int_data, &stack);
 
 		return V_ZERO;
 	}
@@ -36,55 +36,55 @@ int main()
 
 struct Node *load(int numNodes, struct Node **stack)
 	{
-		int data = V_ZERO;
-		struct Node *newNode = NULL;
+		int int_data = V_ZERO;
+		struct Node *tempNode = NULL;
 
 		for (int i = V_ZERO; i < numNodes; i++)
 			{
 				printf("Data # [%d] of [%d] : ", i + V_ONE, numNodes);
-				scanf("%d", &data);
+				scanf("%d", &int_data);
 
-				newNode = push(data, newNode);
+				tempNode = push(int_data, tempNode);
 			}
 
-		if (stack) *stack = newNode;
-		return newNode;
+		if (stack) *stack = tempNode;
+		return tempNode;
 	}
 
-struct Node *pop(int *data, struct Node *stack)
+struct Node *pop(int *int_data, struct Node *stack)
 	{
-		struct Node *oldNode = NULL;
+		struct Node *tempNode = NULL;
 
 		if (stack)
 			{
-				oldNode = stack;
-				*data = oldNode->data;
+				tempNode = stack;
+				*int_data = tempNode->int_data;
 
 				stack = stack->nextNode;
-				free(oldNode);
+				free(tempNode);
 			}
 
 		return stack;
 	}
 
-struct Node *push(int data, struct Node *stack)
+struct Node *push(int int_data, struct Node *stack)
 	{
-		struct Node *newNode = NULL;
+		struct Node *tempNode = NULL;
 
-		if (newNode = (struct Node *) malloc(sizeof(struct Node)))
+		if (tempNode = (struct Node *) malloc(sizeof(struct Node)))
 			{
-				newNode->data = data;
-				newNode->nextNode = stack;
+				tempNode->int_data = int_data;
+				tempNode->nextNode = stack;
 			}
 
-		return newNode;
+		return tempNode;
 	}
 
-struct Node *unload(int *data, struct Node **stack)
+struct Node *unload(int *int_data, struct Node **stack)
 	{
 		while (*stack)
 			{
-				*stack = pop(data, *stack);
+				*stack = pop(int_data, *stack);
 				view(*stack);
 			}
 
@@ -100,7 +100,7 @@ void view(struct Node *stack)
 
 		while (stack)
 			{
-				printf("\t#[%3d]\t[%p] : [%p] = [%10.d] -> [%p].\n", c++, &stack, stack, stack->data, stack->nextNode);
+				printf("\t#[%3d]\t[%p] : [%p] = [%10.d] -> [%p].\n", c++, &stack, stack, stack->int_data, stack->nextNode);
 				stack = stack->nextNode;
 			}
 
