@@ -6,7 +6,7 @@
 
 struct Node
 	{
-		int data;
+		int int_data;
 		struct Node *nextNode;
 	};
 
@@ -16,73 +16,46 @@ struct Queue
 		struct Node *final;
 	};
 
-struct Node *enqueueNode(int data, struct Queue *queue);
-struct Node *dequeueNode(int *data, struct Queue *queue);
-struct Queue *initializeQueue(struct Queue **queue);
+struct Queue *createQueue(struct Queue **queue);
+struct Node *createNode(int int_data, struct Node *nextNode);
+struct Node *enqueueNode(int int_data, struct Queue *queue);
+struct Node *dequeueNode(int *int_data, struct Queue *queue);
 struct Queue *load(int numNodes, struct Queue **queue);
-struct Queue *unload(int *data, struct Queue *queue);
+struct Queue *unload(int *int_data, struct Queue **queue);
 void view(struct Queue *Queue);
 
 
 int main()
 	{
-		int data = V_ZERO;
+		int int_data = V_ZERO;
 		int numNodes = V_ZERO;
 		struct Queue *queue = NULL;
 
-                printf("Data number : ");
+                printf("Enter a data number : ");
                 scanf("%i", &numNodes);
 
 		queue = load(numNodes, &queue);
 		view(queue);
-		queue = unload(&data, queue);
-
-		free(queue);
+		queue = unload(&int_data, &queue);
 
 		return V_ZERO;
 	}
 
-struct Node *dequeueNode(int *data, struct Queue *queue)
+struct Node *createNode(int int_data, struct Node *nextNode)
 	{
-		struct Node *oldNode = NULL;
+		struct Node *tempNode = NULL;
 
-		if (queue->front)
+		if (tempNode = (struct Node *) malloc(sizeof(struct Node)))
 			{
-				oldNode = queue->front;
-				*data = oldNode->data;
-
-				queue->front = queue->front->nextNode;
-				free(oldNode);
+				tempNode->int_data = int_data;
+				tempNode->nextNode = nextNode;
 			}
 
-		return queue->front;
+		return tempNode;
+
 	}
 
-struct Node *enqueueNode(int data, struct Queue *queue)
-	{
-		struct Node *newNode = NULL;
-
-		if (newNode = (struct Node *) malloc(sizeof(struct Node)))
-			{
-				newNode->data = data;
-				newNode->nextNode = NULL;
-
-				if (queue->front)
-					{
-						queue->final->nextNode = newNode;
-						queue->final = newNode;
-					}
-				else
-					{
-						queue->front = newNode;
-						queue->final = newNode;
-					}
-			}
-
-		return newNode;
-	}
-
-struct Queue *initializeQueue(struct Queue **queue)
+struct Queue *createQueue(struct Queue **queue)
 	{
 		struct Queue *newQueue = NULL;
 
@@ -96,49 +69,84 @@ struct Queue *initializeQueue(struct Queue **queue)
 		return newQueue;
 	}
 
+struct Node *dequeueNode(int *int_data, struct Queue *queue)
+	{
+		struct Node *tempNode = NULL;
+
+		if (queue->front)
+			{
+				tempNode = queue->front;
+				*int_data = tempNode->int_data;
+
+				queue->front = queue->front->nextNode;
+				free(tempNode);
+			}
+
+		return queue->front;
+	}
+
+struct Node *enqueueNode(int int_data, struct Queue *queue)
+	{
+		struct Node *tempNode = NULL;
+
+		if (tempNode = createNode(int_data, NULL))
+			{
+				if (queue->front)
+					queue->final->nextNode = tempNode;
+				else
+					queue->front = tempNode;
+
+				queue->final = tempNode;
+			}
+
+		return tempNode;
+	}
+
 struct Queue *load(int numNodes, struct Queue **queue)
 	{
-		int data = V_ZERO;
-		struct Queue *newQueue = initializeQueue(&newQueue);
-		struct Node *pushNode = NULL;
+		int int_data = V_ZERO;
+		struct Queue *newQueue = createQueue(&newQueue);
+		struct Node *tempNode = NULL;
 
 		for (int i = V_ZERO; i < numNodes; i++)
 			{
 		        	printf("Data # [%d] of [%d] : ", i + V_ONE, numNodes);
-		        	scanf("%d", &data);
+		        	scanf("%d", &int_data);
 
-		        	pushNode = enqueueNode(data, newQueue);
+		        	tempNode = enqueueNode(int_data, newQueue);
 			}
 
 		if (queue) *queue = newQueue;
 		return newQueue;
 	}
 
-struct Queue *unload(int *data, struct Queue *queue)
+struct Queue *unload(int *int_data, struct Queue **queue)
 	{
-		struct Node *popNode = NULL;
+		struct Node *tempNode = NULL;
 
-		while (queue->front)
+		while ((*queue)->front)
 			{
-				popNode = dequeueNode(data, queue);
-				view(queue);
+				tempNode = dequeueNode(int_data, *queue);
+				view(*queue);
 			}
 
-		return queue;
+		free(*queue);
+
+		return *queue;
 	}
 
 void view(struct Queue *queue)
 	{
 		int c = V_ZERO;
 		static int k = V_ZERO;
-		struct Node *frontNode = queue->front;
+		struct Node *tempNode = queue->front;
 
 		printf("\nQueue:\t#[%3d].\n", k++);
 
-		while (frontNode)
+		while (tempNode)
 			{
-				printf("\t#[%3d]\t[%p] : [%p] = [%10.d] -> [%p].\n", c++, &frontNode, frontNode, frontNode->data, frontNode->nextNode);
-				frontNode = frontNode->nextNode;
+				printf("\t#[%3d]\t[%p] : [%p] = [%10.d] -> [%p].\n", c++, &tempNode, tempNode, tempNode->int_data, tempNode->nextNode);
+				tempNode = tempNode->nextNode;
 			}
 
     		printf("\n");
