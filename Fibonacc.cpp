@@ -49,7 +49,9 @@ struct strct_record_Fibonacci
  **				(const size_t szt_Quantity,	**
  **				 const size_t szt_First_Number,	**
  **				 const size_t			**
- **					szt_Second_Number);	**
+ **					szt_Second_Number,	**
+ **				struct strct_record_Fibonacci	**
+ **					**ptr_ptr_st_rec_Fibo);	**
  ** Explanation:	The primary purpose of this routine is	**
  **			to return a structure pointer of the	**
  **			calculated records of the Fibonacci	**
@@ -62,8 +64,11 @@ struct strct_record_Fibonacci
  **			step of the Fibonacci numerical series.	**
  ** Input Parms:	const size_t szt_Quantity.		**
  **			const size_t szt_First_Number.		**
- **			const size_t szt_Second_Number.		**
- ** Output Parms:	None.					**
+ **			const size_t szt_Second_Number,		**
+ **			struct strct_record_Fibonacci		**
+ **				**ptr_ptr_st_rec_Fibo.		**
+ ** Output Parms:	struct strct_record_Fibonacci		**
+ **				**ptr_ptr_st_rec_Fibo.		**
  ** Result:		Returns the last number of the Fibonacci**
  **			series given a series of given terms.	**
  **								**
@@ -71,7 +76,7 @@ struct strct_record_Fibonacci
  **			x=0, y=1; sum from '0' to 'n':		**
  **				{z=x+y; x=y; y=z}.		**
  ****************************************************************/
-struct strct_record_Fibonacci *dump_record_Fibonacci(const size_t szt_Quantity, const size_t szt_First_Number, const size_t szt_Second_Number)
+struct strct_record_Fibonacci *dump_record_Fibonacci(const size_t szt_Quantity, const size_t szt_First_Number, const size_t szt_Second_Number, struct strct_record_Fibonacci **ptr_ptr_st_rec_Fibo)
 	{
 		/* Initial declaration of work variables. */
 		size_t szt_counting_items = V_ZERO;
@@ -91,18 +96,29 @@ struct strct_record_Fibonacci *dump_record_Fibonacci(const size_t szt_Quantity, 
 		/* Dynamically allocate memory for the Fibonacci structure pointer. */
 		if (ptr_st_rec_Fibo = (struct strct_record_Fibonacci *) malloc(szt_Quantity * sizeof(st_rec_Fibo)))
 			{
-				std::cout << "| Fibonacci series record dump at address:\t[" << ptr_st_rec_Fibo << "]." << std::endl;
+				std::cout << "| Fibonacci series record dump at addresses:\t[" << ptr_st_rec_Fibo << "]\t:\t[" << &st_rec_Fibo << "]." << std::endl << std::endl;
 
 				/* Generation of results and filling of the structure pointer. */
 				for (size_t szt_idx = V_ZERO; szt_idx < szt_Quantity; szt_idx++, szt_counting_items++)
 					{
-						/* Assignment of calculations to the structure pointer. */
+						/* Assignment of calculations to the structure variable to pointer. */
 						st_rec_Fibo.szt_idx = szt_idx;
 						st_rec_Fibo.szt_Addition = st_rec_Fibo.szt_First_Number + st_rec_Fibo.szt_Second_Number;
 
+						/* Saving values in the local structure. */
+						std::cout << "|\t[" << &st_rec_Fibo.szt_idx
+							<< "] = [" << st_rec_Fibo.szt_idx
+							<< "]\t:\t[" <<  &st_rec_Fibo.szt_First_Number
+							<< "] = [" <<  st_rec_Fibo.szt_First_Number
+							<< "] + [" << &st_rec_Fibo.szt_First_Number
+							<< "] = [" << st_rec_Fibo.szt_Second_Number
+							<< "] => [" << &st_rec_Fibo.szt_Addition
+							<< "] = [" << st_rec_Fibo.szt_Addition
+							<< "]." << std::endl << std::endl;
+
+						/* Saving the structure in the vector or created pointer. */
 						*(ptr_st_rec_Fibo + szt_idx) = st_rec_Fibo;
 
-						/* Saving the structure in the vector. */
 						std::cout << "|\t[" << ptr_st_rec_Fibo[szt_idx].szt_idx
 							<< "] = [" << (ptr_st_rec_Fibo + szt_idx)->szt_idx
 							<< "]\t\t:\t[" <<  &ptr_st_rec_Fibo[szt_idx].szt_idx
@@ -146,6 +162,8 @@ struct strct_record_Fibonacci *dump_record_Fibonacci(const size_t szt_Quantity, 
 		/* Expected results. */
 		std::cout << "[" << szt_counting_items << "] Generated dumping output results." << std::endl;
 
+		if (ptr_ptr_st_rec_Fibo) *ptr_ptr_st_rec_Fibo = ptr_st_rec_Fibo;
+
 		return ptr_st_rec_Fibo;
 	}
 
@@ -153,7 +171,8 @@ struct strct_record_Fibonacci *dump_record_Fibonacci(const size_t szt_Quantity, 
  ** Function:		static size_t getsztFibonacci		**
  **				(const size_t szt_Quantity,	**
  **				 const size_t szt_First_Number,	**
- **				 const size_t szt_Second_Number)**
+ **				 const size_t 			**
+ **					szt_Second_Number);	**
  ** Explanation:	This function calculates the last number**
  **			of the Fibonacci series given a given	**
  **			number of series to generate, and	**
@@ -175,9 +194,9 @@ struct strct_record_Fibonacci *dump_record_Fibonacci(const size_t szt_Quantity, 
  **				{z=x+y; x=y; y=z}.		**
  **								**
  **			This recursive function obeys the	**
- **			condition:				**
- **				Fibo = (n <= 1) ?		**
- **					x+y : Fibo(n-1, y, x+y).**
+ **			next condition:				**
+ **			Fibo(n, x, y) = (n <= 1) ?		**
+ **				x + y : Fibo(n - 1, y, x + y).	**
  ****************************************************************/
 static int getsztFibonacci(const size_t szt_Quantity, const size_t szt_First_Number, const size_t szt_Second_Number)
 	{
@@ -253,7 +272,7 @@ std::vector<struct strct_record_Fibonacci> getVectorstrctFiboSeries(const size_t
  ** Function:		size_t viewVectorstrctFiboSeries	**
  **				(std::vector			**
  **				<struct strct_record_Fibonacci	**
- **				vec_st_rec_Fibo>		**
+ **					vec_st_rec_Fibo>);	**
  ** Explanation:	The final goal of this procedure is to	**
  **			display the vector generated in the	**
  **			'getVectorFiboSeries' function returned **
@@ -264,7 +283,7 @@ std::vector<struct strct_record_Fibonacci> getVectorstrctFiboSeries(const size_t
  **			traversing an iterator.			**
  ** Input Parms:	std::vector<struct			**
  **				strct_record_Fibonacci		**
- **			 	vec_st_rec_Fibo>		**
+ **			 		vec_st_rec_Fibo>	**
  ** Output Parms:	None.					**
  ** Result:		Returns each calculation record for the **
  **			generation of Fibonacci series numbers. **
@@ -328,6 +347,7 @@ int main()
 		std::vector<struct strct_record_Fibonacci> vec_st_rec_Fibo;
 		struct strct_record_Fibonacci *ptr_strct_record_Fibonacci = NULL;
 
+		/* Intermediate calculation variables. */
 		size_t szt_counting_items = V_ZERO;
 		size_t szt_Quantity = V_ZERO;
 		size_t szt_First_Number = V_ZERO;
@@ -350,7 +370,7 @@ int main()
 				std::cin >> szt_Second_Number;
 
 				/* Generate a pointer to the dynamic structure of the Fibonacci series. */
-				ptr_strct_record_Fibonacci = dump_record_Fibonacci(szt_Quantity, szt_First_Number, szt_Second_Number);
+				ptr_strct_record_Fibonacci = dump_record_Fibonacci(szt_Quantity, szt_First_Number, szt_Second_Number, &ptr_strct_record_Fibonacci);
 
 				/* Generate a vector to a static structure of the Fibonacci series. */
 				vec_st_rec_Fibo = getVectorstrctFiboSeries(szt_Quantity, szt_First_Number, szt_Second_Number);
