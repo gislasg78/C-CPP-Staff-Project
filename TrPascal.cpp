@@ -37,6 +37,8 @@
 *****************************************************************/
 //C Standard Libraries.
 #include <cstdlib>
+#include <ctime>
+#include <fstream>
 #include <iostream>
 #include <limits>
 #include <vector>
@@ -82,7 +84,7 @@
  **								**
  ** Methods:		protected:				**
  **			void enter_a_data			**
- **				(int *const int_ptr_data) const;**
+ **				(int *const ptr_int_data) const;**
  **			void generate_new_existing_		**
  **				Pascal_s_Triangle();		**
  **			bool get_bool_Response_Regeneration()	**
@@ -90,7 +92,7 @@
  **			void set_int_number_Rows		**
  **				(const int int_number_Rows);	**
  **			void view_header_Pascal_s_Triangle	**
- **				(const string			**
+ **				(const std::string		**
  **				str_name_Proc_Oper) const;	**
  **								**
  **			public:					**
@@ -111,6 +113,9 @@
  **			vector<vector<int>>			**
  **				get_vec_vec_matrix_		**
  **				Pascal_s_Triangle()		**
+ **				const;				**
+ **			void save_as_a_report_file(		**
+ **				std::string str_IO_FileName)	**
  **				const;				**
  **			void view_detail_Pascal_s_Triangle()	**
  **				const;				**
@@ -143,7 +148,7 @@ class Pascal_s_Triangle
 		//Protected attributes and methods.
 		protected:
 			//Routine to enter and validate an integer piece of data.
-			void enter_a_data(int *const int_ptr_data) const;
+			void enter_a_data(int *const ptr_int_data) const;
 			//It generates a Pascal's Triangle without releasing it previously.
 			void generate_new_existing_Pascal_s_Triangle();
 			//Gets a confirmation response to regenerate 'Pascal's Triangle'.
@@ -174,6 +179,8 @@ class Pascal_s_Triangle
 			int get_int_number_Rows() const;
 			//Returns a matrix of Pascal's Triangle in vector form.
 			std::vector<std::vector<int>> get_vec_vec_matrix_Pascal_s_Triangle() const;
+			//Save Pascal's Triangle as a report file.
+			void save_as_a_report_file(std::string str_IO_FileName) const;
 			//Visualize Pascal's Triangle.
 			void view_detail_Pascal_s_Triangle() const;
 			//Presents general information on the created Pascal's Triangle on the screen.
@@ -345,6 +352,9 @@ int Pascal_s_Triangle::capture_int_number_Rows()
  ****************************************************************/
 void Pascal_s_Triangle::clear_Pascal_s_Triangle()
 	{
+		/* Preliminary initialization of variables. */
+		int int_counting_items = V_ZERO;
+
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Clearing existing Pascal's Triangle...");
 
 		if (this->ptr_ptr_int_Pascal_s_Triangle)
@@ -361,6 +371,8 @@ void Pascal_s_Triangle::clear_Pascal_s_Triangle()
 						/* Free the memory allocated to each of the rows. */
 						for (int int_n_row = V_ZERO; int_n_row < this->int_number_Rows; int_n_row++)
 							{
+								int_counting_items++;
+
 								std::cout << "Area # [" << int_n_row + V_ONE << "] of [" << this->int_number_Rows
 								<< "].\tMemory Address: [" << this->ptr_ptr_int_Pascal_s_Triangle[int_n_row]
 								<< "] : ["<< *(this->ptr_ptr_int_Pascal_s_Triangle + int_n_row) << "].\tReleased!" << std::endl;
@@ -373,6 +385,8 @@ void Pascal_s_Triangle::clear_Pascal_s_Triangle()
 						<< "] of Pascal's Triangle freed!" << std::endl;
 
 						free(this->ptr_ptr_int_Pascal_s_Triangle);
+
+						std::cout << "[" << int_counting_items << "] Output results generated..." << std::endl;
 					}
 				else
 					std::cerr << "Warning! The Pascal's Triangle to initialize has no a valid number of rows between [" << V_LOWER_LIMIT_ROWS << "] & [" << V_UPPER_LIMIT_ROWS << "] to be generated." << std::endl;
@@ -449,7 +463,7 @@ void Pascal_s_Triangle::create_new_Pascal_s_Triangle(const int int_number_Rows)
 /*****************************************************************
  ** Class:		Pascal_s_Triangle.			**
  ** Method:		void enter_a_data			**
- **				(int *const int_ptr_data) const.**
+ **				(int *const ptr_int_data) const.**
  ** Explanation:	The purpose of this method is to request**
  **			an integer data received as an integer	**
  **			pointer in its argument and fully	**
@@ -459,25 +473,28 @@ void Pascal_s_Triangle::create_new_Pascal_s_Triangle(const int int_number_Rows)
  **			saturated, as well as cleaning it and	**
  **			resetting any error due to the entry	**
  **			of data.				**
- ** Arguments:		int *const int_ptr_data.		**
+ **								**
+ **			Pretreatment to clear the option	**
+ **			variable and input buffer.		**
+ **				scanf("%*[^\n]%*c");		**
+ **			Perfectly clear the input buffer.	**
+ **								**
+ ** Arguments:		int *const ptr_int_data.		**
  ** Result:		This routine receives the memory address**
  **			of an integer value and validates that	**
  **			what is received is indeed that, and not**
  **			invalid characters that collapse the	**
  **			input buffer.				**
  ****************************************************************/
-void Pascal_s_Triangle::enter_a_data(int *const int_ptr_data) const
+void Pascal_s_Triangle::enter_a_data(int *const ptr_int_data) const
 	{
-		/* Pretreatment to clear the option variable and input buffer. */
-		scanf("%*[^\n]%*c");	//Perfectly clear the input buffer.
-
-		if (std::cin >> *int_ptr_data)	//The entry was successful.
-			std::cout << "You have entered the integer value: [" << *int_ptr_data
-			<< "] at memory address: [" << int_ptr_data << "]." << std::endl;
+		if (std::cin >> *ptr_int_data)	//The entry was successful.
+			std::cout << "You have entered the integer value: [" << *ptr_int_data
+			<< "] at memory address: [" << ptr_int_data << "]." << std::endl;
 		else
 			{
 				//Reset the option pressed by the user.
-				*int_ptr_data = V_ZERO;
+				*ptr_int_data = V_ZERO;
 
 				//The input was not a valid integer.
 				std::cerr << "Error: The input is not a valid integer." << std::endl;
@@ -521,6 +538,7 @@ void Pascal_s_Triangle::generate_new_existing_Pascal_s_Triangle()
 	{
 		/* Preliminary initialization of variables. */
 		int int_coeff_value = V_ZERO;
+		int int_counting_items = V_ZERO;
 
 		if (this->ptr_ptr_int_Pascal_s_Triangle = (int **) malloc(this->int_number_Rows * sizeof(int *)))
 			{
@@ -532,25 +550,31 @@ void Pascal_s_Triangle::generate_new_existing_Pascal_s_Triangle()
 						std::cout << "# " << int_n_row + V_ONE << " of " << this->int_number_Rows << "\t[";
 
 						if (this->ptr_ptr_int_Pascal_s_Triangle[int_n_row] = (int *) malloc((int_n_row+V_ONE) * sizeof(int)))
-							for (int int_n_col = V_ZERO; int_n_col <= int_n_row; int_n_col++)
-								{
-									if (int_n_col == V_ZERO || int_n_col == int_n_row)
-										int_coeff_value = V_ONE;
-									else
-										int_coeff_value = this->ptr_ptr_int_Pascal_s_Triangle[int_n_row + V_MINUS_ONE][int_n_col + V_MINUS_ONE]
-												+ this->ptr_ptr_int_Pascal_s_Triangle[int_n_row + V_MINUS_ONE][int_n_col];
+							{
+								for (int int_n_col = V_ZERO; int_n_col <= int_n_row; int_n_col++)
+									{
+										int_counting_items++;
 
-									std::cout << int_coeff_value;
+										if (int_n_col == V_ZERO || int_n_col == int_n_row)
+											int_coeff_value = V_ONE;
+										else
+											int_coeff_value = this->ptr_ptr_int_Pascal_s_Triangle[int_n_row + V_MINUS_ONE][int_n_col + V_MINUS_ONE]
+													+ this->ptr_ptr_int_Pascal_s_Triangle[int_n_row + V_MINUS_ONE][int_n_col];
 
-									if (int_n_col < int_n_row) std::cout << ",\t";
+										std::cout << int_coeff_value;
 
-									this->ptr_ptr_int_Pascal_s_Triangle[int_n_row][int_n_col] = int_coeff_value;
-								}
+										if (int_n_col < int_n_row) std::cout << ",\t";
+
+										this->ptr_ptr_int_Pascal_s_Triangle[int_n_row][int_n_col] = int_coeff_value;
+									}
+							}
 						else
 							std::cerr << "Insufficient memory to create for row: [" << int_n_row << "] of [" << int_number_Rows << "] of Pascal's Triangle." << std::endl;
 
 						std::cout << "]." << std::endl;
 					}
+
+				std::cout << "[" << int_counting_items << "] Output results generated..." << std::endl;
 			}
 		else
 			std::cerr << "Insufficient memory to create [" << this->int_number_Rows << "] rows of Pascal's Triangle." << std::endl;
@@ -568,6 +592,12 @@ void Pascal_s_Triangle::generate_new_existing_Pascal_s_Triangle()
  **			another response will prevent the area	**
  **			from being rewritten, regenerated or	**
  **			updated of storage of said triangle.	**
+ **								**
+ **			Pretreatment to clear the option	**
+ **			variable and input buffer.		**
+ **				scanf("%*[^\n]%*c");		**
+ **			Perfectly clear the input buffer.	**
+ **								**
  ** Arguments:		None.					**
  ** Result:		Returns a boolean true if the answer to	**
  **			regenerate 'Pascal's Triangle' is 'Y'	**
@@ -586,8 +616,6 @@ bool Pascal_s_Triangle::get_bool_Response_Regeneration() const
 		std::cout << "+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+" << std::endl;
 		std::cout << "Do you want to redo it and prepare it to create a new one from scratch. (Y/N)? : ";
 
-		/* Pretreatment to clear the option variable and input buffer. */
-		scanf("%*[^\n]%*c"); //Perfectly clear the input buffer.
 		std::cin >> chr_response_Yy;
 		clearerr(stdin);
 
@@ -679,6 +707,10 @@ std::vector<std::vector<int>> Pascal_s_Triangle::get_vec_vec_matrix_Pascal_s_Tri
 							vec_vec_matrix_Pascal_s_Triangle.push_back(vec_columns_Pascal_s_Triangle);
 						}
 
+					std::cout << "[" << int_counting_items << "] Output results generated..." << std::endl << std::endl;
+
+					int_counting_items = V_ZERO;
+
 					std::cout << "Visualizing vector of 'Pascal's Triangle' vectors. Object # [" << this->sttc_int_Counting_Pascal_s_Triangles
 					<< "] with [" << this->int_number_Rows << "] rows." << std::endl;
 
@@ -689,10 +721,15 @@ std::vector<std::vector<int>> Pascal_s_Triangle::get_vec_vec_matrix_Pascal_s_Tri
 					for (int int_row = V_ZERO; int_row < this->int_number_Rows; int_row++)
 						{
 							for (int int_col = V_ZERO; int_col <= int_row; int_col++)
-								std::cout << "[" << vec_vec_matrix_Pascal_s_Triangle[int_row][int_col] << "]\t";
+								{
+									int_counting_items++;
+									std::cout << "[" << vec_vec_matrix_Pascal_s_Triangle[int_row][int_col] << "]\t";
+								}
 
 							std::cout << std::endl;
 						}
+
+					std::cout << "[" << int_counting_items << "] Output results generated..." << std::endl;
 				}
 			else
 				std::cerr << "Warning! There is no reported a valid number of rows between [" << V_LOWER_LIMIT_ROWS << "] & [" << V_UPPER_LIMIT_ROWS <<"] to return a vector of vectors from 'Pascal's Triangle'." << std::endl;
@@ -701,6 +738,92 @@ std::vector<std::vector<int>> Pascal_s_Triangle::get_vec_vec_matrix_Pascal_s_Tri
 
 		return vec_vec_matrix_Pascal_s_Triangle;
 	};
+
+/*****************************************************************
+ ** Class:		Pascal_s_Triangle.			**
+ ** Method:		void save_as_a_report_file(		**
+ **				std::string str_IO_FileName).	**
+ ** Explanation:	The purpose of this method is to dump	**
+ **			the pointer of pointers that contains	**
+ **			the generated and calculated Pascal's	**
+ **			Triangle into a sequential text file so	**
+ **			that it can be backed up.		**
+ **			This file is always opened to add at the**
+ **			end each of the Triangle generations	**
+ **			that the user intends.			**
+ ** Arguments:		std::string str_IO_FileName.		**
+ ** Result:		The result of this function is to output**
+ **			the content, once saved, of the Pascal's**
+ **			Triangle report generated from an input	**
+ **			and output file, and convert it into a	**
+ **			kind of work log for this program.	**
+ ****************************************************************/
+void Pascal_s_Triangle::save_as_a_report_file(std::string str_IO_FileName) const
+	{
+		/* Initial declaration of elementary work variables. */
+		int int_counting_items = V_ZERO;
+		std::string str_readed_line = "";
+
+		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Save Pascal's Triangle as a report file...");
+
+		/* Data request. */
+		if (str_IO_FileName.empty())
+			{
+				std::cout << "Enter a valid output file name : ";
+				std::getline(std::cin >> std::ws, str_IO_FileName);
+			}
+
+		if (this->ptr_ptr_int_Pascal_s_Triangle)
+			{
+				if (this->int_number_Rows >= V_LOWER_LIMIT_ROWS && this->int_number_Rows <= V_UPPER_LIMIT_ROWS)
+					{
+						/* Open a file for reading and writing simultaneously. */
+						std::fstream Pascal_s_Triangle_IO_File(str_IO_FileName, std::ios::in | std::ios::out | std::ios::app);
+
+						/* Check if the file was opened successfully. */
+						if (Pascal_s_Triangle_IO_File.is_open())
+							{
+								/* Get current time and date. */
+								time_t t_seconds = V_ZERO;
+								time(&t_seconds);
+								Pascal_s_Triangle_IO_File << ctime(&t_seconds);
+
+								/* Write a sequential Pascal's Triangle series to the opened file. */
+								for (int int_y = V_ZERO; int_y < this->int_number_Rows; int_y++)
+									{
+										for (int int_x = V_ZERO; int_x < int_y; int_x++)
+											{
+												int_counting_items++;
+												Pascal_s_Triangle_IO_File << "[" << *(*(this->ptr_ptr_int_Pascal_s_Triangle + int_y) + int_x) << "]\t";
+											}
+
+										Pascal_s_Triangle_IO_File << std::endl;
+									}
+
+								Pascal_s_Triangle_IO_File << "[" << int_counting_items << "] Generated output results." << std::endl << std::endl;
+
+
+								/* Move the read and write pointer to the beginning of the file. */
+								Pascal_s_Triangle_IO_File.seekg(V_ZERO, std::ios::beg);
+
+								/* Reading line by line from the file until it finds its end. */
+								std::cout << "Display of file content: [" << str_IO_FileName << "] line by line." << std::endl << std::endl;
+
+								while (std::getline(Pascal_s_Triangle_IO_File, str_readed_line))
+									std::cout << str_readed_line << std::endl;
+
+								/* Close the file when finished. */
+								Pascal_s_Triangle_IO_File.close();
+							}
+						else
+							std::cerr << "File: [" << str_IO_FileName << "] could not be opened to save the Pascal's Triangle report!" << std::endl;
+					}
+				else
+					std::cerr << "The number of rows [" << this->int_number_Rows << "] is not in the range of [" << V_LOWER_LIMIT_ROWS << "] and [" << V_UPPER_LIMIT_ROWS << "]." << std::endl;
+			}
+		else
+			std::cerr << "Pascal's Triangle has not been generated and cannot be saved to a report file." << std::endl;
+	}
 
 /*****************************************************************
  ** Class:		Pascal_s_Triangle.			**
@@ -741,7 +864,8 @@ void Pascal_s_Triangle::set_int_number_Rows(const int int_number_Rows)
  ****************************************************************/
 void Pascal_s_Triangle::view_detail_Pascal_s_Triangle() const
 	{
-		int int_idx_counting = V_ZERO;
+		/* Initial declaration of elementary work variables. */
+		int int_counting_items = V_ZERO;
 		int int_coeff_value = V_ZERO;
 
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Viewing Detail 'Pascal's Triangle'...");
@@ -760,7 +884,7 @@ void Pascal_s_Triangle::view_detail_Pascal_s_Triangle() const
 					for (int int_n_row = V_ZERO; int_n_row < this->int_number_Rows; int_n_row++)
 						{
 							for (int int_n_col = V_ZERO; int_n_col <= int_n_row; int_n_col++)
-								std::cout << "#[" << int_idx_counting++ << "].\t(Row: [" << int_n_row + V_ONE
+								std::cout << "#[" << int_counting_items++ << "].\t(Row: [" << int_n_row + V_ONE
 								<< "] of [" << this->int_number_Rows
 								<< "]. Column: [" << int_n_col + V_ONE
 								<< "] of [" << int_n_row + V_ONE
@@ -773,6 +897,8 @@ void Pascal_s_Triangle::view_detail_Pascal_s_Triangle() const
 
 							std::cout << std::endl;
 						}
+
+					std::cout << "[" << int_counting_items << "] Output results generated..." << std::endl;
 				}
 			else
 				std::cerr << "Warning! There is no a valid number of lines between [" << V_LOWER_LIMIT_ROWS << "] & [" << V_UPPER_LIMIT_ROWS << "] to display the 'Pascal's Triangle' object report." << std::endl;
@@ -808,6 +934,8 @@ void Pascal_s_Triangle::view_header_Pascal_s_Triangle(const std::string str_name
 		std::cout << "+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+" << std::endl;
 		std::cout << "|                               Pascal's Triangle.                               |" << std::endl;
 		std::cout << "+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+" << std::endl;
+		std::cout << "| Program: [" << __FILE__ << "].\tDate: [" << __DATE__ << "].\tTime: [" << __TIME__ << "].\t[" << __STDC__ <<  "]." << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+" << std::endl;
 		std::cout << "| Number of instantiated and created object of class 'Pascal's Triangle':\t["
 			<< this->sttc_int_Counting_Pascal_s_Triangles << "]" << std::endl;
 		std::cout << "| Number of rows of the instantiated class 'Pascal's Triangle':\t\t\t["
@@ -837,6 +965,9 @@ void Pascal_s_Triangle::view_header_Pascal_s_Triangle(const std::string str_name
  ****************************************************************/
 void Pascal_s_Triangle::view_info_class_Pascal_s_Triangle() const
 	{
+		/* Initial declaration of elementary work variables. */
+		int int_counting_items = V_ZERO;
+
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Viewing Info Class 'Pascal's Triangle'...");
 
 		if (this->ptr_ptr_int_Pascal_s_Triangle)
@@ -859,18 +990,23 @@ void Pascal_s_Triangle::view_info_class_Pascal_s_Triangle() const
 							<< "]." << std::endl;
 
 							for (int int_n_col = V_ZERO; int_n_col <= int_n_row; int_n_col++)
+								{
+									int_counting_items++;
 
-								std::cout << "  - Col: [" << int_n_col + V_ONE
-								<< "] of [" << int_n_row + V_ONE
-								<< "].\t[" << &this->ptr_ptr_int_Pascal_s_Triangle[int_n_row][int_n_col]
-								<< "] : [" << this->ptr_ptr_int_Pascal_s_Triangle[int_n_row] + int_n_col
-								<< "] : [" << *(this->ptr_ptr_int_Pascal_s_Triangle + int_n_row) + int_n_col
-								<< "].\t[" << *(*(this->ptr_ptr_int_Pascal_s_Triangle + int_n_row) + int_n_col)
-								<< "]\t[" << this->ptr_ptr_int_Pascal_s_Triangle[int_n_row][int_n_col]
-								<< "]." << std::endl;
+									std::cout << "  - Col: [" << int_n_col + V_ONE
+									<< "] of [" << int_n_row + V_ONE
+									<< "].\t[" << &this->ptr_ptr_int_Pascal_s_Triangle[int_n_row][int_n_col]
+									<< "] : [" << this->ptr_ptr_int_Pascal_s_Triangle[int_n_row] + int_n_col
+									<< "] : [" << *(this->ptr_ptr_int_Pascal_s_Triangle + int_n_row) + int_n_col
+									<< "].\t[" << *(*(this->ptr_ptr_int_Pascal_s_Triangle + int_n_row) + int_n_col)
+									<< "]\t[" << this->ptr_ptr_int_Pascal_s_Triangle[int_n_row][int_n_col]
+									<< "]." << std::endl;
+								}
 
 							std::cout << std::endl;
 						}
+
+					std::cout << "[" << int_counting_items << "] Output results generated..." << std::endl;
 				}
 			else
 				std::cerr << "Warning! There is no a valid row number between [" << V_LOWER_LIMIT_ROWS << "] & [" << V_UPPER_LIMIT_ROWS << "] to display the report of the object of the generated class 'Pascal's Triangle'." << std::endl;
@@ -944,6 +1080,7 @@ enum enm_Action_Options_Pascal_s_Triangle
 		enm_act_opt_PST_create_new_Pascal_s_Triangle,
 		enm_act_opt_PST_get_int_number_Rows,
 		enm_act_opt_PST_get_vec_vec_matrix_Pascal_s_Triangle,
+		enm_act_opt_PST_save_as_a_report_file,
 		enm_act_opt_PST_view_detail_Pascal_s_Triangle,
 		enm_act_opt_PST_view_info_class_Pascal_s_Triangle,
 		enm_act_opt_PST_view_quick_info
@@ -1065,9 +1202,11 @@ int int_unit_Testing_Pascal_s_Triangle(Pascal_s_Triangle &psT)
 				std::cout << "| [4]. Get its number of rows.          |" << std::endl;
 				std::cout << "| [5]. Get Triangle's matrix.           |" << std::endl;
 				std::cout << "+---------------------------------------+" << std::endl;
-				std::cout << "| [6]. View details info.               |" << std::endl;
-				std::cout << "| [7]. View general info.               |" << std::endl;
-				std::cout << "| [8]. View quick   info.               |" << std::endl;
+				std::cout << "| [6]. Save as a report file.           |" << std::endl;
+				std::cout << "+---------------------------------------+" << std::endl;
+				std::cout << "| [7]. View details info.               |" << std::endl;
+				std::cout << "| [8]. View general info.               |" << std::endl;
+				std::cout << "| [9]. View quick   info.               |" << std::endl;
 				std::cout << "+---------------------------------------+" << std::endl;
 				std::cout << "| [Another value]. Exit treatment.      |" << std::endl;
 				std::cout << "*===|====+===|====+===|====+===|====+===*" << std::endl;
@@ -1102,6 +1241,11 @@ int int_unit_Testing_Pascal_s_Triangle(Pascal_s_Triangle &psT)
 
 						case enm_act_opt_PST_get_vec_vec_matrix_Pascal_s_Triangle:
 							vec_vec_matrix_Pascal_s_Triangle=psT.get_vec_vec_matrix_Pascal_s_Triangle();
+							int_number_Operations++;
+							break;
+
+						case enm_act_opt_PST_save_as_a_report_file:
+							psT.save_as_a_report_file("");
 							int_number_Operations++;
 							break;
 
