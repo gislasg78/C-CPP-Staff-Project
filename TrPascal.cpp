@@ -222,6 +222,7 @@ int Pascal_s_Triangle::sttc_int_Counting_Pascal_s_Triangles = V_ZERO;
  ****************************************************************/
 Pascal_s_Triangle::Pascal_s_Triangle()
 	{
+		/* Initialization of preliminary work variables. */
 		this->sttc_int_Counting_Pascal_s_Triangles++;
 		this->int_number_Rows = V_ZERO;
 		this->ptr_ptr_int_Pascal_s_Triangle = NULL;
@@ -243,6 +244,7 @@ Pascal_s_Triangle::Pascal_s_Triangle()
  ****************************************************************/
 Pascal_s_Triangle::Pascal_s_Triangle(const int int_number_Rows)
 	{
+		/* Initialization of preliminary work variables. */
 		this->sttc_int_Counting_Pascal_s_Triangles++;
 		this->int_number_Rows = int_number_Rows;
 		this->ptr_ptr_int_Pascal_s_Triangle = NULL;
@@ -270,6 +272,7 @@ Pascal_s_Triangle::Pascal_s_Triangle(const int int_number_Rows)
  ****************************************************************/
 Pascal_s_Triangle::Pascal_s_Triangle(const Pascal_s_Triangle &other_obj_Pascal_s_Triangle, const bool bln_shared_PST)
 	{
+		/* Initialization of preliminary work variables. */
 		this->sttc_int_Counting_Pascal_s_Triangles++;
 		this->int_number_Rows = other_obj_Pascal_s_Triangle.int_number_Rows;
 
@@ -316,6 +319,7 @@ Pascal_s_Triangle::~Pascal_s_Triangle()
  ****************************************************************/
 int Pascal_s_Triangle::capture_int_number_Rows()
 	{
+		/* Initialization of preliminary work variables. */
 		int int_number_Rows = V_ZERO;
 
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Capturing number of rows of Pascal's Triangle...");
@@ -324,6 +328,7 @@ int Pascal_s_Triangle::capture_int_number_Rows()
 
 		Pascal_s_Triangle::enter_a_data(&int_number_Rows);	//Request and validate specific data.
 
+		/* Resetting the pointer pointer and reassigning its number of rows. */
 		if (int_number_Rows >= V_LOWER_LIMIT_ROWS && int_number_Rows <= V_UPPER_LIMIT_ROWS)
 			{
 				Pascal_s_Triangle::clear_Pascal_s_Triangle();
@@ -622,6 +627,7 @@ void Pascal_s_Triangle::generate_new_existing_Pascal_s_Triangle()
  ****************************************************************/
 bool Pascal_s_Triangle::get_bool_response_regeneration(const std::string str_message) const
 	{
+		/* Initialization of preliminary work variables. */
 		char chr_response_Yy = NULL_CHARACTER;
 
 		std::cout << std::endl;
@@ -1140,6 +1146,7 @@ void do_principal_unit_Testing_Pascal_s_Triangle(const int int_Quantity)
 
 				std::cout << "Assigning new instance..." << std::endl;
 				ptr_obj_Pascal_s_Triangle = new Pascal_s_Triangle();
+				std::cout << "Address of the new instance: [" << ptr_obj_Pascal_s_Triangle << "]" << std::endl;
 
 				std::cout << "Storing it in vector..." << std::endl;
 				vec_Pascal_s_Triangle.push_back(*ptr_obj_Pascal_s_Triangle);
@@ -1327,6 +1334,7 @@ int int_unit_Testing_Pascal_s_Triangle(Pascal_s_Triangle &psT)
  ****************************************************************/
 int main()
 	{
+		/* Initialization of preliminary work variables. */
 		int int_Quantity = V_ZERO;
 
 		std::cout << std::endl;
