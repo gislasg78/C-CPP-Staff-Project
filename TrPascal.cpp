@@ -1318,7 +1318,20 @@ int main()
 		std::cout << "Number of Pascal's Triangles to generate between ["<< V_LOWER_LIMIT_PST << "] and [" << V_UPPER_LIMIT_PST << "] : ";
 
 		if (std::cin >> int_Quantity)  //The entry was successful.
-			std::cout << "You have entered the integer value: [" << int_Quantity << "]." << std::endl;
+			{
+				std::cout << "You have entered the integer value: [" << int_Quantity << "]." << std::endl;
+
+				/* Call the condition that can throw an exception if the value is zero. */
+				try
+					{
+						if (int_Quantity < V_ONE)
+							throw std::runtime_error("Invalid captured value!");
+					}
+				catch (const std::exception &Pascal_s_Triangle_my_exception)
+					{
+						std::cerr << "Fatal Mistake! : [" << Pascal_s_Triangle_my_exception.what() << "]." << std::endl;
+					}
+			}
 		else
 			{
 				//The input was not a valid integer.
