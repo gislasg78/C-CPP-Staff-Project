@@ -488,23 +488,26 @@ void Pascal_s_Triangle::create_new_Pascal_s_Triangle(const int int_number_Rows)
  ****************************************************************/
 void Pascal_s_Triangle::enter_a_data(int *const ptr_int_data) const
 	{
-		if (std::cin >> *ptr_int_data)	//The entry was successful.
-			std::cout << "You have entered the integer value: [" << *ptr_int_data
-			<< "] at memory address: [" << ptr_int_data << "]." << std::endl;
+		if (ptr_int_data)
+			if (std::cin >> *ptr_int_data)	//The entry was successful.
+				std::cout << "You have entered the integer value: [" << *ptr_int_data
+				<< "] at memory address: [" << ptr_int_data << "]." << std::endl;
+			else
+				{
+					//Reset the option pressed by the user.
+					*ptr_int_data = V_ZERO;
+
+					//The input was not a valid integer.
+					std::cerr << "Error: The input is not a valid integer." << std::endl;
+
+					//Clear the error state.
+					std::cin.clear();
+
+					//Discard invalid content in the input buffer.
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+				}
 		else
-			{
-				//Reset the option pressed by the user.
-				*ptr_int_data = V_ZERO;
-
-				//The input was not a valid integer.
-				std::cerr << "Error: The input is not a valid integer." << std::endl;
-
-				//Clear the error state.
-				std::cin.clear();
-
-				//Discard invalid content in the input buffer.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
-			}
+			std::cerr << "There is no valid memory address to house the entire data to be captured...";
 
 		clearerr(stdin);
 	};
@@ -533,6 +536,9 @@ void Pascal_s_Triangle::enter_a_data(int *const ptr_int_data) const
  **			Avoid flooding memory and first make	**
  **			sure that the double pointer is properly**
  **			freed and initialized.			**
+ **								**
+ **			Note: When calling this function,	**
+ **			there must be a null pointer pointer.	**
  ****************************************************************/
 void Pascal_s_Triangle::generate_new_existing_Pascal_s_Triangle()
 	{
@@ -540,44 +546,47 @@ void Pascal_s_Triangle::generate_new_existing_Pascal_s_Triangle()
 		int int_coeff_value = V_ZERO;
 		int int_counting_items = V_ZERO;
 
-		if (this->ptr_ptr_int_Pascal_s_Triangle = (int **) malloc(this->int_number_Rows * sizeof(int *)))
-			{
-				std::cout << "+ Generating on screen a new 'Pascal's Triangle' object # [" << this->sttc_int_Counting_Pascal_s_Triangles
-				<< "] with [" << this->int_number_Rows << "] rows at memory address: [" << this->ptr_ptr_int_Pascal_s_Triangle << "]..." << std::endl;
+		if (this->ptr_ptr_int_Pascal_s_Triangle == NULL)
+			if (this->ptr_ptr_int_Pascal_s_Triangle = (int **) malloc(this->int_number_Rows * sizeof(int *)))
+				{
+					std::cout << "+ Generating on screen a new 'Pascal's Triangle' object # [" << this->sttc_int_Counting_Pascal_s_Triangles
+					<< "] with [" << this->int_number_Rows << "] rows at memory address: [" << this->ptr_ptr_int_Pascal_s_Triangle << "]..." << std::endl;
 
-				for (int int_n_row = V_ZERO; int_n_row < this->int_number_Rows; int_n_row++)
-					{
-						std::cout << "# " << int_n_row + V_ONE << " of " << this->int_number_Rows << "\t[";
+					for (int int_n_row = V_ZERO; int_n_row < this->int_number_Rows; int_n_row++)
+						{
+							std::cout << "# " << int_n_row + V_ONE << " of " << this->int_number_Rows << "\t[";
 
-						if (this->ptr_ptr_int_Pascal_s_Triangle[int_n_row] = (int *) malloc((int_n_row+V_ONE) * sizeof(int)))
-							{
-								for (int int_n_col = V_ZERO; int_n_col <= int_n_row; int_n_col++)
-									{
-										int_counting_items++;
+							if (this->ptr_ptr_int_Pascal_s_Triangle[int_n_row] = (int *) malloc((int_n_row+V_ONE) * sizeof(int)))
+								{
+									for (int int_n_col = V_ZERO; int_n_col <= int_n_row; int_n_col++)
+										{
+											int_counting_items++;
 
-										if (int_n_col == V_ZERO || int_n_col == int_n_row)
-											int_coeff_value = V_ONE;
-										else
-											int_coeff_value = this->ptr_ptr_int_Pascal_s_Triangle[int_n_row + V_MINUS_ONE][int_n_col + V_MINUS_ONE]
-													+ this->ptr_ptr_int_Pascal_s_Triangle[int_n_row + V_MINUS_ONE][int_n_col];
+											if (int_n_col == V_ZERO || int_n_col == int_n_row)
+												int_coeff_value = V_ONE;
+											else
+												int_coeff_value = this->ptr_ptr_int_Pascal_s_Triangle[int_n_row + V_MINUS_ONE][int_n_col + V_MINUS_ONE]
+														+ this->ptr_ptr_int_Pascal_s_Triangle[int_n_row + V_MINUS_ONE][int_n_col];
 
-										std::cout << int_coeff_value;
+											std::cout << int_coeff_value;
 
-										if (int_n_col < int_n_row) std::cout << ",\t";
+											if (int_n_col < int_n_row) std::cout << ",\t";
 
-										this->ptr_ptr_int_Pascal_s_Triangle[int_n_row][int_n_col] = int_coeff_value;
-									}
-							}
-						else
-							std::cerr << "Insufficient memory to create for row: [" << int_n_row << "] of [" << int_number_Rows << "] of Pascal's Triangle." << std::endl;
+											this->ptr_ptr_int_Pascal_s_Triangle[int_n_row][int_n_col] = int_coeff_value;
+										}
+								}
+							else
+								std::cerr << "Insufficient memory to create for row: [" << int_n_row << "] of [" << int_number_Rows << "] of Pascal's Triangle." << std::endl;
 
-						std::cout << "]." << std::endl;
-					}
+							std::cout << "]." << std::endl;
+						}
 
-				std::cout << "[" << int_counting_items << "] Output results generated..." << std::endl;
-			}
+					std::cout << "[" << int_counting_items << "] Output results generated..." << std::endl;
+				}
+			else
+				std::cerr << "Insufficient memory to create [" << this->int_number_Rows << "] rows of Pascal's Triangle." << std::endl;
 		else
-			std::cerr << "Insufficient memory to create [" << this->int_number_Rows << "] rows of Pascal's Triangle." << std::endl;
+			std::cerr << "An attempt was made to call the function that generates the new Pascal's Triangle without releasing the previously created one..." << std::endl;
 	};
 
 /*****************************************************************
@@ -1108,6 +1117,7 @@ enum enm_Action_Options_Pascal_s_Triangle
 void do_principal_unit_Testing_Pascal_s_Triangle(const int int_Quantity)
 	{
 		/* Initialization of preliminary variables. */
+		int int_counting_items = V_ZERO;
 		int int_number_Operations = V_ZERO;
 
 		Pascal_s_Triangle *ptr_obj_Pascal_s_Triangle = nullptr;
@@ -1141,12 +1151,15 @@ void do_principal_unit_Testing_Pascal_s_Triangle(const int int_Quantity)
 			{
 				std::cout << std::endl;
 				std::cout << "Starting main unit tests of Pascal's Triangle..." << std::endl;
+				std::cout << "Instance element # [" << int_counting_items++ << "] at address memory: [" << &it_vec_Pascal_s_Triangle << "]." << std::endl;
 
 				int_number_Operations = int_unit_Testing_Pascal_s_Triangle(*it_vec_Pascal_s_Triangle);
 
 				std::cout << "Triangle's Pascal operations number performed: [" << int_number_Operations << "]." << std::endl;
 				std::cout << std::endl;
 			}
+
+		std::cout << "[" << int_counting_items << "] Output results generated..." << std::endl;
 
 		std::cout << "Cleaning vector of # [" << vec_Pascal_s_Triangle.size() << "] objects from Pascal's Triangles." << std::endl;
 
