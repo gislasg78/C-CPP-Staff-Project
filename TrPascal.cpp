@@ -47,6 +47,9 @@
 #define	CARRIAGE_RETURN		'\n'	//Carriage Return.
 #define NULL_CHARACTER		'\0'	//Null character.
 
+//Default Report File Name.
+#define	V_DEF_PST_FILENAME	"TPascal.txt"	//Default Report FileName.
+
 //Symbolic constants of minimum and maximum limits.
 #define V_LOWER_LIMIT_PST	1	//Lower limit of PST.
 #define V_LOWER_LIMIT_ROWS	1	//Lower limit of rows.
@@ -227,6 +230,7 @@ Pascal_s_Triangle::Pascal_s_Triangle()
 		this->int_number_Rows = V_ZERO;
 		this->ptr_ptr_int_Pascal_s_Triangle = NULL;
 
+		/* Call to the method to display the header information. */
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Constructing an object of class 'Pascal's Triangle' as a skeleton or shell......");
 	};
 
@@ -249,6 +253,7 @@ Pascal_s_Triangle::Pascal_s_Triangle(const int int_number_Rows)
 		this->int_number_Rows = int_number_Rows;
 		this->ptr_ptr_int_Pascal_s_Triangle = NULL;
 
+		/* Call to the method to display the header information. */
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Constructing an object of class 'Pascal's Triangle' from only a given number of rows...");
 		Pascal_s_Triangle::create_new_Pascal_s_Triangle(int_number_Rows);
 	};
@@ -281,6 +286,7 @@ Pascal_s_Triangle::Pascal_s_Triangle(const Pascal_s_Triangle &other_obj_Pascal_s
 		else
 			this->ptr_ptr_int_Pascal_s_Triangle = nullptr;
 
+		/* Call to the method to display the header information. */
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Constructing an object 'Pascal's Triangle' class from an existing one...");
 	};
 
@@ -296,6 +302,7 @@ Pascal_s_Triangle::Pascal_s_Triangle(const Pascal_s_Triangle &other_obj_Pascal_s
  ****************************************************************/
 Pascal_s_Triangle::~Pascal_s_Triangle()
 	{
+		/* Call to the method to display the header information. */
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Destroying 'Pascal's Triangle'...");
 
 		this->int_number_Rows = V_ZERO;
@@ -322,6 +329,7 @@ int Pascal_s_Triangle::capture_int_number_Rows()
 		/* Initialization of preliminary work variables. */
 		int int_number_Rows = V_ZERO;
 
+		/* Call to the method to display the header information. */
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Capturing number of rows of Pascal's Triangle...");
 
 		std::cout << "Manually enter the number of rows between [" << V_LOWER_LIMIT_ROWS << "] & [" << V_UPPER_LIMIT_ROWS << "] that the Pascal's Triangle will have to generate: ";
@@ -361,6 +369,7 @@ void Pascal_s_Triangle::clear_Pascal_s_Triangle()
 		/* Preliminary initialization of variables. */
 		int int_counting_items = V_ZERO;
 
+		/* Call to the method to display the header information. */
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Clearing existing Pascal's Triangle...");
 
 		if (this->ptr_ptr_int_Pascal_s_Triangle)
@@ -438,6 +447,7 @@ void Pascal_s_Triangle::clear_Pascal_s_Triangle()
  ****************************************************************/
 void Pascal_s_Triangle::create_new_Pascal_s_Triangle(const int int_number_Rows)
 	{
+		/* Call to the method to display the header information. */
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Creating new 'Pascal's Triangle'...");
 
 		if (this->ptr_ptr_int_Pascal_s_Triangle)
@@ -494,6 +504,7 @@ void Pascal_s_Triangle::create_new_Pascal_s_Triangle(const int int_number_Rows)
  ****************************************************************/
 void Pascal_s_Triangle::enter_a_data(int *const ptr_int_data) const
 	{
+		/* Validate if the sent pointer contains a valid return address. */
 		if (ptr_int_data)
 			if (std::cin >> *ptr_int_data)	//The entry was successful.
 				std::cout << "You have entered the integer value: [" << *ptr_int_data
@@ -551,6 +562,9 @@ void Pascal_s_Triangle::generate_new_existing_Pascal_s_Triangle()
 		/* Preliminary initialization of variables. */
 		int int_coeff_value = V_ZERO;
 		int int_counting_items = V_ZERO;
+
+		/* Call to the method to display the header information. */
+		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Generate a new pointer of pointers for 'Pascal's Triangle'...");
 
 		if (this->ptr_ptr_int_Pascal_s_Triangle == NULL)
 			if (this->int_number_Rows >= V_LOWER_LIMIT_ROWS && this->int_number_Rows <= V_UPPER_LIMIT_ROWS)
@@ -630,6 +644,9 @@ bool Pascal_s_Triangle::get_bool_response_regeneration(const std::string str_mes
 		/* Initialization of preliminary work variables. */
 		char chr_response_Yy = NULL_CHARACTER;
 
+		/* Call to the method to display the header information. */
+		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Obtaining a given response to perform a given operation...");
+
 		std::cout << std::endl;
 		std::cout << "+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+" << std::endl;
 		std::cout << "|    Information. There was already a previously generated Pascal's Triangle.    |" << std::endl;
@@ -656,6 +673,7 @@ bool Pascal_s_Triangle::get_bool_response_regeneration(const std::string str_mes
  ****************************************************************/
 int Pascal_s_Triangle::get_int_number_Rows() const
 	{
+		/* Call to the method to display the header information. */
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Getting number of rows to 'Pascal's Triangle'...");
 
 		return this->int_number_Rows;
@@ -689,6 +707,7 @@ std::vector<std::vector<int>> Pascal_s_Triangle::get_vec_vec_matrix_Pascal_s_Tri
 
 		std::vector<std::vector<int>> vec_vec_matrix_Pascal_s_Triangle;
 
+		/* Call to the method to display the header information. */
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Generating the vector of vectors from 'Pascal's Triangle' double pointer...");
 
 		/* Creation and loading of Pascal's Triangle into a vector of vectors. */
@@ -785,6 +804,7 @@ void Pascal_s_Triangle::save_as_a_report_file(std::string &str_IO_FileName) cons
 		std::string str_IO_PST_FileName = "";
 		std::string str_readed_line = "";
 
+		/* Call to the method to display the header information. */
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Save Pascal's Triangle as a report file...");
 
 		if (this->ptr_ptr_int_Pascal_s_Triangle)
@@ -866,6 +886,7 @@ void Pascal_s_Triangle::set_int_number_Rows(const int int_number_Rows)
 	{
 		this->int_number_Rows = int_number_Rows;
 
+		/* Call to the method to display the header information. */
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Setting number of rows to 'Pascal's Triangle'...");
 	};
 
@@ -891,6 +912,7 @@ void Pascal_s_Triangle::view_detail_Pascal_s_Triangle() const
 		int int_counting_items = V_ZERO;
 		int int_coeff_value = V_ZERO;
 
+		/* Call to the method to display the header information. */
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Viewing Detail 'Pascal's Triangle'...");
 
 		if (this->ptr_ptr_int_Pascal_s_Triangle)
@@ -991,6 +1013,7 @@ void Pascal_s_Triangle::view_info_class_Pascal_s_Triangle() const
 		/* Initial declaration of elementary work variables. */
 		int int_counting_items = V_ZERO;
 
+		/* Call to the method to display the header information. */
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Viewing Info Class 'Pascal's Triangle'...");
 
 		if (this->ptr_ptr_int_Pascal_s_Triangle)
@@ -1134,6 +1157,7 @@ void do_principal_unit_Testing_Pascal_s_Triangle(const int int_Quantity)
 		int int_counting_items = V_ZERO;
 		int int_number_Operations = V_ZERO;
 
+		/* Initialization of work objects. */
 		Pascal_s_Triangle *ptr_obj_Pascal_s_Triangle = nullptr;
 		std::vector <Pascal_s_Triangle> vec_Pascal_s_Triangle;
 		std::vector <Pascal_s_Triangle>::iterator it_vec_Pascal_s_Triangle;
@@ -1146,7 +1170,7 @@ void do_principal_unit_Testing_Pascal_s_Triangle(const int int_Quantity)
 
 				std::cout << "Assigning new instance..." << std::endl;
 				ptr_obj_Pascal_s_Triangle = new Pascal_s_Triangle();
-				std::cout << "Address of the new instance: [" << ptr_obj_Pascal_s_Triangle << "]" << std::endl;
+				std::cout << "Address of the new instance: [" << ptr_obj_Pascal_s_Triangle << "]." << std::endl;
 
 				std::cout << "Storing it in vector..." << std::endl;
 				vec_Pascal_s_Triangle.push_back(*ptr_obj_Pascal_s_Triangle);
@@ -1208,7 +1232,7 @@ int int_unit_Testing_Pascal_s_Triangle(Pascal_s_Triangle &psT)
 		int int_number_Option = V_ZERO;
 
 		/* Default file naming. */
-		std::string str_IO_default_PST_FileName = "TPascal.txt";
+		std::string str_IO_default_PST_FileName = V_DEF_PST_FILENAME;
 		std::string str_IO_new_PST_FileName = "";
 		std::vector<std::vector<int>> vec_vec_matrix_Pascal_s_Triangle;
 
@@ -1337,6 +1361,7 @@ int main()
 		/* Initialization of preliminary work variables. */
 		int int_Quantity = V_ZERO;
 
+		/* Messages from the main marquee of this program. */
 		std::cout << std::endl;
 		std::cout << "+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+" << std::endl;
 		std::cout << "|                         Pascal's Triangle Generator.                           |" << std::endl;
