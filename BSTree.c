@@ -31,6 +31,7 @@ void addNodetoTree(int data, struct Node **rootNode);
 int captureNodes(struct Node **rootNode);
 struct Node *createNode(int data, struct Node *leftNode, struct Node *rightNode);
 void deleteAllTree(struct Node *rootNode);
+void searchNode(int data, struct Node *rootNode);
 void viewAllTree(struct Node *rootNode);
 void viewTree(struct Node *rootNode, enum enm_TreeTour enm_TT);
 
@@ -38,12 +39,18 @@ void viewTree(struct Node *rootNode, enum enm_TreeTour enm_TT);
 int main()  /* Función principal. */
 	{
 		int int_counting_items = V_ZERO;
+		int data = V_ZERO;
 		struct Node *rootNode = NULL;   /* Apunta a la raíz del árbol. */
 
 		int_counting_items = captureNodes(&rootNode);
 		viewAllTree(rootNode);
 
-		printf("\n\n");
+		printf("\n");
+		printf("\nEnter a value to search for : ");
+		scanf("%d", &data);
+		searchNode(data, rootNode);
+
+		printf("\n");
 		printf("Delete the entire binary tree and free its memory...\n");
 		deleteAllTree(rootNode);
 
@@ -58,6 +65,8 @@ int main()  /* Función principal. */
 */
 void addNodetoTree(int data, struct Node **rootNode)
 	{
+		static int int_counting_items = V_ZERO;
+
 		if (*rootNode)
 			{
 				if (data < (*rootNode)->data)
@@ -65,31 +74,34 @@ void addNodetoTree(int data, struct Node **rootNode)
 
 				if (data > (*rootNode)->data)
 					addNodetoTree(data, &(*rootNode)->rightNode);
+
+				if (data == (*rootNode)->data)
+					printf("The value: [%d] : [%d] was already inserted previously!\n", data, (*rootNode)->data);
 			}
 		else
-			*rootNode = createNode(data, NULL, NULL);
+			{
+				*rootNode = createNode(data, NULL, NULL);
+				printf("Inserted data # [%d] : [%d].\n", int_counting_items++, data);
+			}
 	}
 
 /* Función para capturar valores e ingresarlos al árbol binario de búsqueda. */
 int captureNodes(struct Node **rootNode)
 	{
+		int data = V_ZERO, datas = V_ZERO;
 		int int_counting_items = V_ZERO;
-		int int_data = V_ZERO, int_datas = V_ZERO;
 
 		printf("Entering integer values to build a binary search tree.\n");
 		printf("Finish by pressing [CTRL] + [D].\n");
 
-		while (int_datas != EOF)
+		printf("Enter a entire data [%d] : ", int_counting_items++);
+		while (scanf("%d", &data) != EOF)
 			{
-				printf("Enter a entire data : ");
-				int_datas = scanf("%d", &int_data);
-
-				if (int_datas != EOF)
-					{
-						addNodetoTree(int_data, rootNode);  /* Raíz se pasa por referencia. */
-						printf("Inserted data # [%d] : [%d].\n", int_counting_items++, int_data);
-					}
+				addNodetoTree(data, rootNode);  /* Raíz se pasa por referencia. */
+				printf("Enter a entire data [%d] : ", int_counting_items++);
 			}
+
+		clearerr(stdin);
 
 		printf("\n");
 		printf("[%d] Generated output results...\n", int_counting_items);
@@ -110,7 +122,7 @@ struct Node *createNode(int data, struct Node *leftNode, struct Node *rightNode)
 			}
 		else
 			{
-				perror("Mistake! Insufficient memory space for allocation....");
+				perror("Mistake! Insufficient memory space for allocation...");
 				exit(EXIT_FAILURE);
 			}
 
@@ -131,6 +143,24 @@ void deleteAllTree(struct Node *rootNode)
 			}
 	}
 
+/* Se encarga de buscar un valor determinado dentro del árbol binario de búsqueda. */
+void searchNode(int data, struct Node *rootNode)
+	{
+		if (rootNode)
+			{
+				if (data < rootNode->data)
+					searchNode(data, rootNode->leftNode);
+
+				if (data > rootNode->data)
+					searchNode(data, rootNode->rightNode);
+
+				if (data == rootNode->data)
+					printf("The value: [%d] : [%d] was found!\n", data, rootNode->data);
+			}
+		else
+			printf("The value: [%d] was not found!\n", data);
+	}
+
 /* Permite la visualización de todos los tipos de recorridos del
  * árbol binario de búsqueda.
  */
@@ -149,6 +179,11 @@ void viewAllTree(struct Node *rootNode)
 
 /* Visualizar el árbol direccionado por raíz.
  * Cada nivel de nodo se visualiza cuando se recorre el árbol.
+ *
+ * Esencialmente pueden utilizarse tres formas para recorrer un árbol binario: preorden, inorden y postorden.
+ * Cuando se visitan los nodos en preorden, primero se visita la raí2, después el subiírbol izquierdo y por último el subárbol derecho.
+ * Cuando se visitan los nodos en inorden, primero se visita el subárbol izquierdo, después la raíz y por último el subárbol derecho.
+ * Cuando se visitan los nodos en postorden, primero se visita el subárbol izquierdo, después el subárbol derecho y por último la raí2.
  */
 void viewTree(struct Node *rootNode, enum enm_TreeTour enm_TT)
 	{
