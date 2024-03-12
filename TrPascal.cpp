@@ -86,8 +86,6 @@
  **			sttc_int_Counting_Pascal_s_Triangles;	**
  **								**
  ** Methods:		protected:				**
- **			void enter_a_data			**
- **				(int *const ptr_int_data) const;**
  **			void generate_new_existing_		**
  **				Pascal_s_Triangle();		**
  **			bool get_bool_response_regeneration(	**
@@ -113,6 +111,8 @@
  **			void clear_Pascal_s_Triangle();		**
  **			void create_new_Pascal_s_Triangle	**
  **				(const int int_number_Rows);	**
+ **			static int enter_a_data			**
+ **				(int *const ptr_int_data);	**
  **			int get_int_number_Rows() const;	**
  **			vector<vector<int>>			**
  **				get_vec_vec_matrix_		**
@@ -151,8 +151,6 @@ class Pascal_s_Triangle
 
 		//Protected attributes and methods.
 		protected:
-			//Routine to enter and validate an integer piece of data.
-			void enter_a_data(int *const ptr_int_data) const;
 			//It generates a Pascal's Triangle without releasing it previously.
 			void generate_new_existing_Pascal_s_Triangle();
 			//Gets a confirmation response to regenerate 'Pascal's Triangle'.
@@ -179,6 +177,8 @@ class Pascal_s_Triangle
 			void clear_Pascal_s_Triangle();
 			//Build Pascal's Triangle from scratch.
 			void create_new_Pascal_s_Triangle (const int int_number_Rows);
+			//Routine to enter and validate an integer piece of data.
+			static int enter_a_data(int *const ptr_int_data);
 			//Gets the number of lines or rows contained in the row number attribute.
 			int get_int_number_Rows() const;
 			//Returns a matrix of Pascal's Triangle in vector form.
@@ -334,7 +334,7 @@ int Pascal_s_Triangle::capture_int_number_Rows()
 
 		std::cout << "Manually enter the number of rows between [" << V_LOWER_LIMIT_ROWS << "] & [" << V_UPPER_LIMIT_ROWS << "] that the Pascal's Triangle will have to generate: ";
 
-		Pascal_s_Triangle::enter_a_data(&int_number_Rows);	//Request and validate specific data.
+		int_number_Rows = Pascal_s_Triangle::enter_a_data(&int_number_Rows);	//Request and validate specific data.
 
 		/* Resetting the pointer pointer and reassigning its number of rows. */
 		if (int_number_Rows >= V_LOWER_LIMIT_ROWS && int_number_Rows <= V_UPPER_LIMIT_ROWS)
@@ -478,8 +478,8 @@ void Pascal_s_Triangle::create_new_Pascal_s_Triangle(const int int_number_Rows)
 
 /*****************************************************************
  ** Class:		Pascal_s_Triangle.			**
- ** Method:		void enter_a_data			**
- **				(int *const ptr_int_data) const.**
+ ** Method:		static int enter_a_data			**
+ **				(int *const ptr_int_data).	**
  ** Explanation:	The purpose of this method is to request**
  **			an integer data received as an integer	**
  **			pointer in its argument and fully	**
@@ -502,7 +502,7 @@ void Pascal_s_Triangle::create_new_Pascal_s_Triangle(const int int_number_Rows)
  **			invalid characters that collapse the	**
  **			input buffer.				**
  ****************************************************************/
-void Pascal_s_Triangle::enter_a_data(int *const ptr_int_data) const
+int Pascal_s_Triangle::enter_a_data(int *const ptr_int_data)
 	{
 		/* Validate if the sent pointer contains a valid return address. */
 		if (ptr_int_data)
@@ -527,6 +527,8 @@ void Pascal_s_Triangle::enter_a_data(int *const ptr_int_data) const
 			std::cerr << "There is no valid memory address to house the entire data to be captured...";
 
 		clearerr(stdin);
+
+		return *ptr_int_data;
 	};
 
 /*****************************************************************
@@ -1295,7 +1297,7 @@ int int_unit_Testing_Pascal_s_Triangle(Pascal_s_Triangle &psT)
 							break;
 
 						case enm_act_opt_PST_get_vec_vec_matrix_Pascal_s_Triangle:
-							vec_vec_matrix_Pascal_s_Triangle=psT.get_vec_vec_matrix_Pascal_s_Triangle();
+							vec_vec_matrix_Pascal_s_Triangle = psT.get_vec_vec_matrix_Pascal_s_Triangle();
 							int_number_Operations++;
 							break;
 
@@ -1368,32 +1370,17 @@ int main()
 		std::cout << "+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+" << std::endl;
 		std::cout << "Number of Pascal's Triangles to generate between ["<< V_LOWER_LIMIT_PST << "] and [" << V_UPPER_LIMIT_PST << "] : ";
 
-		/* Entry validation system. */
-		if (std::cin >> int_Quantity)  //The entry was successful.
+		/* Call the condition that can throw an exception if the value is zero. */
+		try
 			{
-				std::cout << "You have entered the integer value: [" << int_Quantity << "]." << std::endl;
+				int_Quantity = Pascal_s_Triangle::enter_a_data(&int_Quantity);
 
-				/* Call the condition that can throw an exception if the value is zero. */
-				try
-					{
-						if (int_Quantity < V_LOWER_LIMIT_PST)
-							throw std::runtime_error("Invalid captured value!");
-					}
-				catch (const std::exception &Pascal_s_Triangle_my_exception)
-					{
-						std::cerr << "Fatal Mistake! : [" << Pascal_s_Triangle_my_exception.what() << "]." << std::endl;
-					}
+				if (int_Quantity < V_LOWER_LIMIT_PST)
+					throw std::runtime_error("Invalid captured value!");
 			}
-		else
+		catch	(const std::exception &Pascal_s_Triangle_my_exception)
 			{
-				//The input was not a valid integer.
-				std::cerr << "Error: The input is not a valid integer." << std::endl;
-
-				//Clear the error state.
-				std::cin.clear();
-
-				//Discard invalid content in the input buffer.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+				std::cerr << "Fatal Mistake! : [" << Pascal_s_Triangle_my_exception.what() << "]." << std::endl;
 			}
 
 		/* -----------------------------------------------------------------------
