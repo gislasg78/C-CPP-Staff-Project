@@ -1,5 +1,6 @@
 #include <iostream>
 
+#define	V_ONE	1
 #define	V_ZERO	0
 
 int main()
@@ -31,7 +32,7 @@ int main()
 			for (int col = V_ZERO; col < colsxrow[row]; col++)
 				{
 					std::cout << "Enter value #" << items++ << ": ("<< row+1 << ", "<< col+1 << "): ";
-					std::cin >> *(*(matrix+row)+col);
+					std::cin >> matrix[row][col];
 				}
 		std::cout << "[" << items << "] Captured input values." << std::endl;
 
@@ -39,7 +40,7 @@ int main()
 		for (int row = V_ZERO, items = V_ZERO; row < rows; row++)
 			{
 				for (int col = V_ZERO; col < colsxrow[row]; col++, items++)
-					std::cout << "(" << row+1 << ", " << col+1 << "):\t"<< "[" << *(*(matrix+row)+col) << "].\t";
+					std::cout << "(" << row + V_ONE << ", " << col + V_ONE << "):\t"<< "[" << *(*(matrix+row)+col) << "].\t";
 
 				std::cout << std::endl;
 			}
