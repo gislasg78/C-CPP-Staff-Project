@@ -48,7 +48,7 @@
 #define NULL_CHARACTER		'\0'	//Null character.
 
 //Default Report File Name.
-#define	V_DEF_PST_FILENAME	"TPascal.txt"	//Default Report FileName.
+#define	V_DEF_PST_FILENAME	"TrPascal.txt"	//Default Report FileName.
 
 //Symbolic constants of minimum and maximum limits.
 #define V_LOWER_LIMIT_PST	1	//Lower limit of PST.
@@ -118,7 +118,7 @@
  **				get_vec_vec_matrix_		**
  **				Pascal_s_Triangle()		**
  **				const;				**
- **			void save_as_a_report_file(		**
+ **			int save_as_a_report_file(		**
  **				std::string &str_IO_FileName)	**
  **				const;				**
  **			void view_detail_Pascal_s_Triangle()	**
@@ -184,7 +184,7 @@ class Pascal_s_Triangle
 			//Returns a matrix of Pascal's Triangle in vector form.
 			std::vector<std::vector<int>> get_vec_vec_matrix_Pascal_s_Triangle() const;
 			//Save Pascal's Triangle as a report file.
-			void save_as_a_report_file(std::string &str_IO_FileName) const;
+			int save_as_a_report_file(std::string &str_IO_FileName) const;
 			//Visualize Pascal's Triangle.
 			void view_detail_Pascal_s_Triangle() const;
 			//Presents general information on the created Pascal's Triangle on the screen.
@@ -269,7 +269,7 @@ Pascal_s_Triangle::Pascal_s_Triangle(const int int_number_Rows)
  **			class.					**
  ** Arguments:		const Pascal_s_Triangle &		**
  **				other_obj_Pascal_s_Triangle,	**
- **				const bool bln_shared_PST).	**
+ **			const bool bln_shared_PST).		**
  ** Result:		Assigns the values of the instantiated	**
  **			class passed as a parameter to the	**
  **			created class as if it were a true copy **
@@ -332,8 +332,8 @@ int Pascal_s_Triangle::capture_int_number_Rows()
 		/* Call to the method to display the header information. */
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Capturing number of rows of Pascal's Triangle...");
 
+		/* Introduction and validation of an integer type data for the number of rows. */
 		std::cout << "Manually enter the number of rows between [" << V_LOWER_LIMIT_ROWS << "] & [" << V_UPPER_LIMIT_ROWS << "] that the Pascal's Triangle will have to generate: ";
-
 		int_number_Rows = Pascal_s_Triangle::enter_a_data(&int_number_Rows);	//Request and validate specific data.
 
 		/* Resetting the pointer pointer and reassigning its number of rows. */
@@ -782,7 +782,7 @@ std::vector<std::vector<int>> Pascal_s_Triangle::get_vec_vec_matrix_Pascal_s_Tri
 
 /*****************************************************************
  ** Class:		Pascal_s_Triangle.			**
- ** Method:		void save_as_a_report_file(		**
+ ** Method:		int save_as_a_report_file(		**
  **				std::string &str_IO_FileName).	**
  ** Explanation:	The purpose of this method is to dump	**
  **			the pointer of pointers that contains	**
@@ -799,7 +799,7 @@ std::vector<std::vector<int>> Pascal_s_Triangle::get_vec_vec_matrix_Pascal_s_Tri
  **			and output file, and convert it into a	**
  **			kind of work log for this program.	**
  ****************************************************************/
-void Pascal_s_Triangle::save_as_a_report_file(std::string &str_IO_FileName) const
+int Pascal_s_Triangle::save_as_a_report_file(std::string &str_IO_FileName) const
 	{
 		/* Initial declaration of elementary work variables. */
 		int int_counting_items = V_ZERO;
@@ -814,6 +814,9 @@ void Pascal_s_Triangle::save_as_a_report_file(std::string &str_IO_FileName) cons
 				if (this->int_number_Rows >= V_LOWER_LIMIT_ROWS && this->int_number_Rows <= V_UPPER_LIMIT_ROWS)
 					{
 						/* Data request. */
+						if (Pascal_s_Triangle::get_bool_response_regeneration("Do you want to change the name of the default file [" + str_IO_FileName + "] to something else (Y/N)? : "))
+							str_IO_FileName.clear();
+
 						if (str_IO_FileName.empty())
 							{
 								std::cout << "Enter a valid output file name : ";
@@ -868,6 +871,8 @@ void Pascal_s_Triangle::save_as_a_report_file(std::string &str_IO_FileName) cons
 			}
 		else
 			std::cerr << "Pascal's Triangle has not been generated and cannot be saved to a report file." << std::endl;
+
+		return int_counting_items;
 	}
 
 /*****************************************************************
@@ -1064,7 +1069,7 @@ void Pascal_s_Triangle::view_info_class_Pascal_s_Triangle() const
 
 /*****************************************************************
  ** Class:              inline std::ostream			**
- ** Method:             &operator<<.				**
+ ** Method:             &operator<<				**
  **				(std::ostream &os,		**
  **				const Pascal_s_Triangle &psT)	**
  ** Explanation:	Declaration as a friend of the		**
@@ -1079,7 +1084,7 @@ void Pascal_s_Triangle::view_info_class_Pascal_s_Triangle() const
  **			number of rows and coefficients of the	**
  **			generated Pascal's triangle.		**
  ** Arguments:          (std::ostream &os,			**
- **				const Pascal_s_Triangle &psT)	**
+ **				const Pascal_s_Triangle &psT).	**
  ** Result:		This overloaded external function of	**
  **			the Pascal's Triangle friend class uses	**
  **			its own flow and displays the		**
@@ -1229,15 +1234,16 @@ void do_principal_unit_Testing_Pascal_s_Triangle(const int int_Quantity)
 int int_unit_Testing_Pascal_s_Triangle(Pascal_s_Triangle &psT)
 	{
 		/* Initialization of preliminary variables. */
+		int int_counting_items = V_ZERO;
 		int int_number_Rows = V_ZERO;
 		int int_number_Operations = V_ZERO;
 		int int_number_Option = V_ZERO;
 
 		/* Default file naming. */
 		std::string str_IO_default_PST_FileName = V_DEF_PST_FILENAME;
-		std::string str_IO_new_PST_FileName = "";
 		std::vector<std::vector<int>> vec_vec_matrix_Pascal_s_Triangle;
 
+		/* Cycle the options menu. */
 		do
 			{
 				std::cout << std::endl;
@@ -1302,14 +1308,7 @@ int int_unit_Testing_Pascal_s_Triangle(Pascal_s_Triangle &psT)
 							break;
 
 						case enm_act_opt_PST_save_as_a_report_file:
-							if (psT.get_bool_response_regeneration("Do you want to change the name of the default file [" + str_IO_default_PST_FileName + "] to something else (Y/N)? : "))
-								{
-									str_IO_new_PST_FileName = "";	//This line could be omitted.
-									psT.save_as_a_report_file(str_IO_new_PST_FileName);
-								}
-							else
-								psT.save_as_a_report_file(str_IO_default_PST_FileName);
-
+							int_counting_items = psT.save_as_a_report_file(str_IO_default_PST_FileName);
 							int_number_Operations++;
 							break;
 
