@@ -736,7 +736,8 @@ std::vector<std::vector<int>> Pascal_s_Triangle::get_vec_vec_matrix_Pascal_s_Tri
 									<< ").\t[" << &this->ptr_ptr_int_Pascal_s_Triangle[int_y][int_x]
 									<< "] : [" << this->ptr_ptr_int_Pascal_s_Triangle[int_y] + int_x
 									<< "] : [" << *(this->ptr_ptr_int_Pascal_s_Triangle + int_y) + int_x
-									<< "].\t[" << *(*(this->ptr_ptr_int_Pascal_s_Triangle + int_y) + int_x)
+									<< "].\t[" << *(this->ptr_ptr_int_Pascal_s_Triangle[int_y] + int_x)
+									<< "]\t[" << *(*(this->ptr_ptr_int_Pascal_s_Triangle + int_y) + int_x)
 									<< "]\t[" << this->ptr_ptr_int_Pascal_s_Triangle[int_y][int_x]
 									<< "]." << std::endl;
 
@@ -815,7 +816,10 @@ int Pascal_s_Triangle::save_as_a_report_file(std::string &str_IO_FileName) const
 					{
 						/* Data request. */
 						if (Pascal_s_Triangle::get_bool_response_regeneration("Do you want to change the name of the default file [" + str_IO_FileName + "] to something else (Y/N)? : "))
-							str_IO_FileName.clear();
+							{
+								std::cout << "The file name is initialized: ["<< str_IO_FileName << "] to accept another one using the keyboard..." << std::endl;
+								str_IO_FileName.clear();
+							}
 
 						if (str_IO_FileName.empty())
 							{
@@ -943,7 +947,8 @@ void Pascal_s_Triangle::view_detail_Pascal_s_Triangle() const
 								<< "])\t[" << this->ptr_ptr_int_Pascal_s_Triangle[int_n_row] + int_n_col
 								<< "] : [" << *(this->ptr_ptr_int_Pascal_s_Triangle + int_n_row) + int_n_col
 								<< "] : [" << &this->ptr_ptr_int_Pascal_s_Triangle[int_n_row][int_n_col]
-								<< "].\t["<< *(*(this->ptr_ptr_int_Pascal_s_Triangle + int_n_row) + int_n_col)
+								<< "].\t[" << *(this->ptr_ptr_int_Pascal_s_Triangle[int_n_row] + int_n_col)
+								<< "]\t["<< *(*(this->ptr_ptr_int_Pascal_s_Triangle + int_n_row) + int_n_col)
 								<< "]\t[" << this->ptr_ptr_int_Pascal_s_Triangle[int_n_row][int_n_col]
 								<< "]." << std::endl;
 
@@ -1051,7 +1056,8 @@ void Pascal_s_Triangle::view_info_class_Pascal_s_Triangle() const
 									<< "].\t[" << &this->ptr_ptr_int_Pascal_s_Triangle[int_n_row][int_n_col]
 									<< "] : [" << this->ptr_ptr_int_Pascal_s_Triangle[int_n_row] + int_n_col
 									<< "] : [" << *(this->ptr_ptr_int_Pascal_s_Triangle + int_n_row) + int_n_col
-									<< "].\t[" << *(*(this->ptr_ptr_int_Pascal_s_Triangle + int_n_row) + int_n_col)
+									<< "].\t[" << *(this->ptr_ptr_int_Pascal_s_Triangle[int_n_row] + int_n_col)
+									<< "]\t[" << *(*(this->ptr_ptr_int_Pascal_s_Triangle + int_n_row) + int_n_col)
 									<< "]\t[" << this->ptr_ptr_int_Pascal_s_Triangle[int_n_row][int_n_col]
 									<< "]." << std::endl;
 								}
