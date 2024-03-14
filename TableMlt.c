@@ -62,14 +62,14 @@ int main()
 			{
 				printf("Matrix: [%d] of [%d].\n", m + V_ONE, n_matrix);
 
-				for (int r = V_ZERO; r < matrix_r[m]; r++)
+				for (int r = V_ZERO; r < *(matrix_r + m); r++)
 					{
-						printf("\tRow: [%d] of [%d].\n", r + V_ONE, matrix_r[m]);
+						printf("\tRow: [%d] of [%d].\n", r + V_ONE, *(matrix_r + m));
 
-						for (int c = V_ZERO; c < matrix_rxc[m][r]; c++)
+						for (int c = V_ZERO; c < *(*(matrix_rxc + m) + r); c++)
 							{
-								printf("\t\tColumn: [%d] of [%d].\t", c + V_ONE, matrix_rxc[m][r]);
-								printf("Value: [%d].\n", matrix[m][r][c]);
+								printf("\t\tColumn: [%d] of [%d].\t", c + V_ONE, *(*(matrix_rxc + m) + r));
+								printf("Value: [%d].\n", *(*(*(matrix + m) + r) + c));
 							}
 
 						printf("\n");
