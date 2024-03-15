@@ -47,6 +47,7 @@ int main()
 							{
 								printf("Enter a value for Matrix #[%d] of [%d] -> (Row: [%d] of [%d], Column: [%d] of [%d]) : ", m + V_ONE, n_matrix, r + V_ONE, matrix_r[m], c + V_ONE, matrix_rxc[m][r]);
 								scanf("%d", &matrix[m][r][c]);
+								printf("(Matrix: [%d] of [%d], Row: [%d] of [%d], Column: [%d] of [%d]) = [%d].\n",  m + V_ONE, n_matrix, r + V_ONE, matrix_r[m], c + V_ONE, matrix_rxc[m][r], matrix[m][r][c]);
 							}
 
 						printf("\n");
@@ -69,7 +70,7 @@ int main()
 						for (int c = V_ZERO; c < *(*(matrix_rxc + m) + r); c++)
 							{
 								printf("\t\tColumn: [%d] of [%d].\t", c + V_ONE, *(*(matrix_rxc + m) + r));
-								printf("Value: [%d].\n", *(*(*(matrix + m) + r) + c));
+								printf("(%d, %d, %d) = [%d].\n", m + V_ONE, r + V_ONE, c + V_ONE, *(*(*(matrix + m) + r) + c));
 							}
 
 						printf("\n");
