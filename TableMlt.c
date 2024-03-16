@@ -1,5 +1,5 @@
 /************** Basic multiplication table generator. ************
- ** Source Code:	TableMul.c				**
+ ** Source Code:	TableMlt.c				**
  ** Author:		Gustavo Islas Gálvez.			**
  ** Creation Date:	Saturday, December 30, 2023.		**
  ** Purpose:		This program generates a set of		**
