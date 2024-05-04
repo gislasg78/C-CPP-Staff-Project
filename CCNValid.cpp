@@ -36,6 +36,7 @@
 
 //C Standard Constants.
 #define	V_MINUS_ONE	-1
+#define	V_ONE		1
 #define	V_TEN		10
 #define	V_TWO		2
 #define	V_ZERO		0
@@ -180,10 +181,9 @@ int int_getADigit(const int int_digit_number)
 int int_sumOfDigits(const std::string &str_CardNumber)
 	{
 		/* Initial declaration of work variables. */
-		bool bln_Bend = false;
 		int int_Current_Digit = V_ZERO;
-		int int_sumEvens = V_ZERO;
-		int int_sumOdds = V_ZERO;
+		int int_sumOfEvens = V_ZERO;
+		int int_sumOfOdds = V_ZERO;
 
 		/* Welcome messages. */
 		std::cout << std::endl;
@@ -192,29 +192,29 @@ int int_sumOfDigits(const std::string &str_CardNumber)
 		std::cout << "+---|----+---|----+---|----+---|----+---|----+" << std::endl;
 
 		/* Cycle to go through each digit of the credit or debit card number from right to left. */
-		for (int int_idx = str_CardNumber.size() + V_MINUS_ONE; int_idx >= V_ZERO; int_idx--)
+		for (int int_ind = V_ONE, int_idx = str_CardNumber.size() + V_MINUS_ONE; int_idx >= V_ZERO; int_ind++, int_idx--)
 			{
 				int_Current_Digit = str_CardNumber[int_idx] - V_CHAR_ZERO;
 
-				if (bln_Bend)
+				if (int_ind % V_TWO)
 					{
-						std::cout << "Pair:\t[" << int_idx << "]\t=\t[" << int_Current_Digit << "]\t:\t[" << int_Current_Digit * V_TWO << "]\t:\t[" << int_getADigit(int_Current_Digit * V_TWO) << "]." << std::endl;
-						int_sumEvens += int_getADigit(int_Current_Digit * V_TWO);
+						std::cout << "# [" << int_ind << "]\tOdd:\t[" << int_idx << "]\t=\t[" << int_Current_Digit << "]." << std::endl;
+						int_sumOfOdds += int_Current_Digit;
 					}
 				else
 					{
-						std::cout << "Odd:\t[" << int_idx << "]\t=\t[" << int_Current_Digit << "]." << std::endl;
-						int_sumOdds += int_Current_Digit;
+						std::cout << "# [" << int_ind << "]\tPair:\t[" << int_idx << "]\t=\t[" << int_Current_Digit << "]\t:\t[" << int_Current_Digit * V_TWO << "]\t:\t[" << int_getADigit(int_Current_Digit * V_TWO) << "]." << std::endl;
+						int_sumOfEvens += int_getADigit(int_Current_Digit * V_TWO);
 					}
-
-				bln_Bend = !bln_Bend;
 			}
 
 		/* Result of the validation of the entered card number. */
 		std::cout << std::endl;
-		std::cout << "Evens:\t[" << int_sumEvens << "]." << std::endl;
-		std::cout << "Odds:\t[" << int_sumOdds << "]." << std::endl;
+		std::cout << "Card number length:\t[" << str_CardNumber.length() << "]." << std::endl << std::endl;
+		std::cout << "Evens:\t[" << int_sumOfEvens << "]." << std::endl;
+		std::cout << "Odds:\t[" << int_sumOfOdds << "]." << std::endl;
+		std::cout << "Total:\t[" << int_sumOfEvens + int_sumOfOdds << "]." << std::endl;
 
 		/* Return the summed number of both odd and even digits. */
-		return int_sumEvens + int_sumOdds;
+		return int_sumOfEvens + int_sumOfOdds;
 	}
