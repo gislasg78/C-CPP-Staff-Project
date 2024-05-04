@@ -25,7 +25,7 @@
  **				4. Sum results from steps	**
  **					two & three.		**
  **				5. If step four is divisible	**
- **				by ten, # is valid.		**
+ **					by ten, # is valid.	**
 *****************************************************************/
 //C Standard Libraries.
 #include <algorithm>
@@ -42,7 +42,7 @@
 
 //Definition of function prototypes.
 int int_getADigit(const int int_digit_number);		//Obtain a single digit if the value obtained is greater than 4.
-int int_sumOfDigits(const std::string str_CardNumber);	//Add the digits of even and odd positions on the credit card.
+int int_sumOfDigits(const std::string &str_CardNumber);	//Add the digits of even and odd positions on the credit card.
 
 /*****************************************************************
  ** Function:		int main().				**
@@ -137,7 +137,7 @@ int int_getADigit(const int int_digit_number)
 /*****************************************************************
  ** Function:		int int_sumOfDigits(			**
  **				const std::string		**
- **					str_CardNumber).	**
+ **					&str_CardNumber).	**
  ** Explanation:	The formula checks a number against its	**
  **			included check digit, which is usually	**
  **			added to a partial account number to	**
@@ -160,7 +160,7 @@ int int_getADigit(const int int_digit_number)
  **			(if the total ends in zero), then	**
  **			the number is valid according to the	**
  **			Luhn formula, otherwise it is invalid.	**
- ** Input Parms:	const std::string str_CardNumber.	**
+ ** Input Parms:	const std::string &str_CardNumber.	**
  ** Output Parms:	None.					**
  ** Result:		The bank card number is the number found**
  **			on payment cards, credit cards, debit	**
@@ -177,23 +177,43 @@ int int_getADigit(const int int_digit_number)
  **			Bank card numbers are assigned		**
  **			accordingly with ISO/IEC 7812 standard.	**
  ****************************************************************/
-int int_sumOfDigits(const std::string str_CardNumber)
+int int_sumOfDigits(const std::string &str_CardNumber)
 	{
 		/* Initial declaration of work variables. */
+		bool bln_Bend = false;
 		int int_Current_Digit = V_ZERO;
 		int int_sumEvens = V_ZERO;
 		int int_sumOdds = V_ZERO;
+
+		/* Welcome messages. */
+		std::cout << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|----+" << std::endl;
+		std::cout << "+ Digit-by-digit analysis of the card number.+" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+---|----+" << std::endl;
 
 		/* Cycle to go through each digit of the credit or debit card number from right to left. */
 		for (int int_idx = str_CardNumber.size() + V_MINUS_ONE; int_idx >= V_ZERO; int_idx--)
 			{
 				int_Current_Digit = str_CardNumber[int_idx] - V_CHAR_ZERO;
 
-				if (int_idx % V_TWO)
-					int_sumOdds += int_Current_Digit;
+				if (bln_Bend)
+					{
+						std::cout << "Pair:\t[" << int_idx << "]\t=\t[" << int_Current_Digit << "]\t:\t[" << int_Current_Digit * V_TWO << "]\t:\t[" << int_getADigit(int_Current_Digit * V_TWO) << "]." << std::endl;
+						int_sumEvens += int_getADigit(int_Current_Digit * V_TWO);
+					}
 				else
-					int_sumEvens += int_getADigit(int_Current_Digit * V_TWO);
+					{
+						std::cout << "Odd:\t[" << int_idx << "]\t=\t[" << int_Current_Digit << "]." << std::endl;
+						int_sumOdds += int_Current_Digit;
+					}
+
+				bln_Bend = !bln_Bend;
 			}
+
+		/* Result of the validation of the entered card number. */
+		std::cout << std::endl;
+		std::cout << "Evens:\t[" << int_sumEvens << "]." << std::endl;
+		std::cout << "Odds:\t[" << int_sumOdds << "]." << std::endl;
 
 		/* Return the summed number of both odd and even digits. */
 		return int_sumEvens + int_sumOdds;
