@@ -83,7 +83,9 @@ int main()
 		std::cout << "+  Luhn algorithm to validate credit cards.  +" << std::endl;
 		std::cout << "+---|----+---|----+---|----+---|----+---|----+" << std::endl;
 		std::cout << "Enter a valid credit card number  # : ";
-		std::cin >> str_CardNumber;
+
+		/* Get the character string with the credit card number. */
+		std::getline(std::cin >> std::ws, str_CardNumber);
 
 		/* Eliminate any blank spaces in the card number. */
 		str_CardNumber.erase(std::remove_if(str_CardNumber.begin(), str_CardNumber.end(), ::isspace), str_CardNumber.end());
