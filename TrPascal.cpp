@@ -1,7 +1,7 @@
 /****************** Pascal's Triangle Generator. *****************
  ** Source Code:	TrPascal.cpp				**
  ** Author:		Gustavo Islas Gálvez.			**
- ** Creation Date:	Saturday, December 30, 2023.		**
+ ** Creation Date:	Saturday, November 30, 2024.		**
  ** Purpose:		This program generates Pascal's Triangle**
  **			as a result up to a certain number of	**
  **			rows or levels, following as a pattern	**
@@ -36,6 +36,7 @@
  **					+array[r-1][c].		**
 *****************************************************************/
 //C Standard Libraries.
+#include <algorithm>
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
@@ -334,7 +335,16 @@ int Pascal_s_Triangle::capture_int_number_Rows()
 
 		/* Introduction and validation of an integer type data for the number of rows. */
 		std::cout << "Manually enter the number of rows between [" << V_LOWER_LIMIT_ROWS << "] & [" << V_UPPER_LIMIT_ROWS << "] that the Pascal's Triangle will have to generate: ";
-		int_number_Rows = Pascal_s_Triangle::enter_a_data(&int_number_Rows);	//Request and validate specific data.
+
+		/* Validate the correct entry of an integer numerical data. */
+		try
+			{
+				int_number_Rows = Pascal_s_Triangle::enter_a_data(&int_number_Rows);	//Request and validate specific data.
+			}
+		catch   (const std::exception &Pascal_s_Triangle_my_exception)
+			{
+				std::cerr << "Fatal Mistake! : [" << Pascal_s_Triangle_my_exception.what() << "]." << std::endl;
+			}
 
 		/* Resetting the pointer pointer and reassigning its number of rows. */
 		if (int_number_Rows >= V_LOWER_LIMIT_ROWS && int_number_Rows <= V_UPPER_LIMIT_ROWS)
@@ -522,6 +532,9 @@ int Pascal_s_Triangle::enter_a_data(int *const ptr_int_data)
 
 					//Discard invalid content in the input buffer.
 					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+
+					//Trigger a checked and checked exception for entering an invalid value.
+					throw std::runtime_error("Invalid captured value!");
 				}
 		else
 			std::cerr << "There is no valid memory address to house the entire data to be captured...";
@@ -645,17 +658,29 @@ bool Pascal_s_Triangle::get_bool_response_regeneration(const std::string str_mes
 	{
 		/* Initialization of preliminary work variables. */
 		char chr_response_Yy = NULL_CHARACTER;
+		std::string str_input_response_Yy;
 
 		/* Call to the method to display the header information. */
 		Pascal_s_Triangle::view_header_Pascal_s_Triangle("Obtaining a given response to perform a given operation...");
 
+		/* Preliminary welcome messages. */
 		std::cout << std::endl;
 		std::cout << "+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+" << std::endl;
 		std::cout << "|    Information. There was already a previously generated Pascal's Triangle.    |" << std::endl;
 		std::cout << "+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+---|----+" << std::endl;
 		std::cout << str_message;
 
-		std::cin >> chr_response_Yy;
+		/* Captures a string of characters by removing leading whitespace. */
+		std::getline(std::cin >> std::ws, str_input_response_Yy);
+
+		/* Eliminate any blank spaces in the string. */
+		str_input_response_Yy.erase(std::remove_if(str_input_response_Yy.begin(), str_input_response_Yy.end(), ::isspace), str_input_response_Yy.end());
+
+		/* Show the string purged of whitespace. */
+		std::cout << "Response string: " << '\x5b' << str_input_response_Yy << '\x5d' << '\x2e' << std::endl;
+
+		/* Pull only the first character of the character string. */
+		chr_response_Yy = str_input_response_Yy.front();
 		clearerr(stdin);
 
 		return (chr_response_Yy == V_CHAR_Y_UPPER_CASE || chr_response_Yy == V_CHAR_Y_LOWER_CASE);
@@ -1282,7 +1307,17 @@ int int_unit_Testing_Pascal_s_Triangle(Pascal_s_Triangle &psT)
 
 				/* Request the action option and convert it to an enumerated type. */
 				std::cout << "Option: ";
-				psT.enter_a_data(&int_number_Option);	//Request and validate specific data.
+
+				/* Verify that a valid numeric option was entered. */
+				try
+					{
+						int_number_Option = psT.enter_a_data(&int_number_Option);	//Request and validate specific data.
+					}
+				catch   (const std::exception &Pascal_s_Triangle_my_exception)
+					{
+						std::cerr << "Fatal Mistake! : [" << Pascal_s_Triangle_my_exception.what() << "]." << std::endl;
+					}
+
 				enm_act_opt_PST = (enum enm_Action_Options_Pascal_s_Triangle) int_number_Option;
 
 				/* Selection of cases according to the given option. */
@@ -1379,9 +1414,6 @@ int main()
 		try
 			{
 				int_Quantity = Pascal_s_Triangle::enter_a_data(&int_Quantity);
-
-				if (int_Quantity < V_LOWER_LIMIT_PST)
-					throw std::runtime_error("Invalid captured value!");
 			}
 		catch	(const std::exception &Pascal_s_Triangle_my_exception)
 			{
