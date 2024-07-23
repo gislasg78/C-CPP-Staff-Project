@@ -1,7 +1,7 @@
 /********** Trigonometric functions of sine and cosine. **********
  ** Source Code:	Sin_Cos.c	               		**
  ** Author:		Gustavo Islas Gálvez.			**
- ** Creation Date:	Saturday, December 30, 2023.		**
+ ** Creation Date:	Saturday, November 30, 2024.		**
  ** Purpose:		Calculates through the Taylor series	**
  **			the trigonometric functions of sine and	**
  **			cosine according to a determined value	**
@@ -34,11 +34,12 @@
 #define RADIANS(angle)			((angle) * V_PI / V_HALF_CIRC)
 
 //Numeric Symbolic Constants.
+#define	V_FOUR				4.0
 #define V_HALF_CIRC			180.0
-#define V_NUM_TERMS			11
 #define V_MINUS_ONE			-1
+#define	V_NUM_TERMS			11
 #define V_ONE				1
-#define V_PI				3.14159265359
+#define	V_PI				3.14159265359
 #define	V_TWO				2.0
 #define V_ZERO				0
 
@@ -57,21 +58,24 @@ enum enm_fn_sin_cos
 	};
 
 /*****************************************************************
- ** Function:		static double dbl_factorial.		**
+ ** Function:		double dbl_factorial			**
+ **				(const size_t szt_num).		**
  ** Explanation:	Gets the value of the factorial of any	**
  **			integer by recursively multiplying it by**
  **			its descendant surrogate numbers.	**
- ** Input Parms:	size_t szt_num.				**
+ ** Input Parms:	const size_t szt_num.			**
  ** Output Parms:	None.					**
  ** Result:		Factorial from 'i' to 'n'.		**
 *****************************************************************/
-static double dbl_factorial(const size_t szt_num)
+double dbl_factorial(const size_t szt_num)
 	{
 		return (szt_num < V_ONE) ? V_ONE : (double) szt_num * dbl_factorial(szt_num + V_MINUS_ONE);
 	}
 
 /*****************************************************************
- ** Function:		static double dbl_potency.		**
+ ** Function:		double dbl_potency			**
+ **				(const double dbl_base,		**
+ **				 const size_t szt_exp).		**
  ** Explanation:	Returns a base coefficient raised to the**
  **			specified power recursively by means of	**
  **			successive multiplications or divisions.**
@@ -89,7 +93,7 @@ static double dbl_factorial(const size_t szt_num)
  **					/ dbl_base :		**
  **					V_ONE;			**
  ** Input Parms:	const double dbl_base,			**
- **			const int int_exp.			**
+ **			const size_t szt_exp.			**
  ** Output Parms:	None.					**
  ** Result:		The base raised to a positive power	**
  **			results in a series of products in	**
@@ -98,19 +102,24 @@ static double dbl_factorial(const size_t szt_num)
  **			series of quotients in sequence from 1	**
  **			to '-n' .				**
 *****************************************************************/
-static double dbl_potency(const double dbl_base, const size_t szt_exp)
+double dbl_potency(const double dbl_base, const size_t szt_exp)
 	{
 		return	(szt_exp < V_ONE) ? V_ONE : dbl_potency(dbl_base, szt_exp + V_MINUS_ONE) * dbl_base;
 	}
 
 /*****************************************************************
- ** Function:		static double sinus_cosinus.		**
+ ** Function:		double sinus_cosinus			**
+ **				(const double dbl_angle,	**
+ **				 const size_t szt_num_terms,	**
+ **				 const enum enm_fn_sin_cos	**
+ **					enm_fn_addneutr).	**
  ** Explanation:	The value of the sine or cosine is	**
  **			obtained as a result, depending on an	**
  **			additive neutral passed as a parameter, **
  **			of a certain value in angles expressed	**
  **			in radians, through the Taylor series.	**
- ** Input Parms:	const double dbl_base,			**
+ ** Input Parms:	const double dbl_angle,			**
+ **			const size_t szt_num_terms,		**
  **			const enum enm_fn_sin_cos		**
  **				enm_fn_addneutr.		**
  **								**
@@ -135,14 +144,14 @@ static double dbl_potency(const double dbl_base, const size_t szt_exp)
  **			cos(x)=	(x^0 / 0!) - (x^2 / 2!) +	**
  **				(x^4 / 4!) - (x^6 / 6!) + 	**
  **				(x^8 / 8!) - (x^10 / 10!) +	**
- **				[...]	Pair numbers.		**
+ **				[...]	Pair/Even numbers.	**
  **								**
 *****************************************************************/
-static double sinus_cosinus(const double dbl_angle, const enum enm_fn_sin_cos enm_fn_addneutr)
+double sinus_cosinus(const double dbl_angle, const size_t szt_num_terms, const enum enm_fn_sin_cos enm_fn_addneutr)
 	{
 		double dbl_outcome = V_ZERO;
 
-		for (size_t szt_idx = V_ZERO; szt_idx < V_NUM_TERMS; szt_idx++)
+		for (size_t szt_idx = V_ZERO; szt_idx < szt_num_terms; szt_idx++)
 			dbl_outcome += dbl_potency(V_MINUS_ONE, szt_idx)
 			* dbl_potency(dbl_angle, EVEN_AND_ODD(szt_idx, enm_fn_addneutr))
 			/ dbl_factorial(EVEN_AND_ODD(szt_idx, enm_fn_addneutr));
@@ -151,7 +160,9 @@ static double sinus_cosinus(const double dbl_angle, const enum enm_fn_sin_cos en
 	}
 
 /*****************************************************************
- ** Function:		static double tangent.			**
+ ** Function:		double tangent				**
+ **				(const double dbl_angle,	**
+ **				 const size_t szt_num_terms).	**
  ** Explanation:	This function returns the trigonometric	**
  **			function of tangent by simply dividing	**
  **			the trigonometric functions of sine and	**
@@ -164,15 +175,16 @@ static double sinus_cosinus(const double dbl_angle, const enum enm_fn_sin_cos en
  **			denominator, respectively, are odd for	**
  **			the sine and even for the cosine.	**
  **								**
- ** Input Parms:	const double dbl_angle.			**
+ ** Input Parms:	const double dbl_angle,			**
+ **			const size_t szt_num_terms.		**
  ** Output Parms:	None.					**
  ** Result:		Returns sine divided by cosine:		**
  **				sine(x)	/ cosine(x).		**
 *****************************************************************/
-static double tangent(const double dbl_angle)
+double tangent(const double dbl_angle, const size_t szt_num_terms)
 	{
-		return	sinus_cosinus(dbl_angle, enm_fn_sine) /
-			sinus_cosinus(dbl_angle, enm_fn_cosine);
+		return	sinus_cosinus(dbl_angle, szt_num_terms, enm_fn_sine) /
+			sinus_cosinus(dbl_angle, szt_num_terms, enm_fn_cosine);
 	}
 
 /*****************************************************************
@@ -205,7 +217,7 @@ int main()
 	{
 		/* Initial declaration of work variables. */
 		double dbl_cosine = V_ZERO;
-		double dbl_radns = V_ZERO;
+		double dbl_radians = V_ZERO;
 		double dbl_sine = V_ZERO;
 		double dbl_tangent = V_ZERO;
 		double dbl_value = V_ZERO;
@@ -217,26 +229,27 @@ int main()
 		scanf("%lf", &dbl_value);
 
 		/* Obtaining preliminary variables. */
-		dbl_radns = RADIANS(dbl_value);	//Obtaining the function 'radians' given a base 'x'.
-
-		dbl_sine = sinus_cosinus(dbl_radns, enm_fn_sine);	//Obtaining the function 'sine' given a base 'x'.
-		dbl_cosine = sinus_cosinus(dbl_radns, enm_fn_cosine);	//Obtaining the function 'cosine' given a base 'x'.
-		dbl_tangent = tangent(dbl_radns);			//Obtaining the function 'tangent' given a base 'x'.
+		dbl_radians = RADIANS(dbl_value);					//Obtaining the function 'radians' given a base 'x'.
+		dbl_sine = sinus_cosinus(dbl_radians, V_NUM_TERMS, enm_fn_sine);	//Obtaining the function 'sine' given a base 'x'.
+		dbl_cosine = sinus_cosinus(dbl_radians, V_NUM_TERMS, enm_fn_cosine);	//Obtaining the function 'cosine' given a base 'x'.
+		dbl_tangent = tangent(dbl_radians, V_NUM_TERMS);			//Obtaining the function 'tangent' given a base 'x'.
 
 		printf("\n");
-		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
 		printf("+  Results of the Sine and Cosine.  +\n");
-		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
 		printf("| Degrees\t: [%lf].\n", dbl_value);
-		printf("| Radians\t: [%lf].\n", dbl_radns);
-		printf("+-----------------------------------+\n");
-		printf("| Terms\t\t: [%d].\n", V_NUM_TERMS);
+		printf("| Radians\t: [%lf].\n", dbl_radians);
 		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("| PI Value\t: [%lf].\n", V_PI);
+		printf("| Terms\t\t: [%d].\n", V_NUM_TERMS);
+		printf("+--------+--------+--------+--------+\n");
 		printf("| Sine\t\t: [%lf].\n", dbl_sine);
 		printf("| Cosine\t: [%lf].\n", dbl_cosine);
-		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("| Tangent\t: [%lf].\n", dbl_tangent);
 		printf("+---|----+---|----+---|----+---|----|\n");
+		printf("| Tangent\t: [%lf].\n", dbl_tangent);
+		printf("+===|====+===|====+===|====+===|====+\n");
+		printf("\n");
 
 		return V_ZERO;
 	}
