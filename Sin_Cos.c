@@ -34,7 +34,6 @@
 #define RADIANS(angle)			((angle) * V_PI / V_HALF_CIRC)
 
 //Numeric Symbolic Constants.
-#define	V_FOUR				4.0
 #define V_HALF_CIRC			180.0
 #define V_MINUS_ONE			-1
 #define	V_NUM_TERMS			11
