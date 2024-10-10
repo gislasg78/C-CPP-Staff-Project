@@ -90,8 +90,10 @@
  ****************************************************************/
 int int_capture_matrix(int **int_matrix, const int int_rows, const int int_cols)
 	{
+		/* Initialization of local working variables. */
 		int int_captured_items = V_ZERO;
 
+		/* Check if the pointer of pointers of the two-dimensional array is valid. */
 		if (int_matrix)
 			{
 				printf("\n");
@@ -101,6 +103,7 @@ int int_capture_matrix(int **int_matrix, const int int_rows, const int int_cols)
 				printf("| Rows: [%d].\tColumns: [%d].\n", int_rows, int_cols);
 				printf("+---|----+---|----+---|----+---|----+---|----+\n");
 
+				/* Cycle for capturing each value that will enter the dynamic array. */
 				for (int int_row = V_ZERO; int_row < int_rows; int_row++)
 					{
 						if (int_matrix[int_row])
@@ -130,6 +133,7 @@ int int_capture_matrix(int **int_matrix, const int int_rows, const int int_cols)
 				exit(EXIT_FAILURE);
 			}
 
+		/* Returns the number of elements captured. */
 		printf("[%d] Captured input elements...\n", int_captured_items);
 
 		return int_captured_items;
@@ -150,12 +154,13 @@ int int_capture_matrix(int **int_matrix, const int int_rows, const int int_cols)
  ** Output Parms:	None.					**
  ** Result:		This function returns a pointer of	**
  **			pointers with the space assigned to the **
- **			number of rows and the number of columns**
- **			individualized for each column of a	**
- **			two-dimensional dynamic array.		**
+ **			number of rows and the number of	**
+ **			columns individualized for each column	**
+ **			of a two-dimensional dynamic array.	**
  ****************************************************************/
 int **int_create_matrix(const int int_rows, const int int_cols)
 	{
+		/* Initialization of local working variables. */
 		int int_created_items = V_ZERO;
 		int **int_matrix = NULL;
 
@@ -166,10 +171,12 @@ int **int_create_matrix(const int int_rows, const int int_cols)
 		printf("| Rows: [%d].\tColumns: [%d].\n", int_rows, int_cols);
 		printf("+---|----+---|----+---|----+---|----+---|----+\n");
 
+		/* Dynamic allocation of memory for the matrix row area. */
 		if ((int_matrix = (int **) calloc(int_rows, sizeof(int *))))
 			{
 				for (int int_row = V_ZERO; int_row < int_rows; int_row++)
 					{
+						/* Dynamic allocation of memory for the matrix column area. */
 						if ((int_matrix[int_row] = (int *) calloc(int_cols, sizeof(int))))
 							{
 								int_created_items++;
@@ -187,6 +194,7 @@ int **int_create_matrix(const int int_rows, const int int_cols)
 				exit(EXIT_FAILURE);
 			}
 
+		/* Returns the number of elements created. */
 		printf("[%d] Lines generated for the dynamic matrix...\n", int_created_items);
 
 		return int_matrix;
@@ -211,8 +219,10 @@ int **int_create_matrix(const int int_rows, const int int_cols)
  ****************************************************************/
 int int_deallocate_matrix(int **int_matrix, const int int_rows)
 	{
+		/* Initialization of local working variables. */
 		int int_deallocated_items = V_ZERO;
 
+		/* Check if the pointer of pointers of the two-dimensional array is valid. */
 		if (int_matrix)
 			{
 				printf("\n");
@@ -222,6 +232,7 @@ int int_deallocate_matrix(int **int_matrix, const int int_rows)
 				printf("| Rows: [%d].\n", int_rows);
 				printf("+---|----+---|----+---|----+---|----+---|----+\n");
 
+				/* Loop to first free the memory of each row of the matrix. */
 				for (int int_row = V_ZERO; int_row < int_rows; int_row++)
 					{
 						if (int_matrix[int_row])
@@ -246,6 +257,7 @@ int int_deallocate_matrix(int **int_matrix, const int int_rows)
 				exit(EXIT_FAILURE);
 			}
 
+		/* Returns the number of deallocated elements. */
 		printf("[%d] Lines unallocated for the dynamic array...\n", int_deallocated_items);
 
 		return int_deallocated_items;
@@ -292,11 +304,15 @@ int int_deallocate_matrix(int **int_matrix, const int int_rows)
  ****************************************************************/
 int **int_matrix_product(int **int_f_matrix, int **int_s_matrix, const int int_f_rows, const int int_f_cols, const int int_s_rows, const int int_s_cols, int *int_max_rows, int *int_max_cols)
 	{
+		/* Initialization of local working variables. */
+		int int_counting_items = V_ZERO;
 		int **int_matrix_prod = NULL;
 
+		/* Create a result matrix with the largest number of rows and columns. */
 		*int_max_rows = (int_f_rows > int_s_rows) ? int_f_rows : int_s_rows;
 		*int_max_cols = (int_f_cols > int_s_cols) ? int_f_cols : int_s_cols;
 
+		/* Dynamic creation of the product matrix of two dynamic matrices. */
 		if (int_matrix_prod = int_create_matrix(*int_max_rows, *int_max_cols))
 			{
 				printf("\n");
@@ -307,12 +323,14 @@ int **int_matrix_product(int **int_f_matrix, int **int_s_matrix, const int int_f
 				printf("| Rows: [%d].\tColumns: [%d].\n", int_s_rows, int_s_cols);
 				printf("+---|----+---|----+---|----+---|----+---|----+\n");
 
+				/* Main cycle of multiplication of each entry of each matrix. */
 				for (int int_f_row = V_ZERO; int_f_row < int_f_rows; int_f_row++)
 					{
 						for (int int_s_col = V_ZERO; int_s_col < int_s_cols; int_s_col++)
 							{
 								for (int int_f_col = V_ZERO; int_f_col < int_f_cols; int_f_col++)
 									{
+										int_counting_items++;
 										int_matrix_prod[int_f_row][int_s_col] += int_f_matrix[int_f_row][int_f_col] * int_s_matrix[int_f_col][int_s_col];
 										printf("i=[%d],j=[%d],k=[%d]:\t{(i=[%d], k=[%d])=[%d], (k=[%d],j=[%d]) = [%d]} = [%d]:\t[%d].\n", int_f_row, int_s_col, int_f_col, int_f_row, int_f_col, int_f_matrix[int_f_row][int_f_col], int_f_col, int_s_col, int_s_matrix[int_f_col][int_s_col], int_f_matrix[int_f_row][int_f_col] * int_s_matrix[int_f_col][int_s_col], int_matrix_prod[int_f_row][int_s_col]);
 									}
@@ -328,6 +346,9 @@ int **int_matrix_product(int **int_f_matrix, int **int_s_matrix, const int int_f
 				perror("There is not enough space in memory to allocate a matrix product array...");
 				exit(EXIT_FAILURE);
 			}
+
+		/* Returns the number of calculations performed. */
+		printf("[%d] Calculations performed to obtain the product of two matrices...\n", int_counting_items);
 
 		return int_matrix_prod;
 	}
@@ -370,8 +391,10 @@ int **int_matrix_product(int **int_f_matrix, int **int_s_matrix, const int int_f
  ****************************************************************/
 int int_view_matrix(int **int_matrix, const int int_rows, const int int_cols)
 	{
-		int int_captured_items = V_ZERO;
+		/* Initialization of local working variables. */
+		int int_counting_items = V_ZERO;
 
+		/* Check if the pointer of pointers of the two-dimensional array is valid. */
 		if (int_matrix)
 			{
 				printf("\n");
@@ -381,14 +404,15 @@ int int_view_matrix(int **int_matrix, const int int_rows, const int int_cols)
 				printf("| Rows: [%d].\tColumns: [%d].\n", int_rows, int_cols);
 				printf("+---|----+---|----+---|----+---|----+---|----+\n");
 
+				/* Main cycle that dumps the indicated array element by element. */
 				for (int int_row = V_ZERO; int_row < int_rows; int_row++)
 					{
 						if (int_matrix[int_row])
 							{
 								for (int int_col = V_ZERO; int_col < int_cols; int_col++)
 									{
-										int_captured_items++;
-										printf("Item #[%d]:\tRow:\t[%d] of [%d].\tColumn:\t[%d] of [%d].\tValue:\t[%d].\n", int_captured_items, int_row + V_ONE, int_rows, int_col + V_ONE, int_cols, int_matrix[int_row][int_col]);
+										int_counting_items++;
+										printf("Item #[%d]:\tRow:\t[%d] of [%d].\tColumn:\t[%d] of [%d].\tValue:\t[%d].\n", int_counting_items, int_row + V_ONE, int_rows, int_col + V_ONE, int_cols, int_matrix[int_row][int_col]);
 									}
 
 								printf("\n");
@@ -399,8 +423,6 @@ int int_view_matrix(int **int_matrix, const int int_rows, const int int_cols)
 								exit(EXIT_FAILURE);
 							}
 					}
-
-				printf("[%d] Output results generated...\n", int_captured_items);
 			}
 		else
 			{
@@ -408,7 +430,10 @@ int int_view_matrix(int **int_matrix, const int int_rows, const int int_cols)
 				exit(EXIT_FAILURE);
 			}
 
-		return int_captured_items;
+		/* Returns the number of displayed elements from the specified two-dimensional array. */
+		printf("[%d] Output results generated...\n", int_counting_items);
+
+		return int_counting_items;
 	}
 
 
@@ -457,58 +482,59 @@ int int_view_matrix(int **int_matrix, const int int_rows, const int int_cols)
  ****************************************************************/
 int main()
 	{
+		/* Initialization of local working variables. */
 		int int_counting_items = V_ZERO;
-		int int_f_cols = V_ZERO, int_f_rows = V_ZERO;
-		int int_s_cols = V_ZERO, int_s_rows = V_ZERO;
-
 		int ***int_matrix_3D = NULL;
-		int int_max_cols = V_ZERO;
-		int int_max_rows = V_ZERO;
+		int int_matrix_rows_cols[V_THREE][V_TWO] = { {V_ZERO, V_ZERO}, {V_ZERO, V_ZERO}, {V_ZERO, V_ZERO} };
 
 		printf("+---|----+---|----+---|----+---|----+---|----+\n");
 		printf("|    Product of two rectangular matrices.    |\n");
 		printf("+---|----+---|----+---|----+---|----+---|----+\n");
 
+		/* ------------------------------------------------------------ *
+		 * Dynamic generation of a three-dimensional matrix that groups	*
+                 * the three two-dimensional calculation matrices.		*
+		 * ------------------------------------------------------------ */
 		if (int_matrix_3D = (int ***) calloc(V_THREE, sizeof(int **)))
 			{
-				printf("\n");
-				printf("+---|----+---|----+---|----+---|----+---|----+\n");
-				printf("|  Rows and columns of matrix #[1] of #[2].  |\n");
-				printf("+---|----+---|----+---|----+---|----+---|----+\n");
-				printf("Number of rows    : ");
-				scanf("%d", &int_f_rows);
-				printf("Number of columns : ");
-				scanf("%d", &int_f_cols);
+				/* Cycle of generation of the first two matrices for the calculation. */
+				for (int int_n_matrix = V_ZERO; int_n_matrix < V_TWO; int_n_matrix++)
+					{
+						printf("\n");
+						printf("+---|----+---|----+---|----+---|----+---|----+\n");
+						printf("|           Matrix #[%d] of #[%d].           |\n", int_n_matrix + V_ONE, V_TWO);
+						printf("+---|----+---|----+---|----+---|----+---|----+\n");
+						printf("Number of rows    : ");
+						scanf("%d", &int_matrix_rows_cols[int_n_matrix][V_ZERO]);
+						printf("Number of columns : ");
+						scanf("%d", &int_matrix_rows_cols[int_n_matrix][V_ONE]);
 
-				int_matrix_3D[V_ZERO] = int_create_matrix(int_f_rows, int_f_cols);
-				int_counting_items = int_capture_matrix(int_matrix_3D[V_ZERO], int_f_rows, int_f_cols);
-				int_counting_items = int_view_matrix(int_matrix_3D[V_ZERO], int_f_rows, int_f_cols);
+						int_matrix_3D[int_n_matrix] = int_create_matrix(int_matrix_rows_cols[int_n_matrix][V_ZERO], int_matrix_rows_cols[int_n_matrix][V_ONE]);
+						int_counting_items = int_capture_matrix(int_matrix_3D[int_n_matrix], int_matrix_rows_cols[int_n_matrix][V_ZERO], int_matrix_rows_cols[int_n_matrix][V_ONE]);
+						int_counting_items = int_view_matrix(int_matrix_3D[int_n_matrix], int_matrix_rows_cols[int_n_matrix][V_ZERO], int_matrix_rows_cols[int_n_matrix][V_ONE]);
+					}
 
-				printf("\n");
-				printf("+---|----+---|----+---|----+---|----+---|----+\n");
-				printf("|  Rows and columns of matrix #[2] of #[2].  |\n");
-				printf("+---|----+---|----+---|----+---|----+---|----+\n");
-				printf("Number of rows    : ");
-				scanf("%d", &int_s_rows);
-				printf("Number of columns : ");
-				scanf("%d", &int_s_cols);
+				/* Creation and generation of the product-result matrix. */
+				int_matrix_3D[V_TWO] = int_matrix_product(int_matrix_3D[V_ZERO], int_matrix_3D[V_ONE], int_matrix_rows_cols[V_ZERO][V_ZERO], int_matrix_rows_cols[V_ZERO][V_ONE], int_matrix_rows_cols[V_ONE][V_ZERO], int_matrix_rows_cols[V_ONE][V_ONE], &int_matrix_rows_cols[V_TWO][V_ZERO], &int_matrix_rows_cols[V_TWO][V_ONE]);
 
-				int_matrix_3D[V_ONE] = int_create_matrix(int_s_rows, int_s_cols);
-				int_counting_items = int_capture_matrix(int_matrix_3D[V_ONE], int_s_rows, int_s_cols);
-				int_counting_items = int_view_matrix(int_matrix_3D[V_ONE], int_s_rows, int_s_cols);
-
-				int_matrix_3D[V_TWO] = int_matrix_product(int_matrix_3D[V_ZERO], int_matrix_3D[V_ONE], int_f_rows, int_f_cols, int_s_rows, int_s_cols, &int_max_rows, &int_max_cols);
-
+				/* Dumping the product result matrix. */
 				printf("\n");
 				printf("The complete product matrix is ​​displayed...\n");
-				int_counting_items = int_view_matrix(int_matrix_3D[V_TWO], int_max_rows, int_max_cols);
+				int_counting_items = int_view_matrix(int_matrix_3D[V_TWO], int_matrix_rows_cols[V_TWO][V_ZERO], int_matrix_rows_cols[V_TWO][V_ONE]);
 
+				/* Freeing memory of all generated matrices. */
 				printf("\n");
 				printf("Evicting arrays from allocated memory areas...\n");
-				int_deallocate_matrix(int_matrix_3D[V_ZERO], int_f_rows);
-				int_deallocate_matrix(int_matrix_3D[V_ONE], int_s_rows);
-				int_deallocate_matrix(int_matrix_3D[V_TWO], int_max_rows);
 
+				for (int int_n_matrix = V_ZERO; int_n_matrix < V_THREE; int_n_matrix++)
+					{
+						int_counting_items = int_deallocate_matrix(int_matrix_3D[int_n_matrix], int_matrix_rows_cols[int_n_matrix][V_ZERO]);
+					}
+
+				/* ------------------------------------------------------------	*
+				   Release of the memory of the three-dimensional matrix	*
+				 * that grouped the three two-dimensional matrices.		*
+				 * ------------------------------------------------------------	*/
 				printf("\n");
 				printf("Three-dimensional matrix pointer released...\n");
 				free(int_matrix_3D);
