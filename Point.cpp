@@ -1,5 +1,6 @@
 #include <iostream>
 
+//Symbolic constant of work.
 #define V_ZERO  0
 
 //Namespace to hold both types of 2D and 3D points.
@@ -28,7 +29,7 @@ namespace SpacePoints
 
 					virtual void print()
 						{
-							std::cout << "2D Point #" << this->c << ":\t(" << this->x << ", " << this->y << ")" << std::endl;
+							std::cout << "2D Point #" << this->c << ":\t(" << this->x << ", " << this->y << ")." << std::endl;
 						};
 
 			};
@@ -57,7 +58,7 @@ namespace SpacePoints
 					void print()
 						{
 							Point2D<T>::print();
-							std::cout << "3D Point #" << this->c << ":\t(" << this->z << ")" << std::endl;
+							std::cout << "3D Point #" << this->c << ":\t(" << this->z << ")." << std::endl;
 						};
 			};
 
@@ -66,7 +67,7 @@ namespace SpacePoints
 	template <typename T>
 	inline std::ostream &operator<< (std::ostream &os, const SpacePoints::Point2D<T> &Sp2D)
 		{
-			os << "2D Point #" << Sp2D.c << ":\t(" << Sp2D.x << ", " << Sp2D.y << ")" << std::endl;
+			os << "* 2D Point #" << Sp2D.c << ":\t(" << Sp2D.x << ", " << Sp2D.y << "). *" << std::endl;
 
 			return os;
 		};
@@ -75,7 +76,7 @@ namespace SpacePoints
 	template <typename T>
 	inline std::ostream &operator<< (std::ostream &os, const SpacePoints::Point3D<T> &Sp3D)
 		{
-			os << "3D Point #" << Sp3D.c << ":\t(" << Sp3D.getX() << ", " << Sp3D.getY() << ", " << Sp3D.getZ() << ")" << std::endl;
+			os << "* 3D Point #" << Sp3D.c << ":\t(" << Sp3D.getX() << ", " << Sp3D.getY() << ", " << Sp3D.getZ() << "). *" << std::endl;
 
 			return os;
 		};
@@ -130,11 +131,6 @@ int main()
 		Sp3D.setY(int_2D_y);
 		Sp3D.print();
 		std::cout << Sp3D << std::endl;
-
-		std::cout << "Polymorphism by assigning a 2D Point to a 2D Point type." << std::endl;
-		SpacePoints::Point2D<int> Sp2x2D = SpacePoints::Point2D<int>(int_2D_x, int_2D_y);
-		Sp2x2D.print();
-		std::cout << Sp2x2D << std::endl;
 
 		std::cout << "Polymorphism by assigning a 3D Point to a 2D Point type." << std::endl;
 		SpacePoints::Point2D<int> Sp2x3D = SpacePoints::Point3D<int>(int_3D_x, int_3D_y, int_3D_z);
