@@ -4,12 +4,11 @@
  ** Given a date (day, month, year).		**
  ** Indicate the corresponding day of the week.	**
  **						**
- ** 		calendar.c			**
+ ** 		Calendar.c			**
  ************************************************/
 #include <stdio.h>
 #include <stdlib.h>
 
-#define V_28		28
 #define	V_29		29
 #define V_31		31
 #define	V_100		100
@@ -38,13 +37,15 @@ struct months_table
 	}
 	months_array[V_TWELVE] =
 		{
-		 {1, "January", 31}, {2, "February", 28}, {3, "March", 31}, {4, "April", 30},
-		 {5, "May", 31}, {6, "June", 30}, {7, "July", 31}, {8, "August", 31},
-		 {9, "September", 30}, {10, "October", 31}, {11, "November", 30}, {12, "December", 31}
+		 {1, "January", 31}, {2, "February", 28}, {3, "March", 31},
+		 {4, "April", 30}, {5, "May", 31}, {6, "June", 30},
+		 {7, "July", 31}, {8, "August", 31}, {9, "September", 30},
+		 {10, "October", 31}, {11, "November", 30}, {12, "December", 31}
 		};
 
 void DateEntry(int *const day, int *const month, int *const year);
 int DayOfWeek(const int day, int month, int year);
+int JulianYear(int day, int month, int year);
 int LeapYear(int year);
 int ValidDate(const int day, const int month, const int year);
 void WriteDate(const int day, const int month, const int year);
@@ -55,7 +56,11 @@ int main()
 
 		DateEntry(&day, &month, &year);
 
-		if (ValidDate(day, month, year)) WriteDate(day, month, year);
+		if (ValidDate(day, month, year))
+			{
+				JulianYear(day, month, year);
+				WriteDate(day, month, year);
+			}
 
 		return V_ZERO;
 	}
@@ -78,6 +83,20 @@ int DayOfWeek(const int day, int month, int year)
 			}
 
 		return ((day + V_TWO * month + V_THREE * (month + V_ONE) / V_FIVE + year + year / V_FOUR - year / V_100 + year / V_400 + V_TWO) % V_SEVEN);
+	}
+
+int JulianYear(int day, int month, int year)
+	{
+		int int_cluster_of_days = V_ZERO;
+
+		for (int int_idx = V_ZERO; int_idx < (month - V_ONE); int_idx++)
+			int_cluster_of_days += months_array[int_idx].month_totaldays;
+
+		int_cluster_of_days += day;
+
+		printf("\nJulian Year: {%d} : [%d].\n", year, int_cluster_of_days);
+
+		return (int_cluster_of_days);
 	}
 
 int LeapYear(const int year)
