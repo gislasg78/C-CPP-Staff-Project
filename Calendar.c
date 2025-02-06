@@ -69,9 +69,12 @@ void DateEntry(int *const day, int *const month, int *const year)
 	{
 		printf("Date validity checker.\n");
 		printf("Please enter the following requested data.\n");
-		printf("Year  (1582 ->) : ");	scanf("%d", year);
-		printf("Month (01 - 12) : ");	scanf("%d", month);
-		printf("Day   (01 - 31) : ");	scanf("%d", day);
+		printf("Year  (%04d ->) : ", V_1582);
+		scanf("%d", year);
+		printf("Month (%02d - %02d) : ", V_ONE, V_TWELVE);
+		scanf("%d", month);
+		printf("Day   (%02d - %02d) : ", V_ONE, V_31);
+		scanf("%d", day);
 	}
 
 int DayOfWeek(const int day, int month, int year)
