@@ -9,7 +9,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define V_28		28
 #define	V_29		29
+#define V_31		31
 #define	V_100		100
 #define V_400		400
 #define	V_1582		1582
@@ -30,43 +32,44 @@ static char day_name[V_SEVEN][V_TEN] = {"Saturday", "Sunday", "Monday",
 
 struct months_table
 	{
+		int month_numberofmonth;
 		char month_nameofmonth[V_TEN];
 		int month_totaldays;
 	}
 	months_array[V_TWELVE] =
 		{
-		 {"January", 31}, {"February", 28}, {"March", 31}, {"April", 30},
-		 {"May", 31}, {"June", 30}, {"July", 31}, {"August", 31},
-		 {"September", 30}, {"October", 31}, {"November", 30}, {"December", 31}
+		 {1, "January", 31}, {2, "February", 28}, {3, "March", 31}, {4, "April", 30},
+		 {5, "May", 31}, {6, "June", 30}, {7, "July", 31}, {8, "August", 31},
+		 {9, "September", 30}, {10, "October", 31}, {11, "November", 30}, {12, "December", 31}
 		};
 
-void DateEntry(int *day, int *month, int *year);
-int DayOfWeek(int day, int month, int year);
+void DateEntry(int *const day, int *const month, int *const year);
+int DayOfWeek(const int day, int month, int year);
 int LeapYear(int year);
-void ReadDate(int *day, int *month, int *year);
-int ValidDate(int day, int month, int year);
-void WriteDate(int day, int month, int year);
+int ValidDate(const int day, const int month, const int year);
+void WriteDate(const int day, const int month, const int year);
 
 int main()
 	{
 		int day = V_ZERO, month = V_ZERO, year = V_ZERO;
 
-		ReadDate(&day, &month, &year);
-		WriteDate(day, month, year);
+		DateEntry(&day, &month, &year);
+
+		if (ValidDate(day, month, year)) WriteDate(day, month, year);
 
 		return V_ZERO;
 	}
 
-void DateEntry(int *day, int *month, int *year)
+void DateEntry(int *const day, int *const month, int *const year)
 	{
 		printf("Date validity checker.\n");
 		printf("Please enter the following requested data.\n");
-		printf("Year  (1582 ->) : ");   scanf("%d", year);
-		printf("Month (01 - 12) : ");   scanf("%d", month);
-		printf("Day   (01 - 31) : ");   scanf("%d", day);
+		printf("Year  (1582 ->) : ");	scanf("%d", year);
+		printf("Month (01 - 12) : ");	scanf("%d", month);
+		printf("Day   (01 - 31) : ");	scanf("%d", day);
 	}
 
-int DayOfWeek(int day, int month, int year)
+int DayOfWeek(const int day, int month, int year)
 	{
 		if (month <= V_TWO)
 			{
@@ -77,40 +80,41 @@ int DayOfWeek(int day, int month, int year)
 		return ((day + V_TWO * month + V_THREE * (month + V_ONE) / V_FIVE + year + year / V_FOUR - year / V_100 + year / V_400 + V_TWO) % V_SEVEN);
 	}
 
-int LeapYear(int year)
+int LeapYear(const int year)
 	{
 		return ((year % V_FOUR == V_ZERO) && (year % V_100 != V_ZERO) || (year % V_400 == V_ZERO));
 	}
 
-void ReadDate(int *day, int *month, int *year)
-	{
-		int valid_date = V_ZERO;
-
-		while (!valid_date)
-			{
-				DateEntry(day, month, year);
-				valid_date = ValidDate(*day, *month, *year);
-			}
-	}
-
-int ValidDate(int day, int month, int year)
+int ValidDate(const int day, const int month, const int year)
 	{
 		char chr = V_ZERO;
 		int limitdays = V_ZERO, yearB = V_ZERO, monthB = V_ZERO, dayB = V_ZERO;
 
 		yearB = (year >= V_1582);
 		monthB = (month >= V_ONE && month <= V_TWELVE);
+		dayB = (day >= V_ONE && day <= V_31);
 
-		if (monthB)
-			{
-				limitdays = months_array[month - V_ONE].month_totaldays;
+		if (yearB)
+			if (monthB)
+				if (dayB)
+					{
+						limitdays = months_array[month - V_ONE].month_totaldays;
 
-				if ((month == V_TWO) && (LeapYear(year))) limitdays = V_29;
+						if ((month == V_TWO) && (LeapYear(year))) limitdays = V_29;
 
-				dayB = (day >= V_ONE && day <= limitdays);
-			}
+						dayB = (day >= V_ONE && day <= limitdays);
+
+						if (dayB)
+							printf("\nCorrect date.\n");
+						else
+							printf("\nInvalid day: [%d]. Out of range: [%d] and [%d].\n", day, V_ONE, limitdays);
+					}
+				else
+					printf("\nInvalid day: [%d]. Out of range: [%d] and [%d].\n", day, V_ONE, V_31);
+			else
+				printf("\nInvalid month: [%d]. Out of range: [%d] and [%d].\n", month, V_ONE, V_TWELVE);
 		else
-			printf("Wrong month : [%d].\n", month);
+			printf("\nInvalid year: [%d]. Out of range: [>=%d].\n", year, V_1582);
 
 		if (!(dayB && monthB && yearB))
 			{
@@ -123,7 +127,7 @@ int ValidDate(int day, int month, int year)
 		return (dayB && monthB && yearB);
 	}
 
-void WriteDate(int day, int month, int year)
+void WriteDate(const int day, const int month, const int year)
 	{
 		int d = V_ZERO;
 
