@@ -47,6 +47,7 @@ void DateEntry(int *const day, int *const month, int *const year);
 int DayOfWeek(const int day, int month, int year);
 int JulianYear(int day, int month, int year);
 int LeapYear(int year);
+int SumOfDays(int day, int month, int year);
 int ValidDate(const int day, const int month, const int year);
 void WriteDate(const int day, const int month, const int year);
 
@@ -59,6 +60,7 @@ int main()
 		if (ValidDate(day, month, year))
 			{
 				JulianYear(day, month, year);
+				SumOfDays(day, month, year);
 				WriteDate(day, month, year);
 			}
 
@@ -90,21 +92,52 @@ int DayOfWeek(const int day, int month, int year)
 
 int JulianYear(int day, int month, int year)
 	{
-		int int_cluster_of_days = V_ZERO;
+		int clusterdays = V_ZERO;
 
-		for (int int_idx = V_ZERO; int_idx < (month - V_ONE); int_idx++)
-			int_cluster_of_days += months_array[int_idx].month_totaldays;
+		for (int int_month = V_ZERO; int_month < (month - V_ONE); int_month++)
+			{
+				int limitdays = months_array[int_month].month_totaldays;
 
-		int_cluster_of_days += day;
+                                if ((int_month == V_ONE) && (LeapYear(year))) limitdays = V_29;
 
-		printf("\nJulian Year: {%d} : [%d].\n", year, int_cluster_of_days);
+				clusterdays += limitdays;
+			}
 
-		return (int_cluster_of_days);
+		clusterdays += day;
+
+		printf("\nJulian Year: {%d} : [%d].\n", year, clusterdays);
+
+		return (clusterdays);
 	}
 
 int LeapYear(const int year)
 	{
 		return ((year % V_FOUR == V_ZERO) && (year % V_100 != V_ZERO) || (year % V_400 == V_ZERO));
+	}
+
+int SumOfDays (int day, int month, int year)
+	{
+		int cumofdays = V_ZERO;
+
+		for (int int_year = V_1582; int_year <= year; int_year++)
+			{
+				int max_month = (int_year < year) ? V_TWELVE : month - V_ONE;
+
+		                for (int int_month = V_ZERO; int_month < max_month; int_month++)
+					{
+						int limitdays = months_array[int_month].month_totaldays;
+
+						if ((int_month == V_ONE) && (LeapYear(int_year))) limitdays = V_29;
+
+						cumofdays += limitdays;
+					}
+			}
+
+                cumofdays += day;
+
+		printf("\nSum of days: {%d} : [%d].\n", V_1582, cumofdays);
+
+		return (cumofdays);
 	}
 
 int ValidDate(const int day, const int month, const int year)
