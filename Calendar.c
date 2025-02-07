@@ -43,35 +43,37 @@ struct months_table
 		 {10, "October", 31}, {11, "November", 30}, {12, "December", 31}
 		};
 
-void DateEntry(const int baseyear, int *const day, int *const month, int *const year);
+void DateEntry(int *day, int *month, int *year);
 int DayOfWeek(const int day, int month, int year);
 int JulianYear(int day, int month, int year);
+void EasterSunday(int year);
 int LeapYear(int year);
-int SumOfDays(const int baseyear, int day, int month, int year);
-int ValidDate(const int baseyear, const int day, const int month, const int year);
+int SumOfDays(int day, int month, int year);
+int ValidDate(const int day, const int month, const int year);
 void WriteDate(const int day, const int month, const int year);
 
 int main()
 	{
 		int day = V_ZERO, month = V_ZERO, year = V_ZERO;
 
-		DateEntry(V_1582, &day, &month, &year);
+		DateEntry(&day, &month, &year);
 
-		if (ValidDate(V_1582, day, month, year))
+		if (ValidDate(day, month, year))
 			{
+				EasterSunday(year);
 				JulianYear(day, month, year);
-				SumOfDays(V_1582, day, month, year);
+				SumOfDays(day, month, year);
 				WriteDate(day, month, year);
 			}
 
 		return V_ZERO;
 	}
 
-void DateEntry(const int baseyear, int *const day, int *const month, int *const year)
+void DateEntry(int *day, int *month, int *year)
 	{
 		printf("Date validity checker.\n");
 		printf("Please enter the following requested data.\n");
-		printf("Year  (%04d ->) : ", baseyear);
+		printf("Year  (%04d ->) : ", V_1582);
 		scanf("%d", year);
 		printf("Month (%02d - %02d) : ", V_ONE, V_TWELVE);
 		scanf("%d", month);
@@ -88,6 +90,37 @@ int DayOfWeek(const int day, int month, int year)
 			}
 
 		return ((day + V_TWO * month + V_THREE * (month + V_ONE) / V_FIVE + year + year / V_FOUR - year / V_100 + year / V_400 + V_TWO) % V_SEVEN);
+	}
+
+void EasterSunday(int year)
+	{
+		int a = V_ZERO, b = V_ZERO, c = V_ZERO, d = V_ZERO, e = V_ZERO;
+		int f = V_ZERO, g = V_ZERO, h = V_ZERO, i = V_ZERO, k = V_ZERO;
+		int l = V_ZERO, m = V_ZERO;
+		int day = V_ZERO, month = V_ZERO;
+
+		//Gauss algorithm for calculating Easter Sunday.
+		a = year % 19;
+		b = year / V_100;
+		c = year % V_100;
+		d = b / V_FOUR;
+		e = b % V_FOUR;
+
+		f = (b + 8) / 25;
+		g = (b - f + V_ONE) / V_THREE;
+		h = (19 * a + b - d - g + 15) % 30;
+		i = c / V_FOUR;
+		k = c % V_FOUR;
+		l = (32 + V_TWO * e + V_TWO * i - h - k) % V_SEVEN;
+		m = (a + 11 * h + 22 * l) / 451;
+
+		month = (h + l - V_SEVEN * m + 114) / V_31;
+		day = ((h + l - V_SEVEN * m + 114) % V_31) + V_ONE;
+
+		//Print the result.
+		printf("\n");
+		printf("Easter Sunday: {%d}.\n", year);
+		printf("Month: [%s]. Day : [%d].\n", month == V_THREE ? "March" : "April", day);
 	}
 
 int JulianYear(int day, int month, int year)
@@ -115,11 +148,11 @@ int LeapYear(int year)
 		return ((year % V_FOUR == V_ZERO) && (year % V_100 != V_ZERO) || (year % V_400 == V_ZERO));
 	}
 
-int SumOfDays (const int baseyear, int day, int month, int year)
+int SumOfDays (int day, int month, int year)
 	{
 		int cumofdays = V_ZERO;
 
-		for (int int_year = baseyear; int_year <= year; int_year++)
+		for (int int_year = V_1582; int_year <= year; int_year++)
 			{
 				int max_month = (int_year < year) ? V_TWELVE : month - V_ONE;
 
@@ -135,17 +168,17 @@ int SumOfDays (const int baseyear, int day, int month, int year)
 
                 cumofdays += day;
 
-		printf("\nSum of days: {%d} : [%d].\n", baseyear, cumofdays);
+		printf("\nSum of days: {%d} : [%d].\n", V_1582, cumofdays);
 
 		return (cumofdays);
 	}
 
-int ValidDate(const int baseyear, const int day, const int month, const int year)
+int ValidDate(const int day, const int month, const int year)
 	{
 		char chr = V_ZERO;
 		int limitdays = V_ZERO, yearB = V_ZERO, monthB = V_ZERO, dayB = V_ZERO;
 
-		yearB = (year >= baseyear);
+		yearB = (year >= V_1582);
 		monthB = (month >= V_ONE && month <= V_TWELVE);
 		dayB = (day >= V_ONE && day <= V_31);
 
@@ -169,7 +202,7 @@ int ValidDate(const int baseyear, const int day, const int month, const int year
 			else
 				printf("\nInvalid month: [%d]. Out of range: [%d] and [%d].\n", month, V_ONE, V_TWELVE);
 		else
-			printf("\nInvalid year: [%d]. Out of range: [>=%d].\n", year, baseyear);
+			printf("\nInvalid year: [%d]. Out of range: [>=%d].\n", year, V_1582);
 
 		if (!(dayB && monthB && yearB))
 			{
