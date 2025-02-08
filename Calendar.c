@@ -9,10 +9,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define	V_8		8
+#define	V_11		11
+#define	V_15		15
+#define	V_19		19
+#define V_22		22
+#define V_25		25
 #define	V_29		29
+#define	V_30		30
 #define V_31		31
+#define V_32		32
 #define	V_100		100
+#define	V_114		114
 #define V_400		400
+#define	V_451		451
 #define	V_1582		1582
 
 #define	V_FIVE		5
@@ -46,7 +56,7 @@ struct months_table
 void DateEntry(int *day, int *month, int *year);
 int DayOfWeek(const int day, int month, int year);
 int JulianYear(int day, int month, int year);
-void EasterSunday(int year);
+void EasterSunday(const int year, int *month_east, int *day_east);
 int LeapYear(int year);
 int SumOfDays(int day, int month, int year);
 int ValidDate(const int day, const int month, const int year);
@@ -55,12 +65,13 @@ void WriteDate(const int day, const int month, const int year);
 int main()
 	{
 		int day = V_ZERO, month = V_ZERO, year = V_ZERO;
+		int month_east = V_ZERO, day_east = V_ZERO;
 
 		DateEntry(&day, &month, &year);
 
 		if (ValidDate(day, month, year))
 			{
-				EasterSunday(year);
+				EasterSunday(year, &month_east, &day_east);
 				JulianYear(day, month, year);
 				SumOfDays(day, month, year);
 				WriteDate(day, month, year);
@@ -92,35 +103,35 @@ int DayOfWeek(const int day, int month, int year)
 		return ((day + V_TWO * month + V_THREE * (month + V_ONE) / V_FIVE + year + year / V_FOUR - year / V_100 + year / V_400 + V_TWO) % V_SEVEN);
 	}
 
-void EasterSunday(int year)
+void EasterSunday(const int year, int *month_east, int *day_east)
 	{
 		int a = V_ZERO, b = V_ZERO, c = V_ZERO, d = V_ZERO, e = V_ZERO;
 		int f = V_ZERO, g = V_ZERO, h = V_ZERO, i = V_ZERO, k = V_ZERO;
 		int l = V_ZERO, m = V_ZERO;
-		int day = V_ZERO, month = V_ZERO;
 
 		//Gauss algorithm for calculating Easter Sunday.
-		a = year % 19;
+		a = year % V_19;
 		b = year / V_100;
 		c = year % V_100;
 		d = b / V_FOUR;
 		e = b % V_FOUR;
 
-		f = (b + 8) / 25;
+		//Intermediate calculations of the Gauss algorithm.
+		f = (b + V_8) / V_25;
 		g = (b - f + V_ONE) / V_THREE;
-		h = (19 * a + b - d - g + 15) % 30;
+		h = (V_19 * a + b - d - g + V_15) % V_30;
 		i = c / V_FOUR;
 		k = c % V_FOUR;
-		l = (32 + V_TWO * e + V_TWO * i - h - k) % V_SEVEN;
-		m = (a + 11 * h + 22 * l) / 451;
+		l = (V_32 + V_TWO * e + V_TWO * i - h - k) % V_SEVEN;
+		m = (a + V_11 * h + V_22 * l) / V_451;
 
-		month = (h + l - V_SEVEN * m + 114) / V_31;
-		day = ((h + l - V_SEVEN * m + 114) % V_31) + V_ONE;
+		//Final results.
+		*month_east = (h + l - V_SEVEN * m + V_114) / V_31;
+		*day_east = ((h + l - V_SEVEN * m + V_114) % V_31) + V_ONE;
 
 		//Print the result.
-		printf("\n");
-		printf("Easter Sunday: {%d}.\n", year);
-		printf("Month: [%s]. Day : [%d].\n", month == V_THREE ? "March" : "April", day);
+		printf("\nEaster Sunday: {%d}.\n", year);
+		printf("Month: [%s]. Day : [%d].\n", months_array[*month_east - V_ONE].month_nameofmonth, *day_east);
 	}
 
 int JulianYear(int day, int month, int year)
