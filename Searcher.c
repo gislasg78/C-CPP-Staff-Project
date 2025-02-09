@@ -1,8 +1,9 @@
 #include <stdio.h>
 
 #define	NULL_CHARACTER	'\0'
+#define	CARRIAGE_RETURN	'\n'
 
-#define RANDOM_GENERATOR(s)	(V_MULTIPLIER * (s) + V_INCREMENTER) % V_MODULUS
+#define RANDOM_GENERATOR(s)	(((V_MULTIPLIER) * (s) + (V_INCREMENTER)) % (V_MODULUS))
 #define	V_INCREMENTER		13849
 #define V_MODULUS		65536
 #define V_MULTIPLIER		25173
@@ -39,18 +40,24 @@ struct s_fruits
 
 int BinarySearch(struct s_fruits *array_fruits, const int idx_begin, const int idx_end, const int data);
 void BubbleSort(struct s_fruits array_fruits[], const int idx_begin, const int idx_end);
-double GetRandomNumber(int *random_seed);
 struct s_fruits GetFruitItemInfo(const struct s_fruits *array_fruits, const int num_item);
+char GetPause(const char *str_Message);
+int GetRandomInterval(int idx_begin, int idx_end, int *random_seed);
+double GetRandomNumber(int *random_seed);
+int GetValidateLimits(const int idx, int *idx_begin, int *idx_end);
+int GetCheckedInput(int *value);
+int GetVerifiedIndexes(int *idx_begin, int *idx_end, int *idx_max, int *idx_min);
 void InsertionSort(struct s_fruits array_fruits[], int idx_begin, int idx_end);
 void MainMenu(int *option);
+int ObtainCodeKeyTable();
 void QuickSort(struct s_fruits array_fruits[], int idx_begin, int idx_end);
+void SeeItemNotFound(int idx, int idx_begin, int idx_end, const int data);
 void SelectOption(int option);
 void SelectionSort(struct s_fruits array_fruits[], int idx_begin, int idx_end);
 int SequentialSearch(const struct s_fruits *array_fruits, const int idx_begin, const int idx_end, const int data);
 void SwapRegisters(struct s_fruits array_fruits[], const int l_idx, const int r_idx);
 void SwapValues(int *l_value, int *r_value);
 void UnClutterTable(struct s_fruits *array_fruits, int idx_begin, int idx_end, int cycles, int *p_random);
-int ValidateLimits(const int idx, int *idx_begin, int *idx_end);
 int ViewItems(struct s_fruits *array_fruits, const int idx_begin, const int idx_end);
 
 int main()
@@ -66,49 +73,70 @@ int main()
 
 int BinarySearch(struct s_fruits *array_fruits, const int idx_begin, const int idx_end, const int data)
 	{
-		int idx_count = V_ZERO;
-		int bottom = V_ZERO, middle = V_ZERO, top = V_ZERO;
-		int maximum_idx = V_ZERO, minimum_idx = V_ZERO;
+		int bottom = idx_begin, middle = V_ZERO, top = idx_end;
 		struct s_fruits s_fruit_item = {V_ZERO, NULL_CHARACTER};
 
 		/* Binary search for an element within an array. */
-		if (ValidateLimits(idx_begin, &minimum_idx, &maximum_idx) && ValidateLimits(idx_end, &minimum_idx, &maximum_idx))
+		for (int idx_count = V_ZERO; bottom <= top && data != array_fruits[middle].numberoffruit; idx_count++)
 			{
-				bottom = (idx_begin > idx_end) ? idx_end : idx_begin;
-				top = (idx_end < idx_begin) ? idx_begin : idx_end;
+				middle = (bottom + top) / V_TWO;
 
-				for (idx_count = V_ZERO; bottom <= top && data != array_fruits[middle].numberoffruit; idx_count++)
-					{
-						middle = (bottom + top) / V_TWO;
+				if (data > array_fruits[middle].numberoffruit)
+					bottom = middle + V_ONE;
 
-						if (data > array_fruits[middle].numberoffruit)
-							bottom = middle + V_ONE;
-
-						if (data < array_fruits[middle].numberoffruit)
-							top = middle + V_MINUS_ONE;
-					}
-
-				if (data == array_fruits[middle].numberoffruit)
-					s_fruit_item = GetFruitItemInfo(array_fruits, middle);
-				else
-					{
-						printf("Item code not found     : [%d].\n", data);
-						printf("Search index reached    : [%d].\n", middle);
-						printf("Maximum of items tracked: [%d].\n", idx_end);
-					}
+				if (data < array_fruits[middle].numberoffruit)
+					top = middle + V_MINUS_ONE;
 			}
+
+		if (data == array_fruits[middle].numberoffruit)
+			s_fruit_item = GetFruitItemInfo(array_fruits, middle);
 		else
-			printf("The lower bound: [%d] and upper bound: [%d] are not valid for binary search.\n", idx_begin, idx_end);
+			SeeItemNotFound(middle, idx_begin, idx_end, data);
 
 		return middle;
 	}
 
 void BubbleSort(struct s_fruits array_fruits[], int idx_begin, int idx_end)
 	{
-		for (int ind = idx_begin; ind < idx_end + V_MINUS_ONE; ind++)
-			for (int idx = ind + V_ONE; idx < idx_end; idx++)
+		for (int ind = idx_begin; ind <= idx_end + V_MINUS_ONE; ind++)
+			for (int idx = ind + V_ONE; idx <= idx_end; idx++)
 				if ((array_fruits[ind].numberoffruit > (array_fruits + idx)->numberoffruit))
 					SwapRegisters(array_fruits, ind, idx);
+	}
+
+int GetCheckedInput(int *value)
+	{
+		char chr_char = V_ZERO;
+		int number = V_ZERO;
+
+		if (scanf("%d", &number))
+			//An integer wasn't read successfully.
+			printf("\nEntry: [%d]. OK!\n", number);
+		else
+			//Discard invalid input.
+			printf("\nInvalid entry. Please try again.\n");
+
+		//We clear the buffer in case there are extra characters.
+		while ((chr_char = getchar()) != CARRIAGE_RETURN && chr_char != EOF);
+
+		if (value) *value = number;
+
+		return number;
+	}
+
+char GetPause(const char *str_Message)
+	{
+		char chr_Char = NULL_CHARACTER;
+
+		printf("%s", str_Message);
+		scanf("%*c%c", &chr_Char);
+
+		return chr_Char;
+	}
+
+int GetRandomInterval(int idx_begin, int idx_end, int *random_seed)
+	{
+		return ((int) ((idx_end - idx_begin) * GetRandomNumber(random_seed) + idx_begin));
 	}
 
 double GetRandomNumber(int *random_seed)
@@ -118,31 +146,51 @@ double GetRandomNumber(int *random_seed)
 
 struct s_fruits GetFruitItemInfo(const struct s_fruits *array_fruits, const int num_item)
 	{
-		char chr_key = NULL_CHARACTER;
-		int maximum = V_THIRTY_FIVE + V_MINUS_ONE;
-		int minimum = V_ZERO;
-		struct s_fruits s_fruit_item = {V_ZERO, NULL_CHARACTER};
+		char chr_key = V_ZERO;
 
-		if (ValidateLimits(num_item, &minimum, &maximum))
-			{
-				printf("\n");
-				printf("+---+----+---+----+---+----+---+\n");
-				printf("| Retrieved record information.|\n");
-				printf("+---+----+---+----+---+----+---+\n");
-				printf("| Index : [%d].\n", num_item);
-				printf("+------------------------------+\n");
-				printf("| Code  : [%d].\n", array_fruits[num_item].numberoffruit);
-				printf("| Name  : [%s].\n", array_fruits[num_item].nameoffruit);
-				printf("+---+----+---+----+---+----+---+\n");
-				printf("Press the ENTER key to continue...");
-				scanf("%*c%c", &chr_key);
+		printf("\n");
+		printf("+---+----+---+----+---+----+---+\n");
+		printf("| Retrieved record information.|\n");
+		printf("+---+----+---+----+---+----+---+\n");
+		printf("| Index : [%d].\n", num_item);
+		printf("+------------------------------+\n");
+		printf("| Code  : [%d].\n", array_fruits[num_item].numberoffruit);
+		printf("| Name  : [%s].\n", array_fruits[num_item].nameoffruit);
+		printf("+---+----+---+----+---+----+---+\n");
 
-				s_fruit_item = array_fruits[num_item];
-			}
-		else
-			printf("Item code not found     : [%d].\n", num_item);
+		chr_key = GetPause("Press the ENTER key to continue...");
+		return array_fruits[num_item];
+	}
 
-		return s_fruit_item;
+int GetValidateLimits(const int idx, int *idx_begin, int *idx_end)
+	{
+		const int max_idx = V_THIRTY_FIVE + V_MINUS_ONE;
+		const int min_idx = V_ZERO;
+
+		*idx_begin = (*idx_begin) ? *idx_begin : min_idx;
+		*idx_end = (*idx_end) ? *idx_end : max_idx;
+
+		*idx_begin = (*idx_begin >= min_idx && *idx_begin <= max_idx) ? *idx_begin : min_idx;
+		*idx_end = (*idx_end >= min_idx && *idx_end <= max_idx) ? *idx_end : max_idx;
+
+		if (*idx_begin >= *idx_end || *idx_end <= *idx_begin) SwapValues(idx_begin, idx_end);
+
+		return ((idx >= *idx_begin && idx <= *idx_end) && (*idx_begin >= min_idx && *idx_begin <= max_idx) && (*idx_end >= min_idx && *idx_end <= max_idx));
+	}
+
+int GetVerifiedIndexes(int *idx_begin, int *idx_end, int *idx_max, int *idx_min)
+	{
+		printf("\n");
+		printf("Index positions beetween: [%d] and [%d].\n", V_ZERO, V_THIRTY_FIVE + V_MINUS_ONE);
+		printf("* Start position  : ");
+		*idx_begin = GetCheckedInput(idx_begin);
+		printf("* Finish position : ");
+		*idx_end = GetCheckedInput(idx_end);
+
+		*idx_begin = (*idx_begin > *idx_end) ? *idx_end : *idx_begin;
+		*idx_end = (*idx_end < *idx_begin) ? *idx_begin : *idx_end;
+
+		return (GetValidateLimits(*idx_begin, idx_max, idx_min) && GetValidateLimits(*idx_end, idx_max, idx_min));
 	}
 
 void InsertionSort(struct s_fruits array_fruits[], int idx_begin, int idx_end)
@@ -150,10 +198,7 @@ void InsertionSort(struct s_fruits array_fruits[], int idx_begin, int idx_end)
 		int idx = V_ZERO, jdx = V_ZERO;
 		struct s_fruits s_key_fruit_item = {V_ZERO, NULL_CHARACTER};
 
-		idx_begin = (idx_begin > idx_end) ? idx_end : idx_begin;
-		idx_end = (idx_end < idx_begin) ? idx_begin : idx_end;
-
-		for (idx = (idx_begin + V_ONE); idx < idx_end; idx++)
+		for (idx = (idx_begin + V_ONE); idx <= idx_end; idx++)
 			{
 				s_key_fruit_item = array_fruits[idx];
 				jdx = idx + V_MINUS_ONE;
@@ -188,7 +233,7 @@ void MainMenu(int *option)
 				printf("| [10]. Exit this program.     |\n");
 				printf("+---+----+---+----+---+---+----+\n");
 				printf("Enter your choice: ");
-				scanf("%d", option);
+				*option = GetCheckedInput(option);
 
 				printf("\nThe chosen option was: [%d].\n", *option);
 
@@ -197,23 +242,28 @@ void MainMenu(int *option)
 		while (*option != V_TEN);
 	}
 
+int ObtainCodeKeyTable()
+	{
+		int data = V_ZERO;
+
+		printf("\nEnter a code key data to search for: ");
+		data = GetCheckedInput(&data);
+
+		return data;
+	}
+
 void QuickSort(struct s_fruits array_fruits[], int idx_begin, int idx_end)
 	{
-		int left_idx = V_ZERO, right_idx = V_ZERO;
-		int middle = V_ZERO;
-		struct s_fruits s_key_fruit_item = {V_ZERO, NULL_CHARACTER};
+		int left_idx = idx_begin, right_idx = idx_end, middle_idx = V_ZERO;
 
-		left_idx = (idx_begin > idx_end) ? idx_end : idx_begin;
-		right_idx = (idx_end < idx_begin) ? idx_begin : idx_end;
-
-		middle = array_fruits[(left_idx + right_idx) / V_TWO].numberoffruit;
+		middle_idx = array_fruits[(left_idx + right_idx) / V_TWO].numberoffruit;
 
 		do
 			{
-				while (array_fruits[left_idx].numberoffruit < middle && left_idx < idx_end)
+				while (array_fruits[left_idx].numberoffruit < middle_idx && left_idx < idx_end)
 					left_idx++;
 
-				while (array_fruits[right_idx].numberoffruit > middle && right_idx > idx_begin)
+				while (array_fruits[right_idx].numberoffruit > middle_idx && right_idx > idx_begin)
 					right_idx--;
 
 				if (left_idx <= right_idx)
@@ -228,18 +278,33 @@ void QuickSort(struct s_fruits array_fruits[], int idx_begin, int idx_end)
 		if (left_idx < idx_end) QuickSort(array_fruits, left_idx, idx_end);
 	}
 
+void SeeItemNotFound(int idx, int idx_begin, int idx_end, const int data)
+	{
+		char chr_key = NULL_CHARACTER;
+
+		printf("\n");
+		printf("+---+----+---+----+---+----+\n");
+		printf("|     Item not located.    |\n");
+		printf("+---+----+---+----+---+----+\n");
+		printf("| Lower limit index  : [%d].\n", idx_begin);
+		printf("| Upper limit index  : [%d].\n", idx_end);
+		printf("+--------------------------+\n");
+		printf("| Indicated position : [%d].\n", idx);
+		printf("| Searched item code : [%d].\n", data);
+		printf("+---+----+---+----+---+----+\n");
+
+		chr_key = GetPause("Press the ENTER key to continue...");
+	}
+
 void SelectionSort(struct s_fruits array_fruits[], int idx_begin, int idx_end)
 	{
 		int idx = V_ZERO, jdx = V_ZERO, min_idx = V_ZERO;
 
-		idx_begin = (idx_begin > idx_end) ? idx_end : idx_begin;
-		idx_end = (idx_end < idx_begin) ? idx_begin : idx_end;
-
-		for (idx = idx_begin; idx < idx_end + V_MINUS_ONE; idx++)
+		for (idx = idx_begin; idx <= idx_end + V_MINUS_ONE; idx++)
 			{
 				min_idx = idx;
 
-				for (jdx = idx + V_ONE; jdx < idx_end; jdx++)
+				for (jdx = idx + V_ONE; jdx <= idx_end; jdx++)
 					if (array_fruits[jdx].numberoffruit < array_fruits[min_idx].numberoffruit)
 						min_idx = jdx;
 
@@ -251,105 +316,103 @@ void SelectOption(int option)
 	{
 		int c_cycles = V_ZERO, p_random = V_ZERO;
 		int data = V_ZERO, pos = V_ZERO;
-		int idx_begin = V_ZERO, idx_end = V_ZERO;
+		int idx = V_ZERO, idx_begin = V_ZERO, idx_end = V_ZERO;
+		int idx_max = V_ZERO, idx_min = V_ZERO;
 		struct s_fruits s_fruit_item = {V_ZERO, NULL_CHARACTER};
 
 		switch (option)
 			{
 				case V_ONE:
 					printf("\nBinary Search.\n");
-					printf("Enter a code data (%d - %d) to search for: ", V_ONE, V_THIRTY_FIVE);
-					scanf("%d", &data);
-					printf("Enter a index start  position (%d - %d) to locate: ", V_ZERO, V_THIRTY_FIVE + V_MINUS_ONE);
-					scanf("%d", &idx_begin);
-					printf("Enter a index finish position (%d - %d) to locate: ", V_ZERO, V_THIRTY_FIVE + V_MINUS_ONE);
-					scanf("%d", &idx_end);
+					data = ObtainCodeKeyTable();
 
-					pos = BinarySearch(array_fruits, idx_begin, idx_end, data);
+					if (GetVerifiedIndexes(&idx_begin, &idx_end, &idx_max, &idx_min))
+						pos = BinarySearch(array_fruits, idx_begin, idx_end, data);
+					else
+						printf("Binary Search. Indexes out of bounds.\n");
 					break;
 
 				case V_TWO:
 					printf("\nSequential Search.\n");
-					printf("Enter a code data (%d - %d) to search for: ", V_ONE, V_THIRTY_FIVE);
-					scanf("%d", &data);
-					printf("Enter a index start  position (%d - %d) to locate: ", V_ZERO, V_THIRTY_FIVE + V_MINUS_ONE);
-					scanf("%d", &idx_begin);
-					printf("Enter a index finish position (%d - %d) to locate: ", V_ZERO, V_THIRTY_FIVE + V_MINUS_ONE);
-					scanf("%d", &idx_end);
+					data = ObtainCodeKeyTable();
 
-					pos = SequentialSearch(array_fruits, idx_begin, idx_end, data);
+					if (GetVerifiedIndexes(&idx_begin, &idx_end, &idx_max, &idx_min))
+						pos = SequentialSearch(array_fruits, idx_begin, idx_end, data);
+					else
+						printf("Sequential Search. Indexes out of bounds.\n");
 					break;
 
 				case V_THREE:
 					printf("\nLocate Directly.\n");
 					printf("Enter a index position (%d - %d) to locate: ", V_ZERO, V_THIRTY_FIVE + V_MINUS_ONE);
-					scanf("%d", &idx_begin);
+					idx = GetCheckedInput(&idx);
 
-					s_fruit_item = GetFruitItemInfo(array_fruits, idx_begin);
+					if (GetValidateLimits(idx, &idx_begin, &idx_end))
+						s_fruit_item = GetFruitItemInfo(array_fruits, idx);
+					else
+						printf("Locate directly. Index out of bounds.\n");
 					break;
 
 				case V_FOUR:
 					printf("\nUnclutter Table.\n");
-					printf("Enter a index start  position (%d - %d) to locate: ", V_ZERO, V_THIRTY_FIVE + V_MINUS_ONE);
-					scanf("%d", &idx_begin);
-					printf("Enter a index finish position (%d - %d) to locate: ", V_ZERO, V_THIRTY_FIVE + V_MINUS_ONE);
-					scanf("%d", &idx_end);
-					printf("Enter a random starting seed: ");
-					scanf("%d", &p_random);
-					printf("How many cycles do you want to shuffle the order of the records? : ");
-					scanf("%d", &c_cycles);
 
-					UnClutterTable(array_fruits, idx_begin, idx_end, c_cycles, &p_random);
+					if (GetVerifiedIndexes(&idx_begin, &idx_end, &idx_max, &idx_min))
+						{
+							printf("\n");
+							printf("Enter a random starting seed: ");
+							p_random = GetCheckedInput(&p_random);
+							printf("How many cycles do you want to shuffle the order of the records? : ");
+							c_cycles = GetCheckedInput(&c_cycles);
+
+							UnClutterTable(array_fruits, idx_begin, idx_end, c_cycles, &p_random);
+						}
+					else
+						printf("Unclutter Table. Indexes out of bounds.\n");
 					break;
 
 				case V_FIVE:
 					printf("\nBubble sort...\n");
-					printf("Enter a index start  position (%d - %d) to locate: ", V_ZERO, V_THIRTY_FIVE + V_MINUS_ONE);
-					scanf("%d", &idx_begin);
-					printf("Enter a index finish position (%d - %d) to locate: ", V_ZERO, V_THIRTY_FIVE + V_MINUS_ONE);
-					scanf("%d", &idx_end);
 
-					BubbleSort(array_fruits, idx_begin, idx_end);
+					if (GetVerifiedIndexes(&idx_begin, &idx_end, &idx_max, &idx_min))
+						BubbleSort(array_fruits, idx_begin, idx_end);
+					else
+						printf("Bubble Sort. Indexes out of bounds.\n");
 					break;
 
 				case V_SIX:
 					printf("\nInsertion Sort...\n");
-					printf("Enter a index start  position (%d - %d) to locate: ", V_ZERO, V_THIRTY_FIVE + V_MINUS_ONE);
-					scanf("%d", &idx_begin);
-					printf("Enter a index finish position (%d - %d) to locate: ", V_ZERO, V_THIRTY_FIVE + V_MINUS_ONE);
-					scanf("%d", &idx_end);
 
-					InsertionSort(array_fruits, idx_begin, idx_end);
+					if (GetVerifiedIndexes(&idx_begin, &idx_end, &idx_max, &idx_min))
+						InsertionSort(array_fruits, idx_begin, idx_end);
+					else
+						printf("Insertion Sort. Indexes out of bounds.\n");
 					break;
 
 				case V_SEVEN:
 					printf("\nSelection Sort...\n");
-					printf("Enter a index start  position (%d - %d) to locate: ", V_ZERO, V_THIRTY_FIVE + V_MINUS_ONE);
-					scanf("%d", &idx_begin);
-					printf("Enter a index finish position (%d - %d) to locate: ", V_ZERO, V_THIRTY_FIVE + V_MINUS_ONE);
-					scanf("%d", &idx_end);
 
-					SelectionSort(array_fruits, idx_begin, idx_end);
+					if (GetVerifiedIndexes(&idx_begin, &idx_end, &idx_max, &idx_min))
+						SelectionSort(array_fruits, idx_begin, idx_end);
+					else
+						printf("Selection Sort. Indexes out of bounds.\n");
 					break;
 
 				case V_EIGHT:
 					printf("\nQuick Sort...\n");
-					printf("Enter a index start  position (%d - %d) to locate: ", V_ZERO, V_THIRTY_FIVE + V_MINUS_ONE);
-					scanf("%d", &idx_begin);
-					printf("Enter a index finish position (%d - %d) to locate: ", V_ZERO, V_THIRTY_FIVE + V_MINUS_ONE);
-					scanf("%d", &idx_end);
 
-					QuickSort(array_fruits, idx_begin, idx_end);
+					if (GetVerifiedIndexes(&idx_begin, &idx_end, &idx_max, &idx_min))
+						QuickSort(array_fruits, idx_begin, idx_end);
+					else
+						printf("Quick Sort. Indexes out of bounds.\n");
 					break;
 
 				case V_NINE:
 					printf("\nView All Items...\n");
-					printf("Enter a index start  position (%d - %d) to locate: ", V_ZERO, V_THIRTY_FIVE + V_MINUS_ONE);
-					scanf("%d", &idx_begin);
-					printf("Enter a index finish position (%d - %d) to locate: ", V_ZERO, V_THIRTY_FIVE + V_MINUS_ONE);
-					scanf("%d", &idx_end);
 
-					pos = ViewItems(array_fruits, idx_begin, idx_end);
+					if (GetVerifiedIndexes(&idx_begin, &idx_end, &idx_max, &idx_min))
+						pos = ViewItems(array_fruits, idx_begin, idx_end);
+					else
+						printf("View Items. Indexes out of bounds.\n");
 					break;
 
 				case V_TEN:
@@ -365,30 +428,15 @@ void SelectOption(int option)
 
 int SequentialSearch(const struct s_fruits *array_fruits, const int idx_begin, const int idx_end, const int data)
 	{
-		int bottom = V_ZERO, top = V_ZERO;
 		int idx = V_ZERO;
-		int maximum = V_ZERO, minimum = V_ZERO;
 		struct s_fruits s_fruit_item = {V_ZERO, NULL_CHARACTER};
 
-		if (ValidateLimits(idx_begin, &minimum, &maximum) && ValidateLimits(idx_end, &minimum, &maximum))
-			{
-				bottom = (idx_begin > idx_end) ? idx_end : idx_begin;
-				top = (idx_end < idx_begin) ? idx_begin : idx_end;
+		for (idx = idx_begin; idx <= idx_end && array_fruits[idx].numberoffruit != data; idx++);
 
-				for (idx = bottom; idx <= top && array_fruits[idx].numberoffruit != data; idx++);
-
-				if (idx >= bottom && idx <= top)
-					if (array_fruits[idx].numberoffruit == data)
-						s_fruit_item = GetFruitItemInfo(array_fruits, idx);
-					else ;
-				else
-					{
-						printf("Item code not found     : [%d].\n", data);
-						printf("Search index reached    : [%d].\n", idx);
-						printf("Minimum of items tracked: [%d].\n", bottom);
-						printf("Maximum of items tracked: [%d].\n", top);
-					}
-			}
+		if ((idx >= idx_begin && idx <= idx_end) && (array_fruits[idx].numberoffruit == data))
+			s_fruit_item = GetFruitItemInfo(array_fruits, idx);
+		else
+			SeeItemNotFound(idx, idx_begin, idx_end, data);
 
 		return (idx);
 	}
@@ -398,14 +446,14 @@ void SwapRegisters(struct s_fruits *array_fruits, const int l_idx, const int r_i
 		int maximum = V_ZERO, minimum = V_ZERO;
 		struct s_fruits s_fruit_item_aux = {V_ZERO, NULL_CHARACTER};
 
-		if (ValidateLimits(l_idx, &minimum, &maximum) && ValidateLimits(r_idx, &minimum, &maximum))
+		if (GetValidateLimits(l_idx, &minimum, &maximum) && GetValidateLimits(r_idx, &minimum, &maximum))
 			{
 				s_fruit_item_aux = *(array_fruits + l_idx);
 				*(array_fruits + l_idx) = *(array_fruits + r_idx);
 				*(array_fruits + r_idx) = s_fruit_item_aux;
 			}
 		else
-			printf("\nIncorrect! Lower limit: [%d]. Upper limit: [%d].\n", l_idx, r_idx);
+			printf("Swap Registers. Incorrect! Lower limit: [%d]. Upper limit: [%d].\t\r", l_idx, r_idx);
 	}
 
 void SwapValues(int *l_value, int *r_value)
@@ -419,64 +467,29 @@ void SwapValues(int *l_value, int *r_value)
 
 void UnClutterTable(struct s_fruits *array_fruits, int idx_begin, int idx_end, int cycles, int *p_random)
 	{
-		int maximum = V_ZERO, minimum = V_ZERO;
+		printf("\nUnordering the table at the specified ranges...\n");
 
-		if (ValidateLimits(idx_begin, &maximum, &minimum) && ValidateLimits(idx_end, &maximum, &minimum))
+		for (int idx = V_ZERO; idx < cycles; idx++)
 			{
-				printf("\nUnordering the table at the specified ranges...\n");
+				int left_idx = V_ZERO, right_idx = V_ZERO;
 
-				for (int idx = V_ZERO; idx < cycles; idx++)
-					{
-						int left_idx = V_ZERO, right_idx = V_ZERO;
-						left_idx = (idx_begin > idx_end) ? idx_end : idx_begin;
-						right_idx = (idx_end < idx_begin) ? idx_begin : idx_end;
+				left_idx = GetRandomInterval(idx_begin, idx_end, p_random);
+				right_idx = GetRandomInterval(idx_begin, idx_end, p_random);
 
-						left_idx = (idx_end - idx_begin) * GetRandomNumber(p_random) + idx_begin;
-						printf("#: [%d].\n", idx);
-						printf("- Seed: [%d].\tLeft Value : [%d].\n", *p_random, left_idx);
+				printf("#:[%10d].\tSeed:\t[%5d].\tValues:\t(Left:\t[%2d],\tRight:\t[%2d]).\r", idx, *p_random, left_idx, right_idx);
 
-						right_idx = (idx_end - idx_begin) * GetRandomNumber(p_random) + idx_begin;
-						printf("- Seed: [%d].\tRight Value: [%d].\n", *p_random, right_idx);
-						printf("\n");
-
-						SwapRegisters(array_fruits, left_idx, right_idx);
-					}
+				SwapRegisters(array_fruits, left_idx, right_idx);
 			}
-	}
 
-int ValidateLimits(const int idx, int *idx_begin, int *idx_end)
-	{
-		const int max_idx = V_THIRTY_FIVE + V_MINUS_ONE;
-		const int min_idx = V_ZERO;
-
-		*idx_begin = (*idx_begin) ? *idx_begin : min_idx;
-		*idx_end = (*idx_end) ? *idx_end : max_idx;
-
-		*idx_begin = (*idx_begin >= min_idx && *idx_begin <= max_idx) ? *idx_begin : min_idx;
-		*idx_end = (*idx_end >= min_idx && *idx_end <= max_idx) ? *idx_end : max_idx;
-
-		if (*idx_begin >= *idx_end || *idx_end <= *idx_begin) SwapValues(idx_begin, idx_end);
-
-		return ((idx >= *idx_begin && idx <= *idx_end) && (*idx_begin >= min_idx && *idx_begin <= max_idx) && (*idx_end >= min_idx && *idx_end <= max_idx));
+		printf("\n");
 	}
 
 int ViewItems(struct s_fruits *array_fruits, const int idx_begin, const int idx_end)
 	{
-		int bottom = V_ZERO, top = V_ZERO;
-		int maximum = V_THIRTY_FIVE + V_MINUS_ONE;
-		int minimum = V_ZERO;
 		struct s_fruits s_fruit_item = {V_ZERO, NULL_CHARACTER};
 
-		if (ValidateLimits(idx_begin, &minimum, &maximum) && ValidateLimits(idx_end, &minimum, &maximum))
-			{
-				bottom = (idx_begin > idx_end) ? idx_end : idx_begin;
-				top = (idx_end < idx_begin) ? idx_begin : idx_end;
-
-				for (int idx = bottom; idx <= top; idx++)
-					s_fruit_item = GetFruitItemInfo(array_fruits, idx);
-			}
-		else
-			printf("\nIncorrect! Lower limit: [%d]. Upper limit: [%d].\n", bottom, top);
+		for (int idx = idx_begin; idx <= idx_end; idx++)
+			s_fruit_item = GetFruitItemInfo(array_fruits, idx);
 
 		return (idx_end - idx_begin + V_ONE);
 	}
