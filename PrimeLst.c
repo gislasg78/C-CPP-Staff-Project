@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+#define	NULL_CHARACTER	'\0'
 #define	V_CHR_UPPER_Y	0x59
 #define	V_CHR_LOWER_Y	0x79
 #define V_ZERO  	0
@@ -63,7 +64,7 @@ int main()
 		printf("Pointer naming practice.\n");
 		printf("Dump of the first 1000 prime numbers.\n");
 
-		for (int idx = V_ZERO; (idx < (sizeof(lista)/sizeof(lista[V_ZERO]))) && (chr_key == V_CHR_LOWER_Y || chr_key == V_CHR_UPPER_Y); idx++)
+		for (int idx = V_ZERO; (idx < (sizeof(lista) /sizeof(lista[V_ZERO]))) && (chr_key == V_CHR_LOWER_Y || chr_key == V_CHR_UPPER_Y); idx++)
 			{
 				printf("\n");
 				printf("#: [%d].\n", idx);
@@ -76,14 +77,18 @@ int main()
 				printf("             {%p} : [%p] = [%p].\n", pa_lista, &pa_lista[idx], pa_lista + idx);
 				printf("\n");
 				printf("Values:\n");
-				printf("- lista    : {%d} : [%d] = [%d].\n", *lista, lista[idx], *(lista + idx));
-				printf("- plista   : {%d} : [%d] = [%d].\n", *plista, plista[idx], *(plista + idx));
-				printf("- pa_lista : {%p} : [%p] = [%p].\n", *pa_lista, pa_lista[idx], *(pa_lista + idx));
-				printf("             [%d].\n", *pa_lista[idx]);
+				printf("- lista    : {%d}.\n", *lista);
+				printf("             [%d] = [%d].\n", lista[idx], *(lista + idx));
+				printf("- plista   : {%d}.\n", *plista);
+				printf("             [%d] = [%d].\n", plista[idx], *(plista + idx));
+				printf("- pa_lista : {%p}.\n", *pa_lista);
+				printf("             [%p] = [%p].\n", pa_lista[idx], *(pa_lista + idx));
+				printf("             [%d] : [%d].\n", *pa_lista[idx], *(*(pa_lista + idx)));
 				printf("\n");
 
 				printf("Do you want to continue viewing more records (y/n)? : ");
 				scanf("%*c%[^\n]", &chr_key);
+				fflush(stdin);
 
 				printf("[%c] : [%d] : [%o] : [%x].\n", chr_key, chr_key, chr_key, chr_key);
 			}
