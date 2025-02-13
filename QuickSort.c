@@ -11,7 +11,7 @@ void swap(int *a, int *b)
 		*b = temp;
 	}
 
-void QuickSort(int array[], int bottom, int top)
+void QuickSort(int array[], const int bottom, const int top)
 	{
 		int left = V_ZERO, right = V_ZERO;
 		int middle = V_ZERO;
