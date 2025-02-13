@@ -1,4 +1,4 @@
-/* Ordenar un fichero. Acceso secuencial. */
+/* Creation of intermediate files for sorting. */
 #include "errno.h"
 #include "stdio.h"
 #include "stdlib.h"
@@ -17,12 +17,11 @@ int CheckErrorFile(const char *strFile, FILE *pFile);
 void CreateTempFiles(const char *strSource, const char *strTarget);
 char *GetFileName(const char *strMessage, char *strFile);
 
-int main()	/* función principal */
+int main()
 	{
 		char *strFIn = (char *) malloc(V_TWELVE * sizeof(char));
 		char *strFOut = (char *) malloc(V_TWELVE * sizeof(char));
 
-		/* Entrada de datos */
 		CreateTempFiles(strFIn, strFOut);
 
 		free(strFIn);
@@ -31,7 +30,7 @@ int main()	/* función principal */
 
 void CreateTempFiles(const char *strSource, const char *strTarget)
 	{
-		char fileName[V_TWELVE];
+		char c = V_ZERO, fileName[V_TWELVE];
 		int num_files = V_ZERO;
 
 		struct s_tmp_file
@@ -42,7 +41,14 @@ void CreateTempFiles(const char *strSource, const char *strTarget)
 
 		printf("Sort File.\n");
 		printf("How many intermediate files do you want to create? : ");
-		scanf("%d", &num_files);
+
+		if (scanf("%d", &num_files))
+			printf("\nCorrect entry: [%d]. OK!\n", num_files);
+		else
+			{
+				scanf("%*[^\n]%*c");
+				while((c = getchar()) != CARRIAGE_RETURN && c != EOF);
+			}
 
 		if (num_files)
 			if (ptr_st_File = (struct s_tmp_file *) malloc(num_files * sizeof(struct s_tmp_file)))
@@ -57,7 +63,15 @@ void CreateTempFiles(const char *strSource, const char *strTarget)
 							CheckErrorFile(fileName, ptr_st_File[idx].pFileTMP);
 
 							printf("- Sections  : ");
-							scanf("%d", &(ptr_st_File + idx)->num_sections);
+
+							if (scanf("%d", &(ptr_st_File + idx)->num_sections))
+								printf("\nCorrect entry: [%d]. OK!\n", ptr_st_File[idx].num_sections);
+							else
+								{
+									scanf("%*[^\n]%*c");
+									while((c = getchar()) != CARRIAGE_RETURN && c != EOF);
+								}
+
 
 							printf("** [%d]. [%p] = [%s]. [%d]. **\n", idx, ptr_st_File[idx].pFileTMP, fileName, (ptr_st_File + idx)->num_sections);
 							fclose((ptr_st_File[idx].pFileTMP));
@@ -99,10 +113,14 @@ char *GetFileName(const char *strMessage, char *strFile)
 		if (strFile)
 			{
 				printf("%s", strMessage);
-				scanf("%s", strFile);
 
-				scanf("%*[^\n]%*c");
-				while((c = getchar()) != CARRIAGE_RETURN && c != EOF);
+				if (scanf("%s", strFile))
+					printf("\nCorrect entry: [%s]. OK!\n", strFile);
+				else
+					{
+						scanf("%*[^\n]%*c");
+						while((c = getchar()) != CARRIAGE_RETURN && c != EOF);
+					}
 			}
 		else
 			printf("No valid memory address allocated for the file name.");
