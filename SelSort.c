@@ -10,7 +10,7 @@ void swap(int *a, int *b)
 		*b = temp;
 	}
 
-void SelectionSort(int array[], int size)
+void SelectionSort(int array[], const int size)
 	{
 		int idx = V_ZERO, jdx = V_ZERO, min_idx = V_ZERO;
 
