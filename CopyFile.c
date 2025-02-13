@@ -136,11 +136,15 @@ char *GetFileName(const char *strMessage, char *strFile)
 
 		if (strFile)
 			{
-				printf("%s", strMessage);
-				scanf("%s", strFile);
+				printf("\n%s", strMessage);
 
-				scanf("%*[^\n]%*c");
-				while((c = getchar()) != CARRIAGE_RETURN && c != EOF);
+				if (scanf("%s", strFile))
+					printf("\nCorrect entry: [%s]. OK!\n", strFile);
+				else
+					{
+						scanf("%*[^\n]%*c");
+						while((c = getchar()) != CARRIAGE_RETURN && c != EOF);
+					}
 			}
 		else
 			printf("No valid memory address allocated for the file name.");
@@ -150,6 +154,7 @@ char *GetFileName(const char *strMessage, char *strFile)
 
 int LoadFile(const char *strFile)
 	{
+		char c = NULL_CHARACTER;
 		FILE *pFile = NULL;
 		int idx = V_ZERO;
 
@@ -161,7 +166,14 @@ int LoadFile(const char *strFile)
 				while (!feof(pFile) && !ferror(pFile))
 					{
 						printf("Code: ");
-						scanf("%d", &key);
+
+						if (scanf("%d", &key))
+							printf("\nCorrect entry: [%d]. OK!\n", key);
+						else
+							{
+								scanf("%*[^\n]%*c");
+								while((c = getchar()) != CARRIAGE_RETURN && c != EOF);
+							}
 
 						if (key == V_ZERO) break;
 
