@@ -1,4 +1,4 @@
-/* Ordenar un fichero. Acceso secuencial. */
+/* Program that copies one file to another with sequential access. */
 #include "errno.h"
 #include "stdio.h"
 #include "stdlib.h"
@@ -56,7 +56,7 @@ int CheckErrorFile(const char *strFile, FILE *pFile)
 		if (feof(pFile))
 			printf("End of file: [%s] reached.\n", strFile);
 
-		return (feof(pFile) && ferror(pFile));
+		return (ferror(pFile) || feof(pFile));
 	}
 
 int CopyFile(const char *strSource, const char *strTarget)
