@@ -47,7 +47,7 @@ int main()
 
 		int size = sizeof(array) / sizeof(array[V_ZERO]);
 
-		printf("Insertion sorting.\n");
+		printf("Insertion sort.\n");
 		printf("Original arrangement uploaded :\n");
 		ViewArray(array, size);
 
