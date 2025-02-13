@@ -67,7 +67,7 @@ int main()
 
 		int size = sizeof(array) / sizeof(array[V_ZERO]);
 
-		printf("Cluster sorting.\n");
+		printf("Heap sort.\n");
 		printf("Original arrangement uploaded :\n");
 		ViewArray(array, size);
 
