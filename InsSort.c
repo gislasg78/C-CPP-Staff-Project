@@ -3,7 +3,7 @@
 #define	V_ONE	1
 #define	V_ZERO	0
 
-void InsertionSort(int array[], int size)
+void InsertionSort(int array[], const int size)
 	{
 		int idx = V_ZERO, jdx = V_ZERO, key = V_ZERO;
 
