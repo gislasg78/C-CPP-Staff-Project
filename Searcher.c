@@ -10,6 +10,7 @@
 #define V_RESIDUAL_MODULUS	65535
 
 #define	V_EIGHT			8
+#define	V_ELEVEN		11
 #define	V_FIVE			5
 #define	V_FORTY_FIVE_ITEMS	45
 #define	V_FOUR			4
@@ -44,13 +45,15 @@ struct s_fruits
 
 int BinarySearch(struct s_fruits *array_fruits, const int idx_begin, const int idx_end, const int data);
 void BubbleSort(struct s_fruits array_fruits[], const int idx_begin, const int idx_end);
-struct s_fruits GetFruitItemInfo(const struct s_fruits *array_fruits, const int num_item);
+struct s_fruits GetFruitItemInfo(const struct s_fruits *array_fruits, const int num_item, const int all_info);
 char GetPause(const char *str_Message);
 int GetRandomInterval(int idx_begin, int idx_end, int *random_seed);
 double GetRandomNumber(int *random_seed);
 int GetValidateLimits(const int idx, int *idx_begin, int *idx_end);
 int GetCheckedInput(int *value);
 int GetVerifiedIndexes(int *idx_begin, int *idx_end, int *idx_max, int *idx_min);
+void Heapify(struct s_fruits array_fruits[], const int idx_end, const int idx);
+void HeapSort(struct s_fruits array_fruits[], const int idx_begin, const int idx_end);
 void InsertionSort(struct s_fruits array_fruits[], int idx_begin, int idx_end);
 void MainMenu(int *option);
 int ObtainCodeKeyTable();
@@ -93,7 +96,7 @@ int BinarySearch(struct s_fruits *array_fruits, const int idx_begin, const int i
 			}
 
 		if (data == array_fruits[middle].numberoffruit)
-			s_fruit_item = GetFruitItemInfo(array_fruits, middle);
+			s_fruit_item = GetFruitItemInfo(array_fruits, middle, V_ZERO);
 		else
 			SeeItemNotFound(middle, idx_begin, idx_end, data);
 
@@ -148,39 +151,43 @@ double GetRandomNumber(int *random_seed)
 		return ((double) (*random_seed = RANDOM_GENERATOR(*random_seed)) / (double) V_RESIDUAL_MODULUS);
 	}
 
-struct s_fruits GetFruitItemInfo(const struct s_fruits *array_fruits, const int num_item)
+struct s_fruits GetFruitItemInfo(const struct s_fruits *array_fruits, const int num_item, const int all_info)
 	{
 		char chr_key = V_ZERO;
 
-		printf("\n");
-		printf("+===+====+===+====+===+====+===+====+\n");
-		printf("|   Retrieved record information.   |\n");
-		printf("+---+----+---+----+---+----+---+----+\n");
-		printf("| Structures arrangement directions.|\n");
-		printf("+---+----+---+----+---+----+---+----+\n");
-		printf("| Address : [%p] = [%p].\n", array_fruits, &array_fruits[V_ZERO]);
-		printf("|         : [%p].\n", array_fruits + V_ZERO);
-		printf("|         : [%p] = [%p].\n", pointer_array_fruits, &pointer_array_fruits[V_ZERO]);
-		printf("|         : [%p].\n", pointer_array_fruits + V_ZERO);
-		printf("+---+----+---+----+---+----+---+----+\n");
-		printf("|     Item under consultation.      |\n");
-		printf("+---+----+---+----+---+----+---+----+\n");
-		printf("| Index   : [%d].\n", num_item);
-		printf("| Address : [%p] = [%p].\n", &array_fruits[num_item], array_fruits + num_item);
-		printf("|         : [%p] = [%p].\n", &pointer_array_fruits[num_item], pointer_array_fruits + num_item);
-		printf("+---+----+---+----+---+----+---+----+\n");
-		printf("|     Detailed item information.    |\n");
-		printf("+---+----+---+----+---+----+---+----+\n");
-		printf("| Code    : [%d] = [%d].\n", array_fruits[num_item].numberoffruit, (array_fruits + num_item)->numberoffruit);
-		printf("|         : [%d] = [%d].\n", pointer_array_fruits[num_item].numberoffruit, (pointer_array_fruits + num_item)->numberoffruit);
-		printf("| Address : [%p] = [%p].\n", &array_fruits[num_item].numberoffruit, &(array_fruits + num_item)->numberoffruit);
-		printf("|         : [%p] = [%p].\n", &pointer_array_fruits[num_item].numberoffruit, &(pointer_array_fruits + num_item)->numberoffruit);
-		printf("+------------------------------+----+\n");
-		printf("| Name    : [%s] = [%s].\n", array_fruits[num_item].nameoffruit, (array_fruits + num_item)->nameoffruit);
-		printf("|         : [%s] = [%s].\n", pointer_array_fruits[num_item].nameoffruit, (pointer_array_fruits + num_item)->nameoffruit);
-		printf("| Address : [%p] = [%p].\n", &array_fruits[num_item].nameoffruit, &(array_fruits + num_item)->nameoffruit);
-		printf("|         : [%p] = [%p].\n", &pointer_array_fruits[num_item].nameoffruit, &(pointer_array_fruits + num_item)->nameoffruit);
-		printf("+===+====+===+====+===+====+===+====+\n");
+		if (all_info)
+			{
+				printf("\n");
+				printf("+===+====+===+====+===+====+===+====+\n");
+				printf("|   Retrieved record information.   |\n");
+				printf("+---+----+---+----+---+----+---+----+\n");
+				printf("| Structures arrangement directions.|\n");
+				printf("+---+----+---+----+---+----+---+----+\n");
+				printf("| Address : [%p] = [%p].\n", array_fruits, &array_fruits[V_ZERO]);
+				printf("|         : [%p].\n", array_fruits + V_ZERO);
+				printf("|         : [%p] = [%p].\n", pointer_array_fruits, &pointer_array_fruits[V_ZERO]);
+				printf("|         : [%p].\n", pointer_array_fruits + V_ZERO);
+				printf("+---+----+---+----+---+----+---+----+\n");
+				printf("|     Item under consultation.      |\n");
+				printf("+---+----+---+----+---+----+---+----+\n");
+				printf("| Index   : [%d].\n", num_item);
+				printf("| Address : [%p] = [%p].\n", &array_fruits[num_item], array_fruits + num_item);
+				printf("|         : [%p] = [%p].\n", &pointer_array_fruits[num_item], pointer_array_fruits + num_item);
+				printf("+---+----+---+----+---+----+---+----+\n");
+				printf("|     Detailed item information.    |\n");
+				printf("+---+----+---+----+---+----+---+----+\n");
+				printf("| Code    : [%d] = [%d].\n", array_fruits[num_item].numberoffruit, (array_fruits + num_item)->numberoffruit);
+				printf("|         : [%d] = [%d].\n", pointer_array_fruits[num_item].numberoffruit, (pointer_array_fruits + num_item)->numberoffruit);
+				printf("| Address : [%p] = [%p].\n", &array_fruits[num_item].numberoffruit, &(array_fruits + num_item)->numberoffruit);
+				printf("|         : [%p] = [%p].\n", &pointer_array_fruits[num_item].numberoffruit, &(pointer_array_fruits + num_item)->numberoffruit);
+				printf("+------------------------------+----+\n");
+				printf("| Name    : [%s] = [%s].\n", array_fruits[num_item].nameoffruit, (array_fruits + num_item)->nameoffruit);
+				printf("|         : [%s] = [%s].\n", pointer_array_fruits[num_item].nameoffruit, (pointer_array_fruits + num_item)->nameoffruit);
+				printf("| Address : [%p] = [%p].\n", &array_fruits[num_item].nameoffruit, &(array_fruits + num_item)->nameoffruit);
+				printf("|         : [%p] = [%p].\n", &pointer_array_fruits[num_item].nameoffruit, &(pointer_array_fruits + num_item)->nameoffruit);
+				printf("+===+====+===+====+===+====+===+====+\n");
+			}
+
 		printf("\n");
 		printf("+---+----+---+----+---+----+---+----+\n");
 		printf("|      Exact item information.      |\n");
@@ -236,6 +243,37 @@ int GetVerifiedIndexes(int *idx_begin, int *idx_end, int *idx_max, int *idx_min)
 		return (GetValidateLimits(*idx_begin, idx_max, idx_min) && GetValidateLimits(*idx_end, idx_max, idx_min));
 	}
 
+void Heapify(struct s_fruits array_fruits[], const int idx_end, const int idx)
+	{
+		int largest = idx;
+		int left = V_TWO * idx + V_ONE;
+		int right = V_TWO * idx + V_TWO;
+
+		if (left < idx_end && array_fruits[left].numberoffruit > array_fruits[largest].numberoffruit)
+			largest = left;
+
+		if (right < idx_end && array_fruits[right].numberoffruit > array_fruits[largest].numberoffruit)
+			largest = right;
+
+		if (largest != idx)
+			{
+				SwapRegisters(array_fruits, idx, largest);
+				Heapify(array_fruits, idx_end, largest);
+			}
+	}
+
+void HeapSort(struct s_fruits array_fruits[], const int idx_begin, const int idx_end)
+	{
+		for (int idx = (idx_end + V_ONE) / V_TWO - V_ONE; idx >= idx_begin; idx--)
+			Heapify(array_fruits, idx_end + V_ONE, idx);
+
+		for (int idx = (idx_end + V_ONE) - V_ONE; idx > idx_begin; idx--)
+			{
+				SwapRegisters(array_fruits, idx_begin, idx);
+				Heapify(array_fruits, idx, idx_begin);
+			}
+	}
+
 void InsertionSort(struct s_fruits array_fruits[], int idx_begin, int idx_end)
 	{
 		int idx = V_ZERO, jdx = V_ZERO;
@@ -269,11 +307,12 @@ void MainMenu(int *option)
 				printf("| [03]. Locate directly.       |\n");
 				printf("| [04]. Unclutter table.       |\n");
 				printf("| [05]. Bubble sort.           |\n");
-				printf("| [06]. Insertion sort.        |\n");
-				printf("| [07]. Selection sort.        |\n");
+				printf("| [06]. Heap sort.             |\n");
+				printf("| [07]. Insertion sort.        |\n");
 				printf("| [08]. Quick sort.            |\n");
-				printf("| [09]. View all items.        |\n");
-				printf("| [10]. Exit this program.     |\n");
+				printf("| [09]. Selection sort.        |\n");
+				printf("| [10]. View all items.        |\n");
+				printf("| [11]. Exit this program.     |\n");
 				printf("+---+----+---+----+---+---+----+\n");
 				printf("Enter your choice: ");
 				*option = GetCheckedInput(option);
@@ -282,7 +321,7 @@ void MainMenu(int *option)
 
 				SelectOption(*option);
 			}
-		while (*option != V_TEN);
+		while (*option != V_ELEVEN);
 	}
 
 int ObtainCodeKeyTable()
@@ -391,7 +430,7 @@ void SelectOption(int option)
 					idx = GetCheckedInput(&idx);
 
 					if (GetValidateLimits(idx, &idx_begin, &idx_end))
-						s_fruit_item = GetFruitItemInfo(array_fruits, idx);
+						s_fruit_item = GetFruitItemInfo(array_fruits, idx, V_ZERO);
 					else
 						printf("Locate directly. Index out of bounds.\n");
 					break;
@@ -423,21 +462,20 @@ void SelectOption(int option)
 					break;
 
 				case V_SIX:
+					printf("\nHeap Sort...\n");
+					if (GetVerifiedIndexes(&idx_begin, &idx_end, &idx_max, &idx_min))
+						HeapSort(array_fruits, idx_begin, idx_end);
+					else
+						printf("Heap Sort. Indexes out of bounds.\n");
+					break;
+
+				case V_SEVEN:
 					printf("\nInsertion Sort...\n");
 
 					if (GetVerifiedIndexes(&idx_begin, &idx_end, &idx_max, &idx_min))
 						InsertionSort(array_fruits, idx_begin, idx_end);
 					else
 						printf("Insertion Sort. Indexes out of bounds.\n");
-					break;
-
-				case V_SEVEN:
-					printf("\nSelection Sort...\n");
-
-					if (GetVerifiedIndexes(&idx_begin, &idx_end, &idx_max, &idx_min))
-						SelectionSort(array_fruits, idx_begin, idx_end);
-					else
-						printf("Selection Sort. Indexes out of bounds.\n");
 					break;
 
 				case V_EIGHT:
@@ -450,6 +488,15 @@ void SelectOption(int option)
 					break;
 
 				case V_NINE:
+					printf("\nSelection Sort...\n");
+
+					if (GetVerifiedIndexes(&idx_begin, &idx_end, &idx_max, &idx_min))
+						SelectionSort(array_fruits, idx_begin, idx_end);
+					else
+						printf("Selection Sort. Indexes out of bounds.\n");
+					break;
+
+				case V_TEN:
 					printf("\nView All Items...\n");
 
 					if (GetVerifiedIndexes(&idx_begin, &idx_end, &idx_max, &idx_min))
@@ -458,7 +505,7 @@ void SelectOption(int option)
 						printf("View Items. Indexes out of bounds.\n");
 					break;
 
-				case V_TEN:
+				case V_ELEVEN:
 					printf("\nLeaving this program...\n");
 					break;
 
@@ -477,7 +524,7 @@ int SequentialSearch(const struct s_fruits *array_fruits, const int idx_begin, c
 		for (idx = idx_begin; idx <= idx_end && array_fruits[idx].numberoffruit != data; idx++);
 
 		if ((idx >= idx_begin && idx <= idx_end) && (array_fruits[idx].numberoffruit == data))
-			s_fruit_item = GetFruitItemInfo(array_fruits, idx);
+			s_fruit_item = GetFruitItemInfo(array_fruits, idx, V_ZERO);
 		else
 			SeeItemNotFound(idx, idx_begin, idx_end, data);
 
@@ -532,7 +579,7 @@ int ViewItems(struct s_fruits *array_fruits, const int idx_begin, const int idx_
 		struct s_fruits s_fruit_item = {V_ZERO, NULL_CHARACTER};
 
 		for (int idx = idx_begin; idx <= idx_end; idx++)
-			s_fruit_item = GetFruitItemInfo(array_fruits, idx);
+			s_fruit_item = GetFruitItemInfo(array_fruits, idx, V_ZERO);
 
 		return (idx_end - idx_begin + V_ONE);
 	}
