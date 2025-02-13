@@ -10,7 +10,6 @@
 #define	_F_READ_ONLY	"\x72"
 #define	_F_WRITE_ONLY	"\x77"
 
-#define	V_ONE		1
 #define	V_TWELVE	12
 #define	V_ZERO		0
 
@@ -22,12 +21,12 @@ char *GetFileName(const char *strMessage, char *strFile);
 int DumpFile(const char *str_File);
 int LoadFile(const char *str_File);
 
-int main()	/* función principal */
+int main()	/* Main function */
 	{
 		char *strFIn = (char *) malloc(V_TWELVE * sizeof(char));
 		char *strFOut = (char *) malloc(V_TWELVE * sizeof(char));
 
-		/* Entrada de datos */
+		/* Data entry */
 		printf("File Copy.\n");
 		GetFileName("Source file : ", strFIn);
 		GetFileName("Target file : ", strFOut);
@@ -78,11 +77,11 @@ int CopyFile(const char *strSource, const char *strTarget)
 						while ((!feof(pFSource) && !ferror(pFSource))
 						    && (!feof(pFTarget) && !ferror(pFTarget)))
 							{
-								fread(&key, sizeof(int), V_ONE, pFSource);
+								fscanf(pFSource, "%d", &key);
 
 								if (!feof(pFSource) && !ferror(pFSource))
 									{
-										fwrite(&key, sizeof(int), V_ONE, pFTarget);
+										fprintf(pFTarget, "%d\n", key);
 										printf("#:[%d].\t[%d].\n", idx++, key);
 									}
 							}
@@ -116,7 +115,7 @@ int DumpFile(const char *strFile)
 
 				while (!feof(pFile) && !ferror(pFile))
 					{
-						fread(&key, sizeof(int), V_ONE, pFile);
+						fscanf(pFile, "%d", &key);
 
 						if (!feof(pFile) && !ferror(pFile))
 							printf("#:[%d].\t[%d].\n", idx++, key);
@@ -168,7 +167,7 @@ int LoadFile(const char *strFile)
 
 						if (key == V_ZERO) break;
 
-						fwrite(&key, sizeof(int), V_ONE, pFile);
+						fprintf(pFile, "%d\n", key);
 						printf("#:[%d].\t[%d].\n", idx++, key);
 					}
 
