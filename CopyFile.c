@@ -42,8 +42,6 @@ int main()	/* Main function */
 
 int CheckErrorFile(const char *strFile, FILE *pFile)
 	{
-		int idx = V_ZERO;
-
 		if (ferror(pFile))
 			{
 				printf("\n");
