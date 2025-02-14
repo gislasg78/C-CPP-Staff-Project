@@ -69,8 +69,8 @@ int CopyFile(const char *strSource, const char *strTarget)
 		int idx = V_ZERO;
 
 		printf("\nCopy Files.\n");
-		printf("- Source file: [%s]. Open mode: [%s].\n", strSource, _WRITE_ONLY_FILE_);
-		printf("- Target file: [%s]. Open mode: [%s].\n", strTarget, _READ_ONLY_FILE_);
+		printf("- Source file: [%s]. Open mode: [%s].\n", strSource, _READ_ONLY_FILE_);
+		printf("- Target file: [%s]. Open mode: [%s].\n", strTarget, _WRITE_ONLY_FILE_);
 
 		if (pFTarget = fopen(strTarget, _WRITE_ONLY_FILE_))
 			{
