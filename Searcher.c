@@ -117,14 +117,17 @@ int GetCheckedInput(int *value)
 		int number = V_ZERO;
 
 		if (scanf("%d", &number))
-			//An integer wasn't read successfully.
+			//An integer was read successfully.
 			printf("\nEntry: [%d]. OK!\n", number);
 		else
-			//Discard invalid input.
-			printf("\nInvalid entry. Please try again.\n");
+			{
+				//Discard invalid input.
+				printf("\nInvalid entry. Please try again.\n");
 
-		//We clear the buffer in case there are extra characters.
-		while ((chr_char = getchar()) != CARRIAGE_RETURN && chr_char != EOF);
+				//We clear the buffer in case there are extra characters.
+				scanf("%*[^\n]%*c");
+				while ((chr_char = getchar()) != CARRIAGE_RETURN && chr_char != EOF);
+			}
 
 		if (value) *value = number;
 
@@ -136,7 +139,12 @@ char GetPause(const char *str_Message)
 		char chr_Char = NULL_CHARACTER;
 
 		printf("%s", str_Message);
-		scanf("%*c%c", &chr_Char);
+
+		if (scanf("%c", &chr_Char))
+			{
+				scanf("%*[^\n]%*c");
+				while ((chr_Char = getchar()) != CARRIAGE_RETURN && chr_Char != EOF);
+			};
 
 		return chr_Char;
 	}
