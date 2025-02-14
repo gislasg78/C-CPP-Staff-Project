@@ -4,14 +4,14 @@
 #include "stdlib.h"
 #include "string.h"
 
-#define NULL_CHARACTER	'\0'
-#define	CARRIAGE_RETURN	'\n'
+#define NULL_CHARACTER		'\0'
+#define	CARRIAGE_RETURN		'\n'
 
-#define	_F_READ_ONLY	"\x72"
-#define	_F_WRITE_ONLY	"\x77"
+#define	_READ_ONLY_FILE_	"\x72\x2b"
+#define	_WRITE_ONLY_FILE_	"\x77\x2b"
 
-#define	V_TWELVE	12
-#define	V_ZERO		0
+#define	V_TWELVE		12
+#define	V_ZERO			0
 
 int key = V_ZERO;
 
@@ -69,10 +69,12 @@ int CopyFile(const char *strSource, const char *strTarget)
 		int idx = V_ZERO;
 
 		printf("\nCopy Files.\n");
+		printf("- Source file: [%s]. Open mode: [%s].\n", strSource, _WRITE_ONLY_FILE_);
+		printf("- Target file: [%s]. Open mode: [%s].\n", strTarget, _READ_ONLY_FILE_);
 
-		if (pFTarget = fopen(strTarget, _F_WRITE_ONLY))
+		if (pFTarget = fopen(strTarget, _WRITE_ONLY_FILE_))
 			{
-				if (pFSource = fopen(strSource, _F_READ_ONLY))
+				if (pFSource = fopen(strSource, _READ_ONLY_FILE_))
 					{
 						printf("File: [%s] is copied to file: [%s].\n", strSource, strTarget);
 
@@ -108,8 +110,10 @@ int CreateFile(const char *strFile)
 		FILE *pFile = NULL;
 		int idx = V_ZERO;
 
-		printf("\nLoading File: [%s].\n", strFile);
-		if (pFile = fopen(strFile, _F_WRITE_ONLY))
+		printf("\nCreate file.\n");
+		printf("Loading File: [%s]. Opening mode: [%s].\n", strFile, _WRITE_ONLY_FILE_);
+
+		if (pFile = fopen(strFile, _WRITE_ONLY_FILE_))
 			{
 				printf("Capturing file...\n");
 
@@ -147,11 +151,12 @@ int DumpFile(const char *strFile)
 		FILE *pFile = NULL;
 		int idx = V_ZERO;
 
-		printf("\nDump File: [%s].\n", strFile);
+		printf("\nDump file.\n");
+		printf("Unloading File: [%s]. Opening mode: [%s].\n", strFile, _READ_ONLY_FILE_);
 
-		if (pFile = fopen(strFile, _F_READ_ONLY))
+		if (pFile = fopen(strFile, _READ_ONLY_FILE_))
 			{
-				printf("File content.\n");
+				printf("Viewing file content...\n");
 
 				while (!feof(pFile) && !ferror(pFile))
 					{
@@ -163,7 +168,7 @@ int DumpFile(const char *strFile)
 				printf("File recovered: [%s] with: [%d] records.\n", strFile, idx);
 
 				fseek(pFile, V_ZERO, SEEK_END);
-				printf("File size: [%s] : [%ld] bytes.\n", strFile, ftell(pFile));
+				printf("File size: [%s] with: [%ld] bytes.\n", strFile, ftell(pFile));
 
 				fclose(pFile);
 			}
