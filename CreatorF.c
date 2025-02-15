@@ -4,51 +4,47 @@
 #include "stdlib.h"
 #include "string.h"
 
-#define	NULL_CHARACTER	'\0'
-#define	CARRIAGE_RETURN	'\n'
+#define	NULL_CHARACTER		'\0'
+#define	CARRIAGE_RETURN		'\n'
 
-#define	_F_READ_ONLY	"\x72"
-#define	_F_WRITE_ONLY	"\x77"
+#define	_WRITE_FILE_ONLY_	"\x77\x2b"
 
-#define	V_TWELVE	12
-#define	V_ZERO		0
+#define	V_TWELVE		12
+#define	V_ZERO			0
+
+struct s_tmp_file
+	{
+		FILE *pFileTMP;
+		int num_records;
+	} *ptr_st_File;
 
 int CheckErrorFile(const char *strFile, FILE *pFile);
-void CreateTempFiles(const char *strSource, const char *strTarget);
+void CreateTempFiles(int num_files);
 char *GetFileName(const char *strMessage, char *strFile);
 
 int main()
 	{
-		char *strFIn = (char *) malloc(V_TWELVE * sizeof(char));
-		char *strFOut = (char *) malloc(V_TWELVE * sizeof(char));
-
-		CreateTempFiles(strFIn, strFOut);
-
-		free(strFIn);
-		free(strFOut);
-	}
-
-void CreateTempFiles(const char *strSource, const char *strTarget)
-	{
-		char c = V_ZERO, fileName[V_TWELVE];
+		char c = NULL_CHARACTER;
 		int num_files = V_ZERO;
 
-		struct s_tmp_file
-			{
-				FILE *pFileTMP;
-				int num_sections;
-			} *ptr_st_File;
-
-		printf("Sort File.\n");
+		printf("Temporary File Creator.\n");
 		printf("How many intermediate files do you want to create? : ");
 
 		if (scanf("%d", &num_files))
-			printf("\nCorrect entry: [%d]. OK!\n", num_files);
+			{
+				printf("Correct entry: [%d]. OK!\n", num_files);
+				CreateTempFiles(num_files);
+			}
 		else
 			{
 				scanf("%*[^\n]%*c");
 				while((c = getchar()) != CARRIAGE_RETURN && c != EOF);
 			}
+	}
+
+void CreateTempFiles(int num_files)
+	{
+		char c = V_ZERO, fileName[V_TWELVE];
 
 		if (num_files)
 			if (ptr_st_File = (struct s_tmp_file *) malloc(num_files * sizeof(struct s_tmp_file)))
@@ -59,13 +55,13 @@ void CreateTempFiles(const char *strSource, const char *strTarget)
 							printf("#: [%d].\n", idx);
 							GetFileName("- File name : ", fileName);
 
-							(ptr_st_File + idx)->pFileTMP = fopen(fileName, _F_WRITE_ONLY);
+							(ptr_st_File + idx)->pFileTMP = fopen(fileName, _WRITE_FILE_ONLY_);
 							CheckErrorFile(fileName, ptr_st_File[idx].pFileTMP);
 
-							printf("- Sections  : ");
+							printf("- Records   : ");
 
-							if (scanf("%d", &(ptr_st_File + idx)->num_sections))
-								printf("\nCorrect entry: [%d]. OK!\n", ptr_st_File[idx].num_sections);
+							if (scanf("%d", &(ptr_st_File + idx)->num_records))
+								printf("\nCorrect entry: [%d]. OK!\n", ptr_st_File[idx].num_records);
 							else
 								{
 									scanf("%*[^\n]%*c");
@@ -73,7 +69,7 @@ void CreateTempFiles(const char *strSource, const char *strTarget)
 								}
 
 
-							printf("** [%d]. [%p] = [%s]. [%d]. **\n", idx, ptr_st_File[idx].pFileTMP, fileName, (ptr_st_File + idx)->num_sections);
+							printf("** [%d]. [%p] = [%s]. [%d]. **\n", idx, ptr_st_File[idx].pFileTMP, fileName, (ptr_st_File + idx)->num_records);
 							fclose((ptr_st_File[idx].pFileTMP));
 						}
 
