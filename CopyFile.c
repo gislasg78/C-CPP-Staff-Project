@@ -83,8 +83,8 @@ int CopyFile(const char *strSource, const char *strTarget)
 							{
 								if (fscanf(pFSource, "%*c%d%*c%*c", &key) && !feof(pFSource) && !ferror(pFSource))
 									{
-										fprintf(pFTarget, "{%d}.\n", key);
-										printf("#: [%d]\t:\t{%d}.\n", idx++, key);
+										if (fprintf(pFTarget, "{%d}.\n", key))
+											printf("#: [%d]\t:\t{%d}.\n", idx++, key);
 									}
 							}
 
@@ -131,8 +131,8 @@ int CreateFile(const char *strFile)
 
 						if (key == V_ZERO) break;
 
-						fprintf(pFile, "[%d].\n", key);
-						printf("#: [%d]\t:\t[%d].\n", idx++, key);
+						if (fprintf(pFile, "[%d].\n", key))
+							printf("#: [%d]\t:\t[%d].\n", idx++, key);
 					}
 
 				CheckErrorFile(strFile, pFile);
