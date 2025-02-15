@@ -14,6 +14,7 @@
 
 struct s_tmp_file
 	{
+		char fileName[V_TWELVE];
 		FILE *pFileTMP;
 		int num_records;
 	} *ptr_st_File;
@@ -44,7 +45,7 @@ int main()
 
 void CreateTempFiles(int num_files)
 	{
-		char c = V_ZERO, fileName[V_TWELVE];
+		char c = V_ZERO;
 
 		if (num_files)
 			if (ptr_st_File = (struct s_tmp_file *) malloc(num_files * sizeof(struct s_tmp_file)))
@@ -53,10 +54,10 @@ void CreateTempFiles(int num_files)
 						{
 							printf("\nCapture temporary file names.\n");
 							printf("#: [%d].\n", idx);
-							GetFileName("- File name : ", fileName);
+							GetFileName("- File name : ", (ptr_st_File + idx)->fileName);
 
-							(ptr_st_File + idx)->pFileTMP = fopen(fileName, _WRITE_FILE_ONLY_);
-							CheckErrorFile(fileName, ptr_st_File[idx].pFileTMP);
+							(ptr_st_File + idx)->pFileTMP = fopen(ptr_st_File[idx].fileName, _WRITE_FILE_ONLY_);
+							CheckErrorFile(ptr_st_File[idx].fileName, ptr_st_File[idx].pFileTMP);
 
 							printf("- Records   : ");
 
@@ -69,7 +70,7 @@ void CreateTempFiles(int num_files)
 								}
 
 
-							printf("** [%d]. [%p] = [%s]. [%d]. **\n", idx, ptr_st_File[idx].pFileTMP, fileName, (ptr_st_File + idx)->num_records);
+							printf("** [%d]. [%p] = [%s]. [%d]. **\n", idx, ptr_st_File[idx].pFileTMP, (ptr_st_File + idx)->fileName, (ptr_st_File + idx)->num_records);
 							fclose((ptr_st_File[idx].pFileTMP));
 						}
 
