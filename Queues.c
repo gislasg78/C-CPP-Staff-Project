@@ -17,29 +17,24 @@ struct Node
 struct Node *createNode(int data, struct Node *nextNode);
 int dequeueNode(int *data, struct Node **front, struct Node **final);
 struct Node *enqueueNode(int data, struct Node **front, struct Node **final);
+int getInputValue(int *int_data);
 void loadQueue(int numNodes, struct Node **front, struct Node **final);
 void unloadQueue(struct Node **front, struct Node **final);
+void viewQueue(struct Node *front);
 
 int main()
 	{
-		char c = V_ZERO;
 		int data = V_ZERO;
 		int numNodes = V_ZERO;
 
 		printf("Dynamic structures: queues.\n");
 		printf("Enter nodes's number for the queue: ");
 
-		if (scanf("%i", &numNodes))
+		if (getInputValue(&numNodes))
 			{
-				printf("Correct entry: [%d]. OK!\n", numNodes);
 				loadQueue(numNodes, &header, &tail);
+				viewQueue(header);
 				unloadQueue(&header, &tail);
-			}
-		else
-			{
-				printf("The entry is not valid.\n");
-				scanf("%*[^\n]%*c");
-				while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
 			}
 
 		return EXIT_SUCCESS;
@@ -101,9 +96,25 @@ struct Node *enqueueNode(int data, struct Node **front, struct Node **final)
 		return tempNode;
 	}
 
-void loadQueue(int numNodes, struct Node **front, struct Node **final)
+int getInputValue(int *int_data)
 	{
 		char c = NULL_CHARACTER;
+		int t_data = V_ZERO;
+
+		if ((t_data = scanf("%i", int_data)) == V_ONE)
+			printf("Correct entry: [%d] in address: [%p]. OK!\n", *int_data, int_data);
+		else
+			{
+				printf("The entry is not valid.\n");
+				scanf("%*[^\n]%*c");
+				while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
+			}
+
+		return (t_data == V_ONE);
+	}
+
+void loadQueue(int numNodes, struct Node **front, struct Node **final)
+	{
 		int data = V_ZERO;
 		struct Node *tempNode = NULL;
 
@@ -113,17 +124,11 @@ void loadQueue(int numNodes, struct Node **front, struct Node **final)
 			{
 				printf("\nEntry Data #: [%d] of: [%d] : ", idx + V_ONE, numNodes);
 
-				if (scanf("%d", &data) == V_ONE)
+				if (getInputValue(&data))
 					{
 						printf("Correct entry #: [%d] of: [%d] = [%d]. OK!\n", idx + V_ONE, numNodes, data);
 						tempNode = enqueueNode(data, front, final);
 						printf("Idx: [%2d]. Address Node: [%p]. Data: [%d]. Next Node: [%p].\n", idx + V_ONE, *final, (*final)->data, (*final)->nextNode);
-					}
-				else
-					{
-						printf("The entry is not valid.\n");
-						scanf("%*[^\n]%*c");
-						while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
 					}
 			}
 	}
@@ -139,4 +144,21 @@ void unloadQueue(struct Node **front, struct Node **final)
 				printf("Idx: [%2d].\tAddress Node: [%p].\tData: [%d].\tNext Node: [%p].\n", idx++, *front, (*front)->data, (*front)->nextNode);
 				data = dequeueNode(&data, front, final);
 			}
+
+		printf("[%d] Deleted output results.\n", idx);
+	}
+
+void viewQueue(struct Node *front)
+	{
+		int idx = V_ZERO;
+
+		printf("\nViewing the queue without removing its elements...\n");
+
+		while (front)
+			{
+				printf("Idx: [%2d].\tAddress Node: [%p].\tData: [%d].\tNext Node: [%p].\n", idx++, front, front->data, front->nextNode);
+				front = front->nextNode;
+			}
+
+		printf("[%d] Observed output results.\n", idx);
 	}
