@@ -24,7 +24,6 @@ void viewQueue(struct Node *front);
 
 int main()
 	{
-		int data = V_ZERO;
 		int numNodes = V_ZERO;
 
 		printf("Dynamic structures: queues.\n");
