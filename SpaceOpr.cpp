@@ -8,7 +8,7 @@ int main()
 		int l_value = V_ZERO, r_value = V_ZERO;
 		std::cout << "Spaceship comparator." << std::endl;
 
-		std::cout << "First value: ";
+		std::cout << "First  value: ";
 		std::cin >> l_value;
 
 		std::cout << "Second value: ";
