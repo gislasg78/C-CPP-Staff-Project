@@ -11,7 +11,7 @@ int main()
 		std::cout << "First value: ";
 		std::cin >> l_value;
 
-		std::cout << "First value: ";
+		std::cout << "Second value: ";
 		std::cin >> r_value;
 
 		auto result = (l_value <=> r_value);
