@@ -20,22 +20,21 @@ static int array[] = 	{
 			};
 
 //Improved binary search function with a delta factor.
-int BinarySearchDelta(int array[], const int size, const int target_key, const int delta, int *pos)
+int BinarySearchDelta(int array[], const int size, const int target_key, const int delta_factor, int *pos, int *iters)
 	{
 		//Preliminary working variables.
-		int iters = V_ZERO;
 		int high = size + V_MINUS_ONE, low = V_ZERO;
 
 		//Calculate the midpoint with the delta factor.
-		int middle = low + (high - low) / V_TWO + delta;
+		int middle = low + (high - low) / V_TWO + delta_factor;
 		*pos = V_MINUS_ONE;
 
 		//Continue searching as long as there is a valid range.
-		for (iters = V_ZERO; low <= high && array[middle] != target_key; iters++)
+		for (*iters = V_ZERO; low <= high && array[middle] != target_key; (*iters)++)
 			{
 				//If the average index falls outside the range, we adjust.
 				middle = (middle < low || middle > high) ? low + (high - low) / V_TWO
-									 : low + (high - low) / V_TWO + delta;
+									 : low + (high - low) / V_TWO + delta_factor;
 
 				//Compare the value at the midpoint with the target
 				if (array[middle] == target_key)
@@ -46,23 +45,25 @@ int BinarySearchDelta(int array[], const int size, const int target_key, const i
 					high = middle + V_MINUS_ONE;	//We adjust the upper limit of the array
 			}
 
-		return iters;	//The number iterations was returned for the array.
+		return *pos;	//The located position of the element is returned as a result.
 	}
 
 int main()
 	{
 		//Preliminary working variables.
-		int delta = V_ONE;	//Delta factor that adjusts the position of the medium.
+		int delta_factor = V_ZERO;	//Delta factor that adjusts the position of the medium.
+		int iterations = V_ZERO;
 		int size = sizeof(array) / sizeof(array[V_ZERO]);
-		int position = V_ZERO;
 		int target_key = V_ZERO;
 
 		printf("Search for a prime number within the first thousand.\n");
 		printf("Prime number to find: ");
 		scanf("%d", &target_key);
+		printf("Delta adjustment factor: ");
+		scanf("%d", &delta_factor);
 
 		//We call the function enhanced binary search.
-		int iterations = BinarySearchDelta(array, size, target_key, delta, &position);
+		int position = BinarySearchDelta(array, size, target_key, delta_factor, &position, &iterations);
 
 		//Validates if the position is in a correct range.
 		if (position >= V_ZERO && position < size)
@@ -70,6 +71,8 @@ int main()
 				printf("\n");
 				printf("+---+----+---+----+---+\n");
 				printf("|  Search successful. |\n");
+				printf("+---+----+---+----+---+\n");
+				printf("| * Delta      : [%d].\n", delta_factor);
 				printf("+---+----+---+----+---+\n");
 				printf("| * Element    : [%d].\n", target_key);
 				printf("| * Iterations : [%d].\n", iterations);
