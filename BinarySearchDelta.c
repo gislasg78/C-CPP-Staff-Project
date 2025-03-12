@@ -18,7 +18,7 @@
 #define	V_ZERO		0
 
 //Global static array of prime numbers.
-static int array[] = 	{
+static const int array[] = {
 			2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53,
 			59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131,
 			137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223,
@@ -33,7 +33,7 @@ static int array[] = 	{
 			};
 
 //Improved traditional binary search function.
-int BinarySearch(int array[], const int size, const int target_key, int *pos, int *iters)
+int BinarySearch(const int array[], const int size, const int target_key, int *pos, int *iters)
 	{
 		//Preliminary working variables.
 		int high = size + V_MINUS_ONE, low = V_ZERO, middle = V_ZERO;
@@ -61,7 +61,7 @@ int BinarySearch(int array[], const int size, const int target_key, int *pos, in
 	}
 
 //Improved binary search function with internal delta factor.
-int BinarySearchDelta(int array[], const int size, const int target_key, int *delta_factor, int *pos, int *iters)
+int BinarySearchDelta(const int array[], const int size, const int target_key, int *delta_factor, int *pos, int *iters)
 	{
 		//Preliminary working variables.
 		int middle = V_ZERO;
@@ -86,14 +86,14 @@ int BinarySearchDelta(int array[], const int size, const int target_key, int *de
 	}
 
 //Improved traditional recursirve and cyclic binary search function.
-int BinarySearchRecursive(int array[], const int target_key, const int bottom, const int top, int *pos, int *iters)
+int BinarySearchRecursive(const int array[], const int target_key, const int bottom, const int top, int *pos, int *iters, int *itrvs)
 	{
 		//Preliminary working variables.
 		static int iteratives = V_ZERO;
 		int middle = (bottom + top) / V_TWO;
 
 		//Calculate the first relative position of the element.
-		iteratives++; *pos = V_MINUS_ONE;
+		(*iters)++; iteratives++; *pos = V_MINUS_ONE;
 
 		//Compare the value at the midpoint with the target.
 		if ((bottom <= top))
@@ -101,12 +101,12 @@ int BinarySearchRecursive(int array[], const int target_key, const int bottom, c
 				if (array[middle] == target_key)
 					*pos = middle;
 				else if (array[middle] > target_key)
-					BinarySearchRecursive(array, target_key, bottom, middle - V_ONE, pos, iters);
+					BinarySearchRecursive(array, target_key, bottom, middle - V_ONE, pos, iters, itrvs);
 				else if (array[middle] < target_key)
-					BinarySearchRecursive(array, target_key, middle + V_ONE, top, pos, iters);
+					BinarySearchRecursive(array, target_key, middle + V_ONE, top, pos, iters, itrvs);
 			}
 
-		*iters = iteratives;
+		*itrvs = iteratives;
 		return *pos;	//The located position of the element is returned as a result.
 	}
 
@@ -122,7 +122,7 @@ int getElement(const char *str_Message, const int array[], const int size, const
 				printf("[%s].\n", str_Message);
 				printf("+===+====+===+====+===+\n");
 				printf("|    Binary Search.   |\n");
-				printf("+-=-+----+-=-+----+-=-+\n");
+				printf("+===+====+===+====+===+\n");
 				printf("| * Element  : [%d].\n", target_key);
 				printf("| + Cycles   : {%d}.\n", iterations);
 				printf("+-=-+----+---+----+-=-+\n");
@@ -162,12 +162,25 @@ int getEntry(int *target_key)
 		return value_key;
 	}
 
+//Function to locate a certain value by means of interpolations.
+int InterpolationLocate(const int array[], const int bottom, const int top, const int target_key, int *middle_bottom, int *middle_top, int *iters)
+	{
+		//Preliminary working variables.
+		*iters = V_ZERO;
+		*middle_top = top + ((target_key - array[top]) * (bottom - top)) / (array[bottom] - array[top]);
+		*middle_bottom = bottom + ((target_key - array[bottom]) * (top - bottom)) / (array[top] - array[bottom]);
+
+		//The located position of the element is returned as a result.
+		return (*middle_top >= bottom && *middle_top <= top) && (*middle_bottom >= bottom && *middle_bottom <= top);
+	}
+
 //Main function.
 int main()
 	{
 		//Preliminary working variables.
 		int delta_factor = V_ZERO;	//Delta factor that adjusts the position of the medium.
-		int iterations = V_ZERO;	//Number of iterations performed.
+		int iterations = V_ZERO, iteratives = V_ZERO;		//Number of iterations performed.
+		int middle_bottom = V_ZERO, middle_top = V_ZERO;	//Positions for interpolations.
 		int position = V_ZERO;		//Location position of the located element.
 		int size = sizeof(array) / sizeof(array[V_ZERO]);	//Calculated array size.
 		int target_key = V_ZERO;	//Numeric search key.
@@ -187,8 +200,24 @@ int main()
 		printf("  * Delta Fx : [%d].\n", delta_factor);
 
 		//We call the traditional recursive and cyclic binary search function.
-		position = BinarySearchRecursive(array, target_key, V_ZERO, size + V_MINUS_ONE, &position, &iterations);
+		iterations = V_ZERO;
+		position = BinarySearchRecursive(array, target_key, V_ZERO, size + V_MINUS_ONE, &position, &iterations, &iteratives);
 		getElement("Recursive Loop Binary Search", array, size, target_key, position, iterations);
+		printf("[%d] calls made to the recursive binary search function.\n", iteratives);
+
+		//We call a function that obtains the position of the searched element by means of interpolations.
+		if (InterpolationLocate(array, V_ZERO, size - V_ONE, target_key, &middle_bottom, &middle_top, &iterations))
+			{
+				printf("\n** [Approximate values ​​obtained] **.\n");
+				getElement("Interpolated lower value obtained", array, size, target_key, middle_bottom, iterations);
+				getElement("Interpolated upper value obtained", array, size, target_key, middle_top, iterations);
+			}
+
+		//We call the traditional recursive and cyclic binary search function.
+		iterations = V_ZERO;
+		position = BinarySearchRecursive(array, target_key, V_ZERO, size + V_MINUS_ONE, &position, &iterations, &iteratives);
+		getElement("Recursive Loop Binary Search", array, size, target_key, position, iterations);
+		printf("[%d] calls made to the recursive binary search function.\n", iteratives);
 
 		return V_ZERO;
 	}
