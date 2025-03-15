@@ -208,9 +208,9 @@ int JulianYear(const int day, const int month, const int year)
 	{
 		int clusterdays = V_ZERO;
 
-		for (int int_month = V_ZERO; int_month < (month - V_ONE); int_month++)
+		for (int int_month = V_ZERO; int_month < month; int_month++)
 			{
-				int limitdays = DaysInMonth(int_month + V_ONE, year);
+				int limitdays = DaysInMonth(int_month, year);
 
 				clusterdays += limitdays;
 			}
