@@ -35,11 +35,14 @@
 #define	V_60		60
 #define	V_100		100
 #define	V_114		114
+#define	V_365		365
+#define	V_366		366
 #define V_400		400
 #define	V_451		451
 #define	V_1582		1582
 #define	V_3600		3600
 
+//Numerical constants of ordinary work.
 #define	V_FIVE		5
 #define	V_FOUR		4
 #define	V_ONE		1
@@ -71,10 +74,12 @@ struct months_table
 //Prototype functions.
 void DateEntry(int *day, int *month, int *year);
 int DayOfWeek(const int day, int month, int year);
+int DaysInMonth(const int month, const int year);
 char GetPause(const char *str_Message);
 int JulianYear(const int day, const int month, const int year);
 void EasterSunday(const int year, int *month_east, int *day_east);
 int LeapYear(const int year);
+void SolveSumOfDays(const int sumofdays, int *day, int *month, int *year);
 int SumOfDays(int day, int month, int year);
 void TimeEntry(int *hour, int *minute, int *second);
 int ValidDate(const int day, const int month, const int year);
@@ -96,7 +101,7 @@ int main()
 			{
 				EasterSunday(year, &month_east, &day_east);
 				JulianYear(day, month, year);
-				SumOfDays(day, month, year);
+				SolveSumOfDays(SumOfDays(day, month, year), &day, &month, &year);
 				WriteDate(day, month, year);
 			}
 
@@ -110,6 +115,7 @@ int main()
 		return V_ZERO;
 	}
 
+//Function that receives the date data.
 void DateEntry(int *day, int *month, int *year)
 	{
 		printf("\nDate validity checker.\n");
@@ -122,6 +128,7 @@ void DateEntry(int *day, int *month, int *year)
 		scanf("%d", day);
 	}
 
+//Function that calculates the number of the day of the week that corresponds to a date.
 int DayOfWeek(const int day, int month, int year)
 	{
 		if (month <= V_TWO)
@@ -133,6 +140,17 @@ int DayOfWeek(const int day, int month, int year)
 		return ((day + V_TWO * month + V_THREE * (month + V_ONE) / V_FIVE + year + year / V_FOUR - year / V_100 + year / V_400 + V_TWO) % V_SEVEN);
 	}
 
+//Number of days in a given month and year.
+int DaysInMonth(const int month, const int year)
+	{
+		int limitdays = months_array[month - V_ONE].month_totaldays;
+
+		if ((month == V_TWO) && (LeapYear(year))) limitdays = V_29;
+
+		return limitdays;
+	}
+
+//Function that obtains the Easter Sunday of a given date.
 void EasterSunday(const int year, int *month_east, int *day_east)
 	{
 		int a = V_ZERO, b = V_ZERO, c = V_ZERO, d = V_ZERO, e = V_ZERO;
@@ -164,7 +182,7 @@ void EasterSunday(const int year, int *month_east, int *day_east)
 		printf("Month: [%s]. Day : [%d].\n", months_array[*month_east - V_ONE].month_nameofmonth, *day_east);
 	}
 
-//Make a pause.
+//Function that makes a pause.
 char GetPause(const char *str_Message)
 	{
 		//Preliminary working variables.
@@ -182,6 +200,7 @@ char GetPause(const char *str_Message)
 		return chr_key;
 	}
 
+//Function that obtains the current Julian Year.
 int JulianYear(const int day, const int month, const int year)
 	{
 		int clusterdays = V_ZERO;
@@ -202,11 +221,42 @@ int JulianYear(const int day, const int month, const int year)
 		return (clusterdays);
 	}
 
+//Function that obtains the current Julian year.
 int LeapYear(const int year)
 	{
 		return ((year % V_FOUR == V_ZERO) && (year % V_100 != V_ZERO) || (year % V_400 == V_ZERO));
 	}
 
+//Function that reconverts the number of days obtained into its variables of day, month and year.
+void SolveSumOfDays(const int sumofdays, int *day, int *month, int *year)
+	{
+		//Clear the component variables of 'sumofdays'.
+		int days_remaining = sumofdays - V_ONE;	//We subtract 1 because we started from day one.
+		*year = V_1582;
+		*month = V_ONE;
+		*day = V_ONE;
+
+		//We return the converted values ​​to the parameters of this function.
+		while (days_remaining >= (LeapYear(*year) ? V_366 : V_365))
+			{
+				days_remaining -= (LeapYear(*year) ? V_366 : V_365);
+				(*year)++;
+			}
+
+		while (days_remaining >= DaysInMonth(*month, *year))
+			{
+				days_remaining -= DaysInMonth(*month, *year);
+				(*month)++;
+			}
+
+		*day += days_remaining;
+
+		//Display the cleared component variables.
+		printf("\nConverted date.\n");
+		printf("[%04d/%02d/%02d].\n", *year, *month, *day);
+	}
+
+//Function that loops through the number of days in a year starting from 1582-01-01.
 int SumOfDays (int day, int month, int year)
 	{
 		int cumofdays = V_ZERO;
@@ -232,6 +282,7 @@ int SumOfDays (int day, int month, int year)
 		return (cumofdays);
 	}
 
+//Function that receives the date data.
 void TimeEntry(int *hour, int *minute, int *second)
 	{
 		printf("\nTime validity checker.\n");
@@ -244,6 +295,7 @@ void TimeEntry(int *hour, int *minute, int *second)
 		scanf("%d", second);
 	}
 
+//This function validates that a date is perfectly correct.
 int ValidDate(const int day, const int month, const int year)
 	{
 		int limitdays = V_ZERO, yearB = V_ZERO, monthB = V_ZERO, dayB = V_ZERO;
@@ -283,6 +335,7 @@ int ValidDate(const int day, const int month, const int year)
 		return (dayB && monthB && yearB);
 	}
 
+//This function validates that a time is perfectly correct.
 int ValidTime(const int hour, const int minute, const int second)
 	{
 		int hourB = V_ZERO, minuteB = V_ZERO, secondB = V_ZERO;
@@ -311,6 +364,7 @@ int ValidTime(const int hour, const int minute, const int second)
 		return (hourB && minuteB && secondB);
 	}
 
+//Function that writes a correctly validated date.
 void WriteDate(const int day, const int month, const int year)
 	{
 		int d = V_ZERO;
@@ -321,6 +375,7 @@ void WriteDate(const int day, const int month, const int year)
 		printf("%s, %s %02d, %04d.\n", day_name[d], months_array[month - V_ONE].month_nameofmonth, day, year);
 	}
 
+//Function that writes a correctly validated time.
 void WriteTime(const int hour, const int minute, const int second)
 	{
 		//Preliminary working variables.
@@ -334,6 +389,7 @@ void WriteTime(const int hour, const int minute, const int second)
                 s_minutes = (t % V_3600) / V_60;
                 s_seconds = t % V_60;
 
-		printf("\n[%02d:%02d:%02d].\n", s_hours, s_minutes, s_seconds);
+		printf("\nConverted time.\n");
+		printf("[%02d:%02d:%02d].\n", s_hours, s_minutes, s_seconds);
 		printf("Seconds Time: {%d}.\n", t);
 	}
