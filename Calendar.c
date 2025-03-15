@@ -53,10 +53,12 @@
 #define	V_TWO		2
 #define	V_ZERO		0
 
+//Global table of the names of the days of the week.
 static char day_name[V_SEVEN][V_TEN] = {"Saturday", "Sunday", "Monday",
 					"Tuesday", "Wednesday", "Thursday",
 					"Friday"};
 
+//Global table of the names of the months of the year.
 struct months_table
 	{
 		int month_numberofmonth;
@@ -77,6 +79,7 @@ int DayOfWeek(const int day, int month, int year);
 int DaysInMonth(const int month, const int year);
 char GetPause(const char *str_Message);
 int JulianYear(const int day, const int month, const int year);
+int JulianYearDaysRest(const int day, const int month, const int year);
 void EasterSunday(const int year, int *month_east, int *day_east);
 int LeapYear(const int year);
 void SolveSumOfDays(const int sumofdays, int *day, int *month, int *year);
@@ -100,7 +103,7 @@ int main()
 		if (ValidDate(day, month, year))
 			{
 				EasterSunday(year, &month_east, &day_east);
-				JulianYear(day, month, year);
+				JulianYearDaysRest(day, month, year);
 				SolveSumOfDays(SumOfDays(day, month, year), &day, &month, &year);
 				WriteDate(day, month, year);
 			}
@@ -207,9 +210,7 @@ int JulianYear(const int day, const int month, const int year)
 
 		for (int int_month = V_ZERO; int_month < (month - V_ONE); int_month++)
 			{
-				int limitdays = months_array[int_month].month_totaldays;
-
-                                if ((int_month == V_ONE) && (LeapYear(year))) limitdays = V_29;
+				int limitdays = DaysInMonth(int_month + V_ONE, year);
 
 				clusterdays += limitdays;
 			}
@@ -219,6 +220,16 @@ int JulianYear(const int day, const int month, const int year)
 		printf("\nJulian Year: {%d} : [%d].\n", year, clusterdays);
 
 		return (clusterdays);
+	}
+
+//Function that returns the days remaining from a given Julian year.
+int JulianYearDaysRest(const int day, const int month, const int year)
+	{
+		int remainder_days = (LeapYear(year) ? V_366 : V_365) - JulianYear(day, month, year);
+
+		printf("\nJulian Rest: {%d} : [%d].\n", year, remainder_days);
+
+		return remainder_days;
 	}
 
 //Function that obtains the current Julian year.
@@ -259,9 +270,7 @@ int SumOfDays (int day, int month, int year)
 
 		                for (int int_month = V_ZERO; int_month < max_month; int_month++)
 					{
-						int limitdays = months_array[int_month].month_totaldays;
-
-						if ((int_month == V_ONE) && (LeapYear(int_year))) limitdays = V_29;
+						int limitdays = DaysInMonth(int_month + V_ONE, int_year);
 
 						cumofdays += limitdays;
 					}
@@ -300,9 +309,7 @@ int ValidDate(const int day, const int month, const int year)
 			if (monthB)
 				if (dayB)
 					{
-						limitdays = months_array[month - V_ONE].month_totaldays;
-
-						if ((month == V_TWO) && (LeapYear(year))) limitdays = V_29;
+						limitdays = DaysInMonth(month, year);
 
 						dayB = (day >= V_ONE && day <= limitdays);
 
