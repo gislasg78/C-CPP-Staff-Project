@@ -2,28 +2,43 @@
  **		PERPETUAL CALENDAR		**
  ** ------------------------------------------- **
  ** Given a date (day, month, year).		**
+ ** Given a time (hour, minute, second).	**
+ **						**
  ** Indicate the corresponding day of the week.	**
+ ** Indicate the corresponding total seconds.	**
  **						**
  ** 		Calendar.c			**
  ************************************************/
 #include <stdio.h>
 #include <stdlib.h>
 
+//Macro definition to encapsulate time.
+#define SECONDS(hour, minute, second)	(((hour) * V_3600) + ((minute) * V_60) + (second))
+
+//Symbolic work constants.
+#define	CARRIAGE_RETURN	'\n'
+#define	NULL_CHARACTER	'\0'
+
+//Numerical symbolic constants
 #define	V_8		8
 #define	V_11		11
 #define	V_15		15
 #define	V_19		19
 #define V_22		22
+#define	V_23		23
 #define V_25		25
 #define	V_29		29
 #define	V_30		30
 #define V_31		31
 #define V_32		32
+#define	V_59		59
+#define	V_60		60
 #define	V_100		100
 #define	V_114		114
 #define V_400		400
 #define	V_451		451
 #define	V_1582		1582
+#define	V_3600		3600
 
 #define	V_FIVE		5
 #define	V_FOUR		4
@@ -53,22 +68,30 @@ struct months_table
 		 {10, "October", 31}, {11, "November", 30}, {12, "December", 31}
 		};
 
+//Prototype functions.
 void DateEntry(int *day, int *month, int *year);
 int DayOfWeek(const int day, int month, int year);
-int JulianYear(int day, int month, int year);
+char GetPause(const char *str_Message);
+int JulianYear(const int day, const int month, const int year);
 void EasterSunday(const int year, int *month_east, int *day_east);
-int LeapYear(int year);
+int LeapYear(const int year);
 int SumOfDays(int day, int month, int year);
+void TimeEntry(int *hour, int *minute, int *second);
 int ValidDate(const int day, const int month, const int year);
+int ValidTime(const int hour, const int minute, const int second);
 void WriteDate(const int day, const int month, const int year);
+void WriteTime(const int hour, const int minute, const int second);
 
+//Main function.
 int main()
 	{
+		//Preliminary working variables.
 		int day = V_ZERO, month = V_ZERO, year = V_ZERO;
+		int hour = V_ZERO, minute = V_ZERO, second = V_ZERO;
 		int month_east = V_ZERO, day_east = V_ZERO;
 
+		//Validation of the entry date.
 		DateEntry(&day, &month, &year);
-
 		if (ValidDate(day, month, year))
 			{
 				EasterSunday(year, &month_east, &day_east);
@@ -77,18 +100,25 @@ int main()
 				WriteDate(day, month, year);
 			}
 
+		//Validation of the entry time.
+		TimeEntry(&hour, &minute, &second);
+		if (ValidTime(hour, minute, second))
+			{
+				WriteTime(hour, minute, second);
+			}
+
 		return V_ZERO;
 	}
 
 void DateEntry(int *day, int *month, int *year)
 	{
-		printf("Date validity checker.\n");
+		printf("\nDate validity checker.\n");
 		printf("Please enter the following requested data.\n");
-		printf("Year  (%04d ->) : ", V_1582);
+		printf("Year   (%04d ->) : ", V_1582);
 		scanf("%d", year);
-		printf("Month (%02d - %02d) : ", V_ONE, V_TWELVE);
+		printf("Month  (%02d - %02d) : ", V_ONE, V_TWELVE);
 		scanf("%d", month);
-		printf("Day   (%02d - %02d) : ", V_ONE, V_31);
+		printf("Day    (%02d - %02d) : ", V_ONE, V_31);
 		scanf("%d", day);
 	}
 
@@ -134,7 +164,25 @@ void EasterSunday(const int year, int *month_east, int *day_east)
 		printf("Month: [%s]. Day : [%d].\n", months_array[*month_east - V_ONE].month_nameofmonth, *day_east);
 	}
 
-int JulianYear(int day, int month, int year)
+//Make a pause.
+char GetPause(const char *str_Message)
+	{
+		//Preliminary working variables.
+		char chr_key = NULL_CHARACTER;
+
+		printf("%s", str_Message);
+
+		//Validate data entry as correct.
+		if (scanf("%c", &chr_key))
+			{
+				scanf("%*[^\n]%*c");
+				while ((chr_key = getchar()) != CARRIAGE_RETURN && chr_key != EOF);
+			};
+
+		return chr_key;
+	}
+
+int JulianYear(const int day, const int month, const int year)
 	{
 		int clusterdays = V_ZERO;
 
@@ -154,7 +202,7 @@ int JulianYear(int day, int month, int year)
 		return (clusterdays);
 	}
 
-int LeapYear(int year)
+int LeapYear(const int year)
 	{
 		return ((year % V_FOUR == V_ZERO) && (year % V_100 != V_ZERO) || (year % V_400 == V_ZERO));
 	}
@@ -184,9 +232,20 @@ int SumOfDays (int day, int month, int year)
 		return (cumofdays);
 	}
 
+void TimeEntry(int *hour, int *minute, int *second)
+	{
+		printf("\nTime validity checker.\n");
+		printf("Please enter the following requested data.\n");
+		printf("Hour   (%02d - %02d) : ", V_ZERO, V_23);
+		scanf("%d", hour);
+		printf("Minute (%02d - %02d) : ", V_ZERO, V_59);
+		scanf("%d", minute);
+		printf("Second (%02d - %02d) : ", V_ZERO, V_59);
+		scanf("%d", second);
+	}
+
 int ValidDate(const int day, const int month, const int year)
 	{
-		char chr = V_ZERO;
 		int limitdays = V_ZERO, yearB = V_ZERO, monthB = V_ZERO, dayB = V_ZERO;
 
 		yearB = (year >= V_1582);
@@ -217,13 +276,39 @@ int ValidDate(const int day, const int month, const int year)
 
 		if (!(dayB && monthB && yearB))
 			{
-				printf("\n");
-				printf("Data not valid for the date.\n");
-				printf("Press ENTER key to continue...");
-				scanf("%*c%c", &chr);
+				printf("\nData not valid for the date.\n");
+				GetPause("Press ENTER key to continue...");
 			}
 
 		return (dayB && monthB && yearB);
+	}
+
+int ValidTime(const int hour, const int minute, const int second)
+	{
+		int hourB = V_ZERO, minuteB = V_ZERO, secondB = V_ZERO;
+
+		hourB = (hour >= V_ZERO && hour <= V_23);
+		minuteB = (minute >= V_ZERO && minute <= V_59);
+		secondB = (second >= V_ZERO && second <= V_59);
+
+		if (hourB)
+			if (minuteB)
+				if (secondB)
+					printf("\nCorrect time.\n");
+				else
+					printf("\nInvalid second: [%d]. Out of range: [%d] and [%d].\n", second, V_ZERO, V_59);
+			else
+				printf("\nInvalid minute: [%d]. Out of range: [%d] and [%d].\n", minute, V_ZERO, V_59);
+		else
+			printf("\nInvalid hour: [%d]. Out of range: [%d] and [%d].\n", hour, V_ZERO, V_23);
+
+		if (!(hourB && minuteB && secondB))
+			{
+				printf("\nData not valid for the time.\n");
+				GetPause("Press ENTER key to continue...");
+			}
+
+		return (hourB && minuteB && secondB);
 	}
 
 void WriteDate(const int day, const int month, const int year)
@@ -232,7 +317,23 @@ void WriteDate(const int day, const int month, const int year)
 
 		d = DayOfWeek(day, month, year);
 
-		printf("\n");
-		printf("[%04d/%02d/%02d].\n", year, month, day);
+		printf("\n[%04d/%02d/%02d].\n", year, month, day);
 		printf("%s, %s %02d, %04d.\n", day_name[d], months_array[month - V_ONE].month_nameofmonth, day, year);
+	}
+
+void WriteTime(const int hour, const int minute, const int second)
+	{
+		//Preliminary working variables.
+		int s_hours = V_ZERO, s_minutes = V_ZERO, s_seconds = V_ZERO;
+		int t = V_ZERO;
+
+		t = SECONDS(hour, minute, second);
+
+		//Clear the component variables of the variable 'time'.
+                s_hours = t / V_3600;
+                s_minutes = (t % V_3600) / V_60;
+                s_seconds = t % V_60;
+
+		printf("\n[%02d:%02d:%02d].\n", s_hours, s_minutes, s_seconds);
+		printf("Seconds Time: {%d}.\n", t);
 	}
