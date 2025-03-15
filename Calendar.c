@@ -232,22 +232,14 @@ void SolveSumOfDays(const int sumofdays, int *day, int *month, int *year)
 	{
 		//Clear the component variables of 'sumofdays'.
 		int days_remaining = sumofdays - V_ONE;	//We subtract 1 because we started from day one.
-		*year = V_1582;
-		*month = V_ONE;
 		*day = V_ONE;
 
 		//We return the converted values ​​to the parameters of this function.
-		while (days_remaining >= (LeapYear(*year) ? V_366 : V_365))
-			{
-				days_remaining -= (LeapYear(*year) ? V_366 : V_365);
-				(*year)++;
-			}
+		for (*year = V_1582; days_remaining >= (LeapYear(*year) ? V_366 : V_365); (*year)++)
+			days_remaining -= (LeapYear(*year) ? V_366 : V_365);
 
-		while (days_remaining >= DaysInMonth(*month, *year))
-			{
-				days_remaining -= DaysInMonth(*month, *year);
-				(*month)++;
-			}
+		for (*month = V_ONE; days_remaining >= DaysInMonth(*month, *year); (*month)++)
+			days_remaining -= DaysInMonth(*month, *year);
 
 		*day += days_remaining;
 
