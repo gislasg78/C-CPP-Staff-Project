@@ -278,13 +278,14 @@ int SumOfDays (int day, int month, int year)
 	{
 		int cumofdays = V_ZERO;
 
+		//Cycle of iterations to add days from a given year.
 		for (int int_year = V_1582; int_year <= year; int_year++)
 			{
 				int max_month = (int_year < year) ? V_TWELVE : month - V_ONE;
 
-		                for (int int_month = V_ZERO; int_month < max_month; int_month++)
+				for (int int_month = V_ONE; int_month <= max_month; int_month++)
 					{
-						int limitdays = DaysInMonth(int_month + V_ONE, int_year);
+						int limitdays = DaysInMonth(int_month, int_year);
 
 						cumofdays += limitdays;
 					}
