@@ -20,7 +20,7 @@
 #define	V_ZERO				0
 
 //Work Constants.
-#define	SPACE				'\x20'
+#define	SPACE				0x20
 #define V_ASTERISK			0x2A
 #define V_LETTER_B			'\x42'
 #define V_LETTER_W			'\x57'
@@ -189,8 +189,8 @@ int main()
 		printf("Bishop's column between [%d] & [%d] : ", V_LOWER_LIMIT_COLUMN_CHESSBOARD, V_UPPER_LIMIT_COLUMN_CHESSBOARD);
 		scanf("%ld", &szt_column_bishop);
 
-		fflush(stdin);
 		clearerr(stdin);
+		fflush(stdin);
 
 		/* Calculation and visualization of the chess board. */
 		if (szt_row_bishop >= V_LOWER_LIMIT_ROW_CHESSBOARD && szt_row_bishop <= V_UPPER_LIMIT_ROW_CHESSBOARD)
