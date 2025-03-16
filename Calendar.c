@@ -78,8 +78,7 @@ void DateEntry(int *day, int *month, int *year);
 int DayOfWeek(const int day, int month, int year);
 int DaysInMonth(const int month, const int year);
 char GetPause(const char *str_Message);
-int JulianYear(const int day, const int month, const int year);
-int JulianYearDaysRest(const int day, const int month, const int year);
+int JulianYear(const int day, const int month, const int year, int *daysrest);
 void EasterSunday(const int year, int *month_east, int *day_east);
 int LeapYear(const int year);
 void SolveSumOfDays(const int sumofdays, int *day, int *month, int *year);
@@ -97,13 +96,14 @@ int main()
 		int day = V_ZERO, month = V_ZERO, year = V_ZERO;
 		int hour = V_ZERO, minute = V_ZERO, second = V_ZERO;
 		int month_east = V_ZERO, day_east = V_ZERO;
+		int days_rest = V_ZERO;
 
 		//Validation of the entry date.
 		DateEntry(&day, &month, &year);
 		if (ValidDate(day, month, year))
 			{
 				EasterSunday(year, &month_east, &day_east);
-				JulianYearDaysRest(day, month, year);
+				JulianYear(day, month, year, &days_rest);
 				SolveSumOfDays(SumOfDays(day, month, year), &day, &month, &year);
 				WriteDate(day, month, year);
 			}
@@ -203,8 +203,8 @@ char GetPause(const char *str_Message)
 		return chr_key;
 	}
 
-//Function that obtains the current Julian Year.
-int JulianYear(const int day, const int month, const int year)
+//Function that obtains the current Julian Year and its remainder days.
+int JulianYear(const int day, const int month, const int year, int *daysrest)
 	{
 		int clusterdays = V_ZERO;
 
@@ -217,19 +217,13 @@ int JulianYear(const int day, const int month, const int year)
 
 		clusterdays += day;
 
-		printf("\nJulian Year: {%d} : [%d].\n", year, clusterdays);
+		int remainder_days = *daysrest = (LeapYear(year) ? V_366 : V_365) - clusterdays;
+
+		printf("\nJulian Year Days.\n");
+		printf("- Year: {%d} : [%d].\n", year, clusterdays);
+		printf("- Rest: {%d} : [%d].\n", year, remainder_days);
 
 		return (clusterdays);
-	}
-
-//Function that returns the days remaining from a given Julian year.
-int JulianYearDaysRest(const int day, const int month, const int year)
-	{
-		int remainder_days = (LeapYear(year) ? V_366 : V_365) - JulianYear(day, month, year);
-
-		printf("\nJulian Rest: {%d} : [%d].\n", year, remainder_days);
-
-		return remainder_days;
 	}
 
 //Function that obtains the current Julian year.
