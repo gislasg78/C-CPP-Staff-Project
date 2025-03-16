@@ -1,7 +1,7 @@
 /*************** Place a bishop on a chess board. ****************
  ** Source Code:        Bishop.c				**
  ** Author:             Gustavo Islas Gálvez.                   **
- ** Creation Date:      Saturday, December 30, 2023.            **
+ ** Creation Date:      Tuesday, December 31, 2024.		**
  ** Purpose:		The purpose of this program is to place	**
  **			a bishop in a given position on a chess	**
  **			board and fill in with asterisks those	**
@@ -20,7 +20,7 @@
 #define	V_ZERO				0
 
 //Work Constants.
-#define	NULL_CHARACTER			'\0'
+#define	SPACE				'\x20'
 #define V_ASTERISK			0x2A
 #define V_LETTER_B			'\x42'
 #define V_LETTER_W			'\x57'
@@ -110,7 +110,8 @@ size_t szt_load_sttc_chr_chessboard(char sttc_chr_chessboard[][V_EIGHT], const s
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("+    Chess Board Results Matrix.    +\n");
 		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("| Bishop position (Row: [%ld], Column: [%ld]):\n", szt_row_bishop, szt_column_bishop);
+		printf("| Bishop position (Row: [%ld], Column: [%ld]).\n", szt_row_bishop, szt_column_bishop);
+		printf("+-----------------------------------+\n");
 
 		/* Chessboard calculation. */
 		for (szt_row_chessboard = V_ZERO; szt_row_chessboard < V_EIGHT; szt_row_chessboard++)
@@ -162,7 +163,16 @@ size_t szt_load_sttc_chr_chessboard(char sttc_chr_chessboard[][V_EIGHT], const s
 int main()
 	{
 		/* Initial declaration of work variables. */
-		static char sttc_chr_chessboard[V_EIGHT][V_EIGHT] = {NULL_CHARACTER};
+		static char sttc_chr_chessboard[V_EIGHT][V_EIGHT] =	{
+									SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
+									SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
+									SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
+									SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
+									SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
+									SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
+									SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
+									SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE
+									};
 
 		size_t szt_box_counter = V_ZERO;	/* Board square counter. */
 		size_t szt_column_bishop = V_ZERO;	/* Bishop position. */
@@ -174,10 +184,12 @@ int main()
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("+ Placing a bishop on a chess board.+\n");
 		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("Bishop's row    between [%d] & [%d]: ", V_LOWER_LIMIT_ROW_CHESSBOARD, V_UPPER_LIMIT_ROW_CHESSBOARD);
+		printf("Bishop's row    between [%d] & [%d] : ", V_LOWER_LIMIT_ROW_CHESSBOARD, V_UPPER_LIMIT_ROW_CHESSBOARD);
 		scanf("%ld", &szt_row_bishop);
-		printf("Bishop's column between [%d] & [%d]: ", V_LOWER_LIMIT_COLUMN_CHESSBOARD, V_UPPER_LIMIT_COLUMN_CHESSBOARD);
+		printf("Bishop's column between [%d] & [%d] : ", V_LOWER_LIMIT_COLUMN_CHESSBOARD, V_UPPER_LIMIT_COLUMN_CHESSBOARD);
 		scanf("%ld", &szt_column_bishop);
+
+		fflush(stdin);
 		clearerr(stdin);
 
 		/* Calculation and visualization of the chess board. */
