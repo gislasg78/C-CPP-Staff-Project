@@ -81,6 +81,7 @@ char GetPause(const char *str_Message);
 int JulianYear(const int day, const int month, const int year, int *daysrest);
 void EasterSunday(const int year, int *month_east, int *day_east);
 int LeapYear(const int year);
+void SolveJulianYear(const int year, const int julianyeardays, int *julian_month, int *julian_day);
 void SolveSumOfDays(const int sumofdays, int *day, int *month, int *year);
 int SumOfDays(int day, int month, int year);
 void TimeEntry(int *hour, int *minute, int *second);
@@ -103,7 +104,7 @@ int main()
 		if (ValidDate(day, month, year))
 			{
 				EasterSunday(year, &month_east, &day_east);
-				JulianYear(day, month, year, &days_rest);
+				SolveJulianYear(year, JulianYear(day, month, year, &days_rest), &month, &day);
 				SolveSumOfDays(SumOfDays(day, month, year), &day, &month, &year);
 				WriteDate(day, month, year);
 			}
@@ -182,7 +183,7 @@ void EasterSunday(const int year, int *month_east, int *day_east)
 
 		//Print the result.
 		printf("\nEaster Sunday: {%d}.\n", year);
-		printf("Month: [%s]. Day : [%d].\n", months_array[*month_east - V_ONE].month_nameofmonth, *day_east);
+		printf("- Month: {%d} = [%s]. Day : [%d].\n", *month_east, months_array[*month_east - V_ONE].month_nameofmonth, *day_east);
 	}
 
 //Function that makes a pause.
@@ -209,19 +210,16 @@ int JulianYear(const int day, const int month, const int year, int *daysrest)
 		int clusterdays = V_ZERO;
 
 		for (int int_month = V_ONE; int_month < month; int_month++)
-			{
-				int limitdays = DaysInMonth(int_month, year);
-
-				clusterdays += limitdays;
-			}
+			clusterdays += DaysInMonth(int_month, year);
 
 		clusterdays += day;
 
+		//Obtaining the remaining days of the year from the number of Julian days.
 		int remainder_days = *daysrest = (LeapYear(year) ? V_366 : V_365) - clusterdays;
 
 		printf("\nJulian Year Days.\n");
-		printf("- Year: {%d} : [%d].\n", year, clusterdays);
-		printf("- Rest: {%d} : [%d].\n", year, remainder_days);
+		printf("- Year : {%d}  : [%d].\n", year, clusterdays);
+		printf("- Rest : {%d}  : [%d].\n", year, remainder_days);
 
 		return (clusterdays);
 	}
@@ -230,6 +228,28 @@ int JulianYear(const int day, const int month, const int year, int *daysrest)
 int LeapYear(const int year)
 	{
 		return ((year % V_FOUR == V_ZERO) && (year % V_100 != V_ZERO) || (year % V_400 == V_ZERO));
+	}
+
+//Function that converts the days in a year in Julian format to their corresponding month and day.
+void SolveJulianYear(const int year, const int julianyeardays, int *julian_month, int *julian_day)
+	{
+		//Preliminary working variables.
+		int days_remaining = julianyeardays, limitdays = (LeapYear(year) ? V_366 : V_365);
+
+		//Validates if the number of days in Julian format is valid.
+		if (julianyeardays >= V_ONE && julianyeardays <= limitdays)
+			{
+				for (*julian_month = V_ONE; days_remaining > DaysInMonth(*julian_month, year); (*julian_month)++)
+					days_remaining -= DaysInMonth(*julian_month, year);
+
+				*julian_day = days_remaining;
+
+				printf("\nJulian Year converted.\n");
+				printf("- Year : {%d}  : [%d].\n", year, julianyeardays);
+				printf("- Month: {%d} = [%s]. Day : [%d].\n", *julian_month, months_array[*julian_month - V_ONE].month_nameofmonth, *julian_day);
+			}
+		else
+			printf("\nInvalid Julian Year days: {%d} : [%d]. Out of range: [%d] and [%d].\n", year, julianyeardays, V_ONE, limitdays);
 	}
 
 //Function that reconverts the number of days obtained into its variables of day, month and year.
@@ -249,8 +269,8 @@ void SolveSumOfDays(const int sumofdays, int *day, int *month, int *year)
 		*day += days_remaining;
 
 		//Display the cleared component variables.
-		printf("\nConverted date.\n");
-		printf("[%04d/%02d/%02d].\n", *year, *month, *day);
+		printf("\nSum of days converted since : {%d} : [%d].\n", V_1582, sumofdays);
+		printf("- [%04d/%02d/%02d].\n", *year, *month, *day);
 	}
 
 //Function that loops through the number of days in a year starting from 1582-01-01.
@@ -272,7 +292,8 @@ int SumOfDays (int day, int month, int year)
 
                 cumofdays += day;
 
-		printf("\nSum of days: {%d} : [%d].\n", V_1582, cumofdays);
+		printf("\nSum of days since: {%d}.\n", V_1582);
+		printf("- Days : {%d}  : [%d].\n", V_1582, cumofdays);
 
 		return (cumofdays);
 	}
@@ -308,7 +329,7 @@ int ValidDate(const int day, const int month, const int year)
 						dayB = (day >= V_ONE && day <= limitdays);
 
 						if (dayB)
-							printf("\nCorrect date.\n");
+							printf("\n** Correct date. **\n");
 						else
 							printf("\nInvalid day: [%d]. Out of range: [%d] and [%d] for month: [%d].\n", day, V_ONE, limitdays, month);
 					}
@@ -340,7 +361,7 @@ int ValidTime(const int hour, const int minute, const int second)
 		if (hourB)
 			if (minuteB)
 				if (secondB)
-					printf("\nCorrect time.\n");
+					printf("\n** Correct time. **\n");
 				else
 					printf("\nInvalid second: [%d]. Out of range: [%d] and [%d].\n", second, V_ZERO, V_59);
 			else
@@ -364,7 +385,8 @@ void WriteDate(const int day, const int month, const int year)
 
 		d = DayOfWeek(day, month, year);
 
-		printf("\n[%04d/%02d/%02d].\n", year, month, day);
+		printf("\nFormatted date.\n");
+		printf("[%04d/%02d/%02d].\n", year, month, day);
 		printf("%s, %s %02d, %04d.\n", day_name[d], months_array[month - V_ONE].month_nameofmonth, day, year);
 	}
 
@@ -382,7 +404,7 @@ void WriteTime(const int hour, const int minute, const int second)
                 s_minutes = (t % V_3600) / V_60;
                 s_seconds = t % V_60;
 
-		printf("\nConverted time.\n");
+		printf("\nFormatted time.\n");
 		printf("[%02d:%02d:%02d].\n", s_hours, s_minutes, s_seconds);
 		printf("Seconds Time: {%d}.\n", t);
 	}
