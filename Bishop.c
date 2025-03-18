@@ -17,9 +17,12 @@
 //C Standard Constants.
 #define	V_EIGHT				8
 #define	V_TWO				2
+#define	V_ONE				1
 #define	V_ZERO				0
 
 //Work Constants.
+#define CARRIAGE_RETURN			'\n'
+#define	NULL_CHARACTER			'\0'
 #define	SPACE				0x20
 #define V_ASTERISK			0x2A
 #define V_LETTER_B			'\x42'
@@ -58,7 +61,7 @@ size_t szt_browse_sttc_chr_chessboard(char sttc_chr_chessboard[][V_EIGHT])
 		size_t szt_row_chessboard = V_ZERO;	/* Current line of the chess board. */
 
 		/* Paint the chess board. */
-		printf("\n");
+		printf("\nChessboard display.\n");
 
 		for (szt_row_chessboard = V_ZERO; szt_row_chessboard < V_EIGHT; szt_row_chessboard++)
 			{
@@ -74,6 +77,45 @@ size_t szt_browse_sttc_chr_chessboard(char sttc_chr_chessboard[][V_EIGHT])
 		printf("[%ld] Chess Board Squares.\n", szt_box_counter);
 
 		return szt_box_counter;
+	}
+
+/*****************************************************************
+ ** Function:           size_t szt_get_entry			**
+ **				(size_t *szt_data_value)	**
+ ** Explanation:	The purpose of this function is to	**
+ **			capture a valid unsigned long integer	**
+ **			value of type 'size_t', which can be	**
+ **			used to operate on it, and thus be used	**
+ **			in certain functions of this program.	**
+ ** Input Parms:        size_t *szt_data_value.			**
+ ** Output Parms:       size_t *szt_data_value.			**
+ ** Result:		Returns the validly captured value in	**
+ **			both the function name and the formal	**
+ **			parameter, and otherwise returns zero	**
+ **			with an error message.			**
+ ****************************************************************/
+size_t szt_get_entry(size_t *szt_data_value)
+	{
+		//Preliminary working variables.
+		char char_key = NULL_CHARACTER;
+		size_t szt_value_data = V_ZERO;
+
+		//Validate data entry as correct.
+		if (scanf("%ld", &szt_value_data) == V_ONE)
+			{
+				printf("\nInput value: [%ld]. OK!\n", szt_value_data);
+				*szt_data_value = szt_value_data;
+			}
+		else
+			{
+				//Get a incorrect unsigned integer value.
+				printf("\nThe value entered is not valid.\n");
+
+				scanf("%*[^\n]%*c");
+				while ((char_key = getchar()) != CARRIAGE_RETURN && char_key != EOF);
+			}
+
+		return szt_value_data;
 	}
 
 /*****************************************************************
@@ -126,7 +168,7 @@ size_t szt_load_sttc_chr_chessboard(char sttc_chr_chessboard[][V_EIGHT], const s
 						else
 								sttc_chr_chessboard[szt_row_chessboard][szt_column_chessboard] = V_LETTER_B;
 
-						printf("# [%ld]\t:\t(%ld, %ld)\t=\t[%c].\n", szt_box_counter++, szt_row_chessboard, szt_column_chessboard, sttc_chr_chessboard[szt_row_chessboard][szt_column_chessboard]);
+						printf("# [%ld]\t=\t(%ld, %ld)\t:\t[%d]\t=\t[%c].\n", szt_box_counter++, szt_row_chessboard, szt_column_chessboard, sttc_chr_chessboard[szt_row_chessboard][szt_column_chessboard], sttc_chr_chessboard[szt_row_chessboard][szt_column_chessboard]);
 					}
 
 				printf("\n");
@@ -164,16 +206,17 @@ int main()
 	{
 		/* Initial declaration of work variables. */
 		static char sttc_chr_chessboard[V_EIGHT][V_EIGHT] =	{
-									SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
-									SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
-									SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
-									SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
-									SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
-									SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
-									SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
-									SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE
+										{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
+										{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
+										{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
+										{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
+										{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
+										{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
+										{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
+										{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE}
 									};
 
+		/* Preliminary working variables. */
 		size_t szt_box_counter = V_ZERO;	/* Board square counter. */
 		size_t szt_column_bishop = V_ZERO;	/* Bishop position. */
 		size_t szt_column_chessboard = V_ZERO; 	/* Concurrent board position. */
@@ -185,10 +228,11 @@ int main()
 		printf("+ Placing a bishop on a chess board.+\n");
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("Bishop's row    between [%d] & [%d] : ", V_LOWER_LIMIT_ROW_CHESSBOARD, V_UPPER_LIMIT_ROW_CHESSBOARD);
-		scanf("%ld", &szt_row_bishop);
+		szt_row_bishop = szt_get_entry(&szt_row_bishop);
 		printf("Bishop's column between [%d] & [%d] : ", V_LOWER_LIMIT_COLUMN_CHESSBOARD, V_UPPER_LIMIT_COLUMN_CHESSBOARD);
-		scanf("%ld", &szt_column_bishop);
+		szt_column_bishop = szt_get_entry(&szt_column_bishop);
 
+		/* Clear input buffer. */
 		clearerr(stdin);
 		fflush(stdin);
 
