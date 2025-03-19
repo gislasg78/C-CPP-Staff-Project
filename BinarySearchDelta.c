@@ -51,11 +51,10 @@ int SelectedOption(int *value);
 int BinarySearch(const int array[], const int size, const int target_key, int *pos, int *iters)
 	{
 		//Preliminary working variables.
-		int high = size + V_MINUS_ONE, low = V_ZERO, middle = V_ZERO;
+		int high = size + V_MINUS_ONE, low = V_ZERO;
 
 		//Calculate the midpoint position.
-		middle = low + (high - low) / V_TWO;
-		*pos = V_MINUS_ONE;
+		int middle = low + (high - low) / V_TWO;
 
 		//Continue searching as long as there is a valid range.
 		for (*iters = V_ZERO; low <= high && array[middle] != target_key; (*iters)++)
@@ -72,18 +71,15 @@ int BinarySearch(const int array[], const int size, const int target_key, int *p
 					low = middle + V_ONE;		//We adjust the lower limit of the array.
 			}
 
-		return *pos;	//The located position of the element is returned as a result.
+		//The located position of the element is returned as a result.
+		return (*pos = (array[middle] == target_key) ? middle : V_MINUS_ONE);
 	}
 
 //Improved binary search function with internal delta factor.
 int BinarySearchDelta(const int array[], const int size, const int target_key, int *delta_factor, int *pos, int *iters)
 	{
-		//Preliminary working variables.
-		int middle = V_ZERO;
-
-		//Calculate the midpoint position.
-		middle = *delta_factor = size / V_TWO;
-		*pos = V_MINUS_ONE;
+		//Preliminary working variables. Calculate the midpoint position.
+		int middle = *delta_factor = size / V_TWO;
 
 		//Continue searching as long as there is a valid range.
 		for (*iters = V_ZERO; array[middle] != target_key && *delta_factor; (*iters)++, *delta_factor /= V_TWO)
@@ -97,7 +93,8 @@ int BinarySearchDelta(const int array[], const int size, const int target_key, i
 					*pos = middle += MEDIUM(*delta_factor);
 			}
 
-		return *pos;	//The located position of the element is returned as a result.
+		//The located position of the element is returned as a result.
+		return (*pos = (array[middle] == target_key) ? middle : V_MINUS_ONE);
 	}
 
 //Improved traditional recursirve and cyclic binary search function.
@@ -171,6 +168,9 @@ int getEntry(int *target_key)
 			}
 		else
 			{
+				//Get a incorrect unsigned integer value.
+				printf("\nThe value entered is not valid.\n");
+
 				scanf("%*[^\n]%*c");
 				while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
 			}
@@ -248,13 +248,15 @@ int SelectedOption(int *value)
 		//Presentation and indication headers.
 		if (*value >= opt_bin_srch_normal && *value < opt_exit)
 			{
-				printf("Search for a prime number within the first thousand.\n");
+				printf("\nSearch for a prime number within the first thousand.\n");
 				printf("Prime number to find: ");
 				target_key = getEntry(&target_key);
 			}
 
+		//Convert integer value to enumerated value.
 		enm_option = (enum enm_options) *value;
 
+		//Selection of cases with the enumerated value obtained.
 		switch (enm_option)
 			{
 				//We call the traditional binary search function.
