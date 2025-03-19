@@ -74,17 +74,18 @@ struct months_table
 		};
 
 //Prototype functions.
-void DateEntry(int *day, int *month, int *year);
-int DayOfWeek(const int day, int month, int year);
 int DaysInMonth(const int month, const int year);
-char GetPause(const char *str_Message);
-int JulianYear(const int day, const int month, const int year, int *daysrest);
+int DayOfWeek(const int day, int month, int year);
 void EasterSunday(const int year, int *month_east, int *day_east);
+void EntryDate(int *day, int *month, int *year);
+void EntryTime(int *hour, int *minute, int *second);
+int GetEntry(int *data_value);
+char GetPause(const char *str_Message);
+int JulianYear(const int day, const int month, const int year, int *days_rest);
 int LeapYear(const int year);
 void SolveJulianYear(const int year, const int julianyeardays, int *julian_month, int *julian_day);
 void SolveSumOfDays(const int sumofdays, int *day, int *month, int *year);
 int SumOfDays(int day, int month, int year);
-void TimeEntry(int *hour, int *minute, int *second);
 int ValidDate(const int day, const int month, const int year);
 int ValidTime(const int hour, const int minute, const int second);
 void WriteDate(const int day, const int month, const int year);
@@ -100,7 +101,7 @@ int main()
 		int days_rest = V_ZERO;
 
 		//Validation of the entry date.
-		DateEntry(&day, &month, &year);
+		EntryDate(&day, &month, &year);
 		if (ValidDate(day, month, year))
 			{
 				EasterSunday(year, &month_east, &day_east);
@@ -110,26 +111,13 @@ int main()
 			}
 
 		//Validation of the entry time.
-		TimeEntry(&hour, &minute, &second);
+		EntryTime(&hour, &minute, &second);
 		if (ValidTime(hour, minute, second))
 			{
 				WriteTime(hour, minute, second);
 			}
 
 		return V_ZERO;
-	}
-
-//Function that receives the date data.
-void DateEntry(int *day, int *month, int *year)
-	{
-		printf("\nDate validity checker.\n");
-		printf("Please enter the following requested data.\n");
-		printf("Year   (%04d ->) : ", V_1582);
-		scanf("%d", year);
-		printf("Month  (%02d - %02d) : ", V_ONE, V_TWELVE);
-		scanf("%d", month);
-		printf("Day    (%02d - %02d) : ", V_ONE, V_31);
-		scanf("%d", day);
 	}
 
 //Function that calculates the number of the day of the week that corresponds to a date.
@@ -184,6 +172,57 @@ void EasterSunday(const int year, int *month_east, int *day_east)
 		//Print the result.
 		printf("\nEaster Sunday: {%d}.\n", year);
 		printf("- Month: {%d} = [%s]. Day : [%d].\n", *month_east, months_array[*month_east - V_ONE].month_nameofmonth, *day_east);
+	}
+
+//Function that receives the date data.
+void EntryDate(int *day, int *month, int *year)
+	{
+		printf("\nDate validity checker.\n");
+		printf("Please enter the following requested data.\n");
+		printf("Year   (%04d ->) : ", V_1582);
+		*year = GetEntry(year);
+		printf("Month  (%02d - %02d) : ", V_ONE, V_TWELVE);
+		*month = GetEntry(month);
+		printf("Day    (%02d - %02d) : ", V_ONE, V_31);
+		*day = GetEntry(day);
+	}
+
+//Function that receives the date data.
+void EntryTime(int *hour, int *minute, int *second)
+	{
+		printf("\nTime validity checker.\n");
+		printf("Please enter the following requested data.\n");
+		printf("Hour   (%02d - %02d) : ", V_ZERO, V_23);
+		*hour = GetEntry(hour);
+		printf("Minute (%02d - %02d) : ", V_ZERO, V_59);
+		*minute = GetEntry(minute);
+		printf("Second (%02d - %02d) : ", V_ZERO, V_59);
+		*second = GetEntry(second);
+	}
+
+//Validate a correct input from the keyboard.
+int GetEntry(int *data_value)
+	{
+		//Preliminary working variables.
+		char char_key = NULL_CHARACTER;
+		int value_data = V_ZERO;
+
+		//Validate data entry as correct.
+		if (scanf("%d", &value_data) == V_ONE)
+			{
+				printf("\nInput value: [%d]. OK!\n", value_data);
+				*data_value = value_data;
+			}
+		else
+			{
+				//Get a incorrect unsigned integer value.
+				printf("\nThe value entered is not valid.\n");
+
+				scanf("%*[^\n]%*c");
+				while ((char_key = getchar()) != CARRIAGE_RETURN && char_key != EOF);
+			}
+
+		return value_data;
 	}
 
 //Function that makes a pause.
@@ -297,19 +336,6 @@ int SumOfDays (int day, int month, int year)
 		printf("- Days : {%d}  : [%d].\n", V_1582, cumofdays);
 
 		return (cumofdays);
-	}
-
-//Function that receives the date data.
-void TimeEntry(int *hour, int *minute, int *second)
-	{
-		printf("\nTime validity checker.\n");
-		printf("Please enter the following requested data.\n");
-		printf("Hour   (%02d - %02d) : ", V_ZERO, V_23);
-		scanf("%d", hour);
-		printf("Minute (%02d - %02d) : ", V_ZERO, V_59);
-		scanf("%d", minute);
-		printf("Second (%02d - %02d) : ", V_ZERO, V_59);
-		scanf("%d", second);
 	}
 
 //This function validates that a date is perfectly correct.
