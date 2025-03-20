@@ -72,13 +72,17 @@ char chr_get_response(const char *str_Message)
 		printf("%s", str_Message);	/* Print warning message. */
 
 		//Validate data entry as correct.
-		if (scanf("%*c%c", &chr_key))
+		if (scanf("%c", &chr_key) == V_ONE)
+			//Get a correct unsigned integer value.
+			printf("\nInput value: [%c]. OK!\n", chr_key);
+		else
 			{
-				printf("\nInput value: [%c]. OK!\n", chr_key);
-
+				//Get a incorrect unsigned integer value.
+				printf("\nThe value entered is not valid.\n");
 				scanf("%*[^\n]%*c");
-				while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
 			}
+
+		while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
 
 		return chr_key;
 	}
@@ -124,6 +128,7 @@ size_t szt_browse_sttc_chr_chessboard(char sttc_chr_chessboard[][V_EIGHT])
 			}
 
 		printf("[%ld] Chess Board Squares.\n", szt_box_counter);
+		chr_get_response("Press the ENTER key to continue...");
 
 		return szt_box_counter;
 	}
@@ -169,6 +174,8 @@ size_t szt_get_coords(size_t *ptr_szt_row_bishop, size_t *ptr_szt_column_bishop)
 		else
 			printf("Mistake! The value for row [%ld] is outside the range between [%d] and [%d].\n", *ptr_szt_row_bishop, V_LOWER_LIMIT_ROW_CHESSBOARD, V_UPPER_LIMIT_ROW_CHESSBOARD);
 
+		chr_get_response("Press the ENTER key to continue...");
+
 		/* Return true or false if the values ​​are in correct ranges. */
 		return ((*ptr_szt_row_bishop >= V_LOWER_LIMIT_ROW_CHESSBOARD && *ptr_szt_row_bishop <= V_UPPER_LIMIT_ROW_CHESSBOARD) && (*ptr_szt_column_bishop >= V_LOWER_LIMIT_COLUMN_CHESSBOARD && *ptr_szt_column_bishop <= V_UPPER_LIMIT_COLUMN_CHESSBOARD));
 	}
@@ -205,10 +212,10 @@ size_t szt_get_entry(size_t *szt_data_value)
 			{
 				//Get a incorrect unsigned integer value.
 				printf("\nThe value entered is not valid.\n");
-
 				scanf("%*[^\n]%*c");
-				while ((char_key = getchar()) != CARRIAGE_RETURN && char_key != EOF);
 			}
+
+		while ((char_key = getchar()) != CARRIAGE_RETURN && char_key != EOF);
 
 		return szt_value_data;
 	}
@@ -295,6 +302,8 @@ size_t szt_put_bishop_sttc_chr_chessboard(char sttc_chr_chessboard[][V_EIGHT], c
 		printf("[%ld] Squares filled by a \'bishop\' piece.\n", szt_box_count);
 		printf("[%ld] Obtained output results.\n", szt_box_counter);
 
+		chr_get_response("Press the ENTER key to continue...");
+
 		return szt_box_count;
 	}
 
@@ -331,6 +340,10 @@ int main()
 
 		do
 			{
+				/* Clear input buffer. */
+				clearerr(stdin);
+				fflush(stdin);
+
 				/* Request for bishop coordinates. */
 				printf("+---|----+---|----+---|----+---|----+\n");
 				printf("+ Placing a bishop on a chess board.+\n");
@@ -345,10 +358,6 @@ int main()
 						printf("\n[%ld] Full squares.\n", szt_box_counter);
 						chr_response = chr_get_response("\nDo you wish to relocate another bishop on the board (y/n)? : ");
 					}
-
-				/* Clear input buffer. */
-				clearerr(stdin);
-				fflush(stdin);
 			}
 		while (szt_box_counter < (V_EIGHT * V_EIGHT) && (chr_response == Y_UPPERCASE || chr_response == Y_LOWERCASE));
 
