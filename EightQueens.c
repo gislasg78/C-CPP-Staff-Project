@@ -1,14 +1,20 @@
 #include <stdio.h>
 
-#define RANDOM_GENERATOR(s)	(((V_MULTIPLIER) * (s) + (V_INCREMENTER)) % (V_MODULUS))
-#define	V_INCREMENTER		13849
-#define V_MODULUS		65536
-#define V_MULTIPLIER		25173
-#define V_RESIDUAL_MODULUS	65535
+#define RANDOM_GENERATOR(s)		(((V_MULTIPLIER) * (s) + (V_INCREMENTER)) % (V_MODULUS))
+#define	V_INCREMENTER			13849
+#define V_MODULUS			65536
+#define V_MULTIPLIER			25173
+#define V_RESIDUAL_MODULUS		65535
 
-#define	ASTERISK	'\x2a'
-#define	QUEEN		'\x51'
-#define	SPACE		0x20
+#define	ASTERISK			'\x2a'
+#define	QUEEN				'\x51'
+#define	SPACE				0x20
+
+//Limits of the Chess Board.
+#define V_LOWER_LIMIT_COLUMN_CHESSBOARD	0
+#define V_LOWER_LIMIT_ROW_CHESSBOARD	0
+#define V_UPPER_LIMIT_COLUMN_CHESSBOARD	7
+#define V_UPPER_LIMIT_ROW_CHESSBOARD	7
 
 #define V_EIGHT		8	//The size of the chessboard is eight by eight squares.
 #define	V_MINUS_ONE	-1
@@ -69,36 +75,46 @@ int resolveQueens(char chessboard[V_EIGHT][V_EIGHT], int rowQ, int colQ)
 	{
 		int count = V_ZERO;
 
-		if (chessboard[rowQ][colQ] == SPACE)
+		if (rowQ >= V_LOWER_LIMIT_ROW_CHESSBOARD && rowQ <= V_UPPER_LIMIT_ROW_CHESSBOARD)
 			{
-				count = V_ONE;
-				chessboard[rowQ][colQ] = QUEEN;
-
-				for (int row = V_ZERO; row < V_EIGHT; row++)
+				if (colQ >= V_LOWER_LIMIT_COLUMN_CHESSBOARD && colQ <= V_UPPER_LIMIT_COLUMN_CHESSBOARD)
 					{
-						if (chessboard[row][colQ] == SPACE)
+						if (chessboard[rowQ][colQ] == SPACE)
 							{
-								count++;
-								chessboard[row][colQ] = ASTERISK;
-							}
+								count = V_ONE;
+								chessboard[rowQ][colQ] = QUEEN;
 
-						for (int col = V_ZERO; col < V_EIGHT; col++)
-							{
-								if (chessboard[rowQ][col] == SPACE)
+								for (int row = V_ZERO; row < V_EIGHT; row++)
 									{
-										count++;
-										chessboard[rowQ][col] = ASTERISK;
-									}
+										if (chessboard[row][colQ] == SPACE)
+											{
+												count++;
+												chessboard[row][colQ] = ASTERISK;
+											}
 
-								if (chessboard[row][col] == SPACE)
-									if ((row + col == rowQ + colQ) || (row - col) == (rowQ - colQ))
-										{
-											count++;
-											chessboard[row][col] = ASTERISK;
-										}
+										for (int col = V_ZERO; col < V_EIGHT; col++)
+											{
+												if (chessboard[rowQ][col] == SPACE)
+													{
+														count++;
+														chessboard[rowQ][col] = ASTERISK;
+													}
+
+												if (chessboard[row][col] == SPACE)
+													if ((row + col == rowQ + colQ) || (row - col) == (rowQ - colQ))
+														{
+															count++;
+															chessboard[row][col] = ASTERISK;
+														}
+											}
+									}
 							}
 					}
+				else
+					printf("Mistake! The value for column [%d] is outside the range between [%d] and [%d].\n", colQ, V_LOWER_LIMIT_COLUMN_CHESSBOARD, V_UPPER_LIMIT_COLUMN_CHESSBOARD);
 			}
+		else
+			printf("Mistake! The value for row [%d] is outside the range between [%d] and [%d].\n", rowQ, V_LOWER_LIMIT_ROW_CHESSBOARD, V_UPPER_LIMIT_ROW_CHESSBOARD);
 
 		return count;
 	}
