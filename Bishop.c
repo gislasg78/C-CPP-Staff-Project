@@ -1,4 +1,4 @@
-/*************** Place a bishop on a chess board. ****************
+/************ Place several bishops on a chess board. ************
  ** Source Code:        Bishop.c				**
  ** Author:             Gustavo Islas Gálvez.                   **
  ** Creation Date:      Tuesday, December 31, 2024.		**
@@ -21,18 +21,67 @@
 #define	V_ZERO				0
 
 //Work Constants.
+#define ASTERISK			0x2A
+#define	AMPERSAND			0x26
 #define CARRIAGE_RETURN			'\n'
 #define	NULL_CHARACTER			'\0'
 #define	SPACE				0x20
-#define V_ASTERISK			0x2A
-#define V_LETTER_B			'\x42'
-#define V_LETTER_W			'\x57'
+#define	Y_LOWERCASE			0x79
+#define	Y_UPPERCASE			0x59
 
 //Limits of the Chess Board.
 #define V_LOWER_LIMIT_COLUMN_CHESSBOARD	0
 #define V_LOWER_LIMIT_ROW_CHESSBOARD	0
 #define V_UPPER_LIMIT_COLUMN_CHESSBOARD	7
 #define V_UPPER_LIMIT_ROW_CHESSBOARD	7
+
+/* Initial declaration of work variables. */
+static char sttc_chr_chessboard[V_EIGHT][V_EIGHT] =	{
+								{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
+								{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
+								{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
+								{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
+								{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
+								{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
+								{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
+								{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE}
+							};
+
+//Preliminary functional prototypes.
+size_t szt_get_entry(size_t *szt_data_value);
+
+/*****************************************************************
+ ** Function:           char chr_get_response			**
+ **				(const char *str_Message)	**
+ ** Explanation:	The purpose of this function is to	**
+ **			obtain a single character response	**
+ **			value 'S' or 's', so that said input is	**
+ **			returned perfectly free of any preceding**
+ **			or succeeding blank spaces.		**
+ ** Input Parms:	const char *str_Message.		**
+ ** Output Parms:       None.					**
+ ** Result:		Returns only a single character entered,**
+ **			removing any whitespace characters that	**
+ **			precede or follow it.			**
+ ****************************************************************/
+char chr_get_response(const char *str_Message)
+	{
+		//Preliminary working variables.
+		char c = V_ZERO, chr_key = NULL_CHARACTER;
+
+		printf("%s", str_Message);	/* Print warning message. */
+
+		//Validate data entry as correct.
+		if (scanf("%*c%c", &chr_key))
+			{
+				printf("\nInput value: [%c]. OK!\n", chr_key);
+
+				scanf("%*[^\n]%*c");
+				while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
+			}
+
+		return chr_key;
+	}
 
 /*****************************************************************
  ** Function:		size_t szt_browse_sttc_chr_chessboard	**
@@ -68,7 +117,7 @@ size_t szt_browse_sttc_chr_chessboard(char sttc_chr_chessboard[][V_EIGHT])
 				for (szt_column_chessboard = V_ZERO; szt_column_chessboard < V_EIGHT; szt_column_chessboard++)
 					{
 						szt_box_counter++; /* Counting cells. */
-						printf("[%c]\t", sttc_chr_chessboard[szt_row_chessboard][szt_column_chessboard]);
+						printf("[%c].\t", sttc_chr_chessboard[szt_row_chessboard][szt_column_chessboard]);
 					}
 
 				printf("\n"); /* Change row. */
@@ -77,6 +126,51 @@ size_t szt_browse_sttc_chr_chessboard(char sttc_chr_chessboard[][V_EIGHT])
 		printf("[%ld] Chess Board Squares.\n", szt_box_counter);
 
 		return szt_box_counter;
+	}
+
+/*****************************************************************
+ ** Function:           size_t szt_get_coords			**
+ **				(size_t *ptr_szt_row_bishop,	**
+ **				 size_t *ptr_szt_column_bishop)	**
+ ** Explanation:	The primary purpose of this function is	**
+ **			to obtain the coordinates of the bishop	**
+ **			piece to be placed on the board, and it	**
+ **			verifies that the value obtained for	**
+ **			its respective row and column is within	**
+ **			its specific range. Otherwise, the	**
+ **			values ​​are incorrect and should not be	**
+ **			used to place an element in the		**
+ **			chessboard layout.			**
+ ** Input Parms:        size_t *ptr_szt_row_bishop.		**
+ **			size_t *ptr_szt_column_bishop.		**
+ ** Output Parms:       size_t *ptr_szt_row_bishop.		**
+ **			size_t *ptr_szt_colum_bishop.		**
+ ** Result:		This function returns a Boolean value	**
+ **			that determines that the row and column	**
+ **			are in the appropriate range of values	**
+ **			in the array.				**
+ ****************************************************************/
+size_t szt_get_coords(size_t *ptr_szt_row_bishop, size_t *ptr_szt_column_bishop)
+	{
+		/* Get the value for the positioning row. */
+		printf("Bishop's row    between [%d] & [%d] : ", V_LOWER_LIMIT_ROW_CHESSBOARD, V_UPPER_LIMIT_ROW_CHESSBOARD);
+		*ptr_szt_row_bishop = szt_get_entry(ptr_szt_row_bishop);
+
+		/* Get the value for the positioning column. */
+		printf("Bishop's column between [%d] & [%d] : ", V_LOWER_LIMIT_COLUMN_CHESSBOARD, V_UPPER_LIMIT_COLUMN_CHESSBOARD);
+		*ptr_szt_column_bishop = szt_get_entry(ptr_szt_column_bishop);
+
+		/* Verify that the captured row and column values ​​are within the correct ranges. */
+		if (*ptr_szt_row_bishop >= V_LOWER_LIMIT_ROW_CHESSBOARD && *ptr_szt_row_bishop <= V_UPPER_LIMIT_ROW_CHESSBOARD)
+			if (*ptr_szt_column_bishop >= V_LOWER_LIMIT_COLUMN_CHESSBOARD && *ptr_szt_column_bishop <= V_UPPER_LIMIT_COLUMN_CHESSBOARD)
+				printf("\nValid coordinates. Row: [%ld]. Column: [%ld]. OK!\n", *ptr_szt_row_bishop, *ptr_szt_column_bishop);
+			else
+				printf("Mistake! The value for column [%ld] is outside the range between [%d] and [%d].\n", *ptr_szt_column_bishop, V_LOWER_LIMIT_COLUMN_CHESSBOARD, V_UPPER_LIMIT_COLUMN_CHESSBOARD);
+		else
+			printf("Mistake! The value for row [%ld] is outside the range between [%d] and [%d].\n", *ptr_szt_row_bishop, V_LOWER_LIMIT_ROW_CHESSBOARD, V_UPPER_LIMIT_ROW_CHESSBOARD);
+
+		/* Return true or false if the values ​​are in correct ranges. */
+		return ((*ptr_szt_row_bishop >= V_LOWER_LIMIT_ROW_CHESSBOARD && *ptr_szt_row_bishop <= V_UPPER_LIMIT_ROW_CHESSBOARD) && (*ptr_szt_column_bishop >= V_LOWER_LIMIT_COLUMN_CHESSBOARD && *ptr_szt_column_bishop <= V_UPPER_LIMIT_COLUMN_CHESSBOARD));
 	}
 
 /*****************************************************************
@@ -103,6 +197,7 @@ size_t szt_get_entry(size_t *szt_data_value)
 		//Validate data entry as correct.
 		if (scanf("%ld", &szt_value_data) == V_ONE)
 			{
+				//Get a correct unsigned integer value.
 				printf("\nInput value: [%ld]. OK!\n", szt_value_data);
 				*szt_data_value = szt_value_data;
 			}
@@ -119,7 +214,8 @@ size_t szt_get_entry(size_t *szt_data_value)
 	}
 
 /*****************************************************************
- ** Function:		size_t szt_load_sttc_chr_chessboard	**
+ ** Function:		size_t szt_put_bishop_			**
+ **				sttc_chr_chessboard		**
  **				(char sttc_chr_chessboard[][],	**
  **				const size_t szt_row_bishop,	**
  **				const size_t szt_column_bishop)	**
@@ -140,43 +236,66 @@ size_t szt_get_entry(size_t *szt_data_value)
  **			filled with the bishop's displacement	**
  **			information.				**
  ****************************************************************/
-size_t szt_load_sttc_chr_chessboard(char sttc_chr_chessboard[][V_EIGHT], const size_t szt_row_bishop, const size_t szt_column_bishop)
+size_t szt_put_bishop_sttc_chr_chessboard(char sttc_chr_chessboard[][V_EIGHT], const size_t szt_row_bishop, const size_t szt_column_bishop)
 	{
 		/* Initial declaration of work variables. */
-		size_t szt_box_counter = V_ZERO;	/* Board square counter. */
-		size_t szt_column_chessboard = V_ZERO; 	/* Current position of the chess board. */
-		size_t szt_row_chessboard = V_ZERO;	/* Current line of the chess board. */
+		size_t szt_box_count = V_ZERO, szt_box_counter = V_ZERO;	/* Board square counter. */
 
 		/* Load the chess board. */
-		printf("\n"); /* Leave a row blank. */
+		printf("\n");	/* Leave a row blank. */
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("+    Chess Board Results Matrix.    +\n");
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("| Bishop position (Row: [%ld], Column: [%ld]).\n", szt_row_bishop, szt_column_bishop);
 		printf("+-----------------------------------+\n");
 
-		/* Chessboard calculation. */
-		for (szt_row_chessboard = V_ZERO; szt_row_chessboard < V_EIGHT; szt_row_chessboard++)
+		/* Calculation and visualization of the chess board. */
+		if (szt_row_bishop >= V_LOWER_LIMIT_ROW_CHESSBOARD && szt_row_bishop <= V_UPPER_LIMIT_ROW_CHESSBOARD)
 			{
-				for (szt_column_chessboard = V_ZERO; szt_column_chessboard < V_EIGHT; szt_column_chessboard++)
+				if (szt_column_bishop >= V_LOWER_LIMIT_COLUMN_CHESSBOARD && szt_column_bishop <= V_UPPER_LIMIT_COLUMN_CHESSBOARD)
 					{
-						if ((szt_row_chessboard + szt_column_chessboard == szt_row_bishop + szt_column_bishop) ||
-							(szt_row_chessboard - szt_column_chessboard == szt_row_bishop - szt_column_bishop))
-								sttc_chr_chessboard[szt_row_chessboard][szt_column_chessboard] = V_ASTERISK;
-						else if ((szt_row_chessboard + szt_column_chessboard) % V_TWO == V_ZERO)
-								sttc_chr_chessboard[szt_row_chessboard][szt_column_chessboard] = V_LETTER_W;
-						else
-								sttc_chr_chessboard[szt_row_chessboard][szt_column_chessboard] = V_LETTER_B;
+						/* Chessboard calculation. */
+						if (sttc_chr_chessboard[szt_row_bishop][szt_column_bishop] == SPACE)
+							{
+								//Initial placement of the 'bishop' piece.
+								sttc_chr_chessboard[szt_row_bishop][szt_column_bishop] = AMPERSAND;
+								szt_box_count = V_ONE;
 
-						printf("# [%ld]\t=\t(%ld, %ld)\t:\t[%d]\t=\t[%c].\n", szt_box_counter++, szt_row_chessboard, szt_column_chessboard, sttc_chr_chessboard[szt_row_chessboard][szt_column_chessboard], sttc_chr_chessboard[szt_row_chessboard][szt_column_chessboard]);
+								/* Current line of the chess board. */
+								printf("\n[%p]\t:\t[%p].\n", &sttc_chr_chessboard, sttc_chr_chessboard);
+
+								for (size_t szt_row_chessboard = V_LOWER_LIMIT_ROW_CHESSBOARD; szt_row_chessboard <= V_UPPER_LIMIT_ROW_CHESSBOARD; szt_row_chessboard++)
+									{
+										/* Current position of the chess board. */
+										printf("[%p]\t:\t[%p].\n", sttc_chr_chessboard[szt_row_chessboard], *(sttc_chr_chessboard + szt_row_chessboard));
+
+										for (size_t szt_column_chessboard = V_LOWER_LIMIT_COLUMN_CHESSBOARD; szt_column_chessboard <= V_UPPER_LIMIT_ROW_CHESSBOARD; szt_column_chessboard++)
+											{
+												if (sttc_chr_chessboard[szt_row_chessboard][szt_column_chessboard] == SPACE)
+													if ((szt_row_chessboard + szt_column_chessboard == szt_row_bishop + szt_column_bishop) ||
+													    (szt_row_chessboard - szt_column_chessboard == szt_row_bishop - szt_column_bishop))
+														{
+															szt_box_count++;
+															sttc_chr_chessboard[szt_row_chessboard][szt_column_chessboard] = ASTERISK;
+														}
+
+												printf("# [%ld]\t:\t(%ld, %ld)\t=\t[%p] : [%p] : [%p].\t[%d]\t=\t[%c].\n", szt_box_counter++, szt_row_chessboard, szt_column_chessboard, *(sttc_chr_chessboard + szt_row_chessboard) + szt_column_chessboard, sttc_chr_chessboard[szt_row_chessboard] + szt_column_chessboard, &sttc_chr_chessboard[szt_row_chessboard][szt_column_chessboard], sttc_chr_chessboard[szt_row_chessboard][szt_column_chessboard], *(*(sttc_chr_chessboard + szt_row_chessboard) + szt_column_chessboard));
+											}
+
+										printf("\n");
+									}
+							}
 					}
-
-				printf("\n");
+				else
+					printf("Mistake! The value for column [%ld] is outside the range between [%d] and [%d].\n", szt_column_bishop, V_LOWER_LIMIT_COLUMN_CHESSBOARD, V_UPPER_LIMIT_COLUMN_CHESSBOARD);
 			}
+		else
+			printf("Mistake! The value for row [%ld] is outside the range between [%d] and [%d].\n", szt_row_bishop, V_LOWER_LIMIT_ROW_CHESSBOARD, V_UPPER_LIMIT_ROW_CHESSBOARD);
 
+		printf("[%ld] Squares filled by a \'bishop\' piece.\n", szt_box_count);
 		printf("[%ld] Obtained output results.\n", szt_box_counter);
 
-		return szt_box_counter;
+		return szt_box_count;
 	}
 
 /*****************************************************************
@@ -204,52 +323,34 @@ size_t szt_load_sttc_chr_chessboard(char sttc_chr_chessboard[][V_EIGHT], const s
 *****************************************************************/
 int main()
 	{
-		/* Initial declaration of work variables. */
-		static char sttc_chr_chessboard[V_EIGHT][V_EIGHT] =	{
-										{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
-										{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
-										{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
-										{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
-										{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
-										{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
-										{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
-										{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE}
-									};
-
 		/* Preliminary working variables. */
+		char chr_response = NULL_CHARACTER;	/* Get a follow-up response. */
 		size_t szt_box_counter = V_ZERO;	/* Board square counter. */
 		size_t szt_column_bishop = V_ZERO;	/* Bishop position. */
-		size_t szt_column_chessboard = V_ZERO; 	/* Concurrent board position. */
 		size_t szt_row_bishop = V_ZERO;		/* Bishop's Line. */
-		size_t szt_row_chessboard = V_ZERO;	/* Concurrent line of the board. */
 
-		/* Request for bishop coordinates. */
-		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("+ Placing a bishop on a chess board.+\n");
-		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("Bishop's row    between [%d] & [%d] : ", V_LOWER_LIMIT_ROW_CHESSBOARD, V_UPPER_LIMIT_ROW_CHESSBOARD);
-		szt_row_bishop = szt_get_entry(&szt_row_bishop);
-		printf("Bishop's column between [%d] & [%d] : ", V_LOWER_LIMIT_COLUMN_CHESSBOARD, V_UPPER_LIMIT_COLUMN_CHESSBOARD);
-		szt_column_bishop = szt_get_entry(&szt_column_bishop);
+		do
+			{
+				/* Request for bishop coordinates. */
+				printf("+---|----+---|----+---|----+---|----+\n");
+				printf("+ Placing a bishop on a chess board.+\n");
+				printf("+---|----+---|----+---|----+---|----+\n");
 
-		/* Clear input buffer. */
-		clearerr(stdin);
-		fflush(stdin);
+				//Capture and validate coordinates simultaneously.
+				if (szt_get_coords(&szt_row_bishop, &szt_column_bishop))
+					{
+						szt_box_counter += szt_put_bishop_sttc_chr_chessboard(sttc_chr_chessboard, szt_row_bishop, szt_column_bishop);
+						szt_browse_sttc_chr_chessboard(sttc_chr_chessboard);
 
-		/* Calculation and visualization of the chess board. */
-		if (szt_row_bishop >= V_LOWER_LIMIT_ROW_CHESSBOARD && szt_row_bishop <= V_UPPER_LIMIT_ROW_CHESSBOARD)
-			if (szt_column_bishop >= V_LOWER_LIMIT_COLUMN_CHESSBOARD && szt_column_bishop <= V_UPPER_LIMIT_COLUMN_CHESSBOARD)
-				{
-					szt_box_counter = szt_browse_sttc_chr_chessboard(sttc_chr_chessboard);
+						printf("\n[%ld] Full squares.\n", szt_box_counter);
+						chr_response = chr_get_response("\nDo you wish to relocate another bishop on the board (y/n)? : ");
+					}
 
-					szt_box_counter = szt_load_sttc_chr_chessboard(sttc_chr_chessboard, szt_row_bishop, szt_column_bishop);
-
-					szt_box_counter = szt_browse_sttc_chr_chessboard(sttc_chr_chessboard);
-				}
-			else
-				printf("Mistake! The value for column [%ld] is outside the range between [%d] and [%d].\n", szt_column_bishop, V_LOWER_LIMIT_COLUMN_CHESSBOARD, V_UPPER_LIMIT_COLUMN_CHESSBOARD);
-		else
-			printf("Mistake! The value for row [%ld] is outside the range between [%d] and [%d].\n", szt_row_bishop, V_LOWER_LIMIT_ROW_CHESSBOARD, V_UPPER_LIMIT_ROW_CHESSBOARD);
+				/* Clear input buffer. */
+				clearerr(stdin);
+				fflush(stdin);
+			}
+		while (szt_box_counter < (V_EIGHT * V_EIGHT) && (chr_response == Y_UPPERCASE || chr_response == Y_LOWERCASE));
 
 		return V_ZERO;
 	}
