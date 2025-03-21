@@ -80,19 +80,23 @@ int main()
 
 int BinarySearch(struct s_fruits *array_fruits, const int idx_begin, const int idx_end, const int data)
 	{
-		int bottom = idx_begin, middle = V_ZERO, top = idx_end;
+		int bottom = idx_begin, top = idx_end, pos = V_ZERO;
+		int middle = idx_begin + (idx_end - idx_begin) / V_TWO;
 		struct s_fruits s_fruit_item = {V_ZERO, NULL_CHARACTER};
 
 		/* Binary search for an element within an array. */
 		for (int idx_count = V_ZERO; bottom <= top && data != array_fruits[middle].numberoffruit; idx_count++)
 			{
-				middle = (bottom + top) / V_TWO;
+				middle = bottom + (top - bottom) / V_TWO;
+
+				if (data == array_fruits[middle].numberoffruit)
+					pos = middle;
 
 				if (data > array_fruits[middle].numberoffruit)
-					bottom = middle + V_ONE;
+					pos = bottom = middle + V_ONE;
 
 				if (data < array_fruits[middle].numberoffruit)
-					top = middle + V_MINUS_ONE;
+					pos = top = middle + V_MINUS_ONE;
 			}
 
 		if (data == array_fruits[middle].numberoffruit)
@@ -100,7 +104,7 @@ int BinarySearch(struct s_fruits *array_fruits, const int idx_begin, const int i
 		else
 			SeeItemNotFound(middle, idx_begin, idx_end, data);
 
-		return middle;
+		return (pos = (array_fruits[middle].numberoffruit == data) ? middle : V_MINUS_ONE);
 	}
 
 void BubbleSort(struct s_fruits array_fruits[], int idx_begin, int idx_end)
@@ -116,7 +120,7 @@ int GetCheckedInput(int *value)
 		char chr_char = V_ZERO;
 		int number = V_ZERO;
 
-		if (scanf("%d", &number))
+		if (scanf("%d%*c", &number))
 			//An integer was read successfully.
 			printf("\nEntry: [%d]. OK!\n", number);
 		else
@@ -140,7 +144,9 @@ char GetPause(const char *str_Message)
 
 		printf("%s", str_Message);
 
-		if (scanf("%c", &chr_Char))
+		if (scanf("%c%*c", &chr_Char))
+			printf("\nInput value: [%x] : [%d] = [%c]. OK!\n", chr_Char, chr_Char, chr_Char);
+		else
 			{
 				scanf("%*[^\n]%*c");
 				while ((chr_Char = getchar()) != CARRIAGE_RETURN && chr_Char != EOF);
@@ -171,7 +177,8 @@ struct s_fruits GetFruitItemInfo(const struct s_fruits *array_fruits, const int 
 				printf("+---+----+---+----+---+----+---+----+\n");
 				printf("| Structures arrangement directions.|\n");
 				printf("+---+----+---+----+---+----+---+----+\n");
-				printf("| Address : [%p] = [%p].\n", array_fruits, &array_fruits[V_ZERO]);
+				printf("| Address : [%p] = [%p].\n", &array_fruits, &pointer_array_fruits);
+				printf("|         : [%p] = [%p].\n", array_fruits, &array_fruits[V_ZERO]);
 				printf("|         : [%p].\n", array_fruits + V_ZERO);
 				printf("|         : [%p] = [%p].\n", pointer_array_fruits, &pointer_array_fruits[V_ZERO]);
 				printf("|         : [%p].\n", pointer_array_fruits + V_ZERO);
