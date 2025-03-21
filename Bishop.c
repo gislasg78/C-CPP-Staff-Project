@@ -72,17 +72,17 @@ char chr_get_response(const char *str_Message)
 		printf("%s", str_Message);	/* Print warning message. */
 
 		//Validate data entry as correct.
-		if (scanf("%c", &chr_key) == V_ONE)
-			//Get a correct unsigned integer value.
-			printf("\nInput value: [%c]. OK!\n", chr_key);
+		if (scanf("%c%*c", &chr_key) == V_ONE)
+			//Get a correct character value.
+			printf("\nInput value: [%x] : [%d] = [%c]. OK!\n", chr_key, chr_key, chr_key);
 		else
 			{
-				//Get a incorrect unsigned integer value.
+				//Get a incorrect character value.
 				printf("\nThe value entered is not valid.\n");
-				scanf("%*[^\n]%*c");
-			}
 
-		while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
+				scanf("%*[^\n]%*c");
+				while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
+			}
 
 		return chr_key;
 	}
@@ -202,7 +202,7 @@ size_t szt_get_entry(size_t *szt_data_value)
 		size_t szt_value_data = V_ZERO;
 
 		//Validate data entry as correct.
-		if (scanf("%ld", &szt_value_data) == V_ONE)
+		if (scanf("%ld%*c", &szt_value_data) == V_ONE)
 			{
 				//Get a correct unsigned integer value.
 				printf("\nInput value: [%ld]. OK!\n", szt_value_data);
@@ -212,10 +212,10 @@ size_t szt_get_entry(size_t *szt_data_value)
 			{
 				//Get a incorrect unsigned integer value.
 				printf("\nThe value entered is not valid.\n");
-				scanf("%*[^\n]%*c");
-			}
 
-		while ((char_key = getchar()) != CARRIAGE_RETURN && char_key != EOF);
+				scanf("%*[^\n]%*c");
+				while ((char_key = getchar()) != CARRIAGE_RETURN && char_key != EOF);
+			}
 
 		return szt_value_data;
 	}
