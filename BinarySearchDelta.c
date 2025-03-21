@@ -28,22 +28,22 @@ enum enm_options
 	} enm_option;
 
 //Global static array of prime numbers.
-static const int array[] = {
-			2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53,
-			59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131,
-			137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223,
-			227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311,
-			313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409,
-			419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503,
-			509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613,
-			617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719,
-			727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827,
-			829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941,
-			947, 953, 967, 971, 977, 983, 991, 997
-			};
+static const int array[] =	{
+					2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53,
+					59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131,
+					137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223,
+					227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311,
+					313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409,
+					419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503,
+					509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613,
+					617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719,
+					727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827,
+					829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941,
+					947, 953, 967, 971, 977, 983, 991, 997
+				};
 
 //Prototype functions.
-char getPause(const char *str_Message);
+char getResponse(const char *str_Message);
 int SelectedOption(int *value);
 
 
@@ -144,7 +144,7 @@ int getElement(const char *str_Message, const int array[], const int size, const
 				printf("| * Content  : [%d].\n", array[position]);
 				printf("+===+====+===+====+===+\n");
 
-				stop_key = getPause("Press the ENTER key to continue...");
+				stop_key = getResponse("Press the ENTER key to continue...");
 				item = array[position];
 			}
 		else
@@ -161,14 +161,15 @@ int getEntry(int *target_key)
 		int value_key = V_ZERO;
 
 		//Validate data entry as correct.
-		if (scanf("%d", &value_key) == V_ONE)
+		if (scanf("%d%*c", &value_key) == V_ONE)
 			{
+				//Get a correct integer value.
 				printf("\nInput value: [%d]. OK!\n", value_key);
 				*target_key = value_key;
 			}
 		else
 			{
-				//Get a incorrect unsigned integer value.
+				//Get an incorrect integer value.
 				printf("\nThe value entered is not valid.\n");
 
 				scanf("%*[^\n]%*c");
@@ -178,19 +179,26 @@ int getEntry(int *target_key)
 		return value_key;
 	}
 
-//Make a pause.
-char getPause(const char *str_Message)
+//Make a pause or obtain a given response.
+char getResponse(const char *str_Message)
 	{
 		//Preliminary working variables.
-		char chr_key = NULL_CHARACTER;
+		char c = NULL_CHARACTER;
+		char chr_key = V_ZERO;
 
 		printf("%s", str_Message);
 
 		//Validate data entry as correct.
-		if (scanf("%c", &chr_key))
+		if (scanf("%c%*c", &chr_key) == V_ONE)
+			//Get a correct character value.
+			printf("\nInput value: [%x] : [%d] = [%c]. OK!\n", chr_key, chr_key, chr_key);
+		else
 			{
+				//Get an incorrect character value.
+				printf("\nThe value entered is not valid.\n");
+
 				scanf("%*[^\n]%*c");
-				while ((chr_key = getchar()) != CARRIAGE_RETURN && chr_key != EOF);
+				while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
 			};
 
 		return chr_key;
@@ -263,6 +271,7 @@ int SelectedOption(int *value)
 				case opt_bin_srch_normal:
 					position = BinarySearch(array, size, target_key, &position, &iterations);
 					getElement("Traditional Loop Binary Search", array, size, target_key, position, iterations);
+					getResponse("Press the ENTER key to continue...");
 					break;
 
 				//We call the traditional recursive and cyclic binary search function.
@@ -271,6 +280,7 @@ int SelectedOption(int *value)
 					position = BinarySearchRecursive(array, target_key, V_ZERO, size + V_MINUS_ONE, &position, &iterations, &iteratives);
 					getElement("Recursive Loop Binary Search", array, size, target_key, position, iterations);
 					printf("[%d] calls made to the recursive binary search function.\n", iteratives);
+					getResponse("Press the ENTER key to continue...");
 					break;
 
 				//We call the binary search function with a delta factor.
@@ -278,6 +288,7 @@ int SelectedOption(int *value)
 					position = BinarySearchDelta(array, size, target_key, &delta_factor, &position, &iterations);
 					getElement("Binary Search with delta factor", array, size, target_key, position, iterations);
 					printf("  * Delta Fx : [%d].\n", delta_factor);
+					getResponse("Press the ENTER key to continue...");
 					break;
 
 				//We call a function that obtains the position of the searched element by means of interpolations.
@@ -287,6 +298,7 @@ int SelectedOption(int *value)
 							printf("\n** [Approximate values ​​obtained] **.\n");
 							getElement("Interpolated lower value obtained", array, size, target_key, middle_bottom, iterations);
 							getElement("Interpolated upper value obtained", array, size, target_key, middle_top, iterations);
+							getResponse("Press the ENTER key to continue...");
 						}
 					break;
 
