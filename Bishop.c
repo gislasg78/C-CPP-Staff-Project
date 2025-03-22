@@ -292,6 +292,8 @@ size_t szt_put_bishop_sttc_chr_chessboard(char sttc_chr_chessboard[][V_EIGHT], c
 										printf("\n");
 									}
 							}
+						else
+							printf("\nThe square: (Row: [%ld], Column: [%ld]) was already occupied by another piece or another path.\n", szt_row_bishop, szt_column_bishop);
 					}
 				else
 					printf("Mistake! The value for column [%ld] is outside the range between [%d] and [%d].\n", szt_column_bishop, V_LOWER_LIMIT_COLUMN_CHESSBOARD, V_UPPER_LIMIT_COLUMN_CHESSBOARD);
@@ -348,6 +350,8 @@ int main()
 				printf("+---|----+---|----+---|----+---|----+\n");
 				printf("+ Placing a bishop on a chess board.+\n");
 				printf("+---|----+---|----+---|----+---|----+\n");
+
+				szt_browse_sttc_chr_chessboard(sttc_chr_chessboard);
 
 				//Capture and validate coordinates simultaneously.
 				if (szt_get_coords(&szt_row_bishop, &szt_column_bishop))
