@@ -80,7 +80,7 @@ void EasterSunday(const int year, int *month_east, int *day_east);
 void EntryDate(int *day, int *month, int *year);
 void EntryTime(int *hour, int *minute, int *second);
 int GetEntry(int *data_value);
-char GetPause(const char *str_Message);
+char GetResponse(const char *str_Message);
 int JulianYear(const int day, const int month, const int year, int *days_rest);
 int LeapYear(const int year);
 void SolveJulianYear(const int year, const int julianyeardays, int *julian_month, int *julian_day);
@@ -105,9 +105,16 @@ int main()
 		if (ValidDate(day, month, year))
 			{
 				EasterSunday(year, &month_east, &day_east);
+				GetResponse("Press the ENTER key to continue...");
+
 				SolveJulianYear(year, JulianYear(day, month, year, &days_rest), &month, &day);
+				GetResponse("Press the ENTER key to continue...");
+
 				SolveSumOfDays(SumOfDays(day, month, year), &day, &month, &year);
+				GetResponse("Press the ENTER key to continue...");
+
 				WriteDate(day, month, year);
+				GetResponse("Press the ENTER key to continue...");
 			}
 
 		//Validation of the entry time.
@@ -115,6 +122,7 @@ int main()
 		if (ValidTime(hour, minute, second))
 			{
 				WriteTime(hour, minute, second);
+				GetResponse("Press the ENTER key to continue...");
 			}
 
 		return V_ZERO;
@@ -208,14 +216,15 @@ int GetEntry(int *data_value)
 		int value_data = V_ZERO;
 
 		//Validate data entry as correct.
-		if (scanf("%d", &value_data) == V_ONE)
+		if (scanf("%d%*c", &value_data) == V_ONE)
 			{
+				//Get a correct integer value.
 				printf("\nInput value: [%d]. OK!\n", value_data);
 				*data_value = value_data;
 			}
 		else
 			{
-				//Get a incorrect unsigned integer value.
+				//Get an incorrect integer value.
 				printf("\nThe value entered is not valid.\n");
 
 				scanf("%*[^\n]%*c");
@@ -225,19 +234,26 @@ int GetEntry(int *data_value)
 		return value_data;
 	}
 
-//Function that makes a pause.
-char GetPause(const char *str_Message)
+//Function that obtains a response.
+char GetResponse(const char *str_Message)
 	{
 		//Preliminary working variables.
-		char chr_key = NULL_CHARACTER;
+		char c = NULL_CHARACTER;
+		char chr_key = V_ZERO;
 
 		printf("%s", str_Message);
 
 		//Validate data entry as correct.
-		if (scanf("%c", &chr_key))
+		if (scanf("%c%*c", &chr_key) == V_ONE)
+				//Get a correct character value.
+				printf("\nInput value: [%x] : [%d] = [%c]. OK!\n", chr_key, chr_key, chr_key);
+		else
 			{
+				//Get an incorrect character value.
+				printf("\nThe value entered is not valid.\n");
+
 				scanf("%*[^\n]%*c");
-				while ((chr_key = getchar()) != CARRIAGE_RETURN && chr_key != EOF);
+				while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
 			};
 
 		return chr_key;
@@ -370,7 +386,7 @@ int ValidDate(const int day, const int month, const int year)
 		if (!(dayB && monthB && yearB))
 			{
 				printf("\nData not valid for the date.\n");
-				GetPause("Press ENTER key to continue...");
+				GetResponse("Press ENTER key to continue...");
 			}
 
 		return (dayB && monthB && yearB);
@@ -399,7 +415,7 @@ int ValidTime(const int hour, const int minute, const int second)
 		if (!(hourB && minuteB && secondB))
 			{
 				printf("\nData not valid for the time.\n");
-				GetPause("Press ENTER key to continue...");
+				GetResponse("Press ENTER key to continue...");
 			}
 
 		return (hourB && minuteB && secondB);
