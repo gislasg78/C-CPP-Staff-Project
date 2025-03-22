@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/* Symbolic work constants. */
 #define	V_LOWER_C	'\x63'
 #define	V_LOWER_D	'\x64'
 #define	V_LOWER_F	'\x66'
@@ -13,18 +14,18 @@
 #define V_ZERO  	0
 
 //Function that receives and returns a pointer of type 'void'.
-void *catchVar(void **vd_ptr_ptr, char typ)
+void *catchVar(void **VoidPtrPtr, char typ)
 	{
-		void *vd_ptr = NULL;
+		void *VoidPointer = NULL;
 
 		if (typ == V_LOWER_C)
 			{
 				//If the variable is of type 'character'.
-				if (vd_ptr = malloc(sizeof(char)))
+				if (VoidPointer = malloc(sizeof(char)))
 					{
-						printf("Enter a char  value : ");
-						scanf(" %c", (char *) vd_ptr);  //A space must come before '%c' to clear the buffer.
-						printf("[%c].\n", *((char*) vd_ptr));
+						printf("\nEnter a char  value : ");
+						scanf(" %c", (char *) VoidPointer);  //A space must come before '%c' to clear the buffer.
+						printf("[%c].\n", *((char*) VoidPointer));
 					}
 				else
 					perror("There is not enough memory space for the char variable allocation...");
@@ -32,11 +33,11 @@ void *catchVar(void **vd_ptr_ptr, char typ)
 		else if (typ == V_LOWER_D)
 			{
 				//If the variable is of type 'double precision floating point'.
-				if (vd_ptr = malloc(sizeof(double)))
+				if (VoidPointer = malloc(sizeof(double)))
 					{
-						printf("Enter a double value: ");
-						scanf("%lf", (double *) vd_ptr);
-						printf("[%lf].\n", *((double*) vd_ptr));
+						printf("\nEnter a double value: ");
+						scanf("%lf", (double *) VoidPointer);
+						printf("[%lf].\n", *((double*) VoidPointer));
 					}
 				else
 					perror("There is not enough memory space for the double variable allocation...");
@@ -44,11 +45,11 @@ void *catchVar(void **vd_ptr_ptr, char typ)
 		else if (typ == V_LOWER_F)
 			{
 				//If the variable is of type 'single precision floating point'.
-				if (vd_ptr = malloc(sizeof(float)))
+				if (VoidPointer = malloc(sizeof(float)))
 					{
-						printf("Enter a float value : ");
-						scanf("%f", (float *) vd_ptr);
-						printf("[%f].\n", *((float*) vd_ptr));
+						printf("\nEnter a float value : ");
+						scanf("%f", (float *) VoidPointer);
+						printf("[%f].\n", *((float*) VoidPointer));
 					}
 				else
 					perror("There is not enough memory space for the float variable allocation...");
@@ -56,11 +57,11 @@ void *catchVar(void **vd_ptr_ptr, char typ)
 		else if (typ == V_LOWER_I)
 			{
 				//If the variable is of type 'integer'.
-				if (vd_ptr = malloc(sizeof(int)))
+				if (VoidPointer = malloc(sizeof(int)))
 					{
-						printf("Enter an int  value : ");
-						scanf("%d", (int *) vd_ptr);
-						printf("[%d].\n", *((int*) vd_ptr));
+						printf("\nEnter an int  value : ");
+						scanf("%d", (int *) VoidPointer);
+						printf("[%d].\n", *((int*) VoidPointer));
 					}
 				else
 					perror("There is not enough memory space for the int variable allocation...");
@@ -68,11 +69,11 @@ void *catchVar(void **vd_ptr_ptr, char typ)
 		else if (typ == V_LOWER_L)
 			{
 				//If the variable is of type 'long'.
-				if (vd_ptr = malloc(sizeof(long)))
+				if (VoidPointer = malloc(sizeof(long)))
 					{
-						printf("Enter a long  value : ");
-						scanf("%ld", (long *) vd_ptr);
-						printf("[%ld].\n", *((long*) vd_ptr));
+						printf("\nEnter a long  value : ");
+						scanf("%ld", (long *) VoidPointer);
+						printf("[%ld].\n", *((long*) VoidPointer));
 					}
 				else
 					perror("There is not enough memory space for the long variable allocation...");
@@ -80,72 +81,77 @@ void *catchVar(void **vd_ptr_ptr, char typ)
 		else if (typ == V_LOWER_S)
 			{
 				//If the variable is of type 'short'.
-				if (vd_ptr = malloc(sizeof(short)))
+				if (VoidPointer = malloc(sizeof(short)))
 					{
-						printf("Enter a short value : ");
-						scanf("%hi", (short *) vd_ptr);
-						printf("[%hi].\n", *((short*) vd_ptr));
+						printf("\nEnter a short value : ");
+						scanf("%hi", (short *) VoidPointer);
+						printf("[%hi].\n", *((short*) VoidPointer));
 					}
 				else
 					perror("There is not enough memory space for the short variable allocation...");
 			}
 
 		 //We return the memory address of the empty pointer.
-		if (vd_ptr)
+		if (VoidPointer)
 			{
-				*vd_ptr_ptr = vd_ptr;
-				printf("+ Receiver: [%p] : [%p] : [%p].\n", &vd_ptr_ptr, vd_ptr_ptr, *vd_ptr_ptr);
+				*VoidPtrPtr = VoidPointer;
+				printf("+ Receiver: [%p] : [%p] : [%p].\n", &VoidPtrPtr, VoidPtrPtr, *VoidPtrPtr);
 			}
 
-		return vd_ptr;
+		return VoidPointer;
 	}
 
 //Main function.
 int main()
 	{
 		/* Preliminary working variables. */
-		void *CharPtr = NULL, *DoublePtr = NULL, *FloatPtr = NULL, *IntegerPtr = NULL, *LongPtr = NULL, *ShortPtr = NULL;
+		char *CharPtr = NULL;
+		double *DoublePtr = NULL;
+		float *FloatPtr = NULL;
+		int *IntegerPtr = NULL;
+		long *LongPtr = NULL;
+		short *ShortPtr = NULL;
 		void *VoidPtr = NULL;
 
 		printf("Program that returns a 'void' type pointer and converts it.\n");
 
 		//Example with a 'char' value.
-		if (VoidPtr = catchVar(&CharPtr, V_LOWER_C))
+		if (VoidPtr = catchVar((void **) &CharPtr, V_LOWER_C))
 			{
 				printf("* Char    : [%p] : [%p] : [%p] = [%c].\n", &CharPtr, CharPtr, VoidPtr, *((char *) VoidPtr));
 				free(VoidPtr);
 			}
 
 		//Example with a 'double precision floating point' value.
-		if (VoidPtr = catchVar(&DoublePtr, V_LOWER_D))
+		if (VoidPtr = catchVar((void **) &DoublePtr, V_LOWER_D))
 			{
 				printf("* Double  : [%p] : [%p] : [%p] = [%lf].\n", &DoublePtr, DoublePtr, VoidPtr, *((double *) VoidPtr));
 				free(VoidPtr);
 			}
 
 		//Example with a 'single precision floating point' value.
-		if (VoidPtr = catchVar(&FloatPtr, V_LOWER_F))
+		if (VoidPtr = catchVar((void **) &FloatPtr, V_LOWER_F))
 			{
 				printf("* Float   : [%p] : [%p] : [%p] = [%f].\n", &FloatPtr, FloatPtr, VoidPtr, *((float *) VoidPtr));
 				free(VoidPtr);
 			}
 
 		//Example with an 'integer' value.
-		if (VoidPtr = catchVar(&IntegerPtr, V_LOWER_I))
+		if (VoidPtr = catchVar((void **) &IntegerPtr, V_LOWER_I))
 			{
 				printf("* Integer : [%p] : [%p] : [%p] = [%d].\n", &IntegerPtr, IntegerPtr, VoidPtr, *((int *) VoidPtr));
 				free(VoidPtr);
 			}
 
 		//Example with an 'long' value.
-		if (VoidPtr = catchVar(&LongPtr, V_LOWER_L))
+		if (VoidPtr = catchVar((void **) &LongPtr, V_LOWER_L))
 			{
 				printf("* Long    : [%p] : [%p] : [%p] = [%ld].\n", &LongPtr, LongPtr, VoidPtr, *((long *) VoidPtr));
 				free(VoidPtr);
 			}
 
 		//Example with an 'short' value.
-		if (VoidPtr = catchVar(&ShortPtr, V_LOWER_S))
+		if (VoidPtr = catchVar((void **) &ShortPtr, V_LOWER_S))
 			{
 				printf("* Short   : [%p] : [%p] : [%p] = [%hi].\n", &ShortPtr, ShortPtr, VoidPtr, *((short *) VoidPtr));
 				free(VoidPtr);
