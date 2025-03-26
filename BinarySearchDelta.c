@@ -24,6 +24,7 @@ enum enm_options
 		opt_bin_srch_recursive,
 		opt_bin_srch_delta,
 		opt_interpolation_srch,
+		opt_seq_srch_normal,
 		opt_exit
 	} enm_option;
 
@@ -43,9 +44,9 @@ static const int array[] =	{
 				};
 
 //Prototype functions.
-char getResponse(const char *str_Message);
+char GetResponse(const char *str_Message);
 int SelectedOption(int *value);
-
+int SequentialSearch(const int array[], const int start, const int size, const int target_key, int *pos, int *iters);
 
 //Improved traditional binary search function.
 int BinarySearch(const int array[], const int size, const int target_key, int *pos, int *iters)
@@ -122,7 +123,7 @@ int BinarySearchRecursive(const int array[], const int target_key, const int bot
 		return *pos;	//The located position of the element is returned as a result.
 	}
 
-int getElement(const char *str_Message, const int array[], const int size, const int target_key, const int position, const int iterations)
+int GetElement(const char *str_Message, const int array[], const int size, const int target_key, const int position, const int iterations)
 	{
 		//Preliminary working variables.
 		char stop_key = NULL_CHARACTER;
@@ -144,7 +145,7 @@ int getElement(const char *str_Message, const int array[], const int size, const
 				printf("| * Content  : [%d].\n", array[position]);
 				printf("+===+====+===+====+===+\n");
 
-				stop_key = getResponse("Press the ENTER key to continue...");
+				stop_key = GetResponse("Press the ENTER key to continue...");
 				item = array[position];
 			}
 		else
@@ -154,7 +155,7 @@ int getElement(const char *str_Message, const int array[], const int size, const
 	}
 
 //Get a correct integer value.
-int getEntry(int *target_key)
+int GetEntry(int *target_key)
 	{
 		//Preliminary working variables.
 		char c = NULL_CHARACTER;
@@ -180,7 +181,7 @@ int getEntry(int *target_key)
 	}
 
 //Make a pause or obtain a given response.
-char getResponse(const char *str_Message)
+char GetResponse(const char *str_Message)
 	{
 		//Preliminary working variables.
 		char c = NULL_CHARACTER;
@@ -231,11 +232,12 @@ int Menu(int *option)
 				printf("| [2]. Recursive binary search.|\n");
 				printf("| [3]. Binary delta search.    |\n");
 				printf("| [4]. Interpolation search.   |\n");
-				printf("| [5]. Exit this program.      |\n");
+				printf("| [5]. Sequential search.      |\n");
+				printf("| [6]. Exit this program.      |\n");
 				printf("+===+====+===+====+===+====+===+\n");
 				printf("Choose an option: ");
 
-				*option = value = getEntry(&value);
+				*option = value = GetEntry(&value);
 				*option = value = SelectedOption(&value);
 			}
 
@@ -249,7 +251,7 @@ int SelectedOption(int *value)
 		int delta_factor = V_ZERO;	//Delta factor that adjusts the position of the medium.
 		int iterations = V_ZERO, iteratives = V_ZERO;		//Number of iterations performed.
 		int middle_bottom = V_ZERO, middle_top = V_ZERO;	//Positions for interpolations.
-		int position = V_ZERO;		//Location position of the located element.
+		int position = V_ZERO, starting_pos = V_ZERO;		//Location position of the located element.
 		int size = sizeof(array) / sizeof(array[V_ZERO]);	//Calculated array size.
 		int target_key = V_ZERO;	//Numeric search key.
 
@@ -258,7 +260,7 @@ int SelectedOption(int *value)
 			{
 				printf("\nSearch for a prime number within the first thousand.\n");
 				printf("Prime number to find: ");
-				target_key = getEntry(&target_key);
+				target_key = GetEntry(&target_key);
 			}
 
 		//Convert integer value to enumerated value.
@@ -270,25 +272,25 @@ int SelectedOption(int *value)
 				//We call the traditional binary search function.
 				case opt_bin_srch_normal:
 					position = BinarySearch(array, size, target_key, &position, &iterations);
-					getElement("Traditional Loop Binary Search", array, size, target_key, position, iterations);
-					getResponse("Press the ENTER key to continue...");
+					GetElement("Traditional Loop Binary Search", array, size, target_key, position, iterations);
+					GetResponse("Press the ENTER key to continue...");
 					break;
 
 				//We call the traditional recursive and cyclic binary search function.
 				case opt_bin_srch_recursive:
 					iterations = V_ZERO;
 					position = BinarySearchRecursive(array, target_key, V_ZERO, size + V_MINUS_ONE, &position, &iterations, &iteratives);
-					getElement("Recursive Loop Binary Search", array, size, target_key, position, iterations);
+					GetElement("Recursive Loop Binary Search", array, size, target_key, position, iterations);
 					printf("[%d] calls made to the recursive binary search function.\n", iteratives);
-					getResponse("Press the ENTER key to continue...");
+					GetResponse("Press the ENTER key to continue...");
 					break;
 
 				//We call the binary search function with a delta factor.
 				case opt_bin_srch_delta:
 					position = BinarySearchDelta(array, size, target_key, &delta_factor, &position, &iterations);
-					getElement("Binary Search with delta factor", array, size, target_key, position, iterations);
+					GetElement("Binary Search with delta factor", array, size, target_key, position, iterations);
 					printf("  * Delta Fx : [%d].\n", delta_factor);
-					getResponse("Press the ENTER key to continue...");
+					GetResponse("Press the ENTER key to continue...");
 					break;
 
 				//We call a function that obtains the position of the searched element by means of interpolations.
@@ -296,10 +298,37 @@ int SelectedOption(int *value)
 					if (InterpolationLocate(array, V_ZERO, size - V_ONE, target_key, &middle_bottom, &middle_top, &iterations))
 						{
 							printf("\n** [Approximate values ​​obtained] **.\n");
-							getElement("Interpolated lower value obtained", array, size, target_key, middle_bottom, iterations);
-							getElement("Interpolated upper value obtained", array, size, target_key, middle_top, iterations);
-							getResponse("Press the ENTER key to continue...");
+							GetElement("Interpolated lower value obtained", array, size, target_key, middle_bottom, iterations);
+							GetElement("Interpolated upper value obtained", array, size, target_key, middle_top, iterations);
+							GetResponse("Press the ENTER key to continue...");
 						}
+					break;
+
+				case opt_seq_srch_normal:
+					printf("Starting position [%d] to [%d]: ", V_ZERO, size + V_MINUS_ONE);
+					starting_pos = GetEntry(&starting_pos);
+
+					printf("\nStarting position: [%d] of [%d].\n", starting_pos, size + V_MINUS_ONE);
+
+					if (starting_pos >= V_ZERO && starting_pos <= size + V_MINUS_ONE)
+						{
+							position = SequentialSearch(array, starting_pos, size, target_key, &position, &iterations);
+
+							if (position >= V_ZERO && position <= size + V_MINUS_ONE)
+								{
+									GetElement("Aproximate sequential data located", array, size, target_key, position, iterations);
+									printf("Fenced element at position: [%d] located: [%d].\n", position, array[position]);
+								}
+							else
+								{
+									printf("\nElement: [%d] not found!\n", target_key);
+									printf("Highest position achieved: [%d].\n", position);
+								}
+						}
+					else
+						printf("The start index: [%d] is out of bounds between: [%d] and [%d].\n", starting_pos, V_ZERO, size + V_MINUS_ONE);
+
+					GetResponse("Press the ENTER key to continue...");
 					break;
 
 				//Program exit case.
@@ -316,6 +345,15 @@ int SelectedOption(int *value)
 		return *value;
 	}
 
+//Sequential search function given a start position.
+int SequentialSearch(const int array[], const int start, const int size, const int target_key, int *pos, int *iters)
+	{
+		int idx = V_ZERO;
+
+		for (*iters = V_ZERO, idx = start; idx < size && array[idx] != target_key; idx++, (*iters)++);
+
+		return(*pos = (array[idx] == target_key) ? idx : V_MINUS_ONE);
+	}
 
 //Main function.
 int main()
