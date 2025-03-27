@@ -25,6 +25,7 @@ enum enm_options
 		opt_bin_srch_delta,
 		opt_interpolation_srch,
 		opt_seq_srch_normal,
+		opt_locate_directly,
 		opt_exit
 	} enm_option;
 
@@ -233,7 +234,8 @@ int Menu(int *option)
 				printf("| [3]. Binary delta search.    |\n");
 				printf("| [4]. Interpolation search.   |\n");
 				printf("| [5]. Sequential search.      |\n");
-				printf("| [6]. Exit this program.      |\n");
+				printf("| [6]. Locate directly.        |\n");
+				printf("| [7]. Exit this program.      |\n");
 				printf("+===+====+===+====+===+====+===+\n");
 				printf("Choose an option: ");
 
@@ -256,7 +258,7 @@ int SelectedOption(int *value)
 		int target_key = V_ZERO;	//Numeric search key.
 
 		//Presentation and indication headers.
-		if (*value >= opt_bin_srch_normal && *value < opt_exit)
+		if (*value >= opt_bin_srch_normal && *value <= opt_seq_srch_normal)
 			{
 				printf("\nSearch for a prime number within the first thousand.\n");
 				printf("Prime number to find: ");
@@ -304,11 +306,12 @@ int SelectedOption(int *value)
 						}
 					break;
 
+				//We call a function that sequentially searches for a value until it finds it.
 				case opt_seq_srch_normal:
-					printf("Starting position [%d] to [%d]: ", V_ZERO, size + V_MINUS_ONE);
+					printf("Starting position from: [%d] to [%d]: ", V_ZERO, size + V_MINUS_ONE);
 					starting_pos = GetEntry(&starting_pos);
 
-					printf("\nStarting position: [%d] of [%d].\n", starting_pos, size + V_MINUS_ONE);
+					printf("\nStarting position captured: [%d] of [%d].\n", starting_pos, size + V_MINUS_ONE);
 
 					if (starting_pos >= V_ZERO && starting_pos <= size + V_MINUS_ONE)
 						{
@@ -317,7 +320,7 @@ int SelectedOption(int *value)
 							if (position >= V_ZERO && position <= size + V_MINUS_ONE)
 								{
 									GetElement("Aproximate sequential data located", array, size, target_key, position, iterations);
-									printf("Fenced element at position: [%d] located: [%d].\n", position, array[position]);
+									printf("Fenced element at position: [%d] located with content: [%d].\n", position, array[position]);
 								}
 							else
 								{
@@ -327,6 +330,26 @@ int SelectedOption(int *value)
 						}
 					else
 						printf("The start index: [%d] is out of bounds between: [%d] and [%d].\n", starting_pos, V_ZERO, size + V_MINUS_ONE);
+
+					GetResponse("Press the ENTER key to continue...");
+					break;
+
+				//We locate an entry or occurrence of the array directly by means of an index number.
+				case opt_locate_directly:
+					printf("\nEntry or occurrence number to be located.\n");
+					printf("Index position from: [%d] to [%d]: ", V_ZERO, size + V_MINUS_ONE);
+					starting_pos = GetEntry(&starting_pos);
+
+					printf("\nIndex position: [%d] of [%d].\n", starting_pos, size + V_MINUS_ONE);
+
+					if (starting_pos >= V_ZERO && starting_pos <= size + V_MINUS_ONE)
+						{
+							iterations = V_ZERO;
+							GetElement("Locate directly item or element", array, size, array[starting_pos], starting_pos, iterations);
+							printf("\nElement content: [%d] ubicated directly on position: [%d].\n", array[starting_pos], starting_pos);
+						}
+					else
+						printf("The position index: [%d] is out of bounds between: [%d] and [%d].\n", starting_pos, V_ZERO, size + V_MINUS_ONE);
 
 					GetResponse("Press the ENTER key to continue...");
 					break;
@@ -350,7 +373,7 @@ int SequentialSearch(const int array[], const int start, const int size, const i
 	{
 		int idx = V_ZERO;
 
-		for (*iters = V_ZERO, idx = start; idx < size && array[idx] != target_key; idx++, (*iters)++);
+		for (*iters = V_ZERO, idx = start; idx < size && array[idx] < target_key; idx++, (*iters)++);
 
 		return(*pos = (array[idx] == target_key) ? idx : V_MINUS_ONE);
 	}
