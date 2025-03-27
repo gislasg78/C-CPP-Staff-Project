@@ -258,7 +258,7 @@ int SelectedOption(int *value)
 		int target_key = V_ZERO;	//Numeric search key.
 
 		//Presentation and indication headers.
-		if (*value >= opt_bin_srch_normal && *value <= opt_seq_srch_normal)
+		if (*value >= opt_bin_srch_normal && *value < opt_exit)
 			{
 				printf("\nSearch for a prime number within the first thousand.\n");
 				printf("Prime number to find: ");
@@ -345,8 +345,10 @@ int SelectedOption(int *value)
 					if (starting_pos >= V_ZERO && starting_pos <= size + V_MINUS_ONE)
 						{
 							iterations = V_ZERO;
-							GetElement("Locate directly item or element", array, size, array[starting_pos], starting_pos, iterations);
-							printf("\nElement content: [%d] ubicated directly on position: [%d].\n", array[starting_pos], starting_pos);
+							GetElement("Locate directly item or element by position", array, size, array[starting_pos], starting_pos, iterations);
+							printf("\nElement found: [%d] ubicated directly on position: [%d].\n", array[starting_pos], starting_pos);
+							printf("Item searched: [%d].\n", target_key);
+							printf("Match result : [%s].\n", (array[starting_pos] == target_key) ? "The located and sought values ​​are equal" : "The types do not match");
 						}
 					else
 						printf("The position index: [%d] is out of bounds between: [%d] and [%d].\n", starting_pos, V_ZERO, size + V_MINUS_ONE);
