@@ -1,5 +1,5 @@
 /* Program that performs binary searches with cycles
-   in the traditional way as well as with a 'delta' factor. */
+   in the traditional way as well as with a 'delta' factor and other modalities. */
 
 //Standard work libraries.
 #include <stdio.h>
@@ -10,6 +10,8 @@
 //Symbolic constants of working characters.
 #define	CARRIAGE_RETURN	'\n'
 #define	NULL_CHARACTER	'\0'
+#define	V_CHR_UPPER_Y	0x59
+#define	V_CHR_LOWER_Y	0x79
 
 //Symbolic work constants.
 #define	V_MINUS_ONE	-1
@@ -26,6 +28,7 @@ enum enm_options
 		opt_interpolation_srch,
 		opt_seq_srch_normal,
 		opt_locate_directly,
+		opt_view_all_items,
 		opt_exit
 	} enm_option;
 
@@ -44,10 +47,50 @@ static const int array[] =	{
 					947, 953, 967, 971, 977, 983, 991, 997
 				};
 
+const int *p_array = array,
+	*pa_array[] =
+		{
+			array + 0, array + 1, array + 2, array + 3, array + 4,
+			array + 5, array + 6, array + 7, array + 8, array + 9,
+			array + 10, array + 11, array + 12, array + 13, array + 14,
+			array + 15, array + 16, array + 17, array + 18, array + 19,
+			array + 20, array + 21, array + 22, array + 23, array + 24,
+			array + 25, array + 26, array + 27, array + 28, array + 29,
+			array + 30, array + 31, array + 32, array + 33, array + 34,
+			array + 35, array + 36, array + 37, array + 38, array + 39,
+			array + 40, array + 41, array + 42, array + 43, array + 44,
+			array + 45, array + 46, array + 47, array + 48, array + 49,
+			array + 50, array + 51, array + 52, array + 53, array + 54,
+			array + 55, array + 56, array + 57, array + 58, array + 59,
+			array + 60, array + 61, array + 62, array + 63, array + 64,
+			array + 65, array + 66, array + 67, array + 68, array + 69,
+			array + 70, array + 71, array + 72, array + 73, array + 74,
+			array + 75, array + 76, array + 77, array + 78, array + 79,
+			array + 80, array + 81, array + 82, array + 83, array + 84,
+			array + 85, array + 86, array + 87, array + 88, array + 89,
+			array + 90, array + 91, array + 92, array + 93, array + 94,
+			array + 95, array + 96, array + 97, array + 98, array + 99,
+			array + 100, array + 101, array + 102, array + 103, array + 104,
+			array + 105, array + 106, array + 107, array + 108, array + 109,
+			array + 110, array + 111, array + 112, array + 113, array + 114,
+			array + 115, array + 116, array + 117, array + 118, array + 119,
+			array + 120, array + 121, array + 122, array + 123, array + 124,
+			array + 125, array + 126, array + 127, array + 128, array + 129,
+			array + 130, array + 131, array + 132, array + 133, array + 134,
+			array + 135, array + 136, array + 137, array + 138, array + 139,
+			array + 140, array + 141, array + 142, array + 143, array + 144,
+			array + 145, array + 146, array + 147, array + 148, array + 149,
+			array + 150, array + 151, array + 152, array + 153, array + 154,
+			array + 155, array + 156, array + 157, array + 158, array + 159,
+			array + 160, array + 161, array + 162, array + 163, array + 164,
+			array + 165, array + 166, array + 167,
+		};
+
 //Prototype functions.
 char GetResponse(const char *str_Message);
 int SelectedOption(int *value);
 int SequentialSearch(const int array[], const int start, const int size, const int target_key, int *pos, int *iters);
+int ViewAllItems(const int array[], const int position, const int size, const int target_key, int *pos, int *iters);
 
 //Improved traditional binary search function.
 int BinarySearch(const int array[], const int size, const int target_key, int *pos, int *iters)
@@ -143,6 +186,7 @@ int GetElement(const char *str_Message, const int array[], const int size, const
 				printf("|      Item Info.     |\n");
 				printf("+-=-+----+---+----+-=-+\n");
 				printf("| * Position : [%d].\n", position);
+				printf("| * Maximum  : [%d].\n", size + V_MINUS_ONE);
 				printf("| * Content  : [%d].\n", array[position]);
 				printf("+===+====+===+====+===+\n");
 
@@ -235,7 +279,8 @@ int Menu(int *option)
 				printf("| [4]. Interpolation search.   |\n");
 				printf("| [5]. Sequential search.      |\n");
 				printf("| [6]. Locate directly.        |\n");
-				printf("| [7]. Exit this program.      |\n");
+				printf("| [7]. View all items details. |\n");
+				printf("| [8]. Exit this program.      |\n");
 				printf("+===+====+===+====+===+====+===+\n");
 				printf("Choose an option: ");
 
@@ -319,7 +364,7 @@ int SelectedOption(int *value)
 
 							if (position >= V_ZERO && position <= size + V_MINUS_ONE)
 								{
-									GetElement("Aproximate sequential data located", array, size, target_key, position, iterations);
+									GetElement("Exact sequential data located", array, size, target_key, position, iterations);
 									printf("Fenced element at position: [%d] located with content: [%d].\n", position, array[position]);
 								}
 							else
@@ -356,6 +401,39 @@ int SelectedOption(int *value)
 					GetResponse("Press the ENTER key to continue...");
 					break;
 
+				//See all the details of the record to be consulted.
+				case opt_view_all_items:
+					printf("Starting position from: [%d] to [%d]: ", V_ZERO, size + V_MINUS_ONE);
+					starting_pos = GetEntry(&starting_pos);
+
+					printf("\nStarting position captured: [%d] of [%d].\n", starting_pos, size + V_MINUS_ONE);
+
+					if (starting_pos >= V_ZERO && starting_pos <= size + V_MINUS_ONE)
+						{
+							iterations = V_ZERO;
+							position = ViewAllItems(array, starting_pos, size, target_key, &position, &iterations);
+
+							if (position >= V_ZERO && position <= size + V_MINUS_ONE)
+								{
+									GetElement("Aproximate sequential data located", array, size, target_key, position, iterations);
+									printf("Fenced element at position: [%d] located with content: [%d].\n", position, array[position]);
+								}
+							else
+								{
+									printf("\nElement: [%d] not found!\n", target_key);
+									printf("Highest position achieved: [%d].\n", position);
+								}
+
+							printf("Item searched: [%d].\n", target_key);
+							printf("Match result : [%s].\n", (array[position] == target_key) ? "The located and sought values ​​are equal" : "The types do not match");
+							printf("Scanned: [%d] records to find the value: [%d].\n", iterations, target_key);
+						}
+					else
+						printf("The position index: [%d] is out of bounds between: [%d] and [%d].\n", starting_pos, V_ZERO, size + V_MINUS_ONE);
+
+					GetResponse("Press the ENTER key to continue...");
+					break;
+
 				//Program exit case.
 				case opt_exit:
 					printf("\nLeaving this program...\n");
@@ -378,6 +456,54 @@ int SequentialSearch(const int array[], const int start, const int size, const i
 		for (*iters = V_ZERO, idx = start; idx < size && array[idx] < target_key; idx++, (*iters)++);
 
 		return(*pos = (array[idx] == target_key) ? idx : V_MINUS_ONE);
+	}
+
+//Function that sees all the details of the record to be consulted.
+int ViewAllItems(const int array[], const int position, const int size, const int target_key, int *pos, int *iters)
+	{
+		char chr_key = V_CHR_UPPER_Y;
+		int idx = V_ZERO;
+
+		printf("\nPointer naming practice.\n");
+
+		for (idx = position; idx < size && array[idx] <= target_key && (chr_key == V_CHR_LOWER_Y || chr_key == V_CHR_UPPER_Y); idx++, (*iters)++)
+			{
+				printf("\n");
+				printf("+===+====+===+====+===+====+===+====+\n");
+				printf("|   Retrieved record information.   |\n");
+				printf("+===+====+===+====+===+====+===+====+\n");
+				printf("| Index position #: [%d] of: [%d].\n", idx, size - V_ONE);
+				printf("| Position content: [%d].\n", array[idx]);
+				printf("+---+----+---+----+---+----+---+----+\n");
+				printf("| Addresses:\n");
+				printf("| * array    : {%p}.\n", &array);
+				printf("|              {%p} : [%p] = [%p].\n", array, &array[idx], array + idx);
+				printf("|\n");
+				printf("| * p_array  : {%p}.\n", &p_array);
+				printf("|              [%p] : [%p] = [%p].\n", p_array, &p_array[idx], p_array + idx);
+				printf("|\n");
+				printf("| * pa_array : {%p}.\n", &pa_array);
+				printf("|              {%p} : [%p] = [%p].\n", pa_array, &pa_array[idx], pa_array + idx);
+				printf("+---+----+---+----+---+----+---+----+\n");
+				printf("| Values:\n");
+				printf("| + array    : {%d}.\n", *array);
+				printf("|              [%d] = [%d].\n", array[idx], *(array + idx));
+				printf("|\n");
+				printf("| + p_array  : {%d}.\n", *p_array);
+				printf("|              [%d] = [%d].\n", p_array[idx], *(p_array + idx));
+				printf("|\n");
+				printf("| + pa_array : {%p} : {%d}.\n", *pa_array, **pa_array);
+				printf("|              [%p] = [%p].\n", pa_array[idx], *(pa_array + idx));
+				printf("|              [%d] : [%d].\n", *pa_array[idx], *(*(pa_array + idx)));
+				printf("+===+====+===+====+===+====+===+====+\n");
+				printf("\n");
+
+				if (array[idx] == target_key) printf ("** Element: [%d] = [%d] located in position: [%d]. **\n", target_key, array[idx], idx);
+
+				chr_key = GetResponse("Do you want to continue viewing more records (y/n)? : ");
+			}
+
+		return(*pos = (idx > position && idx <= size) ? --idx : idx);
 	}
 
 //Main function.
