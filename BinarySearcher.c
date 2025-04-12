@@ -389,13 +389,22 @@ void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_en
 					break;
 			}
 
+		//Get an incorrect value.
 		if (number_arguments != V_ONE)
 			{
-				//Get an incorrect value.
-				printf("\nThe value entered is not valid.\n");
+				if (feof(stdin))
+					{
+						printf("\nEnd of File (EOF) detected in data entry.\n");
+						clearerr(stdin);
+						fflush(stdin);
+					}
+				else
+					{
+						printf("\nThe value entered is not valid. Trying again.\n");
 
-				scanf("%*[^\n]%*c");
-				while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
+						scanf("%*[^\n]%*c");
+						while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
+					}
 			}
 
 		return void_value_key;
