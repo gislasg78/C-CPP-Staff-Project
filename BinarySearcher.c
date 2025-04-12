@@ -267,7 +267,7 @@ int FibonacciSearch(const int array[], const int size, const int target_key, int
 							}
 					}
 				else
-					perror("The number of Fibonacci numbers generated is less than two units.");
+					perror("The number of Fibonacci numbers generated is less than three units.");
 
 				free(vector_Fibonacci_Numbers);
 			}
