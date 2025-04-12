@@ -25,16 +25,27 @@
 //Enumeration with menu options.
 enum enm_options
 	{
-		opt_bin_srch_delta = V_ONE,
-		opt_bin_srch_in_loop,
-		opt_bin_srch_recursive,
-		opt_fibonacci_search,
-		opt_interpolation_srch,
-		opt_locate_directly,
-		opt_seq_srch_normal,
-		opt_view_all_items,
-		opt_exit
+		enm_opt_bin_srch_delta = V_ONE,
+		enm_opt_bin_srch_in_loop,
+		enm_opt_bin_srch_recursive,
+		enm_opt_fibonacci_search,
+		enm_opt_interpolation_srch,
+		enm_opt_locate_directly,
+		enm_opt_seq_srch_normal,
+		enm_opt_view_all_items,
+		enm_opt_exit
 	} enm_option;
+
+//Enumeration with type entry variables.
+enum enm_type_entry
+	{
+		enm_type_entry_char,
+		enm_type_entry_double,
+		enm_type_entry_float,
+		enm_type_entry_int,
+		enm_type_entry_long,
+		enm_type_entry_short
+	} enm_type_value;
 
 //Global static array of prime numbers.
 static const int array[] =	{
@@ -94,11 +105,10 @@ const int *p_array = array,
 int BinarySearch(const int array[], const int size, const int target_key, int *pos, int *iters);
 int BinarySearchDelta(const int array[], const int size, const int target_key, int *delta_factor, int *pos, int *iters);
 int BinarySearchRecursive(const int array[], const int target_key, const int bottom, const int top, int *pos, int *iters, int *itrvs);
-int *Fibonacci_Series_Numbers(int max_number, int *qty_items);
+int *Fibonacci_Series_Numbers(const int max_number, int *qty_items, int **Fibo_Series_Nums);
 int FibonacciSearch(const int array[], const int size, const int target_key, int *pos, int *iters);
 int GetElement(const char *str_Message, const int array[], const int size, const int target_key, const int position, const int iterations);
-int GetEntry(int *target_key);
-char GetResponse(const char *str_Message);
+void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_entry);
 int InterpolationLocate(const int array[], const int bottom, const int top, const int target_key, int *middle_bottom, int *middle_top, int *iters);
 int Menu(int *option);
 int SelectedOption(int *value);
@@ -182,7 +192,7 @@ int BinarySearchRecursive(const int array[], const int target_key, const int bot
 	}
 
 //Function that generates a Fibonacci number up to the maximum value sent.
-int *Fibonacci_Series_Numbers(int max_number, int *qty_items)
+int *Fibonacci_Series_Numbers(const int max_number, int *qty_items, int **Fibo_Series_Nums)
 	{
 		/* Preliminary working variables. */
 		int addition_value = V_ZERO, first_value = V_ZERO, second_value = V_ONE;
@@ -220,6 +230,8 @@ int *Fibonacci_Series_Numbers(int max_number, int *qty_items)
 		else
 			perror("There is not enough memory space to accommodate the vector of Fibonacci numbers.");
 
+		if (Fibo_Series_Nums) *Fibo_Series_Nums = vector_Fibonacci_Numbers;
+
 		return vector_Fibonacci_Numbers;
 	}
 
@@ -231,7 +243,7 @@ int FibonacciSearch(const int array[], const int size, const int target_key, int
 		int qty_items = V_ZERO, *vector_Fibonacci_Numbers = NULL;
 
 		/* Verify the Fibonacci series created. */
-		if (vector_Fibonacci_Numbers = Fibonacci_Series_Numbers(size, &qty_items))
+		if (vector_Fibonacci_Numbers = Fibonacci_Series_Numbers(size, &qty_items, &vector_Fibonacci_Numbers))
 			{
 				if (qty_items > V_TWO)
 					{
@@ -281,7 +293,7 @@ int FibonacciSearch(const int array[], const int size, const int target_key, int
 int GetElement(const char *str_Message, const int array[], const int size, const int target_key, const int position, const int iterations)
 	{
 		//Preliminary working variables.
-		char stop_key = NULL_CHARACTER;
+		char char_key = NULL_CHARACTER;
 		int item = V_ZERO;
 
 		//Validates if the position is in a correct range.
@@ -302,7 +314,7 @@ int GetElement(const char *str_Message, const int array[], const int size, const
 				printf("| * Content  : [%d].\n", array[position]);
 				printf("+===+====+===+====+===+\n");
 
-				stop_key = GetResponse("Press the ENTER key to continue...");
+				char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char));
 				item = array[position];
 			}
 		else
@@ -311,55 +323,82 @@ int GetElement(const char *str_Message, const int array[], const int size, const
 		return item;
 	}
 
-//Get a correct integer value.
-int GetEntry(int *target_key)
+//Function that gets a correct type value depending on its option.
+void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_entry enm_type_data)
 	{
 		//Preliminary working variables.
 		char c = NULL_CHARACTER;
-		int value_key = V_ZERO;
+		int number_arguments = V_ZERO, option_type_entry = (int) enm_type_data;
+		void *void_value_key = void_var_address;
 
-		//Validate data entry as correct.
-		if (scanf("%d%*c", &value_key) == V_ONE)
+		/* Structure with the type of the returned variable. */
+		struct s_input_type_format
 			{
-				//Get a correct integer value.
-				printf("\nInput value: [%d]. OK!\n", value_key);
-				*target_key = value_key;
+				char *type_variable;
+				char *format_variable;
 			}
-		else
-			{
-				//Get an incorrect integer value.
-				printf("\nThe value entered is not valid.\n");
+			s_input_type_formats[] =
+				{{"char", "%c%*c"}, {"double", "%lf%*c"}, {"float", "%f%*c"},
+				 {"int", "%d%*c"}, {"long", "%ld%*c"}, {"short", "%hi%*c"}};
 
-				scanf("%*[^\n]%*c");
-				while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
-			}
-
-		return value_key;
-	}
-
-//Make a pause or obtain a given response.
-char GetResponse(const char *str_Message)
-	{
-		//Preliminary working variables.
-		char c = NULL_CHARACTER;
-		char chr_key = V_ZERO;
-
+		/* Incoming message. */
 		printf("%s", str_Message);
 
-		//Validate data entry as correct.
-		if (scanf("%c%*c", &chr_key) == V_ONE)
-			//Get a correct character value.
-			printf("\nInput value: [%x] : [%d] = [%c]. OK!\n", chr_key, chr_key, chr_key);
-		else
+		/* Selection of validating case of the type of variable to generate. */
+		switch(enm_type_data)
 			{
-				//Get an incorrect character value.
+				//Get a correct character value.
+				case enm_type_entry_char:
+					if (number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (char *) void_value_key))
+						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%x] : [%d] = [%c]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(char), (char *) void_value_key, *((char *) void_value_key), *((char *) void_value_key), *((char *) void_value_key));
+					break;
+
+				//Get a correct double value.
+				case enm_type_entry_double:
+					if (number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (double *) void_value_key))
+						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%lf]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(double), (double *) void_value_key, *((double *) void_value_key));
+					break;
+
+				//Get a correct float value.
+				case enm_type_entry_float:
+					if (number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (float *) void_value_key))
+						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%f]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(float), (float *) void_value_key, *((float *) void_value_key));
+					break;
+
+				//Get a correct integer value.
+				case enm_type_entry_int:
+					if (number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (int *) void_value_key))
+						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%d]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(int), (int *) void_value_key, *((int *) void_value_key));
+					break;
+
+				//Get a correct long value.
+				case enm_type_entry_long:
+					if (number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (long *) void_value_key))
+						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%ld]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(long), (long *) void_value_key, *((long *) void_value_key));
+					break;
+
+				//Get a correct short value.
+				case enm_type_entry_short:
+					if (number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (short *) void_value_key))
+						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%hi]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(short), (short *) void_value_key, *((short *) void_value_key));
+					break;
+
+				//Option no valid.
+				default:
+					printf("The selected option: [%d] is invalid. Please correct it.\n", option_type_entry);
+					break;
+			}
+
+		if (number_arguments != V_ONE)
+			{
+				//Get an incorrect value.
 				printf("\nThe value entered is not valid.\n");
 
 				scanf("%*[^\n]%*c");
 				while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
-			};
+			}
 
-		return chr_key;
+		return void_value_key;
 	}
 
 //Function to locate a certain value by means of interpolations.
@@ -379,7 +418,7 @@ int Menu(int *option)
 	{
 		int value = V_ZERO;
 
-		while (value != opt_exit)
+		while (value != enm_opt_exit)
 			{
 				printf("\n");
 				printf("+===+====+===+====+===+====+===+\n");
@@ -397,7 +436,7 @@ int Menu(int *option)
 				printf("+===+====+===+====+===+====+===+\n");
 				printf("Choose an option: ");
 
-				*option = value = GetEntry(&value);
+				*option = value = *((int *) GetEntry("", &value, enm_type_entry_int));
 				*option = value = SelectedOption(&value);
 			}
 
@@ -408,6 +447,7 @@ int Menu(int *option)
 int SelectedOption(int *value)
 	{
 		//Preliminary working variables.
+		char char_key = NULL_CHARACTER;	//Variable to obtain a pause character.
 		int delta_factor = V_ZERO;	//Delta factor that adjusts the position of the medium.
 		int iterations = V_ZERO, iteratives = V_ZERO;		//Number of iterations performed.
 		int middle_bottom = V_ZERO, middle_top = V_ZERO;	//Positions for interpolations.
@@ -416,11 +456,11 @@ int SelectedOption(int *value)
 		int target_key = V_ZERO;	//Numeric search key.
 
 		//Presentation and indication headers.
-		if (*value >= opt_bin_srch_delta && *value < opt_exit)
+		if (*value >= enm_opt_bin_srch_delta && *value < enm_opt_exit)
 			{
 				printf("\nSearch for a prime number within the first thousand.\n");
 				printf("Prime number to find: ");
-				target_key = GetEntry(&target_key);
+				target_key = *((int *) GetEntry("", &target_key, enm_type_entry_int));
 			}
 
 		//Convert integer value to enumerated value.
@@ -430,31 +470,31 @@ int SelectedOption(int *value)
 		switch (enm_option)
 			{
 				//We call the binary search function with a delta factor.
-				case opt_bin_srch_delta:
+				case enm_opt_bin_srch_delta:
 					position = BinarySearchDelta(array, size, target_key, &delta_factor, &position, &iterations);
 					GetElement("Binary delta search", array, size, target_key, position, iterations);
 					printf("  * Delta Fx : [%d].\n", delta_factor);
-					GetResponse("Press the ENTER key to continue...");
+					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char));
 					break;
 
 				//We call the traditional binary search function.
-				case opt_bin_srch_in_loop:
+				case enm_opt_bin_srch_in_loop:
 					position = BinarySearch(array, size, target_key, &position, &iterations);
 					GetElement("Binary search in loop", array, size, target_key, position, iterations);
-					GetResponse("Press the ENTER key to continue...");
+					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char));
 					break;
 
 				//We call the traditional recursive and cyclic binary search function.
-				case opt_bin_srch_recursive:
+				case enm_opt_bin_srch_recursive:
 					iterations = V_ZERO;
 					position = BinarySearchRecursive(array, target_key, V_ZERO, size + V_MINUS_ONE, &position, &iterations, &iteratives);
 					GetElement("Binary search recursive", array, size, target_key, position, iterations);
 					printf("[%d] calls made to the recursive binary search function.\n", iteratives);
-					GetResponse("Press the ENTER key to continue...");
+					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char));
 					break;
 
 				//We perform the search function by Fibonacci numbers.
-				case opt_fibonacci_search:
+				case enm_opt_fibonacci_search:
 					position = FibonacciSearch(array, size, target_key, &position, &iterations);
 
 					if (position >= V_ZERO && position <= size + V_MINUS_ONE)
@@ -468,25 +508,25 @@ int SelectedOption(int *value)
 							printf("Highest position achieved: [%d].\n", position);
 						}
 
-					GetResponse("Press the ENTER key to continue...");
+					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char));
 					break;
 
 				//We call a function that obtains the position of the searched element by means of interpolations.
-				case opt_interpolation_srch:
+				case enm_opt_interpolation_srch:
 					if (InterpolationLocate(array, V_ZERO, size - V_ONE, target_key, &middle_bottom, &middle_top, &iterations))
 						{
 							printf("\n** [Approximate values ​​obtained] **.\n");
 							GetElement("Interpolation search: lower value obtained", array, size, target_key, middle_bottom, iterations);
 							GetElement("Interpolation search: upper value obtained", array, size, target_key, middle_top, iterations);
-							GetResponse("Press the ENTER key to continue...");
+							char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char));
 						}
 					break;
 
 				//We locate an entry or occurrence of the array directly by means of an index number.
-				case opt_locate_directly:
+				case enm_opt_locate_directly:
 					printf("\nEntry or occurrence number to be located.\n");
 					printf("Index position from: [%d] to [%d]: ", V_ZERO, size + V_MINUS_ONE);
-					starting_pos = GetEntry(&starting_pos);
+					starting_pos = *((int *) GetEntry("", &starting_pos, enm_type_entry_int));
 
 					printf("\nIndex position: [%d] of [%d].\n", starting_pos, size + V_MINUS_ONE);
 
@@ -501,13 +541,13 @@ int SelectedOption(int *value)
 					else
 						printf("The position index: [%d] is out of bounds between: [%d] and [%d].\n", starting_pos, V_ZERO, size + V_MINUS_ONE);
 
-					GetResponse("Press the ENTER key to continue...");
+					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char));
 					break;
 
 				//We call a function that sequentially searches for a value until it finds it.
-				case opt_seq_srch_normal:
+				case enm_opt_seq_srch_normal:
 					printf("Starting position from: [%d] to [%d]: ", V_ZERO, size + V_MINUS_ONE);
-					starting_pos = GetEntry(&starting_pos);
+					starting_pos = *((int *) GetEntry("", &starting_pos, enm_type_entry_int));
 
 					printf("\nStarting position captured: [%d] of [%d].\n", starting_pos, size + V_MINUS_ONE);
 
@@ -529,13 +569,13 @@ int SelectedOption(int *value)
 					else
 						printf("The start index: [%d] is out of bounds between: [%d] and [%d].\n", starting_pos, V_ZERO, size + V_MINUS_ONE);
 
-					GetResponse("Press the ENTER key to continue...");
+					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char));
 					break;
 
 				//See all the details of the record to be consulted.
-				case opt_view_all_items:
+				case enm_opt_view_all_items:
 					printf("Starting position from: [%d] to [%d]: ", V_ZERO, size + V_MINUS_ONE);
-					starting_pos = GetEntry(&starting_pos);
+					starting_pos = *((int *) GetEntry("", &starting_pos, enm_type_entry_int));
 
 					printf("\nStarting position captured: [%d] of [%d].\n", starting_pos, size + V_MINUS_ONE);
 
@@ -562,11 +602,11 @@ int SelectedOption(int *value)
 					else
 						printf("The position index: [%d] is out of bounds between: [%d] and [%d].\n", starting_pos, V_ZERO, size + V_MINUS_ONE);
 
-					GetResponse("Press the ENTER key to continue...");
+					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char));
 					break;
 
 				//Program exit case.
-				case opt_exit:
+				case enm_opt_exit:
 					printf("\nLeaving this program...\n");
 					break;
 
@@ -592,12 +632,12 @@ int SequentialSearch(const int array[], const int start, const int size, const i
 //Function that sees all the details of the record to be consulted.
 int ViewAllItems(const int array[], const int position, const int size, const int target_key, int *pos, int *iters)
 	{
-		char chr_key = V_CHR_UPPER_Y;
+		char char_key = V_CHR_UPPER_Y;
 		int idx = V_ZERO;
 
 		printf("\nPointer naming practice.\n");
 
-		for (idx = position; idx < size && array[idx] <= target_key && (chr_key == V_CHR_LOWER_Y || chr_key == V_CHR_UPPER_Y); idx++, (*iters)++)
+		for (idx = position; idx < size && array[idx] <= target_key && (char_key == V_CHR_LOWER_Y || char_key == V_CHR_UPPER_Y); idx++, (*iters)++)
 			{
 				printf("\n");
 				printf("+===+====+===+====+===+====+===+====+\n");
@@ -631,7 +671,7 @@ int ViewAllItems(const int array[], const int position, const int size, const in
 
 				if (array[idx] == target_key) printf ("** Element: [%d] = [%d] located in position: [%d]. **\n", target_key, array[idx], idx);
 
-				chr_key = GetResponse("Do you want to continue viewing more records (y/n)? : ");
+				char_key = *((char *) GetEntry("Do you want to continue viewing more records (y/n)? : ", &char_key, enm_type_entry_char));
 			}
 
 		return(*pos = (idx > position && idx <= size) ? --idx : idx);
