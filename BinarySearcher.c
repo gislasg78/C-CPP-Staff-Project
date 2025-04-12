@@ -405,6 +405,39 @@ void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_en
 						scanf("%*[^\n]%*c");
 						while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
 					}
+
+				printf("The value at memory address: [%p] is going to be reset.\n", void_value_key);
+
+				switch(enm_type_data)
+					{
+						case enm_type_entry_char:
+							*((char *) void_value_key) = V_ZERO;
+							break;
+
+						case enm_type_entry_double:
+							*((double *) void_value_key) = V_ZERO;
+							break;
+
+						case enm_type_entry_float:
+							*((float *) void_value_key) = V_ZERO;
+							break;
+
+						case enm_type_entry_int:
+							*((int *) void_value_key) = V_ZERO;
+							break;
+
+						case enm_type_entry_long:
+							*((long *) void_value_key) = V_ZERO;
+							break;
+
+						case enm_type_entry_short:
+							*((short *) void_value_key) = V_ZERO;
+							break;
+
+						default:
+							printf("The value of memory address: [%p] was not altered.\n", void_value_key);
+							break;
+					}
 			}
 
 		return void_value_key;
