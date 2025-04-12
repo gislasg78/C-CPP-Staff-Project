@@ -195,6 +195,7 @@ int BinarySearchRecursive(const int array[], const int target_key, const int bot
 int *Fibonacci_Series_Numbers(const int max_number, int *qty_items, int **Fibo_Series_Nums)
 	{
 		/* Preliminary working variables. */
+		char char_key = V_ZERO;
 		int addition_value = V_ZERO, first_value = V_ZERO, second_value = V_ONE;
 		int *vector_Fibonacci_Numbers = NULL;
 
@@ -226,6 +227,8 @@ int *Fibonacci_Series_Numbers(const int max_number, int *qty_items, int **Fibo_S
 					printf("#: [%2d].\t[%d].\n", idx, vector_Fibonacci_Numbers[idx]);
 
 				printf("[%d] Generated output results.\n", *qty_items);
+
+				char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char));
 			}
 		else
 			perror("There is not enough memory space to accommodate the vector of Fibonacci numbers.");
@@ -329,7 +332,6 @@ void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_en
 		//Preliminary working variables.
 		char c = NULL_CHARACTER;
 		int number_arguments = V_ZERO, option_type_entry = (int) enm_type_data;
-		void *void_value_key = void_var_address;
 
 		/* Structure with the type of the returned variable. */
 		struct s_input_type_format
@@ -349,43 +351,43 @@ void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_en
 			{
 				//Get a correct character value.
 				case enm_type_entry_char:
-					if (number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (char *) void_value_key))
-						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%x] : [%d] = [%c]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(char), (char *) void_value_key, *((char *) void_value_key), *((char *) void_value_key), *((char *) void_value_key));
+					if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (char *) void_var_address)) == V_ONE)
+						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%x] : [%d] = [%c]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(char), (char *) void_var_address, *((char *) void_var_address), *((char *) void_var_address), *((char *) void_var_address));
 					break;
 
 				//Get a correct double value.
 				case enm_type_entry_double:
-					if (number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (double *) void_value_key))
-						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%lf]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(double), (double *) void_value_key, *((double *) void_value_key));
+					if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (double *) void_var_address)) == V_ONE)
+						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%lf]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(double), (double *) void_var_address, *((double *) void_var_address));
 					break;
 
 				//Get a correct float value.
 				case enm_type_entry_float:
-					if (number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (float *) void_value_key))
-						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%f]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(float), (float *) void_value_key, *((float *) void_value_key));
+					if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (float *) void_var_address)) == V_ONE)
+						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%f]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(float), (float *) void_var_address, *((float *) void_var_address));
 					break;
 
 				//Get a correct integer value.
 				case enm_type_entry_int:
-					if (number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (int *) void_value_key))
-						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%d]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(int), (int *) void_value_key, *((int *) void_value_key));
+					if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (int *) void_var_address)) == V_ONE)
+						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%d]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(int), (int *) void_var_address, *((int *) void_var_address));
 					break;
 
 				//Get a correct long value.
 				case enm_type_entry_long:
-					if (number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (long *) void_value_key))
-						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%ld]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(long), (long *) void_value_key, *((long *) void_value_key));
+					if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (long *) void_var_address)) == V_ONE)
+						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%ld]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(long), (long *) void_var_address, *((long *) void_var_address));
 					break;
 
 				//Get a correct short value.
 				case enm_type_entry_short:
-					if (number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (short *) void_value_key))
-						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%hi]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(short), (short *) void_value_key, *((short *) void_value_key));
+					if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (short *) void_var_address)) == V_ONE)
+						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%hi]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(short), (short *) void_var_address, *((short *) void_var_address));
 					break;
 
 				//Option no valid.
 				default:
-					printf("The selected option: [%d] is invalid. Please correct it.\n", option_type_entry);
+					printf("The selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
 					break;
 			}
 
@@ -406,41 +408,41 @@ void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_en
 						while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
 					}
 
-				printf("The value at memory address: [%p] is going to be reset.\n", void_value_key);
+				printf("The value at memory address: [%p] is going to be reset.\n", void_var_address);
 
 				switch(enm_type_data)
 					{
 						case enm_type_entry_char:
-							*((char *) void_value_key) = V_ZERO;
+							*((char *) void_var_address) = V_ZERO;
 							break;
 
 						case enm_type_entry_double:
-							*((double *) void_value_key) = V_ZERO;
+							*((double *) void_var_address) = V_ZERO;
 							break;
 
 						case enm_type_entry_float:
-							*((float *) void_value_key) = V_ZERO;
+							*((float *) void_var_address) = V_ZERO;
 							break;
 
 						case enm_type_entry_int:
-							*((int *) void_value_key) = V_ZERO;
+							*((int *) void_var_address) = V_ZERO;
 							break;
 
 						case enm_type_entry_long:
-							*((long *) void_value_key) = V_ZERO;
+							*((long *) void_var_address) = V_ZERO;
 							break;
 
 						case enm_type_entry_short:
-							*((short *) void_value_key) = V_ZERO;
+							*((short *) void_var_address) = V_ZERO;
 							break;
 
 						default:
-							printf("The value of memory address: [%p] was not altered.\n", void_value_key);
+							printf("The value of memory address: [%p] was not altered.\n", void_var_address);
 							break;
 					}
 			}
 
-		return void_value_key;
+		return void_var_address;
 	}
 
 //Function to locate a certain value by means of interpolations.
