@@ -3,6 +3,7 @@
 
 //Standard work libraries.
 #include <stdio.h>
+#include <stdlib.h>
 
 //Macro for partitioning a binary delta search.
 #define	MEDIUM(x)	(((x) + V_ONE) / V_TWO)
@@ -15,6 +16,8 @@
 
 //Symbolic work constants.
 #define	V_MINUS_ONE	-1
+#define	V_TEN		10
+#define	V_THREE		3
 #define	V_TWO		2
 #define	V_ONE		1
 #define	V_ZERO		0
@@ -22,12 +25,13 @@
 //Enumeration with menu options.
 enum enm_options
 	{
-		opt_bin_srch_normal = V_ONE,
+		opt_bin_srch_delta = V_ONE,
+		opt_bin_srch_in_loop,
 		opt_bin_srch_recursive,
-		opt_bin_srch_delta,
+		opt_fibonacci_search,
 		opt_interpolation_srch,
-		opt_seq_srch_normal,
 		opt_locate_directly,
+		opt_seq_srch_normal,
 		opt_view_all_items,
 		opt_exit
 	} enm_option;
@@ -87,10 +91,20 @@ const int *p_array = array,
 		};
 
 //Prototype functions.
+int BinarySearch(const int array[], const int size, const int target_key, int *pos, int *iters);
+int BinarySearchDelta(const int array[], const int size, const int target_key, int *delta_factor, int *pos, int *iters);
+int BinarySearchRecursive(const int array[], const int target_key, const int bottom, const int top, int *pos, int *iters, int *itrvs);
+int *Fibonacci_Series_Numbers(int max_number, int *qty_items);
+int FibonacciSearch(const int array[], const int size, const int target_key, int *pos, int *iters);
+int GetElement(const char *str_Message, const int array[], const int size, const int target_key, const int position, const int iterations);
+int GetEntry(int *target_key);
 char GetResponse(const char *str_Message);
+int InterpolationLocate(const int array[], const int bottom, const int top, const int target_key, int *middle_bottom, int *middle_top, int *iters);
+int Menu(int *option);
 int SelectedOption(int *value);
 int SequentialSearch(const int array[], const int start, const int size, const int target_key, int *pos, int *iters);
 int ViewAllItems(const int array[], const int position, const int size, const int target_key, int *pos, int *iters);
+
 
 //Improved traditional binary search function.
 int BinarySearch(const int array[], const int size, const int target_key, int *pos, int *iters)
@@ -167,6 +181,103 @@ int BinarySearchRecursive(const int array[], const int target_key, const int bot
 		return *pos;	//The located position of the element is returned as a result.
 	}
 
+//Function that generates a Fibonacci number up to the maximum value sent.
+int *Fibonacci_Series_Numbers(int max_number, int *qty_items)
+	{
+		/* Preliminary working variables. */
+		int addition_value = V_ZERO, first_value = V_ZERO, second_value = V_ONE;
+		int *vector_Fibonacci_Numbers = NULL;
+
+		/* Cycle to count the number of elements whose numbers are below a maximum value. */
+		for (*qty_items = V_ZERO; addition_value < max_number; (*qty_items)++)
+			{
+				addition_value = first_value + second_value;
+				first_value = second_value;
+				second_value = addition_value;
+			}
+
+		/* Condition to create a dynamic array of Fibonacci numbers smaller than the size of the search vector. */
+		if ((--(*qty_items) > V_ZERO) && (vector_Fibonacci_Numbers = (int *) malloc(*qty_items * sizeof(int))))
+			{
+				addition_value = V_ZERO, first_value = V_ZERO, second_value = V_ONE;
+
+				for (int idx = V_ZERO; idx < *qty_items; idx++)
+					{
+						addition_value = first_value + second_value;
+						*(vector_Fibonacci_Numbers + idx) = addition_value;
+
+						first_value = second_value;
+						second_value = addition_value;
+					}
+
+				printf("\nFibonacci Series Numbers.\n");
+
+				for (int idx = V_ZERO; idx < *qty_items; idx++)
+					printf("#: [%2d].\t[%d].\n", idx, vector_Fibonacci_Numbers[idx]);
+
+				printf("[%d] Generated output results.\n", *qty_items);
+			}
+		else
+			perror("There is not enough memory space to accommodate the vector of Fibonacci numbers.");
+
+		return vector_Fibonacci_Numbers;
+	}
+
+//Function that searches for an element using Fibonacci numbers.
+int FibonacciSearch(const int array[], const int size, const int target_key, int *pos, int *iters)
+	{
+		/* Preliminary working variables. */
+		int adjust = V_ZERO, fibM_minus_two = V_ZERO, fibM_minus_three = V_ZERO, index = V_ZERO, tmp = V_ZERO;
+		int qty_items = V_ZERO, *vector_Fibonacci_Numbers = NULL;
+
+		/* Verify the Fibonacci series created. */
+		if (vector_Fibonacci_Numbers = Fibonacci_Series_Numbers(size, &qty_items))
+			{
+				if (qty_items > V_TWO)
+					{
+						/* Preliminary assignment of starting positions. */
+						adjust = (size + V_MINUS_ONE) - vector_Fibonacci_Numbers[qty_items + V_MINUS_ONE];
+
+						index = vector_Fibonacci_Numbers[qty_items + V_MINUS_ONE];
+						fibM_minus_two = vector_Fibonacci_Numbers[qty_items - V_TWO];
+						fibM_minus_three = vector_Fibonacci_Numbers[qty_items - V_THREE];
+
+						if (target_key > array[index]) index += adjust;	//Fit to size != fib_num.
+
+						/* Work loop to reposition the array index. */
+						for (*iters = V_ZERO; (index >= V_ZERO && index < size) && (target_key != array[index]); (*iters)++)
+							{
+								if (target_key == array[index])
+									{
+										*pos = index;
+									}
+								else if (target_key > array[index])
+									{
+										index += fibM_minus_three;
+										fibM_minus_two -= fibM_minus_three;
+										fibM_minus_three -= fibM_minus_two;
+									}
+								else if (target_key < array[index])
+									{
+										index -= fibM_minus_three;
+										tmp = fibM_minus_two;
+										fibM_minus_two = fibM_minus_three;
+										fibM_minus_three = tmp - fibM_minus_three;
+									}
+							}
+					}
+				else
+					perror("The number of Fibonacci numbers generated is less than two units.");
+
+				free(vector_Fibonacci_Numbers);
+			}
+		else
+			perror("There is not enough memory space to allocate the vector of Fibonacci series numbers.");
+
+		return (*pos = (index >= V_ZERO && index < size) ? index : V_MINUS_ONE);
+	}
+
+//Getting an integer value from the keyboard and purging its input.
 int GetElement(const char *str_Message, const int array[], const int size, const int target_key, const int position, const int iterations)
 	{
 		//Preliminary working variables.
@@ -185,8 +296,9 @@ int GetElement(const char *str_Message, const int array[], const int size, const
 				printf("+-=-+----+---+----+-=-+\n");
 				printf("|      Item Info.     |\n");
 				printf("+-=-+----+---+----+-=-+\n");
-				printf("| * Position : [%d].\n", position);
 				printf("| * Maximum  : [%d].\n", size + V_MINUS_ONE);
+				printf("+ --=----=---=----=-- +\n");
+				printf("| * Position : [%d].\n", position);
 				printf("| * Content  : [%d].\n", array[position]);
 				printf("+===+====+===+====+===+\n");
 
@@ -273,14 +385,15 @@ int Menu(int *option)
 				printf("+===+====+===+====+===+====+===+\n");
 				printf("|    Binary search services.   |\n");
 				printf("+===+====+===+====+===+====+===+\n");
-				printf("| [1]. Binary search in loop.  |\n");
-				printf("| [2]. Recursive binary search.|\n");
-				printf("| [3]. Binary delta search.    |\n");
-				printf("| [4]. Interpolation search.   |\n");
-				printf("| [5]. Sequential search.      |\n");
+				printf("| [1]. Binary delta search.    |\n");
+				printf("| [2]. Binary search in loop.  |\n");
+				printf("| [3]. Binary search recursive.|\n");
+				printf("| [4]. Fibonacci search.       |\n");
+				printf("| [5]. Interpolation search.   |\n");
 				printf("| [6]. Locate directly.        |\n");
-				printf("| [7]. View all items details. |\n");
-				printf("| [8]. Exit this program.      |\n");
+				printf("| [7]. Sequential search.      |\n");
+				printf("| [8]. View all items details. |\n");
+				printf("| [9]. Exit this program.      |\n");
 				printf("+===+====+===+====+===+====+===+\n");
 				printf("Choose an option: ");
 
@@ -303,7 +416,7 @@ int SelectedOption(int *value)
 		int target_key = V_ZERO;	//Numeric search key.
 
 		//Presentation and indication headers.
-		if (*value >= opt_bin_srch_normal && *value < opt_exit)
+		if (*value >= opt_bin_srch_delta && *value < opt_exit)
 			{
 				printf("\nSearch for a prime number within the first thousand.\n");
 				printf("Prime number to find: ");
@@ -316,10 +429,18 @@ int SelectedOption(int *value)
 		//Selection of cases with the enumerated value obtained.
 		switch (enm_option)
 			{
+				//We call the binary search function with a delta factor.
+				case opt_bin_srch_delta:
+					position = BinarySearchDelta(array, size, target_key, &delta_factor, &position, &iterations);
+					GetElement("Binary delta search", array, size, target_key, position, iterations);
+					printf("  * Delta Fx : [%d].\n", delta_factor);
+					GetResponse("Press the ENTER key to continue...");
+					break;
+
 				//We call the traditional binary search function.
-				case opt_bin_srch_normal:
+				case opt_bin_srch_in_loop:
 					position = BinarySearch(array, size, target_key, &position, &iterations);
-					GetElement("Traditional Loop Binary Search", array, size, target_key, position, iterations);
+					GetElement("Binary search in loop", array, size, target_key, position, iterations);
 					GetResponse("Press the ENTER key to continue...");
 					break;
 
@@ -327,16 +448,26 @@ int SelectedOption(int *value)
 				case opt_bin_srch_recursive:
 					iterations = V_ZERO;
 					position = BinarySearchRecursive(array, target_key, V_ZERO, size + V_MINUS_ONE, &position, &iterations, &iteratives);
-					GetElement("Recursive Loop Binary Search", array, size, target_key, position, iterations);
+					GetElement("Binary search recursive", array, size, target_key, position, iterations);
 					printf("[%d] calls made to the recursive binary search function.\n", iteratives);
 					GetResponse("Press the ENTER key to continue...");
 					break;
 
-				//We call the binary search function with a delta factor.
-				case opt_bin_srch_delta:
-					position = BinarySearchDelta(array, size, target_key, &delta_factor, &position, &iterations);
-					GetElement("Binary Search with delta factor", array, size, target_key, position, iterations);
-					printf("  * Delta Fx : [%d].\n", delta_factor);
+				//We perform the search function by Fibonacci numbers.
+				case opt_fibonacci_search:
+					position = FibonacciSearch(array, size, target_key, &position, &iterations);
+
+					if (position >= V_ZERO && position <= size + V_MINUS_ONE)
+						{
+							GetElement("Fibonacci search", array, size, target_key, position, iterations);
+							printf("Fenced element at position: [%d] located with content: [%d].\n", position, array[position]);
+						}
+					else
+						{
+							printf("\nElement: [%d] not found!\n", target_key);
+							printf("Highest position achieved: [%d].\n", position);
+						}
+
 					GetResponse("Press the ENTER key to continue...");
 					break;
 
@@ -345,10 +476,32 @@ int SelectedOption(int *value)
 					if (InterpolationLocate(array, V_ZERO, size - V_ONE, target_key, &middle_bottom, &middle_top, &iterations))
 						{
 							printf("\n** [Approximate values ​​obtained] **.\n");
-							GetElement("Interpolated lower value obtained", array, size, target_key, middle_bottom, iterations);
-							GetElement("Interpolated upper value obtained", array, size, target_key, middle_top, iterations);
+							GetElement("Interpolation search: lower value obtained", array, size, target_key, middle_bottom, iterations);
+							GetElement("Interpolation search: upper value obtained", array, size, target_key, middle_top, iterations);
 							GetResponse("Press the ENTER key to continue...");
 						}
+					break;
+
+				//We locate an entry or occurrence of the array directly by means of an index number.
+				case opt_locate_directly:
+					printf("\nEntry or occurrence number to be located.\n");
+					printf("Index position from: [%d] to [%d]: ", V_ZERO, size + V_MINUS_ONE);
+					starting_pos = GetEntry(&starting_pos);
+
+					printf("\nIndex position: [%d] of [%d].\n", starting_pos, size + V_MINUS_ONE);
+
+					if (starting_pos >= V_ZERO && starting_pos <= size + V_MINUS_ONE)
+						{
+							iterations = V_ZERO;
+							GetElement("Locate directly", array, size, target_key, starting_pos, iterations);
+							printf("\nElement found: [%d] ubicated directly on position: [%d].\n", array[starting_pos], starting_pos);
+							printf("Item searched: [%d].\n", target_key);
+							printf("Match result : [%s].\n", (array[starting_pos] == target_key) ? "The located and sought values ​​are equal" : "The types do not match");
+						}
+					else
+						printf("The position index: [%d] is out of bounds between: [%d] and [%d].\n", starting_pos, V_ZERO, size + V_MINUS_ONE);
+
+					GetResponse("Press the ENTER key to continue...");
 					break;
 
 				//We call a function that sequentially searches for a value until it finds it.
@@ -364,7 +517,7 @@ int SelectedOption(int *value)
 
 							if (position >= V_ZERO && position <= size + V_MINUS_ONE)
 								{
-									GetElement("Exact sequential data located", array, size, target_key, position, iterations);
+									GetElement("Sequential search", array, size, target_key, position, iterations);
 									printf("Fenced element at position: [%d] located with content: [%d].\n", position, array[position]);
 								}
 							else
@@ -375,28 +528,6 @@ int SelectedOption(int *value)
 						}
 					else
 						printf("The start index: [%d] is out of bounds between: [%d] and [%d].\n", starting_pos, V_ZERO, size + V_MINUS_ONE);
-
-					GetResponse("Press the ENTER key to continue...");
-					break;
-
-				//We locate an entry or occurrence of the array directly by means of an index number.
-				case opt_locate_directly:
-					printf("\nEntry or occurrence number to be located.\n");
-					printf("Index position from: [%d] to [%d]: ", V_ZERO, size + V_MINUS_ONE);
-					starting_pos = GetEntry(&starting_pos);
-
-					printf("\nIndex position: [%d] of [%d].\n", starting_pos, size + V_MINUS_ONE);
-
-					if (starting_pos >= V_ZERO && starting_pos <= size + V_MINUS_ONE)
-						{
-							iterations = V_ZERO;
-							GetElement("Locate directly item or element by position", array, size, array[starting_pos], starting_pos, iterations);
-							printf("\nElement found: [%d] ubicated directly on position: [%d].\n", array[starting_pos], starting_pos);
-							printf("Item searched: [%d].\n", target_key);
-							printf("Match result : [%s].\n", (array[starting_pos] == target_key) ? "The located and sought values ​​are equal" : "The types do not match");
-						}
-					else
-						printf("The position index: [%d] is out of bounds between: [%d] and [%d].\n", starting_pos, V_ZERO, size + V_MINUS_ONE);
 
 					GetResponse("Press the ENTER key to continue...");
 					break;
@@ -415,7 +546,7 @@ int SelectedOption(int *value)
 
 							if (position >= V_ZERO && position <= size + V_MINUS_ONE)
 								{
-									GetElement("Aproximate sequential data located", array, size, target_key, position, iterations);
+									GetElement("View all items details", array, size, target_key, position, iterations);
 									printf("Fenced element at position: [%d] located with content: [%d].\n", position, array[position]);
 								}
 							else
