@@ -36,7 +36,7 @@ enum enm_options
 		enm_opt_exit
 	} enm_option;
 
-//Enumeration with type entry variables.
+//Enumeration with type entry variables and its reseting.
 enum enm_type_entry
 	{
 		enm_type_entry_char,
@@ -46,6 +46,12 @@ enum enm_type_entry
 		enm_type_entry_long,
 		enm_type_entry_short
 	} enm_type_value;
+
+enum enm_type_reset
+	{
+		enm_type_reset_NO,
+		enm_type_reset_YES
+	} enm_type_reset_OK;
 
 //Global static array of prime numbers.
 static const int array[] =	{
@@ -108,7 +114,7 @@ int BinarySearchRecursive(const int array[], const int target_key, const int bot
 int *Fibonacci_Series_Numbers(const int max_number, int *qty_items, int **Fibo_Series_Nums);
 int FibonacciSearch(const int array[], const int size, const int target_key, int *pos, int *iters);
 int GetElement(const char *str_Message, const int array[], const int size, const int target_key, const int position, const int iterations);
-void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_entry);
+void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_entry, enum enm_type_reset enm_type_reset_OK);
 int InterpolationLocate(const int array[], const int bottom, const int top, const int target_key, int *middle_bottom, int *middle_top, int *iters);
 int Menu(int *option);
 int SelectedOption(int *value);
@@ -228,7 +234,7 @@ int *Fibonacci_Series_Numbers(const int max_number, int *qty_items, int **Fibo_S
 
 				printf("[%d] Generated output results.\n", *qty_items);
 
-				char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char));
+				char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 			}
 		else
 			perror("There is not enough memory space to accommodate the vector of Fibonacci numbers.");
@@ -317,7 +323,7 @@ int GetElement(const char *str_Message, const int array[], const int size, const
 				printf("| * Content  : [%d].\n", array[position]);
 				printf("+===+====+===+====+===+\n");
 
-				char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char));
+				char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 				item = array[position];
 			}
 		else
@@ -327,11 +333,12 @@ int GetElement(const char *str_Message, const int array[], const int size, const
 	}
 
 //Function that gets a correct type value depending on its option.
-void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_entry enm_type_data)
+void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_entry enm_type_data, enum enm_type_reset enm_type_reset_OK)
 	{
 		//Preliminary working variables.
 		char c = NULL_CHARACTER;
-		int number_arguments = V_ZERO, option_type_entry = (int) enm_type_data;
+		int count_bytes = V_ZERO, number_arguments = V_ZERO;
+		int option_type_entry = (int) enm_type_data;
 
 		/* Structure with the type of the returned variable. */
 		struct s_input_type_format
@@ -340,107 +347,117 @@ void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_en
 				char *format_variable;
 			}
 			s_input_type_formats[] =
-				{{"char", "%c%*c"}, {"double", "%lf%*c"}, {"float", "%f%*c"},
-				 {"int", "%d%*c"}, {"long", "%ld%*c"}, {"short", "%hi%*c"}};
+				{{"char", "%c%n"}, {"double", "%lf%n"}, {"float", "%f%n"},
+				 {"int", "%d%n"}, {"long", "%ld%n"}, {"short", "%hi%n"}};
 
-		/* Incoming message. */
-		printf("%s", str_Message);
-
-		/* Selection of validating case of the type of variable to generate. */
-		switch(enm_type_data)
+		if (void_var_address)
 			{
-				//Get a correct character value.
-				case enm_type_entry_char:
-					if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (char *) void_var_address)) == V_ONE)
-						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%x] : [%d] = [%c]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(char), (char *) void_var_address, *((char *) void_var_address), *((char *) void_var_address), *((char *) void_var_address));
-					break;
+				/* Incoming message. */
+				printf("%s", str_Message);
 
-				//Get a correct double value.
-				case enm_type_entry_double:
-					if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (double *) void_var_address)) == V_ONE)
-						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%lf]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(double), (double *) void_var_address, *((double *) void_var_address));
-					break;
-
-				//Get a correct float value.
-				case enm_type_entry_float:
-					if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (float *) void_var_address)) == V_ONE)
-						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%f]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(float), (float *) void_var_address, *((float *) void_var_address));
-					break;
-
-				//Get a correct integer value.
-				case enm_type_entry_int:
-					if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (int *) void_var_address)) == V_ONE)
-						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%d]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(int), (int *) void_var_address, *((int *) void_var_address));
-					break;
-
-				//Get a correct long value.
-				case enm_type_entry_long:
-					if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (long *) void_var_address)) == V_ONE)
-						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%ld]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(long), (long *) void_var_address, *((long *) void_var_address));
-					break;
-
-				//Get a correct short value.
-				case enm_type_entry_short:
-					if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (short *) void_var_address)) == V_ONE)
-						printf("\nOption: [%d]. Type: [%s]. Size: [%ld]. Memory address: [%p]. Input value: [%hi]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, sizeof(short), (short *) void_var_address, *((short *) void_var_address));
-					break;
-
-				//Option no valid.
-				default:
-					printf("The selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
-					break;
-			}
-
-		//Get an incorrect value.
-		if (number_arguments != V_ONE)
-			{
-				if (feof(stdin))
-					{
-						printf("\nEnd of File (EOF) detected in data entry.\n");
-						clearerr(stdin);
-						fflush(stdin);
-					}
-				else
-					{
-						printf("\nThe value entered is not valid. Trying again.\n");
-
-						scanf("%*[^\n]%*c");
-						while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
-					}
-
-				printf("The value at memory address: [%p] is going to be reset.\n", void_var_address);
-
+				/* Selection of validating case of the type of variable to generate. */
 				switch(enm_type_data)
 					{
+						//Get a correct character value.
 						case enm_type_entry_char:
-							*((char *) void_var_address) = V_ZERO;
+							if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (char *) void_var_address, &count_bytes)) == V_ONE)
+								printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%x] : [%d] = [%c]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, count_bytes, sizeof(char), (char *) void_var_address, *((char *) void_var_address), *((char *) void_var_address), *((char *) void_var_address));
 							break;
 
+						//Get a correct double value.
 						case enm_type_entry_double:
-							*((double *) void_var_address) = V_ZERO;
+							if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (double *) void_var_address, &count_bytes)) == V_ONE)
+								printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%lf]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, count_bytes, sizeof(double), (double *) void_var_address, *((double *) void_var_address));
 							break;
 
+						//Get a correct float value.
 						case enm_type_entry_float:
-							*((float *) void_var_address) = V_ZERO;
+							if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (float *) void_var_address, &count_bytes)) == V_ONE)
+								printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%f]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, count_bytes, sizeof(float), (float *) void_var_address, *((float *) void_var_address));
 							break;
 
+						//Get a correct integer value.
 						case enm_type_entry_int:
-							*((int *) void_var_address) = V_ZERO;
+							if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (int *) void_var_address, &count_bytes)) == V_ONE)
+								printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%d]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, count_bytes, sizeof(int), (int *) void_var_address, *((int *) void_var_address));
 							break;
 
+						//Get a correct long value.
 						case enm_type_entry_long:
-							*((long *) void_var_address) = V_ZERO;
+							if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (long *) void_var_address, &count_bytes)) == V_ONE)
+								printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%ld]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, count_bytes, sizeof(long), (long *) void_var_address, *((long *) void_var_address));
 							break;
 
+						//Get a correct short value.
 						case enm_type_entry_short:
-							*((short *) void_var_address) = V_ZERO;
+							if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (short *) void_var_address, &count_bytes)) == V_ONE)
+								printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%hi]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, count_bytes, sizeof(short), (short *) void_var_address, *((short *) void_var_address));
 							break;
 
+						//Option no valid.
 						default:
-							printf("The value of memory address: [%p] was not altered.\n", void_var_address);
+							printf("The selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
 							break;
 					}
+
+				//Get an incorrect value.
+				if (number_arguments != V_ONE)
+					{
+						if (feof(stdin))
+							{
+								printf("\nEnd of File (EOF) detected in data entry.\n");
+								clearerr(stdin);
+								fflush(stdin);
+							}
+						else
+							{
+								printf("\nThe value entered is not valid. Trying again!\n");
+								scanf("%*[^\n]%*c");
+							}
+
+						/* Initialize the specified memory area. */
+						if (enm_type_reset_OK == enm_type_reset_YES)
+							{
+								printf("The value at memory address: [%p] is going to be reset.\n", void_var_address);
+
+								switch(enm_type_data)
+									{
+										case enm_type_entry_char:
+											*((char *) void_var_address) = V_ZERO;
+											break;
+
+										case enm_type_entry_double:
+											*((double *) void_var_address) = V_ZERO;
+											break;
+
+										case enm_type_entry_float:
+											*((float *) void_var_address) = V_ZERO;
+											break;
+
+										case enm_type_entry_int:
+											*((int *) void_var_address) = V_ZERO;
+											break;
+
+										case enm_type_entry_long:
+											*((long *) void_var_address) = V_ZERO;
+											break;
+
+										case enm_type_entry_short:
+											*((short *) void_var_address) = V_ZERO;
+											break;
+
+										default:
+											printf("The value of memory address: [%p] was not altered.\n", void_var_address);
+											break;
+									}
+							}
+					}
+
+				/* We must always clear the input buffer of impurities. */
+				while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
 			}
+		else
+			fprintf(stderr, "The memory address to hold the variable is not valid.\n");
 
 		return void_var_address;
 	}
@@ -480,7 +497,7 @@ int Menu(int *option)
 				printf("+===+====+===+====+===+====+===+\n");
 				printf("Choose an option: ");
 
-				*option = value = *((int *) GetEntry("", &value, enm_type_entry_int));
+				*option = value = *((int *) GetEntry("", &value, enm_type_entry_int, enm_type_reset_YES));
 				*option = value = SelectedOption(&value);
 			}
 
@@ -504,7 +521,7 @@ int SelectedOption(int *value)
 			{
 				printf("\nSearch for a prime number within the first thousand.\n");
 				printf("Prime number to find: ");
-				target_key = *((int *) GetEntry("", &target_key, enm_type_entry_int));
+				target_key = *((int *) GetEntry("", &target_key, enm_type_entry_int, enm_type_reset_YES));
 			}
 
 		//Convert integer value to enumerated value.
@@ -518,14 +535,14 @@ int SelectedOption(int *value)
 					position = BinarySearchDelta(array, size, target_key, &delta_factor, &position, &iterations);
 					GetElement("Binary delta search", array, size, target_key, position, iterations);
 					printf("  * Delta Fx : [%d].\n", delta_factor);
-					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char));
+					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
 				//We call the traditional binary search function.
 				case enm_opt_bin_srch_in_loop:
 					position = BinarySearch(array, size, target_key, &position, &iterations);
 					GetElement("Binary search in loop", array, size, target_key, position, iterations);
-					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char));
+					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
 				//We call the traditional recursive and cyclic binary search function.
@@ -534,7 +551,7 @@ int SelectedOption(int *value)
 					position = BinarySearchRecursive(array, target_key, V_ZERO, size + V_MINUS_ONE, &position, &iterations, &iteratives);
 					GetElement("Binary search recursive", array, size, target_key, position, iterations);
 					printf("[%d] calls made to the recursive binary search function.\n", iteratives);
-					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char));
+					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
 				//We perform the search function by Fibonacci numbers.
@@ -552,7 +569,7 @@ int SelectedOption(int *value)
 							printf("Highest position achieved: [%d].\n", position);
 						}
 
-					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char));
+					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
 				//We call a function that obtains the position of the searched element by means of interpolations.
@@ -562,7 +579,7 @@ int SelectedOption(int *value)
 							printf("\n** [Approximate values ​​obtained] **.\n");
 							GetElement("Interpolation search: lower value obtained", array, size, target_key, middle_bottom, iterations);
 							GetElement("Interpolation search: upper value obtained", array, size, target_key, middle_top, iterations);
-							char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char));
+							char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 						}
 					break;
 
@@ -570,7 +587,7 @@ int SelectedOption(int *value)
 				case enm_opt_locate_directly:
 					printf("\nEntry or occurrence number to be located.\n");
 					printf("Index position from: [%d] to [%d]: ", V_ZERO, size + V_MINUS_ONE);
-					starting_pos = *((int *) GetEntry("", &starting_pos, enm_type_entry_int));
+					starting_pos = *((int *) GetEntry("", &starting_pos, enm_type_entry_int, enm_type_reset_YES));
 
 					printf("\nIndex position: [%d] of [%d].\n", starting_pos, size + V_MINUS_ONE);
 
@@ -585,13 +602,13 @@ int SelectedOption(int *value)
 					else
 						printf("The position index: [%d] is out of bounds between: [%d] and [%d].\n", starting_pos, V_ZERO, size + V_MINUS_ONE);
 
-					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char));
+					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
 				//We call a function that sequentially searches for a value until it finds it.
 				case enm_opt_seq_srch_normal:
 					printf("Starting position from: [%d] to [%d]: ", V_ZERO, size + V_MINUS_ONE);
-					starting_pos = *((int *) GetEntry("", &starting_pos, enm_type_entry_int));
+					starting_pos = *((int *) GetEntry("", &starting_pos, enm_type_entry_int, enm_type_reset_YES));
 
 					printf("\nStarting position captured: [%d] of [%d].\n", starting_pos, size + V_MINUS_ONE);
 
@@ -613,13 +630,13 @@ int SelectedOption(int *value)
 					else
 						printf("The start index: [%d] is out of bounds between: [%d] and [%d].\n", starting_pos, V_ZERO, size + V_MINUS_ONE);
 
-					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char));
+					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
 				//See all the details of the record to be consulted.
 				case enm_opt_view_all_items:
 					printf("Starting position from: [%d] to [%d]: ", V_ZERO, size + V_MINUS_ONE);
-					starting_pos = *((int *) GetEntry("", &starting_pos, enm_type_entry_int));
+					starting_pos = *((int *) GetEntry("", &starting_pos, enm_type_entry_int, enm_type_reset_YES));
 
 					printf("\nStarting position captured: [%d] of [%d].\n", starting_pos, size + V_MINUS_ONE);
 
@@ -646,7 +663,7 @@ int SelectedOption(int *value)
 					else
 						printf("The position index: [%d] is out of bounds between: [%d] and [%d].\n", starting_pos, V_ZERO, size + V_MINUS_ONE);
 
-					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char));
+					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
 				//Program exit case.
@@ -715,7 +732,7 @@ int ViewAllItems(const int array[], const int position, const int size, const in
 
 				if (array[idx] == target_key) printf ("** Element: [%d] = [%d] located in position: [%d]. **\n", target_key, array[idx], idx);
 
-				char_key = *((char *) GetEntry("Do you want to continue viewing more records (y/n)? : ", &char_key, enm_type_entry_char));
+				char_key = *((char *) GetEntry("Do you want to continue viewing more records (y/n)? : ", &char_key, enm_type_entry_char, enm_type_reset_YES));
 			}
 
 		return(*pos = (idx > position && idx <= size) ? --idx : idx);
