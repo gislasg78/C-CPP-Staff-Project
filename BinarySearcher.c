@@ -16,6 +16,7 @@
 
 //Symbolic work constants.
 #define	V_MINUS_ONE	-1
+#define	V_ONE_HUNDRED	100
 #define	V_TEN		10
 #define	V_THREE		3
 #define	V_TWO		2
@@ -336,8 +337,8 @@ int GetElement(const char *str_Message, const int array[], const int size, const
 void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_entry enm_type_data, enum enm_type_reset enm_type_reset_OK)
 	{
 		//Preliminary working variables.
-		char c = NULL_CHARACTER;
-		int count_bytes = V_ZERO, number_arguments = V_ZERO;
+		char c = NULL_CHARACTER, *buffer = NULL;
+		int count_bytes = V_ZERO, number_arguments = V_ZERO, number_elements = V_ONE_HUNDRED;
 		int option_type_entry = (int) enm_type_data;
 
 		/* Structure with the type of the returned variable. */
@@ -346,115 +347,126 @@ void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_en
 				char *type_variable;
 				char *format_variable;
 			}
-			s_input_type_formats[] =
+			s_input_types_formats[] =
 				{{"char", "%c%n"}, {"double", "%lf%n"}, {"float", "%f%n"},
 				 {"int", "%d%n"}, {"long", "%ld%n"}, {"short", "%hi%n"}};
 
+		/* Validate if the obtained memory addresses are valid. */
 		if (void_var_address)
 			{
-				/* Incoming message. */
-				printf("%s", str_Message);
-
-				/* Selection of validating case of the type of variable to generate. */
-				switch(enm_type_data)
+				if (buffer = (char *) calloc(number_elements, sizeof(char)))
 					{
-						//Get a correct character value.
-						case enm_type_entry_char:
-							if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (char *) void_var_address, &count_bytes)) == V_ONE)
-								printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%x] : [%d] = [%c]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, count_bytes, sizeof(char), (char *) void_var_address, *((char *) void_var_address), *((char *) void_var_address), *((char *) void_var_address));
-							break;
+						/* Incoming message. */
+						printf("%s", str_Message);
+						scanf("%[^\n]", buffer);
 
-						//Get a correct double value.
-						case enm_type_entry_double:
-							if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (double *) void_var_address, &count_bytes)) == V_ONE)
-								printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%lf]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, count_bytes, sizeof(double), (double *) void_var_address, *((double *) void_var_address));
-							break;
+						/* Selection of validating case of the type of variable to generate. */
+						switch(enm_type_data)
+							{
+								//Get a correct character value.
+								case enm_type_entry_char:
+									if ((number_arguments = sscanf(buffer, s_input_types_formats[option_type_entry].format_variable, (char *) void_var_address, &count_bytes)) == V_ONE)
+										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%x] : [%d] = [%c]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(char), (char *) void_var_address, *((char *) void_var_address), *((char *) void_var_address), *((char *) void_var_address));
+									break;
 
-						//Get a correct float value.
-						case enm_type_entry_float:
-							if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (float *) void_var_address, &count_bytes)) == V_ONE)
-								printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%f]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, count_bytes, sizeof(float), (float *) void_var_address, *((float *) void_var_address));
-							break;
+								//Get a correct double value.
+								case enm_type_entry_double:
+									if ((number_arguments = sscanf(buffer, s_input_types_formats[option_type_entry].format_variable, (double *) void_var_address, &count_bytes)) == V_ONE)
+										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%lf]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(double), (double *) void_var_address, *((double *) void_var_address));
+									break;
 
-						//Get a correct integer value.
-						case enm_type_entry_int:
-							if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (int *) void_var_address, &count_bytes)) == V_ONE)
-								printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%d]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, count_bytes, sizeof(int), (int *) void_var_address, *((int *) void_var_address));
-							break;
+								//Get a correct float value.
+								case enm_type_entry_float:
+									if ((number_arguments = sscanf(buffer, s_input_types_formats[option_type_entry].format_variable, (float *) void_var_address, &count_bytes)) == V_ONE)
+										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%f]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(float), (float *) void_var_address, *((float *) void_var_address));
+									break;
 
-						//Get a correct long value.
-						case enm_type_entry_long:
-							if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (long *) void_var_address, &count_bytes)) == V_ONE)
-								printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%ld]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, count_bytes, sizeof(long), (long *) void_var_address, *((long *) void_var_address));
-							break;
+								//Get a correct integer value.
+								case enm_type_entry_int:
+									if ((number_arguments = sscanf(buffer, s_input_types_formats[option_type_entry].format_variable, (int *) void_var_address, &count_bytes)) == V_ONE)
+										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%d]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(int), (int *) void_var_address, *((int *) void_var_address));
+									break;
 
-						//Get a correct short value.
-						case enm_type_entry_short:
-							if ((number_arguments = scanf(s_input_type_formats[option_type_entry].format_variable, (short *) void_var_address, &count_bytes)) == V_ONE)
-								printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%hi]. OK!\n", option_type_entry, s_input_type_formats[option_type_entry].type_variable, count_bytes, sizeof(short), (short *) void_var_address, *((short *) void_var_address));
-							break;
+								//Get a correct long value.
+								case enm_type_entry_long:
+									if ((number_arguments = sscanf(buffer, s_input_types_formats[option_type_entry].format_variable, (long *) void_var_address, &count_bytes)) == V_ONE)
+										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%ld]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(long), (long *) void_var_address, *((long *) void_var_address));
+									break;
 
-						//Option no valid.
-						default:
-							printf("The selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
-							break;
+								//Get a correct short value.
+								case enm_type_entry_short:
+									if ((number_arguments = sscanf(buffer, s_input_types_formats[option_type_entry].format_variable, (short *) void_var_address, &count_bytes)) == V_ONE)
+										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%hi]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(short), (short *) void_var_address, *((short *) void_var_address));
+									break;
+
+								//Option no valid.
+								default:
+									printf("The selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
+									break;
+							}
+
+							//Get an incorrect value.
+							if (number_arguments != V_ONE)
+								{
+									if (feof(stdin))
+										{
+											printf("\nEnd of File (EOF) detected in data entry.\n");
+											clearerr(stdin);
+											fflush(stdin);
+										}
+									else
+										{
+											printf("\nThe value entered is not valid. Trying again!\n");
+											scanf("%*[^\n]%*c");
+											while((c = getchar()) != CARRIAGE_RETURN && c != EOF);
+										}
+
+									/* Initialize the specified memory area. */
+									if (enm_type_reset_OK == enm_type_reset_YES)
+										{
+											printf("The value at memory address: [%p] is going to be reset.\n", void_var_address);
+
+											switch(enm_type_data)
+												{
+													case enm_type_entry_char:
+														*((char *) void_var_address) = V_ZERO;
+														break;
+
+													case enm_type_entry_double:
+														*((double *) void_var_address) = V_ZERO;
+														break;
+
+													case enm_type_entry_float:
+														*((float *) void_var_address) = V_ZERO;
+														break;
+
+													case enm_type_entry_int:
+														*((int *) void_var_address) = V_ZERO;
+														break;
+
+													case enm_type_entry_long:
+														*((long *) void_var_address) = V_ZERO;
+														break;
+
+													case enm_type_entry_short:
+														*((short *) void_var_address) = V_ZERO;
+														break;
+
+													default:
+														printf("The value of memory address: [%p] was not altered.\n", void_var_address);
+														break;
+												}
+										}
+								}
+
+						/* We must always clear the input buffer of impurities. */
+						printf("Address: [%p] = {%s}. Clearing buffer...\n", buffer, buffer);
+						while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
+
+						free(buffer);
 					}
-
-				//Get an incorrect value.
-				if (number_arguments != V_ONE)
-					{
-						if (feof(stdin))
-							{
-								printf("\nEnd of File (EOF) detected in data entry.\n");
-								clearerr(stdin);
-								fflush(stdin);
-							}
-						else
-							{
-								printf("\nThe value entered is not valid. Trying again!\n");
-								scanf("%*[^\n]%*c");
-							}
-
-						/* Initialize the specified memory area. */
-						if (enm_type_reset_OK == enm_type_reset_YES)
-							{
-								printf("The value at memory address: [%p] is going to be reset.\n", void_var_address);
-
-								switch(enm_type_data)
-									{
-										case enm_type_entry_char:
-											*((char *) void_var_address) = V_ZERO;
-											break;
-
-										case enm_type_entry_double:
-											*((double *) void_var_address) = V_ZERO;
-											break;
-
-										case enm_type_entry_float:
-											*((float *) void_var_address) = V_ZERO;
-											break;
-
-										case enm_type_entry_int:
-											*((int *) void_var_address) = V_ZERO;
-											break;
-
-										case enm_type_entry_long:
-											*((long *) void_var_address) = V_ZERO;
-											break;
-
-										case enm_type_entry_short:
-											*((short *) void_var_address) = V_ZERO;
-											break;
-
-										default:
-											printf("The value of memory address: [%p] was not altered.\n", void_var_address);
-											break;
-									}
-							}
-					}
-
-				/* We must always clear the input buffer of impurities. */
-				while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
+				else
+					perror("An error occurred while allocating memory for the character string.");
 			}
 		else
 			fprintf(stderr, "The memory address to hold the variable is not valid.\n");
