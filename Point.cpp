@@ -1,4 +1,6 @@
+//General Work Libraries.
 #include <iostream>
+#include <vector>
 
 //Symbolic constant of work.
 #define V_ZERO  0
@@ -29,7 +31,7 @@ namespace SpacePoints
 					void setX(const T x) {this->x = x;};
 					void setY(const T y) {this->y = y;};
 
-					virtual void print()
+					virtual void print() const
 						{
 							std::cout << "2D Point #" << this->c << ":\t(" << this->x << ", " << this->y << ")." << std::endl;
 						};
@@ -40,10 +42,9 @@ namespace SpacePoints
 		template <typename T>
 		int Point2D<T>::c = V_ZERO;
 
-
 		//Second '3D Point' template type class inherits its attributes and methods from the '2D Point' class.
 		template <typename T>
-		class Point3D : public Point2D<T>
+		class Point3D : public SpacePoints::Point2D<T>
 			{
 				private:
 					template <typename U>
@@ -54,18 +55,55 @@ namespace SpacePoints
 					T z = V_ZERO;
 
 				public:
-					Point3D(T x, T y, T z) : Point2D<T>(x, y), z(z) {};
+					Point3D(T x, T y, T z) : SpacePoints::Point2D<T>(x, y), z(z) {};
 
 					T getZ() const {return this->z;};
 					void setZ(const T z) {this->z = z;};
 
-					void print()
+					void print() const
 						{
-							Point2D<T>::print();
+							SpacePoints::Point2D<T>::print();
 							std::cout << "3D Point #" << this->c << ":\t(" << this->z << ")." << std::endl;
 						};
 			};
 
+		//Line class.
+		template <typename T>
+		class Line
+			{
+
+				private:
+					/* Storing a vector of 'Point2D' objects. */
+					std::vector<SpacePoints::Point2D<T>> vSp2D;
+
+				public:
+					/* Add a 'Point2D' class to the 'Point2D' point vector. */
+					void addPoint2D(const SpacePoints::Point2D<T> &Sp2D)
+						{
+							std::cout << "2D Point:\t(x = [" << Sp2D.getX() << "], y = [" << Sp2D.getY() << "])." << std::endl;
+							vSp2D.push_back(Sp2D);
+						};
+
+					/* Clear 'Point2D' point vector. */
+					void clearVPoint2D()
+						{
+							std::cout << "All the points that made up the line have been cleaned." << std::endl;
+							vSp2D.clear();
+						};
+
+					/* Print saved 'Point2D' classes. */
+					virtual void print() const
+						{
+							std::cout << "'Point2D' classes added to the 'Line' class." << std::endl;
+
+							for (auto it_vSp2D = std::begin(vSp2D); it_vSp2D != std::end(vSp2D); it_vSp2D++)
+								{
+									std::cout << "2D Point:\t(x = [" << it_vSp2D->getX() << "], y = [" << it_vSp2D->getY() << "])." << std::endl;
+								}
+
+							std::cout << "[" << vSp2D.size() << "] 'Point2D' classes contained." << std::endl;
+						};
+			};
 
 	//Overloading the >> operator to read 'x' and 'y' values ​​from std::cin for 'Point2D' object.
 	template <typename T>
@@ -192,6 +230,14 @@ int main()
 		std::cin >> Sp2x3D;
 		Sp2x3D.print();
 		std::cout << Sp2x3D << std::endl;
+
+		std::cout << "The necessary points are added and displayed in a 'Line' class." << std::endl;
+		SpacePoints::Line<int> line;
+		line.addPoint2D(Sp2D);
+		line.addPoint2D(Sp3D);
+		line.addPoint2D(Sp2x3D);
+		line.print();
+		line.clearVPoint2D();
 
 		std::cout << "Program finished..." << std::endl;
 
