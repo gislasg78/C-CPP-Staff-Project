@@ -1,21 +1,19 @@
+/* Program that makes comparisons and returns a boolean value
+   if the comparison is successful or the value that exceeds the comparison.*/
+
 #include <stdio.h>
 
-#define	V_ONE	1
-#define V_ZERO  0
+#define	V_MINUS_ONE	-1
+#define V_ZERO  	0
 
-int compare(int a, int b, int (*pf)(int, int), int c)
+int compare(int a, int b, int (*pf)(int, int, int), int cmp, int opt)
 	{
-		return ((c) ? (*pf)(a, b) : ((*pf)(a, b)) ? a : b);
+		return ((cmp) ? (*pf)(a, b, opt) : ((*pf)(a, b, opt)) ? a : b);
 	}
 
-int bigger(int a, int b)
+int equate(int a, int b, int opt)
 	{
-		return (a > b);
-	}
-
-int smaller(int a, int b)
-	{
-		return (a < b);
+		return ((opt) ? (a > b) : (a < b));
 	}
 
 int main()
@@ -30,16 +28,16 @@ int main()
 		scanf("%d", &b);
 
 		printf("\nResults.\n");
-		printf("[%d] > [%d] : [%d].\n", a, b, compare(a, b, bigger, V_ZERO));
-		printf("[%d] < [%d] : [%d].\n", a, b, compare(a, b, smaller, V_ZERO));
-		printf("[%d] > [%d] : [%d].\n", b, a, compare(b, a, bigger, V_ZERO));
-		printf("[%d] < [%d] : [%d].\n", b, a, compare(b, a, smaller, V_ZERO));
+		printf("[%d] > [%d] : [%d].\n", a, b, compare(a, b, equate, V_ZERO, V_MINUS_ONE));
+		printf("[%d] < [%d] : [%d].\n", a, b, compare(a, b, equate, V_ZERO, V_ZERO));
+		printf("[%d] > [%d] : [%d].\n", b, a, compare(b, a, equate, V_ZERO, V_MINUS_ONE));
+		printf("[%d] < [%d] : [%d].\n", b, a, compare(b, a, equate, V_ZERO, V_ZERO));
 
 		printf("\nOutcomes.\n");
-		printf("[%d] > [%d] = [%d].\n", a, b, compare(a, b, bigger, V_ONE));
-		printf("[%d] < [%d] = [%d].\n", a, b, compare(a, b, smaller, V_ONE));
-		printf("[%d] > [%d] = [%d].\n", b, a, compare(b, a, bigger, V_ONE));
-		printf("[%d] < [%d] = [%d].\n", b, a, compare(b, a, smaller, V_ONE));
+		printf("[%d] > [%d] = [%d].\n", a, b, compare(a, b, equate, V_MINUS_ONE, V_MINUS_ONE));
+		printf("[%d] < [%d] = [%d].\n", a, b, compare(a, b, equate, V_MINUS_ONE, V_ZERO));
+		printf("[%d] > [%d] = [%d].\n", b, a, compare(b, a, equate, V_MINUS_ONE, V_MINUS_ONE));
+		printf("[%d] < [%d] = [%d].\n", b, a, compare(b, a, equate, V_MINUS_ONE, V_ZERO));
 
 		return V_ZERO;
 	}
