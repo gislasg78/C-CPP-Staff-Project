@@ -52,6 +52,13 @@ class MyPoint
 					this->capture();
 				};
 
+			MyPoint(const MyPoint& myPoint)
+				{
+					this->c++;
+					this->x = myPoint.getX();
+					this->y = myPoint.getY();
+				};
+
 			MyPoint(const T &x, const T &y) : x(x), y(y)	{this->c++;};
 
 			virtual void capture()
@@ -68,7 +75,7 @@ class MyPoint
 
 			virtual void print() const
 				{
-					std::cout << "Display properties of the 'My Point' object." << std::endl;
+					std::cout << "Show properties of the 'My Point' object." << std::endl;
 					this->viewCounter();
 					std::cout << "(x = [" << this->x << "], y = [" << this->y << "])." << std::endl;
 				}
@@ -148,7 +155,7 @@ int main()
 			}
 
 		/* Deleting the array of pointer objects of type 'MyPoint'. */
-		std::cout << "Deleting the array of pointers of object pointers of type 'MyPoint'..." << std::endl;
+		std::cout << "Deleting the array of pointers of type 'MyPoint'..." << std::endl;
 		delete mypoints;
 
 		return V_ZERO;
