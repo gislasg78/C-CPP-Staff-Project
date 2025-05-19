@@ -29,6 +29,7 @@ enum enm_options
 		enm_opt_bin_srch_delta = V_ONE,
 		enm_opt_bin_srch_in_loop,
 		enm_opt_bin_srch_recursive,
+		enm_opt_dump_all_items,
 		enm_opt_fibonacci_search,
 		enm_opt_interpolation_srch,
 		enm_opt_locate_directly,
@@ -65,8 +66,8 @@ static const int array[] =	{
 					509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613,
 					617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719,
 					727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827,
-					829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941,
-					947, 953, 967, 971, 977, 983, 991, 997
+					829, 839, 853, 857, 859, 863, 869, 877, 881, 883, 889, 907, 911, 919, 929, 937,
+					941, 947, 953, 967, 971, 977, 983, 991, 997
 				};
 
 const int *p_array = array,
@@ -105,17 +106,18 @@ const int *p_array = array,
 			array + 150, array + 151, array + 152, array + 153, array + 154,
 			array + 155, array + 156, array + 157, array + 158, array + 159,
 			array + 160, array + 161, array + 162, array + 163, array + 164,
-			array + 165, array + 166, array + 167,
+			array + 165, array + 166, array + 167, array + 168
 		};
 
 //Prototype functions.
 int BinarySearch(const int array[], const int size, const int target_key, int *pos, int *iters);
 int BinarySearchDelta(const int array[], const int size, const int target_key, int *delta_factor, int *pos, int *iters);
 int BinarySearchRecursive(const int array[], const int target_key, const int bottom, const int top, int *pos, int *iters, int *itrvs);
+int DumpAllItems(const int array[], const int position, const int size, const int target_key, int *pos, int *iters);
 int *Fibonacci_Series_Numbers(const int max_number, int *qty_items, int **Fibo_Series_Nums);
 int FibonacciSearch(const int array[], const int size, const int target_key, int *pos, int *iters);
 int GetElement(const char *str_Message, const int array[], const int size, const int target_key, const int position, const int iterations);
-void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_entry, enum enm_type_reset enm_type_reset_OK);
+void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_entry enm_type_value, enum enm_type_reset enm_type_reset_OK);
 int InterpolationLocate(const int array[], const int bottom, const int top, const int target_key, int *middle_bottom, int *middle_top, int *iters);
 int Menu(int *option);
 int SelectedOption(int *value);
@@ -196,6 +198,30 @@ int BinarySearchRecursive(const int array[], const int target_key, const int bot
 
 		*itrvs = iteratives;
 		return *pos;	//The located position of the element is returned as a result.
+	}
+
+//Dump all elements of the array.
+int DumpAllItems(const int array[], const int position, const int size, const int target_key, int *pos, int *iters)
+	{
+		/* Preliminary working variables. */
+		int item_pos = V_MINUS_ONE;
+
+		/* Display of each of the elements of the array. */
+		printf("\nDump all elements of the array...\n");
+
+		for (int idx = position; idx <= size; idx++, (*iters)++)
+			{
+				printf("[%d].\t", array[idx]);
+
+				if (array[idx] == target_key) item_pos = idx;
+			}
+
+		printf("\n");
+
+		/* If the item has been located in the full crawl, indicate that the item was located. */
+		if (item_pos >= position && item_pos <= size) printf ("** Element: [%d] = [%d] located in position: [%d]. **\n", target_key, array[item_pos], item_pos);
+
+		return(*pos = item_pos);
 	}
 
 //Function that generates a Fibonacci number up to the maximum value sent.
@@ -494,19 +520,20 @@ int Menu(int *option)
 		while (value != enm_opt_exit)
 			{
 				printf("\n");
-				printf("+===+====+===+====+===+====+===+\n");
-				printf("|    Binary search services.   |\n");
-				printf("+===+====+===+====+===+====+===+\n");
-				printf("| [1]. Binary delta search.    |\n");
-				printf("| [2]. Binary search in loop.  |\n");
-				printf("| [3]. Binary search recursive.|\n");
-				printf("| [4]. Fibonacci search.       |\n");
-				printf("| [5]. Interpolation search.   |\n");
-				printf("| [6]. Locate directly.        |\n");
-				printf("| [7]. Sequential search.      |\n");
-				printf("| [8]. View all items details. |\n");
-				printf("| [9]. Exit this program.      |\n");
-				printf("+===+====+===+====+===+====+===+\n");
+				printf("+===+====+===+====+===+====+===+==\n");
+				printf("|     Binary search services.    |\n");
+				printf("+===+====+===+====+===+====+===+==\n");
+				printf("| [01]. Binary delta search.     |\n");
+				printf("| [02]. Binary search in loop.   |\n");
+				printf("| [03]. Binary search recursive. |\n");
+				printf("| [04]. Dump all items.          |\n");
+				printf("| [05]. Fibonacci search.        |\n");
+				printf("| [06]. Interpolation search.    |\n");
+				printf("| [07]. Locate directly.         |\n");
+				printf("| [08]. Sequential search.       |\n");
+				printf("| [09]. View all items details.  |\n");
+				printf("| [10]. Exit this program.       |\n");
+				printf("+===+====+===+====+===+====+===+==\n");
 				printf("Choose an option: ");
 
 				*option = value = *((int *) GetEntry("", &value, enm_type_entry_int, enm_type_reset_YES));
@@ -563,6 +590,39 @@ int SelectedOption(int *value)
 					position = BinarySearchRecursive(array, target_key, V_ZERO, size + V_MINUS_ONE, &position, &iterations, &iteratives);
 					GetElement("Binary search recursive", array, size, target_key, position, iterations);
 					printf("[%d] calls made to the recursive binary search function.\n", iteratives);
+					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
+					break;
+
+				//We dump all elements of the array.
+				case enm_opt_dump_all_items:
+					printf("Starting position from: [%d] to [%d]: ", V_ZERO, size + V_MINUS_ONE);
+					starting_pos = *((int *) GetEntry("", &starting_pos, enm_type_entry_int, enm_type_reset_YES));
+
+					printf("\nStarting position captured: [%d] of [%d].\n", starting_pos, size + V_MINUS_ONE);
+
+					if (starting_pos >= V_ZERO && starting_pos <= size + V_MINUS_ONE)
+						{
+							iterations = V_ZERO;
+							position = DumpAllItems(array, starting_pos, size + V_MINUS_ONE, target_key, &position, &iterations);
+
+							if (position >= V_ZERO && position <= size + V_MINUS_ONE)
+								{
+									GetElement("Dump all items", array, size, target_key, position, iterations);
+									printf("Looked element at position: [%d] located with content: [%d].\n", position, array[position]);
+								}
+							else
+								{
+									printf("\nElement: [%d] not found!\n", target_key);
+									printf("Highest position achieved: [%d].\n", position);
+								}
+
+							printf("Item searched: [%d].\n", target_key);
+							printf("Match result : [%s].\n", (array[position] == target_key) ? "The located and sought values ​​are equal" : "The types do not match");
+							printf("Scanned: [%d] records to find the value: [%d].\n", iterations, target_key);
+						}
+					else
+						printf("The position index: [%d] is out of bounds between: [%d] and [%d].\n", starting_pos, V_ZERO, size + V_MINUS_ONE);
+
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
@@ -687,6 +747,7 @@ int SelectedOption(int *value)
 				default:
 					printf("The selected option: [%d] is not valid.\n", *value);
 					break;
+
 			}
 
 		return *value;
