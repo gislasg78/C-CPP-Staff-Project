@@ -116,15 +116,15 @@ int BinarySearchRecursive(const int array[], const int bottom, const int top, co
 int DumpAllItems(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
 int *Fibonacci_Series_Numbers(const int max_number, int *qty_items, int **Fibo_Series_Nums);
 int FibonacciSearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
-int GetElement(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int position, const int iterations);
+int GetElement(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, const int position, const int iterations);
 void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_entry enm_type_value, enum enm_type_reset enm_type_reset_OK);
-int GetValidInputs(int *start, int *finish, int *target_key, const int bottom, const int top);
+int GetValidInputs(int *start, int *finish, int *target_key, int *bottom, int *top);
+int GetValidLimits(const int position, int *start, int *finish);
 int InterpolationLocate(const int array[], const int bottom, const int top, const int target_key, int *middle_bottom, int *middle_top, int *iters);
 int Menu(int *option);
 int SelectedOption(int *value);
 int SequentialSearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
 void SwapValues(int *left_value, int *right_value);
-int ValidationLimits(const int position, const int start, const int finish);
 int ViewAllItems(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
 
 
@@ -160,7 +160,7 @@ int BinarySearch(const int array[], const int start, const int finish, const int
 int BinarySearchDelta(const int array[], const int start, const int finish, const int target_key, int *delta_factor, int *pos, int *iters)
 	{
 		//Preliminary working variables. Calculate the midpoint position.
-		int middle = *delta_factor = start + (finish - start + V_ONE) / V_TWO;
+		int middle = *delta_factor = start + (finish - start) / V_TWO;
 
 		//Continue searching as long as there is a valid range.
 		for (*iters = V_ZERO; array[middle] != target_key && *delta_factor; (*iters)++, *delta_factor /= V_TWO)
@@ -330,7 +330,7 @@ int FibonacciSearch(const int array[], const int start, const int finish, const 
 	}
 
 //Getting an integer value from the keyboard and purging its input.
-int GetElement(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int position, const int iterations)
+int GetElement(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, const int position, const int iterations)
 	{
 		//Preliminary working variables.
 		char char_key = NULL_CHARACTER;
@@ -341,15 +341,22 @@ int GetElement(const char *str_Message, const int array[], const int start, cons
 			{
 				printf("\n[%s].\n", str_Message);
 				printf("+===+====+===+====+===+\n");
-				printf("|    Binary Search.   |\n");
+				printf("| Binary Search Duty. |\n");
 				printf("+===+====+===+====+===+\n");
 				printf("| * Element  : <%d>.\n", target_key);
 				printf("| + Cycles   : {%d}.\n", iterations);
 				printf("+-=-+----+---+----+-=-+\n");
-				printf("|      Item Info.     |\n");
+				printf("| Bounds Information. |\n");
 				printf("+-=-+----+---+----+-=-+\n");
-				printf("| * Minimum  : [%d].\n", start);
-				printf("| * Maximum  : [%d].\n", finish);
+				printf("| - Minimum  : [%d].\n", bottom);
+				printf("| + Maximum  : [%d].\n", top);
+				printf("+-=-+----+---+----+-=-+\n");
+				printf("| Fetched Range Info. |\n");
+				printf("+-=-+----+---+----+-=-+\n");
+				printf("| < Start    : [%d].\n", start);
+				printf("| > Finish   : [%d].\n", finish);
+				printf("+ --=----=---=----=-- +\n");
+				printf("| Sought Information. |\n");
 				printf("+ --=----=---=----=-- +\n");
 				printf("| * Position : [%d].\n", position);
 				printf("| * Content  : [%d].\n", array[position]);
@@ -506,36 +513,40 @@ void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_en
 	}
 
 //Valid entries for the initial and final search indexes, as well as the value to be searched for, are obtained.
-int GetValidInputs(int *start, int *finish, int *target_key, const int bottom, const int top)
+int GetValidInputs(int *start, int *finish, int *target_key, int *bottom, int *top)
 	{
+		/* Preliminary working variables. */
+		char char_key = V_ZERO;
+
 		/* Prior request for data for searches. */
 		printf("\nRequest for input data...\n");
 
 		/* Request for the input value for the start position. */
-		printf("Starting position from: [%d] to [%d]: ", bottom, top);
+		printf("Starting position from: [%d] to [%d]: ", *bottom, *top);
 		*start = *((int *) GetEntry("", start, enm_type_entry_int, enm_type_reset_YES));
-		printf("Starting position captured: [%d] between [%d] and [%d].\n", *start, bottom, top);
+		printf("Starting position captured: [%d] between [%d] and [%d].\n", *start, *bottom, *top);
 
 		/* Key validation to determine if the starting value is within the indicated ranges. */
-		if (ValidationLimits(*start, bottom, top))
+		if (GetValidLimits(*start, bottom, top))
 			{
 				/* Request for the input value for the finish position. */
-				printf("Finishing position from: [%d] to [%d]: ", bottom, top);
+				printf("Finishing position from: [%d] to [%d]: ", *bottom, *top);
 				*finish = *((int *) GetEntry("", finish, enm_type_entry_int, enm_type_reset_YES));
-				printf("Finishing position captured: [%d] between [%d] and [%d].\n", *finish, bottom, top);
+				printf("Finishing position captured: [%d] between [%d] and [%d].\n", *finish, *bottom, *top);
 
 				/* Key validation to determine if the finishing value is within the indicated ranges. */
-				if (ValidationLimits(*finish, bottom, top))
+				if (GetValidLimits(*finish, bottom, top))
 					{
 						/* Validate if the begin and end values ​​are inverted. */
-						if (*start > *finish)
+						if (*start > *finish || *finish < *start)
 							{
-								printf("Exchange of major and minor values.\n");
-								printf("Before:\n");
-								printf("Higher value: [%d]. Lower value: [%d].\n", *start, *finish);
+								printf("\nExchange of major and minor values.\n");
+								printf("Lower   value: [%d]. Higher value: [%d].\n", *start, *finish);
+
 								SwapValues(start, finish);
-								printf("After:\n");
-								printf("Higher value: [%d]. Lower value: [%d].\n", *start, *finish);
+
+								printf("Smaller value: [%d]. Larger value: [%d].\n", *start, *finish);
+								char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 							}
 
 						/* Ask for the number you want to search for in the array. */
@@ -545,7 +556,39 @@ int GetValidInputs(int *start, int *finish, int *target_key, const int bottom, c
 					}
 			}
 
-		return ((*start >= bottom && *start <= top) && (*finish >= bottom && *finish <= top) && (target_key));
+		return ((*start >= *bottom && *start <= *top) && (*finish >= *bottom && *finish <= *top) && (target_key));
+	}
+
+//Limits validation for the given position.
+int GetValidLimits(const int position, int *start, int *finish)
+	{
+		/* Preliminary working variables. */
+		char char_key = NULL_CHARACTER;
+
+		printf("\nVerifying that a value is within a range...\n");
+
+		/* Validate if the begin and end values ​​are inverted. */
+		if (*start > *finish || *finish < *start)
+			{
+				printf("\nExchange of major and minor values.\n");
+				printf("Lower   value: [%d]. Higher value: [%d].\n", *start, *finish);
+
+				SwapValues(start, finish);
+
+				printf("Smaller value: [%d]. Larger value: [%d].\n", *start, *finish);
+				char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
+			}
+
+		/* If the limits are incorrect, exchange them again. */
+		printf("Bigger value: [%d]. Tinnier value: [%d]. OK!\n", *start, *finish);
+
+		/* Correctly validate that the value is within the range sent. */
+		if (position >= *start && position <= *finish)
+			printf("Position: [%d]. OK! Range from: [%d] to [%d].\n", position, *start, *finish);
+		else
+			printf("Position: [%d]. Fail! Out of range between: [%d] and [%d].\n", position, *start, *finish);
+
+		return (position >= *start && position <= *finish);
 	}
 
 //Function to locate a certain value by means of interpolations.
@@ -599,6 +642,7 @@ int SelectedOption(int *value)
 		int delta_factor = V_ZERO;	//Delta factor that adjusts the position of the medium.
 		int iterations = V_ZERO, iteratives = V_ZERO;		//Number of iterations performed.
 		int middle_bottom = V_ZERO, middle_top = V_ZERO;	//Positions for interpolations.
+		int minimum_pos = V_ZERO, maximum_pos = (sizeof(array) / sizeof(array[V_ZERO])) + V_MINUS_ONE;
 		int finishing_pos = V_ZERO, starting_pos = V_ZERO;	//Initial and final search positions.
 		int position = V_ZERO;		//Location position of the located element.
 		int size = sizeof(array) / sizeof(array[V_ZERO]);	//Calculated array size.
@@ -613,13 +657,13 @@ int SelectedOption(int *value)
 			{
 				//We call the traditional binary search function.
 				case enm_opt_binary_search:
-					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, V_ZERO, size + V_MINUS_ONE))
+					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
 							position = BinarySearch(array, starting_pos, finishing_pos, target_key, &position, &iterations);
 
-							if (ValidationLimits(position, V_ZERO, size + V_MINUS_ONE))
+							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
 								{
-									GetElement("Binary search", array, starting_pos, finishing_pos, target_key, position, iterations);
+									GetElement("Binary search", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, position, iterations);
 									printf("Tracked element at position: [%d] located with content: [%d].\n", position, array[position]);
 								}
 							else
@@ -640,13 +684,13 @@ int SelectedOption(int *value)
 
 				//We call the binary search function with a delta factor.
 				case enm_opt_binary_search_delta:
-					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, V_ZERO, size + V_MINUS_ONE))
+					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
 							position = BinarySearchDelta(array, starting_pos, finishing_pos, target_key, &delta_factor, &position, &iterations);
 
-							if (ValidationLimits(position, V_ZERO, size + V_MINUS_ONE))
+							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
 								{
-									GetElement("Binary search with delta", array, starting_pos, finishing_pos, target_key, position, iterations);
+									GetElement("Binary search with delta", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, position, iterations);
 									printf("  * Delta Fx : [%d].\n", delta_factor);
 									printf("Fetched element at position: [%d] located with content: [%d].\n", position, array[position]);
 								}
@@ -668,14 +712,14 @@ int SelectedOption(int *value)
 
 				//We call the traditional recursive and cyclic binary search function.
 				case enm_opt_binary_search_recursive:
-					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, V_ZERO, size + V_MINUS_ONE))
+					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
 							iterations = V_ZERO;
 							position = BinarySearchRecursive(array, starting_pos, finishing_pos, target_key, &position, &iterations, &iteratives);
 
-							if (ValidationLimits(position, V_ZERO, size + V_MINUS_ONE))
+							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
 								{
-									GetElement("Binary search recursive", array, starting_pos, finishing_pos, target_key, position, iterations);
+									GetElement("Binary search recursive", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, position, iterations);
 									printf("[%d] calls made to the recursive binary search function.\n", iteratives);
 									printf("Sought element at position: [%d] located with content: [%d].\n", position, array[position]);
 								}
@@ -700,14 +744,14 @@ int SelectedOption(int *value)
 
 				//We dump all elements of the array.
 				case enm_opt_dump_all_items:
-					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, V_ZERO, size + V_MINUS_ONE))
+					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
 							iterations = V_ZERO;
 							position = DumpAllItems(array, starting_pos, finishing_pos, target_key, &position, &iterations);
 
-							if (ValidationLimits(position, V_ZERO, size + V_MINUS_ONE))
+							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
 								{
-									GetElement("Dump all items", array, starting_pos, finishing_pos, target_key, position, iterations);
+									GetElement("Dump all items", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, position, iterations);
 									printf("Looked element at position: [%d] located with content: [%d].\n", position, array[position]);
 								}
 							else
@@ -728,13 +772,13 @@ int SelectedOption(int *value)
 
 				//We perform the search function by Fibonacci numbers.
 				case enm_opt_fibonacci_search:
-					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, V_ZERO, size + V_MINUS_ONE))
+					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
 							position = FibonacciSearch(array, starting_pos, finishing_pos, target_key, &position, &iterations);
 
-							if (ValidationLimits(position, V_ZERO, size + V_MINUS_ONE))
+							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
 								{
-									GetElement("Fibonacci search", array, starting_pos, finishing_pos, target_key, position, iterations);
+									GetElement("Fibonacci search", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, position, iterations);
 									printf("Fenced element at position: [%d] located with content: [%d].\n", position, array[position]);
 								}
 							else
@@ -755,15 +799,15 @@ int SelectedOption(int *value)
 
 				//We call a function that obtains the position of the searched element by means of interpolations.
 				case enm_opt_interpolation_search:
-					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, V_ZERO, size + V_MINUS_ONE))
+					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
 							if (InterpolationLocate(array, starting_pos, finishing_pos, target_key, &middle_bottom, &middle_top, &iterations))
 								{
 									printf("\n** [Approximate values ​​obtained] **.\n");
 
-									if (ValidationLimits(middle_bottom, V_ZERO, size + V_MINUS_ONE))
+									if (GetValidLimits(middle_bottom, &minimum_pos, &maximum_pos))
 										{
-											GetElement("Interpolation search: lower value obtained", array, starting_pos, finishing_pos, target_key, middle_bottom, iterations);
+											GetElement("Interpolation search: lower value obtained", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, middle_bottom, iterations);
 											char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 										}
 									else
@@ -773,9 +817,9 @@ int SelectedOption(int *value)
 											printf("Highest position achieved: [%d].\n", middle_bottom);
 										}
 
-									if (ValidationLimits(middle_top, V_ZERO, size + V_MINUS_ONE))
+									if (GetValidLimits(middle_top, &minimum_pos, &maximum_pos))
 										{
-											GetElement("Interpolation search: upper value obtained", array, starting_pos, finishing_pos, target_key, middle_top, iterations);
+											GetElement("Interpolation search: upper value obtained", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, middle_top, iterations);
 											char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 										}
 									else
@@ -803,15 +847,16 @@ int SelectedOption(int *value)
 					starting_pos = *((int *) GetEntry("", &starting_pos, enm_type_entry_int, enm_type_reset_YES));
 					printf("\nIndex position: [%d] of [%d].\n", starting_pos, size + V_MINUS_ONE);
 
-					//Presentation and indication headers.
-					printf("\nSearch for a prime number within the first thousand.\n");
-					printf("Prime number to find: ");
-					target_key = *((int *) GetEntry("", &target_key, enm_type_entry_int, enm_type_reset_YES));
-
-					if (ValidationLimits(starting_pos, V_ZERO, size + V_MINUS_ONE))
+					if (GetValidLimits(starting_pos, &minimum_pos, &maximum_pos))
 						{
+							//Presentation and indication headers.
+							printf("\nSearch for a prime number within the first thousand.\n");
+							printf("Prime number to find: ");
+							target_key = *((int *) GetEntry("", &target_key, enm_type_entry_int, enm_type_reset_YES));
+
 							iterations = V_ZERO;
-							GetElement("Locate directly", array, starting_pos, size + V_MINUS_ONE, target_key, starting_pos, iterations);
+							finishing_pos = starting_pos;
+							GetElement("Locate directly", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, starting_pos, iterations);
 							printf("Element found: [%d] ubicated directly on position: [%d].\n", array[starting_pos], starting_pos);
 						}
 					else
@@ -831,13 +876,13 @@ int SelectedOption(int *value)
 
 				//We call a function that sequentially searches for a value until it finds it.
 				case enm_opt_sequential_search:
-					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, V_ZERO, size + V_MINUS_ONE))
+					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
 							position = SequentialSearch(array, starting_pos, finishing_pos, target_key, &position, &iterations);
 
-							if (ValidationLimits(position, V_ZERO, size + V_MINUS_ONE))
+							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
 								{
-									GetElement("Sequential search", array, starting_pos, finishing_pos, target_key, position, iterations);
+									GetElement("Sequential search", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, position, iterations);
 									printf("Searched element at position: [%d] located with content: [%d].\n", position, array[position]);
 								}
 							else
@@ -858,14 +903,14 @@ int SelectedOption(int *value)
 
 				//See all the details of the record to be consulted.
 				case enm_opt_view_all_items:
-					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, V_ZERO, size + V_MINUS_ONE))
+					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
 							iterations = V_ZERO;
 							position = ViewAllItems(array, starting_pos, finishing_pos, target_key, &position, &iterations);
 
-							if (ValidationLimits(position, V_ZERO, size + V_MINUS_ONE))
+							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
 								{
-									GetElement("View all items details", array, starting_pos, finishing_pos, target_key, position, iterations);
+									GetElement("View all items details", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, position, iterations);
 									printf("Fenced element at position: [%d] located with content: [%d].\n", position, array[position]);
 								}
 							else
@@ -915,33 +960,6 @@ void SwapValues(int *left_value, int *right_value)
 		int temp_value = *left_value;
 		*left_value = *right_value;
 		*right_value = temp_value;
-	}
-
-//Limits validation for the given position.
-int ValidationLimits(const int position, const int start, const int finish)
-	{
-		/* Preliminary working variables. */
-		char char_key = NULL_CHARACTER;
-		int begin = start, end = finish;
-
-		printf("\nVerifying that a value is within a range...\n");
-
-		/* If the limits are incorrect, exchange them again. */
-		if (begin > end || end < begin)
-			{
-				printf("The larger value: [%d] and the smaller value: [%d] are incorrect. They will be exchanged.\n", begin, end);
-				SwapValues(&begin, &end);
-			}
-
-		printf("The larger value: [%d] and the smaller value: [%d] are correct.\n", begin, end);
-
-		/* Correctly validate that the value is within the range sent. */
-		if (position >= begin && position <= end)
-			printf("The value: [%d] is correct. It is in the range: [%d] to [%d].\n", position, begin, end);
-		else
-			printf("The value: [%d] is out of range between: [%d] and [%d].\n", position, begin, end);
-
-		return (position >= begin && position <= end);
 	}
 
 //Function that sees all the details of the record to be consulted.
