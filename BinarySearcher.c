@@ -164,7 +164,8 @@ int BinarySearch(const int array[], const int start, const int finish, const int
 int BinarySearchDelta(const int array[], const int start, const int finish, const int target_key, int *delta_factor, int *pos, int *iters)
 	{
 		//Preliminary working variables. Calculate the midpoint position.
-		int middle = *delta_factor = start + (finish - start) / V_TWO;
+		int middle = start + (finish - start) / V_TWO;
+		*delta_factor = (finish - start);
 
 		//Continue searching as long as there is a valid range.
 		for (*iters = V_ZERO; array[middle] != target_key && *delta_factor; (*iters)++, *delta_factor /= V_TWO)
