@@ -35,6 +35,7 @@ enum enm_options
 		enm_opt_locate_directly,
 		enm_opt_sequential_search,
 		enm_opt_view_all_items,
+		enm_opt_view_each_element,
 		enm_opt_exit
 	} enm_option;
 
@@ -116,7 +117,8 @@ int BinarySearchRecursive(const int array[], const int bottom, const int top, co
 int DumpAllItems(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
 int *Fibonacci_Series_Numbers(const int max_number, int *qty_items, int **Fibo_Series_Nums);
 int FibonacciSearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
-int GetElement(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, const int position, const int iterations);
+int GetElement(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, const int size, const int position, const int iterations);
+int GetItem(const char *str_Message, const int array[], const int start, const int finish, const int position, const int target_key, const int iterations);
 void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_entry enm_type_value, enum enm_type_reset enm_type_reset_OK);
 int GetValidInputs(int *start, int *finish, int *target_key, int *bottom, int *top);
 int GetValidLimits(const int position, int *start, int *finish);
@@ -125,7 +127,9 @@ int Menu(int *option);
 int SelectedOption(int *value);
 int SequentialSearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
 void SwapValues(int *left_value, int *right_value);
+void SwappingLimits(const char *str_Message, int *bottom, int *top);
 int ViewAllItems(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
+int ViewEachElement(const int array[], const int start, const int finish, const int target_key, const int minimum_pos, const int maximum_pos, const int size, int *pos, int *iters);
 
 
 //Improved traditional binary search function.
@@ -330,7 +334,7 @@ int FibonacciSearch(const int array[], const int start, const int finish, const 
 	}
 
 //Getting an integer value from the keyboard and purging its input.
-int GetElement(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, const int position, const int iterations)
+int GetElement(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, const int size, const int position, const int iterations)
 	{
 		//Preliminary working variables.
 		char char_key = NULL_CHARACTER;
@@ -343,8 +347,9 @@ int GetElement(const char *str_Message, const int array[], const int start, cons
 				printf("+===+====+===+====+===+\n");
 				printf("| Binary Search Duty. |\n");
 				printf("+===+====+===+====+===+\n");
-				printf("| * Element  : <%d>.\n", target_key);
 				printf("| + Cycles   : {%d}.\n", iterations);
+				printf("| * Element  : <%d>.\n", target_key);
+				printf("| ^ Items    : (%d).\n", size);
 				printf("+-=-+----+---+----+-=-+\n");
 				printf("| Bounds Information. |\n");
 				printf("+-=-+----+---+----+-=-+\n");
@@ -358,15 +363,52 @@ int GetElement(const char *str_Message, const int array[], const int start, cons
 				printf("+ --=----=---=----=-- +\n");
 				printf("| Sought Information. |\n");
 				printf("+ --=----=---=----=-- +\n");
+				printf("| * Address  : [%p].\n", array + position);
 				printf("| * Position : [%d].\n", position);
 				printf("| * Content  : [%d].\n", array[position]);
 				printf("+===+====+===+====+===+\n");
 
 				char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
+				item = *(array + position);
+			}
+		else
+			printf("\nThe searched value: [%d] was not found in array on the boundaries between: [%d] = {%d} and [%d] = {%d}.\n", target_key, start, array[start], finish, array[finish]);
+
+		return item;
+	}
+
+//Obtains more succinct information about the queried item.
+int GetItem(const char *str_Message, const int array[], const int start, const int finish, const int position, const int target_key, const int iterations)
+	{
+		//Preliminary working variables.
+		char char_key = NULL_CHARACTER;
+		int item = V_ZERO;
+
+		//Validates if the position is in a correct range.
+		if (position >= start && position <= finish)
+			{
+				printf("\n[%s].\n", str_Message);
+				printf("+---+----+---+----+---+\n");
+				printf("|  Item Information.  |\n");
+				printf("+---+----+---+----+---+\n");
+				printf("| Loops    : {%d}.\n", iterations);
+				printf("| Searched : [%d].\n", target_key);
+				printf("+---------------------+\n");
+				printf("|   Scanned Records.  |\n");
+				printf("+---------------------+\n");
+				printf("| Found    : [%d].\n", array[position]);
+				printf("| Position : [%d].\n", position);
+				printf("+---------------------+\n");
+				printf("|   Matching Result.  |\n");
+				printf("+---------------------+\n");
+				printf("| [%s].\n", (*(array + position) == target_key) ? "The located and sought values ​​are equal" : "The types do not match");
+				printf("+---+----+---+----+---+\n");
+
+				char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 				item = array[position];
 			}
 		else
-			printf("\nThe searched value: [%d] was not found in array.\n", target_key);
+			printf("\nThe searched value: [%d] was not found in array on the boundaries between: [%d] = {%d} and [%d] = {%d}.\n", target_key, start, array[start], finish, array[finish]);
 
 		return item;
 	}
@@ -515,9 +557,6 @@ void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_en
 //Valid entries for the initial and final search indexes, as well as the value to be searched for, are obtained.
 int GetValidInputs(int *start, int *finish, int *target_key, int *bottom, int *top)
 	{
-		/* Preliminary working variables. */
-		char char_key = V_ZERO;
-
 		/* Prior request for data for searches. */
 		printf("\nRequest for input data...\n");
 
@@ -538,16 +577,7 @@ int GetValidInputs(int *start, int *finish, int *target_key, int *bottom, int *t
 				if (GetValidLimits(*finish, bottom, top))
 					{
 						/* Validate if the begin and end values ​​are inverted. */
-						if (*start > *finish || *finish < *start)
-							{
-								printf("\nExchange of major and minor values.\n");
-								printf("Lower   value: [%d]. Higher value: [%d].\n", *start, *finish);
-
-								SwapValues(start, finish);
-
-								printf("Smaller value: [%d]. Larger value: [%d].\n", *start, *finish);
-								char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
-							}
+						SwappingLimits("Get Valid Inputs", start, finish);
 
 						/* Ask for the number you want to search for in the array. */
 						printf("\nSearch for a prime number within the first thousand.\n");
@@ -562,25 +592,14 @@ int GetValidInputs(int *start, int *finish, int *target_key, int *bottom, int *t
 //Limits validation for the given position.
 int GetValidLimits(const int position, int *start, int *finish)
 	{
-		/* Preliminary working variables. */
-		char char_key = NULL_CHARACTER;
-
+		/* Header message. */
 		printf("\nVerifying that a value is within a range...\n");
 
 		/* Validate if the begin and end values ​​are inverted. */
-		if (*start > *finish || *finish < *start)
-			{
-				printf("\nExchange of major and minor values.\n");
-				printf("Lower   value: [%d]. Higher value: [%d].\n", *start, *finish);
-
-				SwapValues(start, finish);
-
-				printf("Smaller value: [%d]. Larger value: [%d].\n", *start, *finish);
-				char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
-			}
+		SwappingLimits("Get Valid Limits", start, finish);
 
 		/* If the limits are incorrect, exchange them again. */
-		printf("Bigger value: [%d]. Tinnier value: [%d]. OK!\n", *start, *finish);
+		printf("Bigger value: [%d]. Shorter value: [%d]. OK!\n", *start, *finish);
 
 		/* Correctly validate that the value is within the range sent. */
 		if (position >= *start && position <= *finish)
@@ -623,7 +642,8 @@ int Menu(int *option)
 				printf("| [07]. Locate directly.         |\n");
 				printf("| [08]. Sequential search.       |\n");
 				printf("| [09]. View all items details.  |\n");
-				printf("| [10]. Exit this program.       |\n");
+				printf("| [10]. View each element.       |\n");
+				printf("| [11]. Exit this program.       |\n");
 				printf("+===+====+===+====+===+====+===+==\n");
 				printf("Choose an option: ");
 
@@ -663,7 +683,7 @@ int SelectedOption(int *value)
 
 							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
 								{
-									GetElement("Binary search", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, position, iterations);
+									GetElement("Binary search", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, size, position, iterations);
 									printf("Tracked element at position: [%d] located with content: [%d].\n", position, array[position]);
 								}
 							else
@@ -673,10 +693,7 @@ int SelectedOption(int *value)
 									printf("Highest position achieved: [%d].\n", position);
 								}
 
-							printf("\n[Binary search].\n");
-							printf("Item searched: [%d].\n", target_key);
-							printf("Scanned: [%d] records to find the value: [%d].\n", iterations, target_key);
-							printf("Match result : [%s].\n", (array[position] == target_key) ? "The located and sought values ​​are equal" : "The types do not match");
+							GetItem("Binary search", array, starting_pos, finishing_pos, position, target_key, iterations);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -690,7 +707,7 @@ int SelectedOption(int *value)
 
 							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
 								{
-									GetElement("Binary search with delta", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, position, iterations);
+									GetElement("Binary search with delta", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, size, position, iterations);
 									printf("  * Delta Fx : [%d].\n", delta_factor);
 									printf("Fetched element at position: [%d] located with content: [%d].\n", position, array[position]);
 								}
@@ -701,10 +718,7 @@ int SelectedOption(int *value)
 									printf("Highest position achieved: [%d].\n", position);
 								}
 
-							printf("\n[Binary search with delta].\n");
-							printf("Item searched: [%d].\n", target_key);
-							printf("Scanned: [%d] records to find the value: [%d].\n", iterations, target_key);
-							printf("Match result : [%s].\n", (array[position] == target_key) ? "The located and sought values ​​are equal" : "The types do not match");
+							GetItem("Binary search with delta", array, starting_pos, finishing_pos, position, target_key, iterations);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -719,7 +733,7 @@ int SelectedOption(int *value)
 
 							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
 								{
-									GetElement("Binary search recursive", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, position, iterations);
+									GetElement("Binary search recursive", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, size, position, iterations);
 									printf("[%d] calls made to the recursive binary search function.\n", iteratives);
 									printf("Sought element at position: [%d] located with content: [%d].\n", position, array[position]);
 								}
@@ -730,10 +744,7 @@ int SelectedOption(int *value)
 									printf("Highest position achieved: [%d].\n", position);
 								}
 
-							printf("\n[Binary search recursive].\n");
-							printf("Item searched: [%d].\n", target_key);
-							printf("Scanned: [%d] records to find the value: [%d].\n", iterations, target_key);
-							printf("Match result : [%s].\n", (array[position] == target_key) ? "The located and sought values ​​are equal" : "The types do not match");
+							GetItem("Binary search recursive", array, starting_pos, finishing_pos, position, target_key, iterations);
 						}
 					else
 						{
@@ -751,7 +762,7 @@ int SelectedOption(int *value)
 
 							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
 								{
-									GetElement("Dump all items", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, position, iterations);
+									GetElement("Dump all items", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, size, position, iterations);
 									printf("Looked element at position: [%d] located with content: [%d].\n", position, array[position]);
 								}
 							else
@@ -761,10 +772,7 @@ int SelectedOption(int *value)
 									printf("Highest position achieved: [%d].\n", position);
 								}
 
-							printf("\n[Dump all items].\n");
-							printf("Item searched: [%d].\n", target_key);
-							printf("Scanned: [%d] records to find the value: [%d].\n", iterations, target_key);
-							printf("Match result : [%s].\n", (array[position] == target_key) ? "The located and sought values ​​are equal" : "The types do not match");
+							GetItem("Dump all items", array, starting_pos, finishing_pos, position, target_key, iterations);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -778,7 +786,7 @@ int SelectedOption(int *value)
 
 							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
 								{
-									GetElement("Fibonacci search", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, position, iterations);
+									GetElement("Fibonacci search", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, size, position, iterations);
 									printf("Fenced element at position: [%d] located with content: [%d].\n", position, array[position]);
 								}
 							else
@@ -788,10 +796,7 @@ int SelectedOption(int *value)
 									printf("Highest position achieved: [%d].\n", position);
 								}
 
-							printf("\n[Fibonacci search].\n");
-							printf("Item searched: [%d].\n", target_key);
-							printf("Scanned: [%d] records to find the value: [%d].\n", iterations, target_key);
-							printf("Match result : [%s].\n", (array[position] == target_key) ? "The located and sought values ​​are equal" : "The types do not match");
+							GetItem("Fibonacci search", array, starting_pos, finishing_pos, position, target_key, iterations);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -807,7 +812,7 @@ int SelectedOption(int *value)
 
 									if (GetValidLimits(middle_bottom, &minimum_pos, &maximum_pos))
 										{
-											GetElement("Interpolation search: lower value obtained", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, middle_bottom, iterations);
+											GetElement("Interpolation search: lower value obtained", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, size, middle_bottom, iterations);
 											char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 										}
 									else
@@ -819,7 +824,7 @@ int SelectedOption(int *value)
 
 									if (GetValidLimits(middle_top, &minimum_pos, &maximum_pos))
 										{
-											GetElement("Interpolation search: upper value obtained", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, middle_top, iterations);
+											GetElement("Interpolation search: upper value obtained", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, size, middle_top, iterations);
 											char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 										}
 									else
@@ -829,11 +834,8 @@ int SelectedOption(int *value)
 											printf("Highest position achieved: [%d].\n", middle_top);
 										}
 
-									printf("\n[Interpolation search].\n");
-									printf("Item searched: [%d].\n", target_key);
-									printf("Scanned: [%d] records to find the value: [%d].\n", iterations, target_key);
-									printf("Match result smaller: [%s].\n", (array[middle_bottom] == target_key) ? "The located and sought values ​​are equal" : "The types do not match");
-									printf("Match result larger : [%s].\n", (array[middle_top] == target_key) ? "The located and sought values ​​are equal" : "The types do not match");
+									GetItem("Interpolation search: lower value", array, starting_pos, finishing_pos, middle_bottom, target_key, iterations);
+									GetItem("Interpolation search: upper value", array, starting_pos, finishing_pos, middle_top, target_key, iterations);
 								}
 						}
 
@@ -856,7 +858,7 @@ int SelectedOption(int *value)
 
 							iterations = V_ZERO;
 							finishing_pos = starting_pos;
-							GetElement("Locate directly", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, starting_pos, iterations);
+							GetElement("Locate directly", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, size, starting_pos, iterations);
 							printf("Element found: [%d] ubicated directly on position: [%d].\n", array[starting_pos], starting_pos);
 						}
 					else
@@ -866,10 +868,7 @@ int SelectedOption(int *value)
 							printf("Highest position achieved: [%d].\n", starting_pos);
 						}
 
-					printf("\n[Locate directly].\n");
-					printf("Item searched: [%d].\n", target_key);
-					printf("Scanned: [%d] records to find the value: [%d].\n", iterations, target_key);
-					printf("Match result : [%s].\n", (array[starting_pos] == target_key) ? "The located and sought values ​​are equal" : "The types do not match");
+					GetItem("Locate directly", array, starting_pos, finishing_pos, starting_pos, target_key, iterations);
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
@@ -882,7 +881,7 @@ int SelectedOption(int *value)
 
 							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
 								{
-									GetElement("Sequential search", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, position, iterations);
+									GetElement("Sequential search", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, size, position, iterations);
 									printf("Searched element at position: [%d] located with content: [%d].\n", position, array[position]);
 								}
 							else
@@ -892,10 +891,7 @@ int SelectedOption(int *value)
 									printf("Highest position achieved: [%d].\n", position);
 								}
 
-							printf("\n[Sequential search].\n");
-							printf("Item searched: [%d].\n", target_key);
-							printf("Scanned: [%d] records to find the value: [%d].\n", iterations, target_key);
-							printf("Match result : [%s].\n", (array[position] == target_key) ? "The located and sought values ​​are equal" : "The types do not match");
+							GetItem("Sequential search", array, starting_pos, finishing_pos, position, target_key, iterations);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -910,7 +906,7 @@ int SelectedOption(int *value)
 
 							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
 								{
-									GetElement("View all items details", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, position, iterations);
+									GetElement("View all items details", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, size, position, iterations);
 									printf("Fenced element at position: [%d] located with content: [%d].\n", position, array[position]);
 								}
 							else
@@ -920,10 +916,32 @@ int SelectedOption(int *value)
 									printf("Highest position achieved: [%d].\n", position);
 								}
 
-							printf("\n[View all items].\n");
-							printf("Item searched: [%d].\n", target_key);
-							printf("Scanned: [%d] records to find the value: [%d].\n", iterations, target_key);
-							printf("Match result : [%s].\n", (array[position] == target_key) ? "The located and sought values ​​are equal" : "The types do not match");
+							GetItem("View all items", array, starting_pos, finishing_pos, position, target_key, iterations);
+						}
+
+					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
+					break;
+
+				//See each element of the arrangement step by step.
+				case enm_opt_view_each_element:
+					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
+						{
+							iterations = V_ZERO;
+							position = ViewEachElement(array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, size, &position, &iterations);
+
+							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
+								{
+									GetElement("View each element of the arrangement", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, size, position, iterations);
+									printf("Fenced element at position: [%d] located with content: [%d].\n", position, array[position]);
+								}
+							else
+								{
+									printf("\n[View all items].\n");
+									printf("Element: [%d] not found!\n", target_key);
+									printf("Highest position achieved: [%d].\n", position);
+								}
+
+							GetItem("View each element of the arrangement", array, starting_pos, finishing_pos, position, target_key, iterations);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -954,6 +972,35 @@ int SequentialSearch(const int array[], const int start, const int finish, const
 		return(*pos = (array[idx] == target_key) ? idx : V_MINUS_ONE);
 	}
 
+//The limits that comprise a given range are exchanged if they are inverted.
+void SwappingLimits(const char *str_Message, int *start, int *finish)
+	{
+		/* Preliminary working variables. */
+		char char_key = NULL_CHARACTER;
+
+		/* Validate whether the sent limits are inverted to exchange them with each other. */
+		if (*start > *finish || *finish < *start)
+			{
+				printf("\n[%s].\n", str_Message);
+				printf("+---+----+---+----+---+----+---+----+---+\n");
+				printf("|  Exchange of major and minor values.  |\n");
+				printf("+---+----+---+----+---+----+---+----+---+\n");
+				printf("| Higher  : [%d].\n", *finish);
+				printf("| Lower   : [%d].\n", *start);
+				printf("+---------------------------------------+\n");
+				printf("|         Changed limit values.         |\n");
+				printf("+---------------------------------------+\n");
+
+				SwapValues(start, finish);
+
+				printf("| Smaller : [%d].\n", *finish);
+				printf("| Larger  : [%d].\n", *start);
+				printf("+---------------------------------------+\n");
+
+				char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
+			}
+	}
+
 //Exchange of two numerical variables with each other.
 void SwapValues(int *left_value, int *right_value)
 	{
@@ -980,6 +1027,9 @@ int ViewAllItems(const int array[], const int start, const int finish, const int
 				printf("+===+====+===+====+===+====+===+====+\n");
 				printf("| Index position #: [%d] of: [%d].\n", idx, finish);
 				printf("| Position content: [%d].\n", array[idx]);
+				printf("+-----------------------------------+\n");
+				printf("| Current  cycle  : {%d}.\n", *iters);
+				printf("| Searched value  : <%d>.\n", target_key);
 				printf("+---+----+---+----+---+----+---+----+\n");
 				printf("| Addresses:\n");
 				printf("| * array    : {%p}.\n", &array);
@@ -1002,7 +1052,6 @@ int ViewAllItems(const int array[], const int start, const int finish, const int
 				printf("|              [%p] = [%p].\n", pa_array[idx], *(pa_array + idx));
 				printf("|              [%d] : [%d].\n", *pa_array[idx], *(*(pa_array + idx)));
 				printf("+===+====+===+====+===+====+===+====+\n");
-				printf("\n");
 
 				if (array[idx] == target_key) printf ("** Element: [%d] = [%d] located in position: [%d]. **\n", target_key, array[idx], idx);
 
@@ -1010,6 +1059,29 @@ int ViewAllItems(const int array[], const int start, const int finish, const int
 			}
 
 		return(*pos = (idx > start && idx <= finish) ? --idx : idx);
+	}
+
+//Visualize each element of the arrangement step by step.
+int ViewEachElement(const int array[], const int start, const int finish, const int target_key, const int minimum_pos, const int maximum_pos, const int size, int *pos, int *iters)
+	{
+		/* Preliminary working variables. */
+		char char_key = V_CHR_UPPER_Y;
+		int idx = V_ZERO;
+
+		printf("\nPointer naming practice.\n");
+
+		/* Combined loop to dump the memory addresses and contents of various integer arrays. */
+		for (idx = start; idx <= finish && (char_key == V_CHR_LOWER_Y || char_key == V_CHR_UPPER_Y); idx++, (*iters)++)
+			{
+				GetElement("View each element of the arrangement", array, start, finish, target_key, minimum_pos, maximum_pos, size, idx, *iters);
+
+				if (array[idx] == target_key)
+					printf ("** Element: [%d] = [%d] located in position: [%d]. **\n", target_key, array[idx], *pos = idx);
+
+				char_key = *((char *) GetEntry("Do you want to continue viewing more records (y/n)? : ", &char_key, enm_type_entry_char, enm_type_reset_YES));
+			}
+
+		return((*pos >= start && *pos <= finish) ? *pos : V_MINUS_ONE);
 	}
 
 //Main function.
