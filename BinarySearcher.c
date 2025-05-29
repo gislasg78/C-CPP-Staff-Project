@@ -50,6 +50,7 @@ enum enm_type_entry
 		enm_type_entry_short
 	} enm_type_value;
 
+//Enumeration for memory area reset system.
 enum enm_type_reset
 	{
 		enm_type_reset_NO,
@@ -600,7 +601,7 @@ int GetValidLimits(const int position, int *start, int *finish)
 		SwappingLimits("Get Valid Limits", start, finish);
 
 		/* If the limits are incorrect, exchange them again. */
-		printf("Bigger value: [%d]. Shorter value: [%d]. OK!\n", *start, *finish);
+		printf("Tinnier value: [%d]. Bigger value: [%d]. OK!\n", *start, *finish);
 
 		/* Correctly validate that the value is within the range sent. */
 		if (position >= *start && position <= *finish)
@@ -1000,6 +1001,8 @@ void SwappingLimits(const char *str_Message, int *start, int *finish)
 
 				char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 			}
+		else
+			printf("\nCorrect values. Shorter: [%d]. Longer: [%d].\n", *start, *finish);
 	}
 
 //Exchange of two numerical variables with each other.
