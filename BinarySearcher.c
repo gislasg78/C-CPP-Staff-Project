@@ -11,8 +11,8 @@
 //Symbolic constants of working characters.
 #define	CARRIAGE_RETURN	'\n'
 #define	NULL_CHARACTER	'\0'
-#define	V_CHR_UPPER_Y	0x59
 #define	V_CHR_LOWER_Y	0x79
+#define	V_CHR_UPPER_Y	0x59
 
 //Symbolic work constants.
 #define	V_MINUS_ONE	-1
@@ -124,7 +124,7 @@ void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_en
 int GetValidInputs(int *start, int *finish, int *target_key, int *bottom, int *top);
 int GetValidLimits(const int position, int *start, int *finish);
 int InterpolationLocate(const int array[], const int bottom, const int top, const int target_key, int *middle_bottom, int *middle_top, int *iters);
-int Menu(int *option);
+int MainMenu(int *option);
 int SelectedOption(int *value);
 int SequentialSearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
 void SwapValues(int *left_value, int *right_value);
@@ -143,7 +143,7 @@ int BinarySearch(const int array[], const int start, const int finish, const int
 		int middle = low + (high - low) / V_TWO;
 
 		//Continue searching as long as there is a valid range.
-		for (*iters = V_ZERO; low <= high && array[middle] != target_key; (*iters)++)
+		for (; low <= high && array[middle] != target_key; (*iters)++)
 			{
 				//An adjustment is made to the substitute middle position.
 				middle = low + (high - low) / V_TWO;
@@ -166,10 +166,9 @@ int BinarySearchDelta(const int array[], const int start, const int finish, cons
 	{
 		//Preliminary working variables. Calculate the midpoint position.
 		int middle = start + (finish - start) / V_TWO;
-		*delta_factor = (finish - start);
 
 		//Continue searching as long as there is a valid range.
-		for (*iters = V_ZERO; array[middle] != target_key && *delta_factor; (*iters)++, *delta_factor /= V_TWO)
+		for (*delta_factor = (finish - start); array[middle] != target_key && *delta_factor; (*iters)++, *delta_factor /= V_TWO)
 			{
 				//Compare the value at the midpoint with the target.
 				if (array[middle] == target_key)
@@ -213,14 +212,15 @@ int BinarySearchRecursive(const int array[], const int bottom, const int top, co
 int DumpAllItems(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters)
 	{
 		/* Preliminary working variables. */
+		char char_key = V_ZERO;
 		int item_pos = V_MINUS_ONE;
 
 		/* Display of each of the elements of the array. */
-		printf("\nDump all elements of the array...\n");
+		printf("\nDump all elements of the array from [%d] to [%d].\n", start, finish);
 
 		for (int idx = start; idx <= finish; idx++, (*iters)++)
 			{
-				printf("[%d].\t", array[idx]);
+				printf("#[%3.d] = [%3.d].\t", idx, array[idx]);
 
 				if (array[idx] == target_key) item_pos = idx;
 			}
@@ -229,6 +229,8 @@ int DumpAllItems(const int array[], const int start, const int finish, const int
 
 		/* If the item has been located in the full crawl, indicate that the item was located. */
 		if (item_pos >= start && item_pos <= finish) printf ("** Element: [%d] = [%d] located in position: [%d]. **\n", target_key, array[item_pos], item_pos);
+
+		char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 
 		return(*pos = item_pos);
 	}
@@ -303,7 +305,7 @@ int FibonacciSearch(const int array[], const int start, const int finish, const 
 						if (target_key > array[index]) index += adjust;	//Fit to size != fib_num.
 
 						/* Work loop to reposition the array index. */
-						for (*iters = V_ZERO; (index >= V_ZERO && index < size) && (target_key != array[index]); (*iters)++)
+						for (; (index >= V_ZERO && index < size) && (target_key != array[index]); (*iters)++)
 							{
 								if (target_key == array[index])
 									{
@@ -615,20 +617,21 @@ int GetValidLimits(const int position, int *start, int *finish)
 //Function to locate a certain value by means of interpolations.
 int InterpolationLocate(const int array[], const int bottom, const int top, const int target_key, int *middle_bottom, int *middle_top, int *iters)
 	{
-		//Preliminary working variables.
-		*iters = V_ZERO;
-		*middle_top = top + ((target_key - array[top]) * (bottom - top)) / (array[bottom] - array[top]);
-		*middle_bottom = bottom + ((target_key - array[bottom]) * (top - bottom)) / (array[top] - array[bottom]);
+		/* Preliminary working variables. */
+		*middle_top = top + ((target_key - array[top]) * (bottom - top)) / (array[bottom] - array[top] + V_ONE);
+		*middle_bottom = bottom + ((target_key - array[bottom]) * (top - bottom)) / (array[top] - array[bottom] + V_ONE);
 
 		//The located position of the element is returned as a result.
 		return (*middle_top >= bottom && *middle_top <= top) && (*middle_bottom >= bottom && *middle_bottom <= top);
 	}
 
 //Options menu.
-int Menu(int *option)
+int MainMenu(int *option)
 	{
+		/* Preliminary working variables. */
 		int value = V_ZERO;
 
+		/* Combined cycle from the main options menu. */
 		while (value != enm_opt_exit)
 			{
 				printf("\n");
@@ -659,7 +662,7 @@ int Menu(int *option)
 //Function to execute a function given an option.
 int SelectedOption(int *value)
 	{
-		//Preliminary working variables.
+		/* Preliminary working variables. */
 		char char_key = NULL_CHARACTER;	//Variable to obtain a pause character.
 		int delta_factor = V_ZERO;	//Delta factor that adjusts the position of the medium.
 		int iterations = V_ZERO, iteratives = V_ZERO;		//Number of iterations performed.
@@ -681,6 +684,7 @@ int SelectedOption(int *value)
 				case enm_opt_binary_search:
 					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
+							iterations = V_ZERO;
 							position = BinarySearch(array, starting_pos, finishing_pos, target_key, &position, &iterations);
 
 							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
@@ -705,6 +709,7 @@ int SelectedOption(int *value)
 				case enm_opt_binary_search_delta:
 					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
+							iterations = V_ZERO;
 							position = BinarySearchDelta(array, starting_pos, finishing_pos, target_key, &delta_factor, &position, &iterations);
 
 							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
@@ -748,9 +753,6 @@ int SelectedOption(int *value)
 
 							GetItem("Binary search recursive", array, starting_pos, finishing_pos, target_key, position, iterations);
 						}
-					else
-						{
-						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
@@ -784,6 +786,7 @@ int SelectedOption(int *value)
 				case enm_opt_fibonacci_search:
 					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
+							iterations = V_ZERO;
 							position = FibonacciSearch(array, starting_pos, finishing_pos, target_key, &position, &iterations);
 
 							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
@@ -808,6 +811,8 @@ int SelectedOption(int *value)
 				case enm_opt_interpolation_search:
 					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
+							iterations = V_ZERO;
+
 							if (InterpolationLocate(array, starting_pos, finishing_pos, target_key, &middle_bottom, &middle_top, &iterations))
 								{
 									printf("\n** [Approximate values ​​obtained] **.\n");
@@ -839,6 +844,8 @@ int SelectedOption(int *value)
 									GetItem("Interpolation search: lower value", array, starting_pos, finishing_pos, target_key, middle_bottom, iterations);
 									GetItem("Interpolation search: upper value", array, starting_pos, finishing_pos, target_key, middle_top, iterations);
 								}
+							else
+								printf("The lower bound: [%d] and upper bound: [%d] are invalid and are outside the range between: [%d] and [%d].\n", middle_bottom, middle_top, starting_pos, finishing_pos);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -853,24 +860,26 @@ int SelectedOption(int *value)
 
 					if (GetValidLimits(starting_pos, &minimum_pos, &maximum_pos))
 						{
-							//Presentation and indication headers.
-							printf("\nSearch for a prime number within the first thousand.\n");
-							printf("Prime number to find: ");
-							target_key = *((int *) GetEntry("", &target_key, enm_type_entry_int, enm_type_reset_YES));
-
+							/* Locate a value determined by its index within the array. */
 							iterations = V_ZERO;
 							finishing_pos = starting_pos;
+							target_key = V_ZERO;
+
+							char_key = *((char *) GetEntry("Do you want to compare the value located at the given position with a determined value (y/n)? : ", &char_key, enm_type_entry_char, enm_type_reset_YES));
+
+							if (char_key == V_CHR_UPPER_Y || char_key == V_CHR_LOWER_Y)
+								{
+									//Presentation and indication headers.
+									printf("\nSearch for a prime number within the first thousand.\n");
+									printf("Prime number to find: ");
+									target_key = *((int *) GetEntry("", &target_key, enm_type_entry_int, enm_type_reset_YES));
+								}
+
 							GetElement("Locate directly", array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, size, starting_pos, iterations);
 							printf("Element found: [%d] ubicated directly on position: [%d].\n", array[starting_pos], starting_pos);
-						}
-					else
-						{
-							printf("\n[Locate directly].\n");
-							printf("Element: [%d] not found!\n", target_key);
-							printf("Highest position achieved: [%d].\n", starting_pos);
-						}
 
-					GetItem("Locate directly", array, starting_pos, finishing_pos, target_key, starting_pos, iterations);
+							GetItem("Locate directly", array, starting_pos, finishing_pos, target_key, starting_pos, iterations);
+						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
@@ -879,6 +888,7 @@ int SelectedOption(int *value)
 				case enm_opt_sequential_search:
 					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
+							iterations = V_ZERO;
 							position = SequentialSearch(array, starting_pos, finishing_pos, target_key, &position, &iterations);
 
 							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
@@ -967,9 +977,11 @@ int SelectedOption(int *value)
 //Sequential search function given a start position.
 int SequentialSearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters)
 	{
+		/* Preliminary working variables. */
 		int idx = V_ZERO;
 
-		for (*iters = V_ZERO, idx = start; idx <= finish && array[idx] < target_key; idx++, (*iters)++);
+		/* Main cycle of iterations while the searched value is not found. */
+		for (idx = start; idx <= finish && array[idx] < target_key; idx++, (*iters)++);
 
 		return(*pos = (array[idx] == target_key) ? idx : V_MINUS_ONE);
 	}
@@ -1020,7 +1032,8 @@ int ViewAllItems(const int array[], const int start, const int finish, const int
 		char char_key = V_CHR_UPPER_Y;
 		int idx = V_ZERO;
 
-		printf("\nPointer naming practice.\n");
+		/* Header message. */
+		printf("\nPractical visualization of pointer naming.\n");
 
 		/* Combined loop to dump the memory addresses and contents of various integer arrays. */
 		for (idx = start; idx <= finish && array[idx] <= target_key && (char_key == V_CHR_LOWER_Y || char_key == V_CHR_UPPER_Y); idx++, (*iters)++)
@@ -1031,7 +1044,7 @@ int ViewAllItems(const int array[], const int start, const int finish, const int
 				printf("+===+====+===+====+===+====+===+====+\n");
 				printf("| Index position #: [%d] of: [%d].\n", idx, finish);
 				printf("| Position content: [%d].\n", array[idx]);
-				printf("+-----------------------------------+\n");
+				printf("+---+----+---+----+---+----+---+----+\n");
 				printf("| Current  cycle  : {%d}.\n", *iters);
 				printf("| Searched value  : <%d>.\n", target_key);
 				printf("+---+----+---+----+---+----+---+----+\n");
@@ -1062,7 +1075,7 @@ int ViewAllItems(const int array[], const int start, const int finish, const int
 				char_key = *((char *) GetEntry("Do you want to continue viewing more records (y/n)? : ", &char_key, enm_type_entry_char, enm_type_reset_YES));
 			}
 
-		return(*pos = (idx > start && idx <= finish) ? --idx : idx);
+		return(*pos = (--idx >= start && idx <= finish) ? idx : V_MINUS_ONE);
 	}
 
 //Visualize each element of the arrangement step by step.
@@ -1072,7 +1085,8 @@ int ViewEachElement(const int array[], const int start, const int finish, const 
 		char char_key = V_CHR_UPPER_Y;
 		int idx = V_ZERO;
 
-		printf("\nPointer naming practice.\n");
+		/* Header message. */
+		printf("\nPractical visualization of each element of the arrangement.\n");
 
 		/* Combined loop to dump the memory addresses and contents of various integer arrays. */
 		for (idx = start; idx <= finish && (char_key == V_CHR_LOWER_Y || char_key == V_CHR_UPPER_Y); idx++, (*iters)++)
@@ -1091,7 +1105,7 @@ int ViewEachElement(const int array[], const int start, const int finish, const 
 //Main function.
 int main()
 	{
-		int option = Menu(&option);
+		int option = MainMenu(&option);
 
 		return V_ZERO;
 	}
