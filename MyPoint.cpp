@@ -22,7 +22,7 @@ class Point2D
 				}
 
 			template <typename U>
-			friend std::ostream &operator<< (std::ostream& out, const Point2D<U> &Point2D)
+			friend std::ostream& operator<< (std::ostream &out, const Point2D<U> &Point2D)
 				{
 					Point2D.print();
 					return out;
