@@ -119,7 +119,7 @@ int DumpAllItems(const int array[], const int start, const int finish, const int
 int *Fibonacci_Series_Numbers(const int max_number, int *qty_items, int **Fibo_Series_Nums);
 int FibonacciSearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
 int GetElement(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, const int size, const int position, const int iterations);
-int GetItem(const char *str_Message, const int array[], const int start, const int finish, const int position, const int target_key, const int iterations);
+int GetItem(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int position, const int iterations);
 void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_entry enm_type_value, enum enm_type_reset enm_type_reset_OK);
 int GetValidInputs(int *start, int *finish, int *target_key, int *bottom, int *top);
 int GetValidLimits(const int position, int *start, int *finish);
@@ -380,7 +380,7 @@ int GetElement(const char *str_Message, const int array[], const int start, cons
 	}
 
 //Obtains more succinct information about the queried item.
-int GetItem(const char *str_Message, const int array[], const int start, const int finish, const int position, const int target_key, const int iterations)
+int GetItem(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int position, const int iterations)
 	{
 		//Preliminary working variables.
 		char char_key = NULL_CHARACTER;
@@ -394,7 +394,7 @@ int GetItem(const char *str_Message, const int array[], const int start, const i
 				printf("|  Item Information.  |\n");
 				printf("+---+----+---+----+---+\n");
 				printf("| Loops    : {%d}.\n", iterations);
-				printf("| Searched : [%d].\n", target_key);
+				printf("| Searched : <%d>.\n", target_key);
 				printf("+---------------------+\n");
 				printf("|   Scanned Records.  |\n");
 				printf("+---------------------+\n");
@@ -695,7 +695,7 @@ int SelectedOption(int *value)
 									printf("Highest position achieved: [%d].\n", position);
 								}
 
-							GetItem("Binary search", array, starting_pos, finishing_pos, position, target_key, iterations);
+							GetItem("Binary search", array, starting_pos, finishing_pos, target_key, position, iterations);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -720,7 +720,7 @@ int SelectedOption(int *value)
 									printf("Highest position achieved: [%d].\n", position);
 								}
 
-							GetItem("Binary search with delta", array, starting_pos, finishing_pos, position, target_key, iterations);
+							GetItem("Binary search with delta", array, starting_pos, finishing_pos, target_key, position, iterations);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -746,7 +746,7 @@ int SelectedOption(int *value)
 									printf("Highest position achieved: [%d].\n", position);
 								}
 
-							GetItem("Binary search recursive", array, starting_pos, finishing_pos, position, target_key, iterations);
+							GetItem("Binary search recursive", array, starting_pos, finishing_pos, target_key, position, iterations);
 						}
 					else
 						{
@@ -774,7 +774,7 @@ int SelectedOption(int *value)
 									printf("Highest position achieved: [%d].\n", position);
 								}
 
-							GetItem("Dump all items", array, starting_pos, finishing_pos, position, target_key, iterations);
+							GetItem("Dump all items", array, starting_pos, finishing_pos, target_key, position, iterations);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -798,7 +798,7 @@ int SelectedOption(int *value)
 									printf("Highest position achieved: [%d].\n", position);
 								}
 
-							GetItem("Fibonacci search", array, starting_pos, finishing_pos, position, target_key, iterations);
+							GetItem("Fibonacci search", array, starting_pos, finishing_pos, target_key, position, iterations);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -836,8 +836,8 @@ int SelectedOption(int *value)
 											printf("Highest position achieved: [%d].\n", middle_top);
 										}
 
-									GetItem("Interpolation search: lower value", array, starting_pos, finishing_pos, middle_bottom, target_key, iterations);
-									GetItem("Interpolation search: upper value", array, starting_pos, finishing_pos, middle_top, target_key, iterations);
+									GetItem("Interpolation search: lower value", array, starting_pos, finishing_pos, target_key, middle_bottom, iterations);
+									GetItem("Interpolation search: upper value", array, starting_pos, finishing_pos, target_key, middle_top, iterations);
 								}
 						}
 
@@ -870,7 +870,7 @@ int SelectedOption(int *value)
 							printf("Highest position achieved: [%d].\n", starting_pos);
 						}
 
-					GetItem("Locate directly", array, starting_pos, finishing_pos, starting_pos, target_key, iterations);
+					GetItem("Locate directly", array, starting_pos, finishing_pos, target_key, starting_pos, iterations);
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
@@ -893,7 +893,7 @@ int SelectedOption(int *value)
 									printf("Highest position achieved: [%d].\n", position);
 								}
 
-							GetItem("Sequential search", array, starting_pos, finishing_pos, position, target_key, iterations);
+							GetItem("Sequential search", array, starting_pos, finishing_pos, target_key, position, iterations);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -918,7 +918,7 @@ int SelectedOption(int *value)
 									printf("Highest position achieved: [%d].\n", position);
 								}
 
-							GetItem("View all items", array, starting_pos, finishing_pos, position, target_key, iterations);
+							GetItem("View all items", array, starting_pos, finishing_pos, target_key, position, iterations);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -943,7 +943,7 @@ int SelectedOption(int *value)
 									printf("Highest position achieved: [%d].\n", position);
 								}
 
-							GetItem("View each element of the arrangement", array, starting_pos, finishing_pos, position, target_key, iterations);
+							GetItem("View each element of the arrangement", array, starting_pos, finishing_pos, target_key, position, iterations);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
