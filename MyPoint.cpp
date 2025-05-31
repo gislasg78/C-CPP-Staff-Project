@@ -135,7 +135,7 @@ int main()
 
 		/* Deleting the array of pointer objects of type 'Point2D'. */
 		std::cout << "Deleting the array of pointers of type 'Point2D'..." << std::endl;
-		delete array_Point2D;
+		delete [] array_Point2D;
 
 		return V_ZERO;
 	}
