@@ -291,7 +291,7 @@ int FibonacciSearch(const int array[], const int start, const int finish, const 
 		int qty_items = V_ZERO, size = start + (finish - start) + V_ONE, *vector_Fibonacci_Numbers = NULL;
 
 		/* Verify the Fibonacci series created. */
-		if (vector_Fibonacci_Numbers = Fibonacci_Series_Numbers(size, &qty_items, &vector_Fibonacci_Numbers))
+		if ((vector_Fibonacci_Numbers = Fibonacci_Series_Numbers(size, &qty_items, &vector_Fibonacci_Numbers)))
 			{
 				if (qty_items > V_TWO)
 					{
@@ -438,7 +438,7 @@ void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_en
 		/* Validate if the obtained memory addresses are valid. */
 		if (void_var_address)
 			{
-				if (buffer = (char *) calloc(number_elements, sizeof(char)))
+				if ((buffer = (char *) calloc(number_elements, sizeof(char))))
 					{
 						/* Incoming message. */
 						printf("%s", str_Message);
