@@ -125,7 +125,7 @@ int GetValidInputs(int *start, int *finish, int *target_key, int *bottom, int *t
 int GetValidLimits(const int position, int *start, int *finish);
 int InterpolationLocate(const int array[], const int bottom, const int top, const int target_key, int *middle_bottom, int *middle_top, int *iters);
 int MainMenu(int *option);
-int SelectedOption(int *value);
+int SelectedOptionMainMenu(int *calls, int *iters, int *value);
 int SequentialSearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
 void SwapValues(int *left_value, int *right_value);
 void SwappingLimits(const char *str_Message, int *bottom, int *top);
@@ -596,6 +596,9 @@ int GetValidInputs(int *start, int *finish, int *target_key, int *bottom, int *t
 //Limits validation for the given position.
 int GetValidLimits(const int position, int *start, int *finish)
 	{
+		/* Preliminary working variables. */
+		char char_key = NULL_CHARACTER;
+
 		/* Header message. */
 		printf("\nVerifying that a value is within a range...\n");
 
@@ -610,6 +613,8 @@ int GetValidLimits(const int position, int *start, int *finish)
 			printf("Position: [%d]. OK! Range from: [%d] to [%d].\n", position, *start, *finish);
 		else
 			printf("Position: [%d]. Fail! Out of range between: [%d] and [%d].\n", position, *start, *finish);
+
+		char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 
 		return (position >= *start && position <= *finish);
 	}
@@ -629,7 +634,7 @@ int InterpolationLocate(const int array[], const int bottom, const int top, cons
 int MainMenu(int *option)
 	{
 		/* Preliminary working variables. */
-		int value = V_ZERO;
+		int calls = V_ZERO, iters = V_ZERO, value = V_ZERO;
 
 		/* Combined cycle from the main options menu. */
 		while (value != enm_opt_exit)
@@ -653,14 +658,14 @@ int MainMenu(int *option)
 				printf("Choose an option: ");
 
 				*option = value = *((int *) GetEntry("", &value, enm_type_entry_int, enm_type_reset_YES));
-				*option = value = SelectedOption(&value);
+				*option = value = SelectedOptionMainMenu(&calls, &iters, &value);
 			}
 
 		return value;
 	}
 
 //Function to execute a function given an option.
-int SelectedOption(int *value)
+int SelectedOptionMainMenu(int *calls, int *iters, int *value)
 	{
 		/* Preliminary working variables. */
 		char char_key = NULL_CHARACTER;	//Variable to obtain a pause character.
@@ -673,18 +678,19 @@ int SelectedOption(int *value)
 		int size = sizeof(array) / sizeof(array[V_ZERO]);	//Calculated array size.
 		int target_key = V_ZERO;	//Numeric search key.
 
-		//Convert integer value to enumerated value.
+		/* Convert integer value to enumerated value. */
 		enm_option = (enum enm_options) *value;
+		if (enm_option >= enm_opt_binary_search && enm_option <= enm_opt_view_each_element) (*calls)++;
+
 		printf("\nThe selected option was: [%d].\n", *value);
 
-		//Selection of cases with the enumerated value obtained.
+		/* Selection of cases with the enumerated value obtained. */
 		switch (enm_option)
 			{
-				//We call the traditional binary search function.
+				/* We call the traditional binary search function. */
 				case enm_opt_binary_search:
 					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
-							iterations = V_ZERO;
 							position = BinarySearch(array, starting_pos, finishing_pos, target_key, &position, &iterations);
 
 							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
@@ -705,11 +711,10 @@ int SelectedOption(int *value)
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
-				//We call the binary search function with a delta factor.
+				/* We call the binary search function with a 'delta' factor. */
 				case enm_opt_binary_search_delta:
 					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
-							iterations = V_ZERO;
 							position = BinarySearchDelta(array, starting_pos, finishing_pos, target_key, &delta_factor, &position, &iterations);
 
 							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
@@ -731,11 +736,10 @@ int SelectedOption(int *value)
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
-				//We call the traditional recursive and cyclic binary search function.
+				/* We call the traditional recursive and cyclic binary search function. */
 				case enm_opt_binary_search_recursive:
 					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
-							iterations = V_ZERO;
 							position = BinarySearchRecursive(array, starting_pos, finishing_pos, target_key, &position, &iterations, &iteratives);
 
 							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
@@ -757,11 +761,10 @@ int SelectedOption(int *value)
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
-				//We dump all elements of the array.
+				/* We dump all elements of the array. */
 				case enm_opt_dump_all_items:
 					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
-							iterations = V_ZERO;
 							position = DumpAllItems(array, starting_pos, finishing_pos, target_key, &position, &iterations);
 
 							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
@@ -782,11 +785,10 @@ int SelectedOption(int *value)
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
-				//We perform the search function by Fibonacci numbers.
+				/* We perform the search function by Fibonacci numbers. */
 				case enm_opt_fibonacci_search:
 					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
-							iterations = V_ZERO;
 							position = FibonacciSearch(array, starting_pos, finishing_pos, target_key, &position, &iterations);
 
 							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
@@ -807,12 +809,10 @@ int SelectedOption(int *value)
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
-				//We call a function that obtains the position of the searched element by means of interpolations.
+				/* We call a function that obtains the position of the searched element by means of interpolations. */
 				case enm_opt_interpolation_search:
 					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
-							iterations = V_ZERO;
-
 							if (InterpolationLocate(array, starting_pos, finishing_pos, target_key, &middle_bottom, &middle_top, &iterations))
 								{
 									printf("\n** [Approximate values ​​obtained] **.\n");
@@ -851,7 +851,7 @@ int SelectedOption(int *value)
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
-				//We locate an entry or occurrence of the array directly by means of an index number.
+				/* We locate an entry or occurrence of the array directly by means of an index number. */
 				case enm_opt_locate_directly:
 					printf("\nEntry or occurrence number to be located.\n");
 					printf("Index position from: [%d] to [%d]: ", V_ZERO, size + V_MINUS_ONE);
@@ -861,10 +861,7 @@ int SelectedOption(int *value)
 					if (GetValidLimits(starting_pos, &minimum_pos, &maximum_pos))
 						{
 							/* Locate a value determined by its index within the array. */
-							iterations = V_ZERO;
 							finishing_pos = starting_pos;
-							target_key = V_ZERO;
-
 							char_key = *((char *) GetEntry("Do you want to compare the value located at the given position with a determined value (y/n)? : ", &char_key, enm_type_entry_char, enm_type_reset_YES));
 
 							if (char_key == V_CHR_UPPER_Y || char_key == V_CHR_LOWER_Y)
@@ -884,11 +881,10 @@ int SelectedOption(int *value)
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
-				//We call a function that sequentially searches for a value until it finds it.
+				/* We call a function that sequentially searches for a value until it finds it. */
 				case enm_opt_sequential_search:
 					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
-							iterations = V_ZERO;
 							position = SequentialSearch(array, starting_pos, finishing_pos, target_key, &position, &iterations);
 
 							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
@@ -909,11 +905,10 @@ int SelectedOption(int *value)
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
-				//See all the details of the record to be consulted.
+				/* See all the details of the record to be consulted. */
 				case enm_opt_view_all_items:
 					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
-							iterations = V_ZERO;
 							position = ViewAllItems(array, starting_pos, finishing_pos, target_key, &position, &iterations);
 
 							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
@@ -934,11 +929,10 @@ int SelectedOption(int *value)
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
-				//See each element of the arrangement step by step.
+				/* See each element of the arrangement step by step. */
 				case enm_opt_view_each_element:
 					if (GetValidInputs(&starting_pos, &finishing_pos, &target_key, &minimum_pos, &maximum_pos))
 						{
-							iterations = V_ZERO;
 							position = ViewEachElement(array, starting_pos, finishing_pos, target_key, minimum_pos, maximum_pos, size, &position, &iterations);
 
 							if (GetValidLimits(position, &minimum_pos, &maximum_pos))
@@ -959,17 +953,21 @@ int SelectedOption(int *value)
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
-				//Program exit case.
+				/* Program exit case. */
 				case enm_opt_exit:
 					printf("\nLeaving this program...\n");
 					break;
 
-				//Case of failed option.
+				/* Case of failed option. */
 				default:
 					printf("The selected option: [%d] is not valid. Correct it!\n", *value);
 					break;
 
 			}
+
+		/* The summary of the cumulative number of iterations performed by each called function is displayed.*/
+		printf("\nLaps completed. Calls made and completed: [%d]. Current cycles: [%d]. Accumulated spins: [%d].\n", *calls, iterations, *iters += iterations);
+		char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 
 		return *value;
 	}
@@ -1001,20 +999,20 @@ void SwappingLimits(const char *str_Message, int *start, int *finish)
 				printf("+---+----+---+----+---+----+---+----+---+\n");
 				printf("| Higher  : [%d].\n", *finish);
 				printf("| Lower   : [%d].\n", *start);
-				printf("+---------------------------------------+\n");
+				printf("+---=----=---=----=---=----=---=----=---+\n");
 				printf("|         Changed limit values.         |\n");
-				printf("+---------------------------------------+\n");
+				printf("+---=----=---=----=---=----=---=----=---+\n");
 
 				SwapValues(start, finish);
 
 				printf("| Smaller : [%d].\n", *finish);
 				printf("| Larger  : [%d].\n", *start);
-				printf("+---------------------------------------+\n");
-
-				char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
+				printf("+---+----+---+----+---+----+---+----+---+\n");
 			}
 		else
 			printf("\nCorrect values. Shorter: [%d]. Longer: [%d].\n", *start, *finish);
+
+		char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 	}
 
 //Exchange of two numerical variables with each other.
