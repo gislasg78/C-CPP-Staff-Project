@@ -16,10 +16,11 @@
 #define	QUEEN				'\x51'
 #define	SPACE				0x20
 
+/* Expected response. */
 #define	V_CHR_LOWER_Y	0x79
 #define	V_CHR_UPPER_Y	0x59
 
-//Limits of the Chess Board.
+/* Limits of the Chess Board. */
 #define V_LOWER_LIMIT_COLUMN_CHESSBOARD	0
 #define V_LOWER_LIMIT_ROW_CHESSBOARD	0
 #define V_UPPER_LIMIT_COLUMN_CHESSBOARD	7
@@ -30,23 +31,25 @@
 #define	V_ONE		1
 #define	V_ZERO		0
 
+
 //Create an empty chessboard (initialized to SPACE 0x20 or '\x20').
 static char chessboard[V_EIGHT][V_EIGHT] =	{
-						SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
-						SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
-						SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
-						SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
-						SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
-						SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
-						SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
-						SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE,
+							{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
+							{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
+							{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
+							{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
+							{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
+							{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
+							{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
+							{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
 						};
+
 
 //Prototypes of the functions to be used.
 int GetRandomInterval(int start, int finish, int *random_seed);
 double GetRandomNumber(int *random_seed);
 int PrintChessboard(char chessboard[V_EIGHT][V_EIGHT]);
-int ResolveQueens(char chessboard[V_EIGHT][V_EIGHT], int rowQ, int colQ);
+int ResolveQueens(char chessboard[V_EIGHT][V_EIGHT], int rowQ, int colQ, int *accumulated, int *queens, int *spins);
 
 
 //Function to receive a specific character from the keyboard.
@@ -59,7 +62,7 @@ char GetResponse(const char *str_Message)
 		printf("%s", str_Message);
 
 		/* Validate that only one key is received. */
-		if (scanf("\n%c", &chr_Char))
+		if (scanf(" %c", &chr_Char))
 			printf("\nInput value: [%d] = [%c]. OK!\n", chr_Char, chr_Char);
 		else
 			{
@@ -109,11 +112,12 @@ int PrintChessboard(char chessboard[V_EIGHT][V_EIGHT])
 	}
 
 //Function that traces the movements of a given queen.
-int ResolveQueens(char chessboard[V_EIGHT][V_EIGHT], int rowQ, int colQ)
+int ResolveQueens(char chessboard[V_EIGHT][V_EIGHT], int rowQ, int colQ, int *accumulated, int *queens, int *spins)
 	{
-		//Preliminary working variables.
+		/* Preliminary working variables. */
 		int count = V_ZERO;
 
+		/* It is verified that the position sent to place the 'queen' piece is free and within range. */
 		if (rowQ >= V_LOWER_LIMIT_ROW_CHESSBOARD && rowQ <= V_UPPER_LIMIT_ROW_CHESSBOARD)
 			{
 				if (colQ >= V_LOWER_LIMIT_COLUMN_CHESSBOARD && colQ <= V_UPPER_LIMIT_COLUMN_CHESSBOARD)
@@ -122,6 +126,7 @@ int ResolveQueens(char chessboard[V_EIGHT][V_EIGHT], int rowQ, int colQ)
 							{
 								count = V_ONE;
 								chessboard[rowQ][colQ] = QUEEN;
+								(*queens)++;
 
 								for (int row = V_ZERO; row < V_EIGHT; row++)
 									{
@@ -148,6 +153,10 @@ int ResolveQueens(char chessboard[V_EIGHT][V_EIGHT], int rowQ, int colQ)
 											}
 									}
 							}
+
+						/* The contents of the placed 'queen' piece are displayed. */
+						printf("\n[%s]:\t(row = [%d], column = [%d]) = {%d} : {%c}.\n", (chessboard[rowQ][colQ] == QUEEN) ? "Queen position" : "Position held", rowQ, colQ, chessboard[rowQ][colQ], *(*(chessboard + rowQ) + colQ));
+						printf("\t\t\tAccumulated: [%d]. Counter: [%d]. Queens: [%d]. Turns: [%d].\n", *accumulated += count, count, *queens, (*spins)++);
 					}
 				else
 					printf("Mistake! The value for column [%d] is outside the range between [%d] and [%d].\n", colQ, V_LOWER_LIMIT_COLUMN_CHESSBOARD, V_UPPER_LIMIT_COLUMN_CHESSBOARD);
@@ -164,7 +173,7 @@ int main()
 		//Preliminary working variables.
 		char char_key = V_ZERO;
 		int col = V_ZERO, row = V_ZERO;
-		int count = V_ZERO, spins = V_ZERO, random_seed = V_ZERO;
+		int accumulated = V_ZERO, count = V_ZERO, queens = V_ZERO, random_seed = V_ZERO, spins = V_ZERO;
 
 		/* Header messages. */
 		printf("Placing until eight 'queen' pieces on a chessboard.\n");
@@ -181,12 +190,13 @@ int main()
 				row = GetRandomInterval(V_LOWER_LIMIT_ROW_CHESSBOARD, V_UPPER_LIMIT_ROW_CHESSBOARD, &random_seed);
 				col = GetRandomInterval(V_LOWER_LIMIT_COLUMN_CHESSBOARD, V_UPPER_LIMIT_COLUMN_CHESSBOARD, &random_seed);
 
-				count += ResolveQueens(chessboard, row, col);
-				printf("\nQ : (x = [%d], y = [%d]) = {%d} : {%d}.\n", col, row, count, spins++);
+				count += ResolveQueens(chessboard, row, col, &accumulated, &queens, &spins);
 				PrintChessboard(chessboard);
 
 				char_key = GetResponse("Do you want to continue placing other 'queen' pieces on the board (y/n)? : ");
 			}
+
+		printf("\n[%d] Occupied squares.\n", count);
 
 		return V_ZERO;
 	}
