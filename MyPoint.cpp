@@ -16,35 +16,18 @@ class Point2D
 
 			template <typename U>
 			friend std::istream &operator>> (std::istream& in, Point2D<U> &Point2D)
-				{
-					Point2D.capture();
-					return in;
-				}
+				{Point2D.capture(); return in;}
 
 			template <typename U>
 			friend std::ostream& operator<< (std::ostream &out, const Point2D<U> &Point2D)
-				{
-					Point2D.print();
-					return out;
-				}
+				{Point2D.print(); return out;}
 
 		protected:
 			static int c;
 
 		public:
-			Point2D()
-				{
-					this->c++;
-					this->capture();
-				};
-
-			Point2D(const Point2D& Point2D)
-				{
-					this->c++;
-					this->x = Point2D.getX();
-					this->y = Point2D.getY();
-				};
-
+			Point2D()			{this->c++; this->capture();};
+			Point2D(const Point2D& Point2D)	{this->c++; this->x = Point2D.getX(); this->y = Point2D.getY();};
 			Point2D(const T &x, const T &y) : x(x), y(y)	{this->c++;};
 
 			virtual void capture()
@@ -56,17 +39,19 @@ class Point2D
 					std::cin >> this->y;
 				}
 
-			int getX() const	{return this->x;}
-			int getY() const	{return this->y;}
+			int getX()	const		{return this->x;}
+			int getY()	const		{return this->y;}
 
-			virtual void print() const
+			virtual void print()	const
 				{
 					std::cout << "Display the current values ​​of a '2D Point'." << std::endl;
 					std::cout << "c = [" << this->c << "].\t(x = [" << this->x << "], y = [" << this->y << "])." << std::endl;
 				}
 
-			void setX(const T &x)	{this->x = x;}
-			void setY(const T &y)	{this->y = y;}
+			virtual void reset()		{this->x = V_ZERO; this->y = V_ZERO;}
+
+			void setX(const T &x)		{this->x = x;}
+			void setY(const T &y)		{this->y = y;}
 
 			virtual ~Point2D() = default;
 	};
@@ -130,6 +115,7 @@ int main()
 		for (int idx = V_ZERO; idx < quantity; idx++)
 			{
 				std::cout << "Deleting object 'Point2D' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
+				array_Point2D[idx]->reset();
 				delete *(array_Point2D + idx);
 			}
 
