@@ -142,9 +142,18 @@ int main()
 				(*(*(array_Point2D + idx)))--;
 				(*(*(array_Point2D + idx))).print();
 
+				/* Various ways to call methods on an array of object pointers (pointer of pointers). */
 				array_Point2D[idx]->reset();
 				array_Point2D[idx]->print();
+				(*array_Point2D[idx]).reset();
+				(*array_Point2D[idx]).print();
 
+				(*(array_Point2D + idx))->reset();
+				(*(array_Point2D + idx))->print();
+				(*(*(array_Point2D + idx))).reset();
+				(*(*(array_Point2D + idx))).print();
+
+				/* Calling in various ways to an overloaded operator. */
 				(*array_Point2D[idx])();
 				(*(*(array_Point2D + idx)))();
 			}
