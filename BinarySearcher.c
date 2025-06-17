@@ -565,6 +565,9 @@ void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_en
 //Valid entries for the initial and final search indexes, as well as the value to be searched for, are obtained.
 int GetValidInputs(int *start, int *finish, int *target_key, int *bottom, int *top)
 	{
+		/* Preliminary working variables. */
+		char char_key = NULL_CHARACTER;
+
 		/* Prior request for data for searches. */
 		printf("\nRequest for input data...\n");
 
@@ -593,6 +596,8 @@ int GetValidInputs(int *start, int *finish, int *target_key, int *bottom, int *t
 						*target_key = *((int *) GetEntry("", target_key, enm_type_entry_int, enm_type_reset_YES));
 					}
 			}
+
+		char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 
 		return ((*start >= *bottom && *start <= *top) && (*finish >= *bottom && *finish <= *top) && (target_key));
 	}
