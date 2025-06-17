@@ -30,6 +30,17 @@ class Point2D
 			Point2D(const Point2D& Point2D)	{this->c++; this->x = Point2D.getX(); this->y = Point2D.getY();};
 			Point2D(const T &x, const T &y) : x(x), y(y)	{this->c++;};
 
+			Point2D& operator()()
+				{
+					std::cout << "(x = [" << (*this).x << "], y = [" << (*this).y << "])." << std::endl;
+					return *this;
+				}
+
+			Point2D& operator++()		{++this->x; ++this->y; return *this;}
+			Point2D& operator++(int)	{(*this).x++; (*this).y++; return *this;}
+			Point2D& operator--()		{--(*this).x; --(*this).y; return *this;}
+			Point2D& operator--(int)	{this->x--; this->y--; return *this;}
+
 			virtual void capture()
 				{
 					std::cout << "Capture the coordinates of a '2D Point'." << std::endl;
@@ -99,6 +110,10 @@ int main()
 		for (int idx = V_ZERO; idx < quantity; idx++)
 			{
 				std::cout << std::endl << "'Point2D' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
+
+				(*array_Point2D[idx]).reset();
+				(*array_Point2D[idx]).print();
+
 				std::cin >> *(*(array_Point2D + idx));
 			}
 
@@ -110,12 +125,35 @@ int main()
 				std::cout << *array_Point2D[idx];
 			}
 
+		/* Using the overloaded increment and decrement operators in the 'Point2D' class. */
+		std::cout << std::endl << "Increment and decrement the values ​​of the 'Point2D' class." << std::endl;
+		for (int idx = V_ZERO; idx < quantity; idx++)
+			{
+				std::cout << std::endl << "'Point2D' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
+
+				/* Different nomenclatures with pointer notation and array notation. */
+				(*array_Point2D[idx])++;
+				(*array_Point2D[idx]).print();
+				(*array_Point2D[idx])--;
+				(*array_Point2D[idx]).print();
+
+				(*(*(array_Point2D + idx)))++;
+				(*(*(array_Point2D + idx))).print();
+				(*(*(array_Point2D + idx)))--;
+				(*(*(array_Point2D + idx))).print();
+
+				array_Point2D[idx]->reset();
+				array_Point2D[idx]->print();
+
+				(*array_Point2D[idx])();
+				(*(*(array_Point2D + idx)))();
+			}
+
 		/* All dynamically created instances of objects of type 'Point2D' are purged. */
 		std::cout << std::endl << "Clearing 'Point2D' objects..." << std::endl;
 		for (int idx = V_ZERO; idx < quantity; idx++)
 			{
 				std::cout << "Deleting object 'Point2D' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
-				array_Point2D[idx]->reset();
 				delete *(array_Point2D + idx);
 			}
 
