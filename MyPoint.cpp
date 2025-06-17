@@ -37,9 +37,9 @@ class Point2D
 				}
 
 			Point2D& operator++()		{++this->x; ++this->y; return *this;}
-			Point2D& operator++(int)	{(*this).x++; (*this).y++; return *this;}
+			Point2D& operator++(T)		{(*this).x++; (*this).y++; return *this;}
 			Point2D& operator--()		{--(*this).x; --(*this).y; return *this;}
-			Point2D& operator--(int)	{this->x--; this->y--; return *this;}
+			Point2D& operator--(T)		{this->x--; this->y--; return *this;}
 
 			virtual void capture()
 				{
