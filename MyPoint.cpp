@@ -30,7 +30,7 @@ class Point2D
 
 		public:
 			Point2D()			{this->c++; this->id = V_ZERO; this->capture();};
-			Point2D(const Point2D& Point2D)	{this->c++; this->id = Point2D.getId; this->x = Point2D.getX(); this->y = Point2D.getY();};
+			Point2D(const Point2D& Point2D)	{this->c++; this->id = Point2D.getId(); this->x = Point2D.getX(); this->y = Point2D.getY();};
 			Point2D(const int &id, const T &x, const T &y) : id(id), x(x), y(y)	{this->c++;};
 
 			Point2D& operator()()
