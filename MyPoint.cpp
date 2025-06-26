@@ -4,6 +4,8 @@
 #include <iostream>
 
 /* Symbolic work constants. */
+#define	TABULATOR	'\t'
+
 #define	V_ONE	1
 #define V_ZERO  0
 
@@ -12,6 +14,7 @@ template <typename T>
 class Point2D
 	{
 		private:
+			const int id;
 			T x = V_ZERO, y = V_ZERO;
 
 			template <typename U>
@@ -26,12 +29,14 @@ class Point2D
 			static int c;
 
 		public:
-			Point2D()			{this->c++; this->capture();};
-			Point2D(const Point2D& Point2D)	{this->c++; this->x = Point2D.getX(); this->y = Point2D.getY();};
-			Point2D(const T &x, const T &y) : x(x), y(y)	{this->c++;};
+			Point2D()			{this->c++; this->id = V_ZERO; this->capture();};
+			Point2D(const Point2D& Point2D)	{this->c++; this->id = Point2D.getId; this->x = Point2D.getX(); this->y = Point2D.getY();};
+			Point2D(const int &id, const T &x, const T &y) : id(id), x(x), y(y)	{this->c++;};
 
 			Point2D& operator()()
 				{
+					std::cout << "Show the current values ​​of a '2D Point'." << std::endl;
+					std::cout << "{id: [" << (*this).id << "], c = [" << (*this).c << "]}." << TABULATOR;
 					std::cout << "(x = [" << (*this).x << "], y = [" << (*this).y << "])." << std::endl;
 					return *this;
 				}
@@ -50,19 +55,23 @@ class Point2D
 					std::cin >> this->y;
 				}
 
-			int getX()	const		{return this->x;}
-			int getY()	const		{return this->y;}
+			int getId()	const		{return this->id;}
+			T getX()	const		{return this->x;}
+			T getY()	const		{return this->y;}
 
 			virtual void print()	const
 				{
 					std::cout << "Display the current values ​​of a '2D Point'." << std::endl;
-					std::cout << "c = [" << this->c << "].\t(x = [" << this->x << "], y = [" << this->y << "])." << std::endl;
+					std::cout << "{id: [" << this->id << "], c = [" << this->c << "]}." << TABULATOR;
+					std::cout << "(x = [" << this->x << "], y = [" << this->y << "])." << std::endl;
 				}
 
 			virtual void reset()		{this->x = V_ZERO; this->y = V_ZERO;}
 
 			void setX(const T &x)		{this->x = x;}
 			void setY(const T &y)		{this->y = y;}
+
+			void swap()			{T temp = (*this).x; (*this).x = (*this).y; (*this).y = temp;}
 
 			virtual ~Point2D() = default;
 	};
@@ -95,7 +104,7 @@ int main()
 				std::cout << "y = ";
 				std::cin >> y;
 
-				array_Point2D[idx] = new Point2D<int>(x, y);
+				array_Point2D[idx] = new Point2D<int>(idx, x, y);
 			}
 
 		/* An internal method of the 'Point2D' object is used to display the assigned values. */
@@ -134,12 +143,22 @@ int main()
 				/* Different nomenclatures with pointer notation and array notation. */
 				(*array_Point2D[idx])++;
 				(*array_Point2D[idx]).print();
+				(*array_Point2D[idx]).swap();
+				(*array_Point2D[idx]).print();
+
 				(*array_Point2D[idx])--;
+				(*array_Point2D[idx]).print();
+				(*array_Point2D[idx]).swap();
 				(*array_Point2D[idx]).print();
 
 				(*(*(array_Point2D + idx)))++;
 				(*(*(array_Point2D + idx))).print();
+				(*(*(array_Point2D + idx))).swap();
+				(*(*(array_Point2D + idx))).print();
+
 				(*(*(array_Point2D + idx)))--;
+				(*(*(array_Point2D + idx))).print();
+				(*(*(array_Point2D + idx))).swap();
 				(*(*(array_Point2D + idx))).print();
 
 				/* Various ways to call methods on an array of object pointers (pointer of pointers). */
