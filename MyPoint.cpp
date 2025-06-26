@@ -36,8 +36,7 @@ class Point2D
 			Point2D& operator()()
 				{
 					std::cout << "Show the current values ​​of a '2D Point'." << std::endl;
-					std::cout << "{id: [" << (*this).id << "], c = [" << (*this).c << "]}." << TABULATOR;
-					std::cout << "(x = [" << (*this).x << "], y = [" << (*this).y << "])." << std::endl;
+					(*this).view();
 					return *this;
 				}
 
@@ -45,6 +44,8 @@ class Point2D
 			Point2D& operator++(T)		{(*this).x++; (*this).y++; return *this;}
 			Point2D& operator--()		{--(*this).x; --(*this).y; return *this;}
 			Point2D& operator--(T)		{this->x--; this->y--; return *this;}
+
+			operator int() const		{return this->id;}
 
 			virtual void capture()
 				{
@@ -55,15 +56,14 @@ class Point2D
 					std::cin >> this->y;
 				}
 
-			int getId()	const		{return this->id;}
-			T getX()	const		{return this->x;}
-			T getY()	const		{return this->y;}
+			const int getId()	const	{return this->id;}
+			T getX()		const	{return this->x;}
+			T getY()		const	{return this->y;}
 
 			virtual void print()	const
 				{
 					std::cout << "Display the current values ​​of a '2D Point'." << std::endl;
-					std::cout << "{id: [" << this->id << "], c = [" << this->c << "]}." << TABULATOR;
-					std::cout << "(x = [" << this->x << "], y = [" << this->y << "])." << std::endl;
+					this->view();
 				}
 
 			virtual void reset()		{this->x = V_ZERO; this->y = V_ZERO;}
@@ -71,7 +71,13 @@ class Point2D
 			void setX(const T &x)		{this->x = x;}
 			void setY(const T &y)		{this->y = y;}
 
-			void swap()			{T temp = (*this).x; (*this).x = (*this).y; (*this).y = temp;}
+			virtual void swap()		{T temp = (*this).x; (*this).x = (*this).y; (*this).y = temp;}
+
+			virtual void view()	const
+				{
+					std::cout << "{id = [" << (*this).id << "] : [" << this->id << "], c = [" << (*this).c << "] : [" << this->c << "]}." << TABULATOR;
+					std::cout << "(x = [" << this->x << "] : [" << (*this).x << "], y = [" << this->y << "] : [" << (*this).y << "])." << std::endl;
+				}
 
 			virtual ~Point2D() = default;
 	};
