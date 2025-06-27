@@ -1,6 +1,7 @@
 /* This program creates a parent or base class called 'Point2D'
    and exemplifies different features of Object Oriented Programming in C++.
 */
+/* Common work libraries. */
 #include <iostream>
 
 /* Symbolic work constants. */
@@ -35,7 +36,7 @@ class Point2D
 
 			Point2D& operator()()
 				{
-					std::cout << "Show the current values ​​of a '2D Point'." << std::endl;
+					std::cout << std::endl << "Show the current values ​​of a '2D Point'." << std::endl;
 					(*this).view();
 					return *this;
 				}
@@ -45,11 +46,11 @@ class Point2D
 			Point2D& operator--()		{--(*this).x; --(*this).y; return *this;}
 			Point2D& operator--(T)		{this->x--; this->y--; return *this;}
 
-			operator int() const		{return this->id;}
+			operator int()		const	{return this->id;}
 
 			virtual void capture()
 				{
-					std::cout << "Capture the coordinates of a '2D Point'." << std::endl;
+					std::cout << std::endl << "Capture the coordinates of a '2D Point'." << std::endl;
 					std::cout << "x = ";
 					std::cin >> this->x;
 					std::cout << "y = ";
@@ -62,7 +63,7 @@ class Point2D
 
 			virtual void print()	const
 				{
-					std::cout << "Display the current values ​​of a '2D Point'." << std::endl;
+					std::cout << std::endl << "Display the current values ​​of a '2D Point'." << std::endl;
 					this->view();
 				}
 
