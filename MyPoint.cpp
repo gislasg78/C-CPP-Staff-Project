@@ -31,18 +31,16 @@ class Point2D
 
 		public:
 			Point2D() : id(V_ZERO), x(V_ZERO), y(V_ZERO)				{this->c++; this->capture();}
-			Point2D(const int &id) : id(id), x(V_ZERO), y(V_ZERO)			{this->c++;}
-			Point2D(const T &x, const T &y) : id(V_ZERO), x(x), y(y)		{this->c++;}
+			Point2D(const int &id) : id(id), x(V_ZERO), y(V_ZERO)			{(*this).c++;}
 			Point2D(const int &id, const T &x, const T &y) : id(id), x(x), y(y)	{this->c++;}
+			Point2D(const T &x, const T &y) : id(V_ZERO), x(x), y(y)		{(*this).c++;}
 
-			Point2D(const Point2D& Point2D)
-				{this->c++; this->id = Point2D.getId(); this->x = Point2D.getX(); this->y = Point2D.getY();}
+			Point2D(const Point2D& Point2D) : id(Point2D.getId()), x(Point2D.getX()), y(Point2D.getY())
+				{this->c++;}
 
-			Point2D(const Point2D&& Point2D)
+			Point2D(const Point2D&& Point2D) : id(Point2D.getId()), x(Point2D.getX()), y(Point2D.getY())
 				{
-					this->c++; this->id = Point2D.getId();
-				 	this->x = Point2D.getX(); this->y = Point2D.getY();
-
+					*(this).c++;
 					(*Point2D).c = V_ZERO; Point2D->id = V_ZERO;
 					(*Point2D).x = V_ZERO; (*Point2D).y = V_ZERO;
 				}
@@ -70,9 +68,18 @@ class Point2D
 					std::cin >> this->y;
 				}
 
+			virtual void copy(const Point2D &Point2D)
+				{this->x = Point2D.getX(); this->y = Point2D.getY();}
+
 			const int getId()	const	{return this->id;}
 			T getX()		const	{return this->x;}
 			T getY()		const	{return this->y;}
+
+			virtual void move(Point2D &&Point2D)
+				{
+				 	this->x = Point2D.getX(); this->y = Point2D.getY();
+					Point2D.c = V_ZERO; Point2D.x = V_ZERO; Point2D.y = V_ZERO;
+				}
 
 			virtual void print()	const
 				{
