@@ -30,10 +30,22 @@ class Point2D
 			static int c;
 
 		public:
-			Point2D()			{this->c++; this->id = V_ZERO; this->x = V_ZERO; this->y = V_ZERO; this->capture();}
-			Point2D(const int &id) : id(id)	{this->c++; (*this).x = V_ZERO; (*this).y = V_ZERO;}
-			Point2D(const Point2D& Point2D)	{this->c++; this->id = Point2D.getId(); this->x = Point2D.getX(); this->y = Point2D.getY();}
+			Point2D() : id(V_ZERO), x(V_ZERO), y(V_ZERO)				{this->c++; this->capture();}
+			Point2D(const int &id) : id(id), x(V_ZERO), y(V_ZERO)			{this->c++;}
+			Point2D(const T &x, const T &y) : id(V_ZERO), x(x), y(y)		{this->c++;}
 			Point2D(const int &id, const T &x, const T &y) : id(id), x(x), y(y)	{this->c++;}
+
+			Point2D(const Point2D& Point2D)
+				{this->c++; this->id = Point2D.getId(); this->x = Point2D.getX(); this->y = Point2D.getY();}
+
+			Point2D(const Point2D&& Point2D)
+				{
+					this->c++; this->id = Point2D.getId();
+				 	this->x = Point2D.getX(); this->y = Point2D.getY();
+
+					(*Point2D).c = V_ZERO; Point2D->id = V_ZERO;
+					(*Point2D).x = V_ZERO; (*Point2D).y = V_ZERO;
+				}
 
 			Point2D& operator()()
 				{
