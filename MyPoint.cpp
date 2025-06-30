@@ -38,22 +38,22 @@ class Point2D
 			Point2D(const Point2D<T>& Point2D) : id(Point2D.getId()), x(Point2D.getX()), y(Point2D.getY())
 				{this->c++;}
 			Point2D(Point2D<T>&& Point2D) : id(Point2D.getId()), x(Point2D.getX()), y(Point2D.getY())
-				{(*this).c++;}
+				{(*this).c--; Point2D.x = V_ZERO; Point2D.y = V_ZERO;}
 
-			Point2D& operator=(Point2D<T> &Point2D)
+			Point2D<T>& operator=(Point2D<T> &Point2D)
 				{this->reset(); return this->copy(Point2D);}
 
-			Point2D& operator()()
+			Point2D<T>& operator()()
 				{
 					std::cout << std::endl << "Show the current values ​​of a '2D Point'." << std::endl;
 					(*this).view();
 					return *this;
 				}
 
-			Point2D& operator++()		{++this->x; ++this->y; return *this;}
-			Point2D& operator++(T)		{(*this).x++; (*this).y++; return *this;}
-			Point2D& operator--()		{--(*this).x; --(*this).y; return *this;}
-			Point2D& operator--(T)		{this->x--; this->y--; return *this;}
+			Point2D<T>& operator++()	{++this->x; ++this->y; return *this;}
+			Point2D<T>& operator++(T)	{(*this).x++; (*this).y++; return *this;}
+			Point2D<T>& operator--()	{--(*this).x; --(*this).y; return *this;}
+			Point2D<T>& operator--(T)	{this->x--; this->y--; return *this;}
 
 			operator int()		const	{return this->id;}
 
@@ -74,7 +74,11 @@ class Point2D
 			T getY()		const	{return this->y;}
 
 			virtual Point2D<T>& move(Point2D<T> &&Point2D)
-				{this->x = Point2D.getX(); this->y = Point2D.getY(); return *this;}
+				{
+					this->x = Point2D.getX(); this->y = Point2D.getY();
+					Point2D.x = V_ZERO; Point2D.y = V_ZERO;
+					return *this;
+				}
 
 			virtual void print() const
 				{
