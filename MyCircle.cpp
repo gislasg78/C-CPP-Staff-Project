@@ -56,7 +56,7 @@ class Circle
 			const double getPI()	const	{return this->PI;}
 			double getRadius()	const	{return this->radius;}
 
-			void print()
+			virtual void print()
 				{
 					std::cout << std::endl << "Information about the figure 'Circle'." << std::endl;
 					std::cout << "Counter:\t[" << this->c << "]." << std::endl;
@@ -65,6 +65,8 @@ class Circle
 					std::cout << "Area:\t\t[" << this->area() << "]." << std::endl;
 					std::cout << "Perimeter:\t[" << (*this).perimeter() << "]." << std::endl;
 				}
+
+			virtual void reset()		{this->radius = V_ZERO;}
 
 			void setRadius(const double &r)	{this->radius = r;}
 
@@ -102,6 +104,9 @@ int main ()
 		grault.print();
 
 		std::cout << std::endl << "Radius:\t\t[" << grault << "]." << std::endl;
+
+		grault.reset();
+		grault.print();
 
 		return V_ZERO;
 	}
