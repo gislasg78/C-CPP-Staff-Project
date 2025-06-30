@@ -75,6 +75,7 @@ class Point2D
 
 			virtual Point2D<T>& move(Point2D<T> &&Point2D)
 				{
+					this->c--;
 					this->x = Point2D.getX(); this->y = Point2D.getY();
 					Point2D.x = V_ZERO; Point2D.y = V_ZERO;
 					return *this;
