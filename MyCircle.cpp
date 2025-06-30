@@ -59,7 +59,7 @@ class Circle
 			virtual Circle& copy(const Circle& circle)
 				{(*this).radius = circle.getRadius(); return *this;}
 
-			const double getPI()	const		{return this->PI;}
+			const double& getPI()	const		{return this->PI;}
 			double getRadius()	const		{return this->radius;}
 
 			virtual void print()	const
@@ -69,7 +69,6 @@ class Circle
 				}
 
 			virtual void reset()			{this->radius = V_ZERO;}
-
 			void setRadius(const double &radius)	{this->radius = radius;}
 
 			virtual void view()	const
