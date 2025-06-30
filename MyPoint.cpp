@@ -41,7 +41,7 @@ class Point2D
 				{(*this).c--; Point2D.x = V_ZERO; Point2D.y = V_ZERO;}
 
 			Point2D<T>& operator=(const Point2D<T> &Point2D)
-				{this->reset(); return this->copy(Point2D);}
+				{this->reset(); this->copy(Point2D); return *this;}
 
 			Point2D<T>& operator()()
 				{
@@ -89,6 +89,9 @@ class Point2D
 
 			virtual void reset()		{this->x = V_ZERO; this->y = V_ZERO;}
 
+			void setXY(const T &x = V_ZERO, const T &y = V_ZERO)
+				{(*this).x = x; (*this).y = y;}
+
 			void setX(const T &x)		{this->x = x;}
 			void setY(const T &y)		{this->y = y;}
 
@@ -133,6 +136,7 @@ int main()
 
 				array_Point2D[idx] = new Point2D<int>(idx + V_ONE, x, y);
 
+				(*array_Point2D[idx]).setXY(x, y);
 				std::cout << "Object created # [" << static_cast<int>(*array_Point2D[idx]) << "]." << std::endl;
 			}
 
