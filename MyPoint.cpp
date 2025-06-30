@@ -35,15 +35,13 @@ class Point2D
 			Point2D(const int &id, const T &x, const T &y) : id(id), x(x), y(y)	{this->c++;}
 			Point2D(const T &x, const T &y) : id(V_ZERO), x(x), y(y)		{(*this).c++;}
 
-			Point2D(const Point2D& Point2D) : id(Point2D.getId()), x(Point2D.getX()), y(Point2D.getY())
+			Point2D(const Point2D<T>& Point2D) : id(Point2D.getId()), x(Point2D.getX()), y(Point2D.getY())
 				{this->c++;}
+			Point2D(Point2D<T>&& Point2D) : id(Point2D.getId()), x(Point2D.getX()), y(Point2D.getY())
+				{(*this).c++;}
 
-			Point2D(const Point2D&& Point2D) : id(Point2D.getId()), x(Point2D.getX()), y(Point2D.getY())
-				{
-					*(this).c++;
-					(*Point2D).c = V_ZERO; Point2D->id = V_ZERO;
-					(*Point2D).x = V_ZERO; (*Point2D).y = V_ZERO;
-				}
+			Point2D& operator=(Point2D<T> &Point2D)
+				{this->reset(); return this->copy(Point2D);}
 
 			Point2D& operator()()
 				{
@@ -68,20 +66,17 @@ class Point2D
 					std::cin >> this->y;
 				}
 
-			virtual void copy(const Point2D &Point2D)
-				{this->x = Point2D.getX(); this->y = Point2D.getY();}
+			virtual Point2D<T>& copy(const Point2D<T> &Point2D)
+				{this->x = Point2D.getX(); this->y = Point2D.getY(); return *this;}
 
 			const int getId()	const	{return this->id;}
 			T getX()		const	{return this->x;}
 			T getY()		const	{return this->y;}
 
-			virtual void move(Point2D &&Point2D)
-				{
-				 	this->x = Point2D.getX(); this->y = Point2D.getY();
-					Point2D.c = V_ZERO; Point2D.x = V_ZERO; Point2D.y = V_ZERO;
-				}
+			virtual Point2D<T>& move(Point2D<T> &&Point2D)
+				{this->x = Point2D.getX(); this->y = Point2D.getY(); return *this;}
 
-			virtual void print()	const
+			virtual void print() const
 				{
 					std::cout << std::endl << "Display the current values ​​of a '2D Point'." << std::endl;
 					this->view();
@@ -119,7 +114,7 @@ int main()
 		std::cout << "How many 'Point2D' do you want to create? : ";
 		std::cin >> quantity;
 
-		//The dynamic array of pointers to objects of type 'Point2D' is created.
+		/* The dynamic array of pointers to objects of type 'Point2D' is created. */
 		Point2D<int> **array_Point2D = new Point2D<int>* [quantity];
 
 		/* Each object of type 'Point2D' is created and stored in an array of pointers of the same type. */
@@ -131,7 +126,7 @@ int main()
 				std::cout << "y = ";
 				std::cin >> y;
 
-				array_Point2D[idx] = new Point2D<int>(idx, x, y);
+				array_Point2D[idx] = new Point2D<int>(idx + V_ONE, x, y);
 			}
 
 		/* An internal method of the 'Point2D' object is used to display the assigned values. */
