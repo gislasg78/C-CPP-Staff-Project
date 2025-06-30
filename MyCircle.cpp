@@ -44,10 +44,10 @@ class Circle
 			Circle& operator--()			{--(*this).radius; return *this;}
 			Circle& operator--(int)			{this->radius--; return *this;}
 
-			operator double()	const		{return this->radius;}
+			operator double()		const	{return this->radius;}
 
-			double area()		const		{return PI * this->radius * (*this).radius;}
-			double perimeter()	const		{return V_TWO * PI * (*this).radius;}
+			double area()			const	{return PI * this->radius * (*this).radius;}
+			double perimeter()		const	{return V_TWO * PI * (*this).radius;}
 
 			virtual void capture()
 				{
@@ -59,10 +59,12 @@ class Circle
 			virtual Circle& copy(const Circle& circle)
 				{(*this).radius = circle.getRadius(); return *this;}
 
-			const double& getPI()	const		{return this->PI;}
-			double getRadius()	const		{return this->radius;}
+			const double& getPI()		const	{return this->PI;}
+			const double& getRadius()	const	{return this->radius;}
 
-			virtual void print()	const
+			double& getRadius()			{return (*this).radius;}
+
+			virtual void print()		const
 				{
 					std::cout << std::endl << "Information about the figure 'Circle'." << std::endl;
 					this->view();
@@ -71,7 +73,7 @@ class Circle
 			virtual void reset()			{this->radius = V_ZERO;}
 			void setRadius(const double &radius)	{this->radius = radius;}
 
-			virtual void view()	const
+			virtual void view()		const
 				{
 					std::cout << "+ Counter:\t[" << this->c << "]." << std::endl;
 					std::cout << "+ PI Value:\t[" << (*this).PI << "]." << std::endl;
@@ -146,6 +148,8 @@ int main ()
 		std::cout << grault;
 		std::cout << std::endl << "+ Radius:\t[" << static_cast<double>(grault) << "]." << std::endl;
 		grault.reset();
+		grault.getRadius() = V_TWO;
+		grault.print();
 		grault.capture();
 		grault.print();
 
