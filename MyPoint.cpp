@@ -40,7 +40,7 @@ class Point2D
 			Point2D(Point2D<T>&& Point2D) : id(Point2D.getId()), x(Point2D.getX()), y(Point2D.getY())
 				{(*this).c--; Point2D.x = V_ZERO; Point2D.y = V_ZERO;}
 
-			Point2D<T>& operator=(Point2D<T> &Point2D)
+			Point2D<T>& operator=(const Point2D<T> &Point2D)
 				{this->reset(); return this->copy(Point2D);}
 
 			Point2D<T>& operator()()
