@@ -15,18 +15,17 @@ class Circle
 			const double PI = V_PI;
 			double radius = V_ZERO;
 
+			friend std::istream &operator>> (std::istream& in, Circle &circle)
+				{circle.capture(); return in;}
+
+			friend std::ostream& operator<< (std::ostream &out, const Circle &circle)
+				{circle.print(); return out;}
+
 		protected:
 			static int c;
 
 		public:
-			Circle()
-				{
-					(*this).c++;
-					std::cout << "Capture of the radius of the 'Circle' figure." << std::endl;
-					std::cout << "Enter the desired radius: ";
-					std::cin >> (*this).radius;
-				}
-
+			Circle()							{(*this).c++; this->capture();}
 			Circle(const double &radius) : radius(radius)			{this->c++;}
 			Circle(const Circle& circle) : radius(circle.getRadius())	{(*this).c++;};
 
@@ -36,7 +35,7 @@ class Circle
 			Circle& operator()()
 				{
 					std::cout << std::endl << "Radius of the figure 'Circle'." << std::endl;
-					std::cout << "Radius:\t\t[" << this->radius << "]." << std::endl;
+					std::cout << "+ Radius:\t[" << this->radius << "]." << std::endl;
 					return *this;
 				}
 
@@ -49,6 +48,13 @@ class Circle
 
 			double area()		const		{return PI * this->radius * (*this).radius;}
 			double perimeter()	const		{return V_TWO * PI * (*this).radius;}
+
+			virtual void capture()
+				{
+					std::cout << std::endl << "Capture of the radius of the 'Circle' figure." << std::endl;
+					std::cout << "Enter the desired radius: ";
+					std::cin >> (*this).radius;
+				}
 
 			virtual Circle& copy(const Circle& circle)
 				{(*this).radius = circle.getRadius(); return *this;}
@@ -137,9 +143,11 @@ int main ()
 		grault--;
 		grault.print();
 
-		std::cout << std::endl << "Radius:\t\t[" << grault << "]." << std::endl;
-
+		std::cin >> grault;
+		std::cout << grault;
+		std::cout << std::endl << "+ Radius:\t[" << static_cast<double>(grault) << "]." << std::endl;
 		grault.reset();
+		grault.capture();
 		grault.print();
 
 		garply.print();
