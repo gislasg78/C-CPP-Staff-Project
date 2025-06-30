@@ -70,8 +70,11 @@ class Point2D
 				{this->x = Point2D.getX(); this->y = Point2D.getY(); return *this;}
 
 			const int& getId()	const	{return this->id;}
-			T getX()		const	{return this->x;}
-			T getY()		const	{return this->y;}
+			const T& getX()		const	{return this->x;}
+			const T& getY()		const	{return this->y;}
+
+			T& getX()			{return (*this).x;}
+			T& getY()			{return (*this).y;}
 
 			virtual Point2D<T>& move(Point2D<T> &&Point2D)
 				{
