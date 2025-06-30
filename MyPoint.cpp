@@ -131,6 +131,8 @@ int main()
 				std::cin >> y;
 
 				array_Point2D[idx] = new Point2D<int>(idx + V_ONE, x, y);
+
+				std::cout << "Object created # [" << static_cast<int>(*array_Point2D[idx]) << "]." << std::endl;
 			}
 
 		/* An internal method of the 'Point2D' object is used to display the assigned values. */
