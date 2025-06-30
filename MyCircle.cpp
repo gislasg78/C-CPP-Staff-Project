@@ -27,7 +27,7 @@ class Circle
 					std::cin >> (*this).radius;
 				}
 
-			Circle(const double &r) : radius(r) {this->c++;}
+			Circle(const double &radius) : radius(radius)			{this->c++;}
 			Circle(const Circle& circle) : radius(circle.getRadius())	{(*this).c++;};
 
 			Circle& operator=(const Circle& circle)
@@ -40,43 +40,75 @@ class Circle
 					return *this;
 				}
 
-			Circle& operator++()		{++this->radius; return *this;}
-			Circle& operator++(int)		{(*this).radius++; return *this;}
-			Circle& operator--()		{--(*this).radius; return *this;}
-			Circle& operator--(int)		{this->radius--; return *this;}
+			Circle& operator++()			{++this->radius; return *this;}
+			Circle& operator++(int)			{(*this).radius++; return *this;}
+			Circle& operator--()			{--(*this).radius; return *this;}
+			Circle& operator--(int)			{this->radius--; return *this;}
 
-			operator double()	const	{return this->radius;}
+			operator double()	const		{return this->radius;}
 
-			double area()		const	{return PI * this->radius * (*this).radius;}
-			double perimeter()	const	{return V_TWO * PI * (*this).radius;}
+			double area()		const		{return PI * this->radius * (*this).radius;}
+			double perimeter()	const		{return V_TWO * PI * (*this).radius;}
 
 			virtual Circle& copy(const Circle& circle)
 				{(*this).radius = circle.getRadius(); return *this;}
 
-			const double getPI()	const	{return this->PI;}
-			double getRadius()	const	{return this->radius;}
+			const double getPI()	const		{return this->PI;}
+			double getRadius()	const		{return this->radius;}
 
-			virtual void print()
+			virtual void print()	const
 				{
 					std::cout << std::endl << "Information about the figure 'Circle'." << std::endl;
-					std::cout << "Counter:\t[" << this->c << "]." << std::endl;
-					std::cout << "PI Value:\t[" << (*this).PI << "]." << std::endl;
-					std::cout << "Radius:\t\t[" << this->radius << "]." << std::endl;
-					std::cout << "Area:\t\t[" << this->area() << "]." << std::endl;
-					std::cout << "Perimeter:\t[" << (*this).perimeter() << "]." << std::endl;
+					this->view();
 				}
 
-			virtual void reset()		{this->radius = V_ZERO;}
+			virtual void reset()			{this->radius = V_ZERO;}
 
-			void setRadius(const double &r)	{this->radius = r;}
+			void setRadius(const double &radius)	{this->radius = radius;}
+
+			virtual void view()	const
+				{
+					std::cout << "+ Counter:\t[" << this->c << "]." << std::endl;
+					std::cout << "+ PI Value:\t[" << (*this).PI << "]." << std::endl;
+					std::cout << "+ Radius:\t[" << this->radius << "]." << std::endl;
+					std::cout << "+ Area:\t\t[" << this->area() << "]." << std::endl;
+					std::cout << "+ Perimeter:\t[" << (*this).perimeter() << "]." << std::endl;
+				}
 
 			virtual ~Circle() = default;
 	};
 
 int Circle::c = V_ZERO;
 
+class Cylinder
+	{
+		private:
+			Circle base;
+			double height = V_ZERO;
+
+		public:
+			Cylinder(double radius, double height) : base(radius), height(height) {}
+
+			virtual void print()	const
+				{
+					std::cout << std::endl << "Information about the 'Cylinder." << std::endl;
+					std::cout << "+ Volume:\t[" << (*this).volume() << "]." << std::endl;
+					(&base)->print();
+				}
+
+			double volume()		const	{return base.area() * height;}
+	};
+
 int main ()
 	{
+		double height = V_ZERO, radius = V_ZERO;
+
+		std::cout << "Volume of a cylinder." << std::endl;
+		std::cout << "Radius: ";
+		std::cin >> radius;
+		std::cout << "Height: ";
+		std::cin >> height;
+
 		Circle foo(V_ONE);	//Functional form.
 		Circle bar = V_TWO;	//Assignment init.
 		Circle baz {V_THREE};	//Uniform init.
@@ -84,6 +116,8 @@ int main ()
 		Circle quux;		//Default constructor.
 		Circle corge(quux);	//Copy constructor.
 		Circle grault = baz;	//Copy constructor.
+
+		Cylinder garply(radius, height);
 
 		foo.print();
 		bar.print();
@@ -107,6 +141,8 @@ int main ()
 
 		grault.reset();
 		grault.print();
+
+		garply.print();
 
 		return V_ZERO;
 	}
