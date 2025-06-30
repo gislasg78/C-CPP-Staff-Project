@@ -69,7 +69,7 @@ class Point2D
 			virtual Point2D<T>& copy(const Point2D<T> &Point2D)
 				{this->x = Point2D.getX(); this->y = Point2D.getY(); return *this;}
 
-			const int getId()	const	{return this->id;}
+			const int& getId()	const	{return this->id;}
 			T getX()		const	{return this->x;}
 			T getY()		const	{return this->y;}
 
