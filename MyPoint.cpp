@@ -45,7 +45,7 @@ class Point2D
 
 			Point2D<T>& operator()()
 				{
-					std::cout << std::endl << "Show the current values ​​of a '2D Point'." << std::endl;
+					std::cout << "Show the current values ​​of a '2D Point'." << std::endl;
 					(*this).view();
 					return *this;
 				}
@@ -59,7 +59,7 @@ class Point2D
 
 			virtual void capture()
 				{
-					std::cout << std::endl << "Capture the coordinates of a '2D Point'." << std::endl;
+					std::cout << "Capture the coordinates of a '2D Point'." << std::endl;
 					std::cout << "x = "; std::cin >> this->x;
 					std::cout << "y = "; std::cin >> this->y;
 				}
@@ -84,7 +84,7 @@ class Point2D
 
 			virtual void print() const
 				{
-					std::cout << std::endl << "Display the current values ​​of a '2D Point'." << std::endl;
+					std::cout << "Display the current values ​​of a '2D Point'." << std::endl;
 					this->view();
 				}
 
@@ -142,7 +142,7 @@ int main()
 				(*array_Point2D[idx]).setXY(x, y);
 
 				std::cout << "Object created #:\t[" << static_cast<int>(*array_Point2D[idx]) << "]." << std::endl;
-				std::cout << "Asigned values:\t(x = [" << (*array_Point2D[idx]).getX() << "], y = [" << (*array_Point2D[idx]).getY() << "]." << std::endl;
+				std::cout << "Asigned values:\t\t(x = [" << (*array_Point2D[idx]).getX() << "], y = [" << (*array_Point2D[idx]).getY() << "]." << std::endl;
 			}
 
 		/* An internal method of the 'Point2D' object is used to display the assigned values. */
@@ -162,6 +162,7 @@ int main()
 				(*array_Point2D[idx]).print();
 
 				std::cin >> *(*(array_Point2D + idx));
+				array_Point2D[idx]->print();
 			}
 
 		/* The reassigned values ​​of each instantiated object of type 'Point2D' are displayed again. */
