@@ -60,10 +60,8 @@ class Point2D
 			virtual void capture()
 				{
 					std::cout << std::endl << "Capture the coordinates of a '2D Point'." << std::endl;
-					std::cout << "x = ";
-					std::cin >> this->x;
-					std::cout << "y = ";
-					std::cin >> this->y;
+					std::cout << "x = "; std::cin >> this->x;
+					std::cout << "y = "; std::cin >> this->y;
 				}
 
 			virtual Point2D<T>& copy(const Point2D<T> &Point2D)
@@ -139,8 +137,12 @@ int main()
 
 				array_Point2D[idx] = new Point2D<int>(idx + V_ONE, x, y);
 
+				(*array_Point2D[idx]).getX() = x;
+				(*array_Point2D[idx]).getY() = y;
 				(*array_Point2D[idx]).setXY(x, y);
-				std::cout << "Object created # [" << static_cast<int>(*array_Point2D[idx]) << "]." << std::endl;
+
+				std::cout << "Object created #:\t[" << static_cast<int>(*array_Point2D[idx]) << "]." << std::endl;
+				std::cout << "Asigned values:\t(x = [" << (*array_Point2D[idx]).getX() << "], y = [" << (*array_Point2D[idx]).getY() << "]." << std::endl;
 			}
 
 		/* An internal method of the 'Point2D' object is used to display the assigned values. */
