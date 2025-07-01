@@ -46,7 +46,8 @@ class Point2D
 			Point2D<T>& operator()()
 				{
 					std::cout << "Show the current values ​​of a '2D Point'." << std::endl;
-					(*this).see();
+					this->see();
+					this->watch();
 					return *this;
 				}
 
@@ -85,6 +86,7 @@ class Point2D
 			virtual void print() const
 				{
 					std::cout << "Display the current values ​​of a '2D Point'." << std::endl;
+					(*this).see();
 					(*this).view();
 				}
 
@@ -98,7 +100,7 @@ class Point2D
 
 			virtual void see()	const
 				{
-					std::cout << "{id = [" << (*this).id << "] : [" << this->id << "], c = [" << (*this).c << "] : [" << this->c << "]}." << TABULATOR;
+					std::cout << "(id = [" << (*this).id << "] : [" << this->id << "], c = [" << (*this).c << "] : [" << this->c << "])." << TABULATOR;
 					std::cout << "(x = [" << this->x << "] : [" << (*this).x << "], y = [" << this->y << "] : [" << (*this).y << "])." << std::endl;
 				}
 
@@ -111,6 +113,12 @@ class Point2D
 					std::cout << "+ Counter:\t[" << (*this).c << "] = [" << this->c << "]." << std::endl;
 					std::cout << "+ X Coord:\t[" << (*this).x << "] = [" << this->x << "]." << std::endl;
 					std::cout << "+ Y Coord:\t[" << (*this).y << "] = [" << this->y << "]." << std::endl << std::endl;
+				}
+
+			virtual void watch()	const
+				{
+					std::cout << "(id = [" << this->id << "], c = [" << this->c << "])." << TABULATOR;
+					std::cout << "(x = [" << this->x << "], y = [" << this->y << "])." << std::endl;
 				}
 
 			virtual ~Point2D() = default;
