@@ -113,7 +113,12 @@ class Cylinder
 					(&base)->print();
 				}
 
-			const T volume() const	{return base.area() * this->height;}
+			const T& getHeight()	const		{return (*this).height;}
+			T& getHeight()				{return this->height;}
+
+			void setHeight(const T& height)		{this->height = height;}
+
+			const T volume() const		{return base.area() * this->height;}
 
 			virtual ~Cylinder() = default;
 	};
@@ -181,30 +186,44 @@ int main ()
 		for (int idx = V_ZERO; idx < quantity; idx++)
 			{
 				std::cout << std::endl << "'Circle' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
+				array_Circle[idx]->print();
 
 				/* Different nomenclatures with pointer notation and array notation. */
+				std::cout << std::endl << "Increase the radius of the 'Circle' object." << std::endl;
 				(*array_Circle[idx])++;
 				(*array_Circle[idx]).print();
+
+				std::cout << std::endl << "Decrease the radius of the 'Circle' object." << std::endl;
 				(*array_Circle[idx])--;
 				(*array_Circle[idx]).print();
 
+				std::cout << std::endl << "Increase the radius of the 'Circle' object." << std::endl;
 				(*(*(array_Circle + idx)))++;
 				(*(*(array_Circle + idx))).print();
+
+				std::cout << std::endl << "Decrease the radius of the 'Circle' object." << std::endl;
 				(*(*(array_Circle + idx)))--;
 				(*(*(array_Circle + idx))).print();
 
 				/* Various ways to call methods on an array of object pointers (pointer of pointers). */
+				std::cout << std::endl << "Initialize the radius of the 'Circle' object." << std::endl;
 				array_Circle[idx]->reset();
 				array_Circle[idx]->print();
+
+				std::cout << std::endl << "Initialize the radius of the 'Circle' object." << std::endl;
 				(*array_Circle[idx]).reset();
 				(*array_Circle[idx]).print();
 
+				std::cout << std::endl << "Initialize the radius of the 'Circle' object." << std::endl;
 				(*(array_Circle + idx))->reset();
 				(*(array_Circle + idx))->print();
+
+				std::cout << std::endl << "Initialize the radius of the 'Circle' object." << std::endl;
 				(*(*(array_Circle + idx))).reset();
 				(*(*(array_Circle + idx))).print();
 
 				/* Calling in various ways to an overloaded operator. */
+				std::cout << std::endl << "Displaying information about the 'Circle' object." << std::endl;
 				(*array_Circle[idx])();
 				(*(*(array_Circle + idx)))();
 		}
@@ -217,7 +236,7 @@ int main ()
 				delete *(array_Circle + idx);
 			}
 
-                /* Deleting the array of pointer objects of type 'Point2D'. */
+                /* Deleting the array of pointer objects of type 'Circle'. */
                 std::cout << "Deleting the array of pointers of type 'Circle'..." << std::endl;
 		delete [] array_Circle;
 
@@ -252,7 +271,7 @@ int main ()
 				(*(*(array_Cylinder + idx))).print();
 			}
 
-		/* All dynamically created instances of objects of type 'Circle' are purged. */
+		/* All dynamically created instances of objects of type 'Cylinder' are purged. */
 		std::cout << std::endl << "Clearing 'Cylinder' objects..." << std::endl;
 		for (int idx = V_ZERO; idx < quantity; idx++)
 			{
@@ -260,7 +279,7 @@ int main ()
 				delete *(array_Cylinder + idx);
 			}
 
-                /* Deleting the array of pointer objects of type 'Point2D'. */
+                /* Deleting the array of pointer objects of type 'Cylinder'. */
                 std::cout << "Deleting the array of pointers of type 'Cylinder'..." << std::endl;
 		delete [] array_Cylinder;
 
