@@ -15,7 +15,7 @@ template <typename T>
 class Point2D
 	{
 		private:
-			const int id;
+			const int id = V_ZERO;
 			T x = V_ZERO, y = V_ZERO;
 
 			template <typename U>
@@ -46,7 +46,7 @@ class Point2D
 			Point2D<T>& operator()()
 				{
 					std::cout << "Show the current values ​​of a '2D Point'." << std::endl;
-					(*this).view();
+					(*this).see();
 					return *this;
 				}
 
@@ -85,7 +85,7 @@ class Point2D
 			virtual void print() const
 				{
 					std::cout << "Display the current values ​​of a '2D Point'." << std::endl;
-					this->view();
+					(*this).view();
 				}
 
 			virtual void reset()		{this->x = V_ZERO; this->y = V_ZERO;}
@@ -96,12 +96,21 @@ class Point2D
 			void setX(const T &x)		{this->x = x;}
 			void setY(const T &y)		{this->y = y;}
 
+			virtual void see()	const
+				{
+					std::cout << "{id = [" << (*this).id << "] : [" << this->id << "], c = [" << (*this).c << "] : [" << this->c << "]}." << TABULATOR;
+					std::cout << "(x = [" << this->x << "] : [" << (*this).x << "], y = [" << this->y << "] : [" << (*this).y << "])." << std::endl;
+				}
+
 			virtual void swap()		{T temp = (*this).x; (*this).x = (*this).y; (*this).y = temp;}
 
 			virtual void view()	const
 				{
-					std::cout << "{id = [" << (*this).id << "] : [" << this->id << "], c = [" << (*this).c << "] : [" << this->c << "]}." << TABULATOR;
-					std::cout << "(x = [" << this->x << "] : [" << (*this).x << "], y = [" << this->y << "] : [" << (*this).y << "])." << std::endl;
+					std::cout << std::endl << "Information about the '2D Point' object." << std::endl;
+					std::cout << "+ ID:\t\t[" << (*this).id << "] = [" << this->id << "]." << std::endl;
+					std::cout << "+ Counter:\t[" << (*this).c << "] = [" << this->c << "]." << std::endl;
+					std::cout << "+ X Coord:\t[" << (*this).x << "] = [" << this->x << "]." << std::endl;
+					std::cout << "+ Y Coord:\t[" << (*this).y << "] = [" << this->y << "]." << std::endl << std::endl;
 				}
 
 			virtual ~Point2D() = default;
@@ -130,10 +139,8 @@ int main()
 		for (int idx = V_ZERO; idx < quantity; idx++)
 			{
 				std::cout << std::endl << "'Point2D' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
-				std::cout << "x = ";
-				std::cin >> x;
-				std::cout << "y = ";
-				std::cin >> y;
+				std::cout << "x = "; std::cin >> x;
+				std::cout << "y = "; std::cin >> y;
 
 				array_Point2D[idx] = new Point2D<int>(idx + V_ONE, x, y);
 
@@ -142,7 +149,7 @@ int main()
 				(*array_Point2D[idx]).setXY(x, y);
 
 				std::cout << "Object created #:\t[" << static_cast<int>(*array_Point2D[idx]) << "]." << std::endl;
-				std::cout << "Asigned values:\t\t(x = [" << (*array_Point2D[idx]).getX() << "], y = [" << (*array_Point2D[idx]).getY() << "]." << std::endl;
+				std::cout << "Asigned values:\t\tId: [" << array_Point2D[idx]->getId() << "].\t(x = [" << (*array_Point2D[idx]).getX() << "], y = [" << (*array_Point2D[idx]).getY() << "])." << std::endl;
 			}
 
 		/* An internal method of the 'Point2D' object is used to display the assigned values. */
@@ -177,41 +184,62 @@ int main()
 		std::cout << std::endl << "Increment and decrement the values ​​of the 'Point2D' class." << std::endl;
 		for (int idx = V_ZERO; idx < quantity; idx++)
 			{
+				/* Display header. */
 				std::cout << std::endl << "'Point2D' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
+				array_Point2D[idx]->print();
 
-				/* Different nomenclatures with pointer notation and array notation. */
+				/* Different nomenclatures with pointer notation with 'Point2D' objects and array notation. */
+				std::cout << "Increment by one unit the coordinates of a '2D Point' object." << std::endl;
 				(*array_Point2D[idx])++;
 				(*array_Point2D[idx]).print();
+
+				std::cout << "Exchange values ​​in the units of the coordinates of a '2D Point' object." << std::endl;
 				(*array_Point2D[idx]).swap();
 				(*array_Point2D[idx]).print();
 
+				std::cout << "Decrement by one unit the coordinates of a '2D Point' object." << std::endl;
 				(*array_Point2D[idx])--;
 				(*array_Point2D[idx]).print();
+
+				std::cout << "Exchange values ​​in the units of the coordinates of a '2D Point' object." << std::endl;
 				(*array_Point2D[idx]).swap();
 				(*array_Point2D[idx]).print();
 
+				std::cout << "Increment by one unit the coordinates of a '2D Point' object." << std::endl;
 				(*(*(array_Point2D + idx)))++;
 				(*(*(array_Point2D + idx))).print();
+
+				std::cout << "Exchange values ​​in the units of the coordinates of a '2D Point' object." << std::endl;
 				(*(*(array_Point2D + idx))).swap();
 				(*(*(array_Point2D + idx))).print();
 
+				std::cout << "Decrement by one unit the coordinates of a '2D Point' object." << std::endl;
 				(*(*(array_Point2D + idx)))--;
 				(*(*(array_Point2D + idx))).print();
+
+				std::cout << "Exchange values ​​in the units of the coordinates of a '2D Point' object." << std::endl;
 				(*(*(array_Point2D + idx))).swap();
 				(*(*(array_Point2D + idx))).print();
 
 				/* Various ways to call methods on an array of object pointers (pointer of pointers). */
+				std::cout << "Initializing the values ​​in the units of the coordinates of a 'Point2D' object." << std::endl;
 				array_Point2D[idx]->reset();
 				array_Point2D[idx]->print();
+
+				std::cout << "Initializing the values ​​in the units of the coordinates of a 'Point2D' object." << std::endl;
 				(*array_Point2D[idx]).reset();
 				(*array_Point2D[idx]).print();
 
+				std::cout << "Initializing the values ​​in the units of the coordinates of a 'Point2D' object." << std::endl;
 				(*(array_Point2D + idx))->reset();
 				(*(array_Point2D + idx))->print();
+
+				std::cout << "Initializing the values ​​in the units of the coordinates of a 'Point2D' object." << std::endl;
 				(*(*(array_Point2D + idx))).reset();
 				(*(*(array_Point2D + idx))).print();
 
 				/* Calling in various ways to an overloaded operator. */
+				std::cout << "Succinct display of the coordinate values ​​of a 'Point2D' object." << std::endl;
 				(*array_Point2D[idx])();
 				(*(*(array_Point2D + idx)))();
 			}
