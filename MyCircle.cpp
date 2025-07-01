@@ -31,7 +31,7 @@ class Circle
 			Circle()							{(*this).c++; this->capture();}
 			Circle(const T &radius) : radius(radius)			{this->c++;}
 			Circle(const Circle<T>& circle) : radius(circle.getRadius())	{(*this).c++;};
-			Circle(Circle<T>&& circle) : radius(circle.getRadius())		{circle.radius = V_ZERO;}
+			Circle(Circle<T>&& circle) : radius(circle.getRadius())		{this->c--; circle.radius = V_ZERO;}
 
 			Circle<T>& operator=(const Circle<T>& circle)
 				{this->radius = circle.getRadius(); return *this;}
@@ -69,7 +69,7 @@ class Circle
 			T& getRadius()				{return (*this).radius;}
 
 			virtual Circle<T>& move(Circle<T>&& circle)
-				{this->radius = circle.getRadius(); circle.radius = V_ZERO; return *this;}
+				{(*this).c--; this->radius = circle.getRadius(); circle.radius = V_ZERO; return *this;}
 
 			virtual void print()		const
 				{
