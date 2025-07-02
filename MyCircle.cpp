@@ -1,13 +1,10 @@
 //Classes and uniform initialization.
 #include <iostream>
 
-#define V_ZERO	0
-#define	V_ONE	1.0
-#define	V_TWO	2.0
-#define	V_THREE	3.0
-#define V_FOUR	4.0
-
+#define	V_ONE	1
 #define V_PI	3.14159265
+#define	V_TWO	2
+#define V_ZERO	0
 
 template <class T>
 class Circle
@@ -30,11 +27,14 @@ class Circle
 		public:
 			Circle()							{(*this).c++; this->capture();}
 			Circle(const T &radius) : radius(radius)			{this->c++;}
+
 			Circle(const Circle<T>& circle) : radius(circle.getRadius())	{(*this).c++;};
-			Circle(Circle<T>&& circle) : radius(circle.getRadius())		{this->c--; circle.radius = V_ZERO;}
+			Circle(Circle<T>&& circle) : radius(circle.getRadius())		{this->c--; circle.reset();}
 
 			Circle<T>& operator=(const Circle<T>& circle)
-				{this->radius = circle.getRadius(); return *this;}
+				{this->copy(circle); return *this;}
+			Circle<T>& operator=(const Circle<T>&& circle)
+				{this->c--; this->copy(circle); circle.reset(); return *this;}
 
 			Circle<T>& operator()()
 				{
@@ -68,8 +68,11 @@ class Circle
 
 			T& getRadius()				{return (*this).radius;}
 
+			const bool isitme(Circle<T>& circle)	const
+				{return (this == &circle);};
+
 			virtual Circle<T>& move(Circle<T>&& circle)
-				{(*this).c--; this->radius = circle.getRadius(); circle.radius = V_ZERO; return *this;}
+				{(*this).c--; this->copy(circle); circle.reset(); return *this;}
 
 			virtual void print()		const
 				{
@@ -151,6 +154,7 @@ int main ()
 
 				std::cout << "Object created #:\t[" << static_cast<int>(*array_Circle[idx]) << "]." << std::endl;
 				std::cout << "Asigned radius:\t\t[" << (*array_Circle[idx]).getRadius() << "]." << std::endl;
+				std::cout << "Is it me?:\t\t[" << array_Circle[idx]->isitme(*array_Circle[idx]) << "]." << std::endl;
 			}
 
 		/* An internal method of the 'Circle' object is used to display the assigned values. */
