@@ -48,8 +48,7 @@ class Point2D
 			Point2D<T>& operator()()
 				{
 					std::cout << "Show the current values ​​of a '2D Point'." << std::endl;
-					this->see();
-					this->watch();
+					this->see(); this->watch();
 					return *this;
 				}
 
@@ -68,7 +67,7 @@ class Point2D
 				}
 
 			virtual Point2D<T>& copy(const Point2D<T> &Point2D)
-				{this->copy(Point2D); return *this;}
+				{this->x = Point2D.getX(); this->y = Point2D.getY(); return *this;}
 
 			const int& getId()	const	{return this->id;}
 			const T& getX()		const	{return this->x;}
@@ -76,6 +75,9 @@ class Point2D
 
 			T& getX()			{return (*this).x;}
 			T& getY()			{return (*this).y;}
+
+			const bool isitme(Point2D<T>& Point2D)	const
+				{return (this == &Point2D);}
 
 			virtual Point2D<T>& move(Point2D<T> &&Point2D)
 				{this->c--; this->copy(Point2D); Point2D.reset(); return *this;}
@@ -155,6 +157,7 @@ int main()
 
 				std::cout << "Object created #:\t[" << static_cast<int>(*array_Point2D[idx]) << "]." << std::endl;
 				std::cout << "Asigned values:\t\tId: [" << array_Point2D[idx]->getId() << "].\t(x = [" << (*array_Point2D[idx]).getX() << "], y = [" << (*array_Point2D[idx]).getY() << "])." << std::endl;
+				std::cout << "Is it me?:\t\t[" << array_Point2D[idx]->isitme(*array_Point2D[idx]) << "]." << std::endl;
 			}
 
 		/* An internal method of the 'Point2D' object is used to display the assigned values. */
