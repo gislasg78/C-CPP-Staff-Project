@@ -2,16 +2,17 @@
 #include <iostream>
 
 /* Symbolic work constants. */
-#define	V_ONE		1
-#define	V_PI		3.14159265
-#define	V_TWO		2
-#define	V_ZERO		0
+#define	V_ONE	1
+#define	V_PI	3.14159265
+#define	V_TWO	2
+#define	V_ZERO	0
 
 /* Circle Class. */
 template <class T>
 class Circle
 	{
 		private:
+			const int id = V_ZERO;
 			const double PI = V_PI;
 			T radius = V_ZERO;
 
@@ -28,10 +29,13 @@ class Circle
 
 		public:
 			Circle()							{(*this).c++; this->capture();}
-			Circle(const T &radius) : radius(radius)			{this->c++;}
+			Circle(const int& id, const T& radius) : id(id), radius(radius)	{this->c++;}
+			Circle(const T &radius) : id(V_ZERO), radius(radius)		{this->c++;}
 
-			Circle(const Circle<T>& circle) : radius(circle.getRadius())	{(*this).c++;};
-			Circle(Circle<T>&& circle) : radius(circle.getRadius())		{this->c--; circle.reset();}
+			Circle(const Circle<T>& circle) : id(circle.getId()), radius(circle.getRadius())
+				{(*this).c++;};
+			Circle(Circle<T>&& circle) : id(circle.getId()), radius(circle.getRadius())
+				{this->c--; circle.reset();}
 
 			Circle<T>& operator=(const Circle<T>& circle)
 				{this->copy(circle); return *this;}
@@ -50,7 +54,7 @@ class Circle
 			Circle<T>& operator--()			{--(*this).radius; return *this;}
 			Circle<T>& operator--(int)		{this->radius--; return *this;}
 
-			operator T()			const	{return this->radius;}
+			operator T()			const	{return this->id;}
 
 			const T area()			const	{return PI * this->radius * (*this).radius;}
 			const T perimeter()		const	{return V_TWO * PI * (*this).radius;}
@@ -65,6 +69,7 @@ class Circle
 			virtual Circle<T>& copy(const Circle<T>& circle)
 				{(*this).radius = circle.getRadius(); return *this;}
 
+			const int &getId()		const	{return this->id;}
 			const T& getPI()		const	{return this->PI;}
 			const T& getRadius()		const	{return this->radius;}
 
@@ -79,15 +84,14 @@ class Circle
 			virtual void print()		const
 				{
 					std::cout << "Display the current values ​​of a 'Circle' object." << std::endl;
-					(*this).see();
-					(*this).view();
+					(*this).see(); (*this).view();
 				}
 
 			virtual void reset()			{this->radius = V_ZERO;}
 
 			virtual void see()		const
 				{
-					std::cout << "(PI = [" << (*this).PI << "] : [" << this->PI << "], Radius = [" << (*this).radius << "] : [" << this->radius << "], Counter = [" << (*this).c << "] : [" << this->c << "])." << std::endl;
+					std::cout << "(ID = [" << (*this).id << "] : [" << this->id << "], PI = [" << (*this).PI << "] : [" << this->PI << "], Radius = [" << (*this).radius << "] : [" << this->radius << "], Counter = [" << (*this).c << "] : [" << this->c << "])." << std::endl;
 					std::cout << "(Area = [" << this->area() << "] : [" << (*this).area() << "], Perimeter = [" << this->perimeter() << "] : [" << (*this).perimeter() << "])." << std::endl;
 				}
 
@@ -96,6 +100,7 @@ class Circle
 			virtual void view()		const
 				{
 					std::cout << std::endl << "Information about the 'Circle' object." << std::endl;
+					std::cout << "+ ID:\t\t[" << this->id << "] = [" << (*this).id << "]." << std::endl;
 					std::cout << "+ Counter:\t[" << this->c << "] = [" << (*this).c << "]." << std::endl;
 					std::cout << "+ PI Value:\t[" << this->PI << "] = [" << (*this).PI << "]." << std::endl;
 					std::cout << "+ Radius:\t[" << this->radius << "] = [" << (*this).radius << "]." << std::endl;
@@ -105,7 +110,7 @@ class Circle
 
 			virtual void watch()		const
 				{
-					std::cout << "(PI = [" << this->PI << "], Radius = [" << this->radius << "], Counter = [" << this->c << "])." << std::endl;
+					std::cout << "(ID = [" << this->id << "], PI = [" << this->PI << "], Radius = [" << this->radius << "], Counter = [" << this->c << "])." << std::endl;
 					std::cout << "(Area = [" << this->area() << "], Perimeter = [" << this->perimeter() << "])." << std::endl;
 				}
 
@@ -165,7 +170,7 @@ int main ()
 				std::cout << "radius = ";
 				std::cin >> radius;
 
-				array_Circle[idx] = new Circle<double>(radius);
+				array_Circle[idx] = new Circle<double>(idx + V_ONE, radius);
 
 				(*array_Circle[idx]).getRadius() = radius;
 				(*array_Circle[idx]).setRadius(radius);
