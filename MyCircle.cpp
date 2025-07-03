@@ -25,17 +25,17 @@ class Circle
 				{circle.print(); return out;}
 
 		protected:
-			static int c;
+			static int counter;
 
 		public:
-			Circle()							{(*this).c++; this->capture();}
-			Circle(const int& id, const T& radius) : id(id), radius(radius)	{this->c++;}
-			Circle(const T &radius) : id(V_ZERO), radius(radius)		{this->c++;}
+			Circle() : id(V_ZERO), radius(V_ZERO)				{(*this).counter++; this->capture();}
+			Circle(const int& id, const T& radius) : id(id), radius(radius)	{this->counter++;}
+			Circle(const T &radius) : id(V_ZERO), radius(radius)		{this->counter++;}
 
 			Circle(const Circle<T>& circle) : id(circle.getId()), radius(circle.getRadius())
-				{(*this).c++;};
+				{(*this).counter++;};
 			Circle(Circle<T>&& circle) : id(circle.getId()), radius(circle.getRadius())
-				{this->c--; circle.reset();}
+				{this->counter--; circle.reset();}
 
 			Circle<T>& operator=(const Circle<T>& circle)
 				{this->copy(circle); return *this;}
@@ -79,7 +79,7 @@ class Circle
 				{return (this == &circle);};
 
 			virtual Circle<T>& move(Circle<T>&& circle)
-				{(*this).c--; this->copy(circle); circle.reset(); return *this;}
+				{(*this).counter--; this->copy(circle); circle.reset(); return *this;}
 
 			virtual void print()		const
 				{
@@ -91,7 +91,7 @@ class Circle
 
 			virtual void see()		const
 				{
-					std::cout << "(ID = [" << (*this).id << "] : [" << this->id << "], PI = [" << (*this).PI << "] : [" << this->PI << "], Radius = [" << (*this).radius << "] : [" << this->radius << "], Counter = [" << (*this).c << "] : [" << this->c << "])." << std::endl;
+					std::cout << "(ID = [" << (*this).id << "] : [" << this->id << "], PI = [" << (*this).PI << "] : [" << this->PI << "], Radius = [" << (*this).radius << "] : [" << this->radius << "], Counter = [" << (*this).counter << "] : [" << this->counter << "])." << std::endl;
 					std::cout << "(Area = [" << this->area() << "] : [" << (*this).area() << "], Perimeter = [" << this->perimeter() << "] : [" << (*this).perimeter() << "])." << std::endl;
 				}
 
@@ -101,7 +101,7 @@ class Circle
 				{
 					std::cout << std::endl << "Information about the 'Circle' object." << std::endl;
 					std::cout << "+ ID:\t\t[" << this->id << "] = [" << (*this).id << "]." << std::endl;
-					std::cout << "+ Counter:\t[" << this->c << "] = [" << (*this).c << "]." << std::endl;
+					std::cout << "+ Counter:\t[" << this->counter << "] = [" << (*this).counter << "]." << std::endl;
 					std::cout << "+ PI Value:\t[" << this->PI << "] = [" << (*this).PI << "]." << std::endl;
 					std::cout << "+ Radius:\t[" << this->radius << "] = [" << (*this).radius << "]." << std::endl;
 					std::cout << "+ Area:\t\t[" << this->area() << "] = [" << (*this).area() << "]." << std::endl;
@@ -110,7 +110,7 @@ class Circle
 
 			virtual void watch()		const
 				{
-					std::cout << "(ID = [" << this->id << "], PI = [" << this->PI << "], Radius = [" << this->radius << "], Counter = [" << this->c << "])." << std::endl;
+					std::cout << "(ID = [" << this->id << "], PI = [" << this->PI << "], Radius = [" << this->radius << "], Counter = [" << this->counter << "])." << std::endl;
 					std::cout << "(Area = [" << this->area() << "], Perimeter = [" << this->perimeter() << "])." << std::endl;
 				}
 
@@ -118,7 +118,7 @@ class Circle
 	};
 
 template <class T>
-int Circle<T>::c = V_ZERO;
+int Circle<T>::counter = V_ZERO;
 
 /* Cylinder Class. */
 template <typename T>
