@@ -27,23 +27,23 @@ class Point2D
 				{Point2D.print(); return out;}
 
 		protected:
-			static int c;
+			static int counter;
 
 		public:
-			Point2D() : id(V_ZERO), x(V_ZERO), y(V_ZERO)				{this->c++; this->capture();}
-			Point2D(const int &id) : id(id), x(V_ZERO), y(V_ZERO)			{(*this).c++;}
-			Point2D(const int &id, const T &x, const T &y) : id(id), x(x), y(y)	{this->c++;}
-			Point2D(const T &x, const T &y) : id(V_ZERO), x(x), y(y)		{(*this).c++;}
+			Point2D() : id(V_ZERO), x(V_ZERO), y(V_ZERO)				{this->counter++; this->capture();}
+			Point2D(const int &id) : id(id), x(V_ZERO), y(V_ZERO)			{(*this).counter++;}
+			Point2D(const int &id, const T &x, const T &y) : id(id), x(x), y(y)	{this->counter++;}
+			Point2D(const T &x, const T &y) : id(V_ZERO), x(x), y(y)		{(*this).counter++;}
 
 			Point2D(const Point2D<T>& Point2D) : id(Point2D.getId()), x(Point2D.getX()), y(Point2D.getY())
-				{this->c++;}
+				{this->counter++;}
 			Point2D(Point2D<T>&& Point2D) : id(Point2D.getId()), x(Point2D.getX()), y(Point2D.getY())
-				{(*this).c--; Point2D.reset();}
+				{(*this).counter--; Point2D.reset();}
 
 			Point2D<T>& operator=(const Point2D<T> &Point2D)
 				{this->copy(Point2D); return *this;}
 			Point2D<T>& operator=(Point2D<T> &&Point2D)
-				{this->c--; this->copy(Point2D); Point2D.reset(); return *this;}
+				{this->counter--; this->copy(Point2D); Point2D.reset(); return *this;}
 
 			Point2D<T>& operator()()
 				{
@@ -62,8 +62,8 @@ class Point2D
 			virtual void capture()
 				{
 					std::cout << "Capture the coordinates of a '2D Point'." << std::endl;
-					std::cout << "x = "; std::cin >> this->x;
-					std::cout << "y = "; std::cin >> this->y;
+					std::cout << "+ X Coord = "; std::cin >> this->x;
+					std::cout << "+ Y Coord = "; std::cin >> this->y;
 				}
 
 			virtual Point2D<T>& copy(const Point2D<T> &Point2D)
@@ -80,13 +80,12 @@ class Point2D
 				{return (this == &Point2D);}
 
 			virtual Point2D<T>& move(Point2D<T> &&Point2D)
-				{this->c--; this->copy(Point2D); Point2D.reset(); return *this;}
+				{this->counter--; this->copy(Point2D); Point2D.reset(); return *this;}
 
 			virtual void print() const
 				{
 					std::cout << "Display the current values ​​of a '2D Point'." << std::endl;
-					(*this).see();
-					(*this).view();
+					(*this).see(); (*this).view();
 				}
 
 			virtual void reset()		{this->x = V_ZERO; this->y = V_ZERO;}
@@ -99,8 +98,8 @@ class Point2D
 
 			virtual void see()	const
 				{
-					std::cout << "(id = [" << (*this).id << "] : [" << this->id << "], c = [" << (*this).c << "] : [" << this->c << "])." << TABULATOR;
-					std::cout << "(x = [" << this->x << "] : [" << (*this).x << "], y = [" << this->y << "] : [" << (*this).y << "])." << std::endl;
+					std::cout << "(ID = [" << (*this).id << "] : [" << this->id << "], Counter = [" << (*this).counter << "] : [" << this->counter << "])." << TABULATOR;
+					std::cout << "(X Coord = [" << this->x << "] : [" << (*this).x << "], Y Coord = [" << this->y << "] : [" << (*this).y << "])." << std::endl;
 				}
 
 			virtual void swap()		{T temp = (*this).x; (*this).x = (*this).y; (*this).y = temp;}
@@ -109,15 +108,15 @@ class Point2D
 				{
 					std::cout << std::endl << "Information about the '2D Point' object." << std::endl;
 					std::cout << "+ ID:\t\t[" << (*this).id << "] = [" << this->id << "]." << std::endl;
-					std::cout << "+ Counter:\t[" << (*this).c << "] = [" << this->c << "]." << std::endl;
+					std::cout << "+ Counter:\t[" << (*this).counter << "] = [" << this->counter << "]." << std::endl;
 					std::cout << "+ X Coord:\t[" << (*this).x << "] = [" << this->x << "]." << std::endl;
 					std::cout << "+ Y Coord:\t[" << (*this).y << "] = [" << this->y << "]." << std::endl << std::endl;
 				}
 
 			virtual void watch()	const
 				{
-					std::cout << "(id = [" << this->id << "], c = [" << this->c << "])." << TABULATOR;
-					std::cout << "(x = [" << this->x << "], y = [" << this->y << "])." << std::endl;
+					std::cout << "(ID = [" << this->id << "], Counter = [" << this->counter << "])." << TABULATOR;
+					std::cout << "(X Coord = [" << this->x << "], Y Coord = [" << this->y << "])." << std::endl;
 				}
 
 			virtual ~Point2D() = default;
@@ -125,7 +124,7 @@ class Point2D
 
 /* Initialization of the static accounting variable of the 'Point2D' class. */
 template <typename T>
-int Point2D<T>::c = V_ZERO;
+int Point2D<T>::counter = V_ZERO;
 
 //Main function.
 int main()
