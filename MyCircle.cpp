@@ -1,11 +1,13 @@
 //Classes and uniform initialization.
 #include <iostream>
 
-#define	V_ONE	1
-#define V_PI	3.14159265
-#define	V_TWO	2
-#define V_ZERO	0
+/* Symbolic work constants. */
+#define	V_ONE		1
+#define	V_PI		3.14159265
+#define	V_TWO		2
+#define	V_ZERO		0
 
+/* Circle Class. */
 template <class T>
 class Circle
 	{
@@ -38,8 +40,8 @@ class Circle
 
 			Circle<T>& operator()()
 				{
-					std::cout << std::endl << "Radius of the figure 'Circle'." << std::endl;
-					std::cout << "+ Radius:\t[" << this->radius << "]." << std::endl;
+					std::cout << "Show the current values ​​of a 'Circle' object." << std::endl;
+					this->see(); this->watch();
 					return *this;
 				}
 
@@ -55,7 +57,7 @@ class Circle
 
 			virtual void capture()
 				{
-					std::cout << std::endl << "Capture of the radius of the 'Circle' figure." << std::endl;
+					std::cout << "Capture of the radius of the 'Circle' object." << std::endl;
 					std::cout << "Enter the desired radius: ";
 					std::cin >> (*this).radius;
 				}
@@ -76,20 +78,35 @@ class Circle
 
 			virtual void print()		const
 				{
-					std::cout << std::endl << "Information about the figure 'Circle'." << std::endl;
-					this->view();
+					std::cout << "Display the current values ​​of a 'Circle' object." << std::endl;
+					(*this).see();
+					(*this).view();
 				}
 
 			virtual void reset()			{this->radius = V_ZERO;}
+
+			virtual void see()		const
+				{
+					std::cout << "(PI = [" << (*this).PI << "] : [" << this->PI << "], Radius = [" << (*this).radius << "] : [" << this->radius << "], Counter = [" << (*this).c << "] : [" << this->c << "])." << std::endl;
+					std::cout << "(Area = [" << this->area() << "] : [" << (*this).area() << "], Perimeter = [" << this->perimeter() << "] : [" << (*this).perimeter() << "])." << std::endl;
+				}
+
 			void setRadius(const T &radius)		{this->radius = radius;}
 
 			virtual void view()		const
 				{
-					std::cout << "+ Counter:\t[" << this->c << "]." << std::endl;
-					std::cout << "+ PI Value:\t[" << (*this).PI << "]." << std::endl;
-					std::cout << "+ Radius:\t[" << this->radius << "]." << std::endl;
-					std::cout << "+ Area:\t\t[" << this->area() << "]." << std::endl;
-					std::cout << "+ Perimeter:\t[" << (*this).perimeter() << "]." << std::endl;
+					std::cout << std::endl << "Information about the 'Circle' object." << std::endl;
+					std::cout << "+ Counter:\t[" << this->c << "] = [" << (*this).c << "]." << std::endl;
+					std::cout << "+ PI Value:\t[" << this->PI << "] = [" << (*this).PI << "]." << std::endl;
+					std::cout << "+ Radius:\t[" << this->radius << "] = [" << (*this).radius << "]." << std::endl;
+					std::cout << "+ Area:\t\t[" << this->area() << "] = [" << (*this).area() << "]." << std::endl;
+					std::cout << "+ Perimeter:\t[" << this->perimeter() << "] = [" << (*this).perimeter() << "]." << std::endl;
+				}
+
+			virtual void watch()		const
+				{
+					std::cout << "(PI = [" << this->PI << "], Radius = [" << this->radius << "], Counter = [" << this->c << "])." << std::endl;
+					std::cout << "(Area = [" << this->area() << "], Perimeter = [" << this->perimeter() << "])." << std::endl;
 				}
 
 			virtual ~Circle() = default;
@@ -98,6 +115,7 @@ class Circle
 template <class T>
 int Circle<T>::c = V_ZERO;
 
+/* Cylinder Class. */
 template <typename T>
 class Cylinder
 	{
@@ -243,16 +261,6 @@ int main ()
                 /* Deleting the array of pointer objects of type 'Circle'. */
                 std::cout << "Deleting the array of pointers of type 'Circle'..." << std::endl;
 		delete [] array_Circle;
-
-
-		//Circle foo(V_ONE);	//Functional form.
-		//Circle bar = V_TWO;	//Assignment init.
-		//Circle baz {V_THREE};	//Uniform init.
-		//Circle qux = {V_FOUR};//POD-like.
-		//Circle quux;		//Default constructor.
-		//Circle corge(quux);	//Copy constructor.
-		//Circle grault = baz;	//Copy constructor.
-
 
 		/* Automatic initialization of a class of type 'Cylinder'. */
 		std::cout << std::endl << "Creating 'Cylinder' objects on an array." << std::endl;
