@@ -4,7 +4,7 @@
 #include <vector>
 
 //Symbolic constant of work.
-#define V_ZERO  0
+#define	V_ZERO	0
 
 //First '2D Point' template type class.
 template <typename T>
@@ -22,25 +22,18 @@ class Point2D
 			static int c;
 
 		public:
-			Point2D()
-				{
-					this->c++;
-					this->capture();
-				}
-
-			Point2D (T &x, T &y) : x(x), y(y) {this->c++;};
+			Point2D()				{this->c++; this->capture();}
+			Point2D (T &x, T &y) : x(x), y(y)	{this->c++;};
 
 			virtual void capture()
 				{
 					std::cout << "Capturing coordinates of a 'Point2D' object..." << std::endl;
-					std::cout << "x = ";
-					std::cin >> this->x;
-					std::cout << "y = ";
-					std::cin >> this->y;
+					std::cout << "x = "; std::cin >> this->x;
+					std::cout << "y = "; std::cin >> this->y;
 				}
 
-			T getX() const {return this->x;};
-			T getY() const {return this->y;};
+			T getX() const				{return this->x;};
+			T getY() const				{return this->y;};
 
 			virtual void print() const
 				{
@@ -49,8 +42,8 @@ class Point2D
 					std::cout << "(x = [" << this->x << "], y = [" << this->y << "])." << std::endl;
 				};
 
-			void setX(const T &x) {this->x = x;};
-			void setY(const T &y) {this->y = y;};
+			void setX(const T &x)			{this->x = x;};
+			void setY(const T &y)			{this->y = y;};
 
 			virtual ~Point2D() = default;
 	};
@@ -72,7 +65,7 @@ class Point3D : public Point2D<T>
 			friend std::ostream &operator<< (std::ostream &os, const Point3D<U> &Sp3D);
 
 		public:
-			Point3D()	{ this->capture(); }
+			Point3D()				{this->capture();}
 
 			Point3D(T &x, T &y, T &z) : Point2D<T>(x, y), z(z) {};
 
@@ -80,11 +73,10 @@ class Point3D : public Point2D<T>
 				{
 					Point2D<T>::capture();
 					std::cout << "Capturing coordinates of a 'Point3D' object..." << std::endl;
-					std::cout << "z = ";
-					std::cin >> this->z;
+					std::cout << "z = "; std::cin >> this->z;
 				}
 
-			T getZ() const {return this->z;};
+			T getZ() const				{return this->z;};
 
 			void print() const
 				{
@@ -110,14 +102,14 @@ class Line
 
 		public:
 			/* Add a 'Point2D' class to the 'Point2D' point vector. */
-			void addPoint2D(const  ::Point2D<T> &Sp2D)
+			void add(const Point2D<T> &Sp2D)
 				{
 					std::cout << "2D Point:\t(x = [" << Sp2D.getX() << "], y = [" << Sp2D.getY() << "])." << std::endl;
 					vSp2D.push_back(Sp2D);
 				};
 
 			/* Clear 'Point2D' point vector. */
-			void clearVPoint2D()
+			void clear()
 				{
 					std::cout << "All the points that made up the line have been cleaned." << std::endl;
 					vSp2D.clear();
@@ -144,13 +136,10 @@ inline std::istream &operator>> (std::istream &in, Point2D<T> &Sp2D)
 		T x = V_ZERO, y = V_ZERO;
 
 		std::cout << "Setting coordinates of a 'Point2D' type object..." << std::endl;
-		std::cout << "x = ";
-		std::cin >> x;  //Read the value of 'x'.
-		std::cout << "y = ";
-		std::cin >> y;  //Read the value of 'y'.
+		std::cout << "x = "; std::cin >> x;	//Read the value of 'x'.
+		std::cout << "y = "; std::cin >> y;	//Read the value of 'y'.
 
-		Sp2D.setX(x);
-		Sp2D.setY(y);
+		Sp2D.setX(x); Sp2D.setY(y);
 
 		std::cout << "New 'Point2D' coordinates established." << std::endl << std::endl;
 
@@ -175,16 +164,11 @@ inline std::istream &operator>> (std::istream& in, Point3D<T> &Sp3D)
 		T x = V_ZERO, y = V_ZERO, z = V_ZERO;
 
 		std::cout << "Setting coordinates of a 'Point3D' type object..." << std::endl;
-		std::cout << "x = ";
-		std::cin >> x;  //Read the value of 'x'.
-		std::cout << "y = ";
-		std::cin >> y;  //Read the value of 'y'.
-		std::cout << "z = ";
-		std::cin >> z;  //Read the value of 'z'.
+		std::cout << "x = "; std::cin >> x;	//Read the value of 'x'.
+		std::cout << "y = "; std::cin >> y;	//Read the value of 'y'.
+		std::cout << "z = "; std::cin >> z;	//Read the value of 'z'.
 
-		Sp3D.setX(x);
-		Sp3D.setY(y);
-		Sp3D.setZ(z);
+		Sp3D.setX(x); Sp3D.setY(y); Sp3D.setZ(z);
 
 		std::cout << "New 'Point3D' coordinates established." << std::endl << std::endl;
 
@@ -211,19 +195,14 @@ int main()
 
 		std::cout << std::endl;
 		std::cout << "First Point 2D." << std::endl;
-		std::cout << "- X Coord: ";
-		std::cin >> int_2D_x;
-		std::cout << "- Y Coord: ";
-		std::cin >> int_2D_y;
+		std::cout << "- X Coord: "; std::cin >> int_2D_x;
+		std::cout << "- Y Coord: "; std::cin >> int_2D_y;
 
 		std::cout << std::endl;
 		std::cout << "Second Point 3D." << std::endl;
-		std::cout << "- X Coord: ";
-		std::cin >> int_3D_x;
-		std::cout << "- Y Coord: ";
-		std::cin >> int_3D_y;
-		std::cout << "- Z Coord: ";
-		std::cin >> int_3D_z;
+		std::cout << "- X Coord: "; std::cin >> int_3D_x;
+		std::cout << "- Y Coord: "; std::cin >> int_3D_y;
+		std::cout << "- Z Coord: "; std::cin >> int_3D_z;
 
 		std::cout << std::endl;
 		std::cout << "Results." << std::endl;
@@ -260,7 +239,7 @@ int main()
 		std::cout << Sp3D << std::endl;
 
 		std::cout << "Polymorphism by assigning a '3D Point' class to a '2D Point' object." << std::endl;
-		Point2D<int> Sp2x3D = Point3D<int>(int_3D_x, int_3D_y, int_3D_z);
+		Point2D<int> Sp2x3D = Point3D<int>();
 		Sp2x3D.print();
 		std::cout << Sp2x3D << std::endl;
 
@@ -275,11 +254,11 @@ int main()
 
 		std::cout << "The necessary points are added and displayed in a 'Line' class." << std::endl;
 		Line<int> line;
-		line.addPoint2D(Sp2D);
-		line.addPoint2D(Sp3D);
-		line.addPoint2D(Sp2x3D);
+		line.add(Sp2D);
+		line.add(Sp3D);
+		line.add(Sp2x3D);
 		line.print();
-		line.clearVPoint2D();
+		line.clear();
 		std::cout << "Program finished..." << std::endl;
 
 		return V_ZERO;
