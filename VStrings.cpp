@@ -1,8 +1,10 @@
-//Move constructor/assignment.
+//Move constructor/assignment & const casting.
 #include <iostream>
 #include <string>
 
-#define V_ZERO  0
+#define	NULL_CHARACTER	'\0'
+#define	TABULATOR	'\t'
+#define V_ZERO		0
 
 class VString
 	{
@@ -24,8 +26,21 @@ class VString
 	};
 
 
+void print(char *str)
+	{
+		std::cout << std::endl << "Conversions to constants." << std::endl;
+
+		for (int idx = V_ZERO; str[idx] != NULL_CHARACTER; idx++)
+			std::cout << "[" << *(str + idx) << "]." << TABULATOR;
+
+		std::cout << std::endl << "[" << str << "]." << std::endl;
+	}
+
+
 int main ()
 	{
+		const char *cte_str = "This is a sample of constant symbolic text.";
+
 		VString foo ("This is a test prayer. ");
 		VString bar = VString("This is a compound sentence.");
 
@@ -34,6 +49,8 @@ int main ()
 		std::cout << "Movement builders." << std::endl;
 		std::cout << "bar's content: [" << bar.content() << "]." << std::endl;
 		std::cout << "foo's content: [" << foo.content() << "]." << std::endl;
+
+		print(const_cast<char*>(cte_str));
 
 		return V_ZERO;
 	}
