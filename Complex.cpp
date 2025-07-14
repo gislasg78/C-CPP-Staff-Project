@@ -1,6 +1,7 @@
 #include <exception>
 #include <iostream>
 #include <sstream>
+#include <typeinfo>
 
 #define V_MINUS_TWO -2
 #define V_ONE       1
@@ -33,13 +34,14 @@ class Complex
 			Complex(double dbl_real, double dbl_imaginary) : dbl_real(dbl_real), dbl_imaginary(dbl_imaginary) {}
 
 			//Overloading of the '>>' operator.
-			friend std::istream& operator>>(std::istream& console_input, Complex& complex);
+			friend std::istream& operator>> (std::istream& console_input, Complex& complex);
 	};
 
 
 //Defining the '>>' operator overload for std::cin.
 std::istream& operator>> (std::istream& input, Complex& complex)
 	{
+		/* Preliminary working variables. */
 		std::string inputStr;
 		input >> inputStr;
 
@@ -62,7 +64,7 @@ std::istream& operator>> (std::istream& input, Complex& complex)
 					}
 				catch (std::exception& ex)
 					{
-						std::cerr << '\x5b' << ex.what() << '\x5d' << std::endl;
+						std::cerr << "An exception has occurred: " << '\x5b' << ex.what() << '\x5d' << std::endl;
 					}
 			}
 
@@ -72,7 +74,9 @@ std::istream& operator>> (std::istream& input, Complex& complex)
 
 int main()
 	{
+		//Initial header messages.
 		Complex c;
+		std::cout << "Program that tests with exceptions." << std::endl;
 		std::cout << "Enter a complex number of the form: 'a+bi': ";
 
 		//Testing and obtaining the complex number of the form: 'a+bi'.
@@ -82,8 +86,11 @@ int main()
 			}
 		catch (std::exception& ex)
 			{
-				std::cerr << '\x5b' << ex.what() << '\x5d' << std::endl;
+				std::cerr << "An exception has occurred: " << '\x5b' << ex.what() << '\x5d' << std::endl;
 			}
+
+		//Tipo de objeto instanciado de la clase 'Complejo'.
+		std::cout << "Instance of class 'Complex' is of type: [" << typeid(c).name() << "]." << std::endl;
 
 		//Sets flag on input as invalid complex number format.
 		if (std::cin.fail())
