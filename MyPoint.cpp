@@ -53,9 +53,9 @@ class Point2D
 				}
 
 			Point2D<T>& operator++()	{++this->x; ++this->y; return *this;}
-			Point2D<T>& operator++(T)	{(*this).x++; (*this).y++; return *this;}
+			Point2D<T>& operator++(int)	{(*this).x++; (*this).y++; return *this;}
 			Point2D<T>& operator--()	{--(*this).x; --(*this).y; return *this;}
-			Point2D<T>& operator--(T)	{this->x--; this->y--; return *this;}
+			Point2D<T>& operator--(int)	{this->x--; this->y--; return *this;}
 
 			operator int()		const	{return this->id;}
 
@@ -98,8 +98,8 @@ class Point2D
 
 			virtual void see()	const
 				{
-					std::cout << "(ID = [" << (*this).id << "] : [" << this->id << "], Counter = [" << (*this).counter << "] : [" << this->counter << "])." << TABULATOR;
-					std::cout << "(X Coord = [" << this->x << "] : [" << (*this).x << "], Y Coord = [" << this->y << "] : [" << (*this).y << "])." << std::endl;
+					std::cout << "(ID = [" << (*this).id << "] : [" << this->id << "] = [" << typeid((*this).id).name() << "], Counter = [" << (*this).counter << "] : [" << this->counter << "] = [" << typeid((*this).counter).name()<< "])." << TABULATOR;
+					std::cout << "(X Coord = [" << this->x << "] : [" << (*this).x << "] = [" << typeid((*this).x).name() << "], Y Coord = [" << this->y << "] : [" << (*this).y << "] = [" << typeid((*this).y).name() << "])." << std::endl;
 				}
 
 			virtual void swap()		{T temp = (*this).x; (*this).x = (*this).y; (*this).y = temp;}
@@ -107,10 +107,10 @@ class Point2D
 			virtual void view()	const
 				{
 					std::cout << std::endl << "Information about the '2D Point' object." << std::endl;
-					std::cout << "+ ID:\t\t[" << (*this).id << "] = [" << this->id << "]." << std::endl;
-					std::cout << "+ Counter:\t[" << (*this).counter << "] = [" << this->counter << "]." << std::endl;
-					std::cout << "+ X Coord:\t[" << (*this).x << "] = [" << this->x << "]." << std::endl;
-					std::cout << "+ Y Coord:\t[" << (*this).y << "] = [" << this->y << "]." << std::endl << std::endl;
+					std::cout << "+ ID:\t\t[" << (*this).id << "] = [" << this->id << "] = [" << typeid(this->id).name() << "]." << std::endl;
+					std::cout << "+ Counter:\t[" << (*this).counter << "] = [" << this->counter << "] = [" << typeid(this->counter).name() << "]." << std::endl;
+					std::cout << "+ X Coord:\t[" << (*this).x << "] = [" << this->x << "] = [" << typeid(this->x).name() << "]." << std::endl;
+					std::cout << "+ Y Coord:\t[" << (*this).y << "] = [" << this->y << "] = [" << typeid(this->y).name() << "]." << std::endl << std::endl;
 				}
 
 			virtual void watch()	const
@@ -139,7 +139,7 @@ int main()
 		std::cin >> quantity;
 
 		/* The dynamic array of pointers to objects of type 'Point2D' is created. */
-		Point2D<int> **array_Point2D = new Point2D<int>* [quantity];
+		Point2D<double> **array_Point2D = new Point2D<double>* [quantity];
 
 		/* Each object of type 'Point2D' is created and stored in an array of pointers of the same type. */
 		for (int idx = V_ZERO; idx < quantity; idx++)
@@ -148,15 +148,16 @@ int main()
 				std::cout << "x = "; std::cin >> x;
 				std::cout << "y = "; std::cin >> y;
 
-				array_Point2D[idx] = new Point2D<int>(idx + V_ONE, x, y);
+				array_Point2D[idx] = new Point2D<double>(idx + V_ONE, x, y);
 
 				(*array_Point2D[idx]).getX() = x;
 				(*array_Point2D[idx]).getY() = y;
 				(*array_Point2D[idx]).setXY(x, y);
 
-				std::cout << "Object created #:\t[" << static_cast<int>(*array_Point2D[idx]) << "]." << std::endl;
-				std::cout << "Asigned values:\t\tId: [" << array_Point2D[idx]->getId() << "].\t(x = [" << (*array_Point2D[idx]).getX() << "], y = [" << (*array_Point2D[idx]).getY() << "])." << std::endl;
-				std::cout << "Is it me?:\t\t[" << array_Point2D[idx]->isitme(*array_Point2D[idx]) << "]." << std::endl;
+				std::cout << std::endl << "Object created and assigned." << std::endl;
+				std::cout << "+ ID Value:\t[" << static_cast<int>(*array_Point2D[idx]) << "]." << std::endl;
+				std::cout << "+ Values:\tId: [" << array_Point2D[idx]->getId() << "].\t(x = [" << (*array_Point2D[idx]).getX() << "], y = [" << (*array_Point2D[idx]).getY() << "])." << std::endl;
+				std::cout << "+ Is it me?:\t[" << array_Point2D[idx]->isitme(*array_Point2D[idx]) << "]." << std::endl;
 			}
 
 		/* An internal method of the 'Point2D' object is used to display the assigned values. */
