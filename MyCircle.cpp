@@ -297,7 +297,6 @@ int main ()
 				array_Cylinder[idx] = new Cylinder<double>(radius, height);
 
 				std::cout << std::endl << "'Circle' created and assigned." << std::endl;
-				std::cout << "+ ID Value:\t[" << static_cast<int>(*array_Cylinder[idx]) << "]." << std::endl;
 				std::cout << "+ PI Value:\t[" << static_cast<double>(*array_Cylinder[idx]) << "]." << std::endl;
 
 				(*(*(array_Cylinder + idx))).print();
