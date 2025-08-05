@@ -1,11 +1,13 @@
 //Classes and uniform initialization.
 #include <iostream>
+#include <typeinfo>
 
 /* Symbolic work constants. */
 #define	V_ONE	1
 #define	V_PI	3.14159265
 #define	V_TWO	2
 #define	V_ZERO	0
+
 
 /* Circle Class. */
 template <class T>
@@ -54,7 +56,8 @@ class Circle
 			Circle<T>& operator--()			{--(*this).radius; return *this;}
 			Circle<T>& operator--(int)		{this->radius--; return *this;}
 
-			operator T()			const	{return this->id;}
+			operator int()			const	{return this->id;}
+			operator double()		const	{return this->radius;}
 
 			const T area()			const	{return PI * this->radius * (*this).radius;}
 			const T perimeter()		const	{return V_TWO * PI * (*this).radius;}
@@ -70,7 +73,7 @@ class Circle
 				{(*this).radius = circle.getRadius(); return *this;}
 
 			const int &getId()		const	{return this->id;}
-			const T& getPI()		const	{return this->PI;}
+			const double& getPI()		const	{return this->PI;}
 			const T& getRadius()		const	{return this->radius;}
 
 			T& getRadius()				{return (*this).radius;}
@@ -91,7 +94,7 @@ class Circle
 
 			virtual void see()		const
 				{
-					std::cout << "(ID = [" << (*this).id << "] : [" << this->id << "], PI = [" << (*this).PI << "] : [" << this->PI << "], Radius = [" << (*this).radius << "] : [" << this->radius << "], Counter = [" << (*this).counter << "] : [" << this->counter << "])." << std::endl;
+					std::cout << "(ID = [" << (*this).id << "] : [" << this->id << "] = [" << typeid(this->id).name() << "], PI = [" << (*this).PI << "] : [" << this->PI << "] = [" << typeid(this->PI).name() << "], Radius = [" << (*this).radius << "] : [" << this->radius << "] = [" << typeid(this->radius).name() << "], Counter = [" << (*this).counter << "] : [" << this->counter << "] = [" << typeid(this->counter).name() << "])." << std::endl;
 					std::cout << "(Area = [" << this->area() << "] : [" << (*this).area() << "], Perimeter = [" << this->perimeter() << "] : [" << (*this).perimeter() << "])." << std::endl;
 				}
 
@@ -100,10 +103,10 @@ class Circle
 			virtual void view()		const
 				{
 					std::cout << std::endl << "Information about the 'Circle' object." << std::endl;
-					std::cout << "+ ID:\t\t[" << this->id << "] = [" << (*this).id << "]." << std::endl;
-					std::cout << "+ Counter:\t[" << this->counter << "] = [" << (*this).counter << "]." << std::endl;
-					std::cout << "+ PI Value:\t[" << this->PI << "] = [" << (*this).PI << "]." << std::endl;
-					std::cout << "+ Radius:\t[" << this->radius << "] = [" << (*this).radius << "]." << std::endl;
+					std::cout << "+ ID:\t\t[" << this->id << "] = [" << (*this).id << "] = [" << typeid((*this).id).name() << "]." << std::endl;
+					std::cout << "+ Counter:\t[" << this->counter << "] = [" << (*this).counter << "] = [" << typeid((*this).counter).name() << "]." << std::endl;
+					std::cout << "+ PI Value:\t[" << this->PI << "] = [" << (*this).PI << "] = [" << typeid((*this).PI).name() << "]." << std::endl;
+					std::cout << "+ Radius:\t[" << this->radius << "] = [" << (*this).radius << "] = [" << typeid((*this).radius).name() << "]." << std::endl;
 					std::cout << "+ Area:\t\t[" << this->area() << "] = [" << (*this).area() << "]." << std::endl;
 					std::cout << "+ Perimeter:\t[" << this->perimeter() << "] = [" << (*this).perimeter() << "]." << std::endl;
 				}
@@ -119,6 +122,7 @@ class Circle
 
 template <class T>
 int Circle<T>::counter = V_ZERO;
+
 
 /* Cylinder Class. */
 template <typename T>
@@ -139,16 +143,20 @@ class Cylinder
 					(&base)->print();
 				}
 
+			operator T()		const		{return this->base;}
+
 			const T& getHeight()	const		{return (*this).height;}
 			T& getHeight()				{return this->height;}
 
 			void setHeight(const T& height)		{this->height = height;}
 
-			const T volume() const		{return base.area() * this->height;}
+			const T volume()	const		{return base.area() * this->height;}
 
 			virtual ~Cylinder() = default;
 	};
 
+
+//Main function.
 int main ()
 	{
 		/* Preliminary working variables. */
@@ -175,9 +183,11 @@ int main ()
 				(*array_Circle[idx]).getRadius() = radius;
 				(*array_Circle[idx]).setRadius(radius);
 
-				std::cout << "Object created #:\t[" << static_cast<int>(*array_Circle[idx]) << "]." << std::endl;
-				std::cout << "Asigned radius:\t\t[" << (*array_Circle[idx]).getRadius() << "]." << std::endl;
-				std::cout << "Is it me?:\t\t[" << array_Circle[idx]->isitme(*array_Circle[idx]) << "]." << std::endl;
+				std::cout << std::endl << "Object created and assigned." << std::endl;
+				std::cout << "+ ID Value:\t\t[" << static_cast<int>(*array_Circle[idx]) << "]." << std::endl;
+				std::cout << "+ PI Value:\t\t[" << (*array_Circle[idx]).getPI() << "]." << std::endl;
+				std::cout << "+ Radius:\t\t[" << static_cast<double>(*array_Circle[idx]) << "]." << std::endl;
+				std::cout << "+ Is it me?:\t\t[" << array_Circle[idx]->isitme(*array_Circle[idx]) << "]." << std::endl;
 			}
 
 		/* An internal method of the 'Circle' object is used to display the assigned values. */
@@ -285,6 +295,11 @@ int main ()
 				std::cin >> height;
 
 				array_Cylinder[idx] = new Cylinder<double>(radius, height);
+
+				std::cout << std::endl << "'Circle' created and assigned." << std::endl;
+				std::cout << "+ ID Value:\t[" << static_cast<int>(*array_Cylinder[idx]) << "]." << std::endl;
+				std::cout << "+ Radius:\t[" << static_cast<double>(*array_Cylinder[idx]) << "]." << std::endl;
+
 				(*(*(array_Cylinder + idx))).print();
 			}
 
