@@ -57,7 +57,7 @@ class Circle
 			Circle<T>& operator--(int)		{this->radius--; return *this;}
 
 			operator int()			const	{return this->id;}
-			operator double()		const	{return this->radius;}
+			operator double()		const	{return this->PI;}
 
 			const T area()			const	{return PI * this->radius * (*this).radius;}
 			const T perimeter()		const	{return V_TWO * PI * (*this).radius;}
@@ -185,8 +185,8 @@ int main ()
 
 				std::cout << std::endl << "Object created and assigned." << std::endl;
 				std::cout << "+ ID Value:\t\t[" << static_cast<int>(*array_Circle[idx]) << "]." << std::endl;
-				std::cout << "+ PI Value:\t\t[" << (*array_Circle[idx]).getPI() << "]." << std::endl;
-				std::cout << "+ Radius:\t\t[" << static_cast<double>(*array_Circle[idx]) << "]." << std::endl;
+				std::cout << "+ PI Value:\t\t[" << static_cast<double>(*array_Circle[idx]) << "]." << std::endl;
+				std::cout << "+ Radius:\t\t[" << (*array_Circle[idx]).getRadius() << "]." << std::endl;
 				std::cout << "+ Is it me?:\t\t[" << array_Circle[idx]->isitme(*array_Circle[idx]) << "]." << std::endl;
 			}
 
@@ -298,7 +298,7 @@ int main ()
 
 				std::cout << std::endl << "'Circle' created and assigned." << std::endl;
 				std::cout << "+ ID Value:\t[" << static_cast<int>(*array_Cylinder[idx]) << "]." << std::endl;
-				std::cout << "+ Radius:\t[" << static_cast<double>(*array_Cylinder[idx]) << "]." << std::endl;
+				std::cout << "+ PI Value:\t[" << static_cast<double>(*array_Cylinder[idx]) << "]." << std::endl;
 
 				(*(*(array_Cylinder + idx))).print();
 			}
