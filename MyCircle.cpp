@@ -18,12 +18,12 @@ class Circle
 			const double PI = V_PI;
 			T radius = V_ZERO;
 
-			template <class C>
+			template <class C = T>
 			friend std::istream &operator>> (std::istream& in, Circle<C> &circle)
 				{circle.capture(); return in;}
 
-			template <class C>
-			friend std::ostream& operator<< (std::ostream &out, const Circle<C> &circle)
+			template <class C = T>
+			friend std::ostream& operator<< (std::ostream &out, const Circle<C>& circle)
 				{circle.print(); return out;}
 
 		protected:
@@ -94,7 +94,7 @@ class Circle
 
 			virtual void see()		const
 				{
-					std::cout << "(ID = [" << (*this).id << "] : [" << this->id << "] = [" << typeid(this->id).name() << "], PI = [" << (*this).PI << "] : [" << this->PI << "] = [" << typeid(this->PI).name() << "], Radius = [" << (*this).radius << "] : [" << this->radius << "] = [" << typeid(this->radius).name() << "], Counter = [" << (*this).counter << "] : [" << this->counter << "] = [" << typeid(this->counter).name() << "])." << std::endl;
+					std::cout << "(ID = [" << (*this).id << "] : [" << this->id << "] = [" << typeid((*this).id).name() << "] : [" << typeid(this->id).name() << "], PI = [" << (*this).PI << "] : [" << this->PI << "] = [" << typeid((*this).PI).name() << "] : [" << typeid(this->PI).name() << "], Radius = [" << (*this).radius << "] : [" << this->radius << "] = [" << typeid((*this).radius).name() << "] : [" << typeid(this->radius).name() << "], Counter = [" << (*this).counter << "] : [" << this->counter << "] = [" << typeid((*this).counter).name() << "] : [" << typeid(this->counter).name() << "])." << std::endl;
 					std::cout << "(Area = [" << this->area() << "] : [" << (*this).area() << "], Perimeter = [" << this->perimeter() << "] : [" << (*this).perimeter() << "])." << std::endl;
 				}
 
@@ -103,12 +103,12 @@ class Circle
 			virtual void view()		const
 				{
 					std::cout << std::endl << "Information about the 'Circle' object." << std::endl;
-					std::cout << "+ ID:\t\t[" << this->id << "] = [" << (*this).id << "] = [" << typeid((*this).id).name() << "]." << std::endl;
-					std::cout << "+ Counter:\t[" << this->counter << "] = [" << (*this).counter << "] = [" << typeid((*this).counter).name() << "]." << std::endl;
-					std::cout << "+ PI Value:\t[" << this->PI << "] = [" << (*this).PI << "] = [" << typeid((*this).PI).name() << "]." << std::endl;
-					std::cout << "+ Radius:\t[" << this->radius << "] = [" << (*this).radius << "] = [" << typeid((*this).radius).name() << "]." << std::endl;
-					std::cout << "+ Area:\t\t[" << this->area() << "] = [" << (*this).area() << "]." << std::endl;
-					std::cout << "+ Perimeter:\t[" << this->perimeter() << "] = [" << (*this).perimeter() << "]." << std::endl;
+					std::cout << "+ ID:\t\t[" << this->id << "] : [" << (*this).id << "] = [" << typeid(this->id).name() << "] : [" << typeid((*this).id).name() << "]." << std::endl;
+					std::cout << "+ Counter:\t[" << this->counter << "] : [" << (*this).counter << "] = [" << typeid(this->counter).name() << "] : [" << typeid((*this).counter).name() << "]." << std::endl;
+					std::cout << "+ PI Value:\t[" << this->PI << "] : [" << (*this).PI << "] = [" << typeid(this->PI).name() << "] : [" << typeid((*this).PI).name() << "]." << std::endl;
+					std::cout << "+ Radius:\t[" << this->radius << "] : [" << (*this).radius << "] = [" << typeid(this->radius).name() << "] : [" << typeid((*this).radius).name() << "]." << std::endl;
+					std::cout << "+ Area:\t\t[" << this->area() << "] : [" << (*this).area() << "]." << std::endl;
+					std::cout << "+ Perimeter:\t[" << this->perimeter() << "] : [" << (*this).perimeter() << "]." << std::endl;
 				}
 
 			virtual void watch()		const
