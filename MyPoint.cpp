@@ -3,6 +3,7 @@
 */
 /* Common work libraries. */
 #include <iostream>
+#include <typeinfo>
 
 /* Symbolic work constants. */
 #define	TABULATOR	'\t'
@@ -23,7 +24,7 @@ class Point2D
 				{Point2D.capture(); return in;}
 
 			template <typename U>
-			friend std::ostream& operator<< (std::ostream &out, const Point2D<U> &Point2D)
+			friend std::ostream& operator<< (std::ostream &out, const Point2D<U>& Point2D)
 				{Point2D.print(); return out;}
 
 		protected:
@@ -98,8 +99,8 @@ class Point2D
 
 			virtual void see()	const
 				{
-					std::cout << "(ID = [" << (*this).id << "] : [" << this->id << "] = [" << typeid((*this).id).name() << "], Counter = [" << (*this).counter << "] : [" << this->counter << "] = [" << typeid((*this).counter).name()<< "])." << TABULATOR;
-					std::cout << "(X Coord = [" << this->x << "] : [" << (*this).x << "] = [" << typeid((*this).x).name() << "], Y Coord = [" << this->y << "] : [" << (*this).y << "] = [" << typeid((*this).y).name() << "])." << std::endl;
+					std::cout << "(ID = [" << (*this).id << "] : [" << this->id << "] = [" << typeid((*this).id).name() << "] : [" << typeid(this->id).name() << "], Counter = [" << (*this).counter << "] : [" << this->counter << "] = [" << typeid((*this).counter).name()<< "] : [" << typeid(this->counter).name() << "])." << TABULATOR;
+					std::cout << "(X Coord = [" << this->x << "] : [" << (*this).x << "] = [" << typeid((*this).x).name() << "] : [" << typeid(this->x).name() << "], Y Coord = [" << this->y << "] : [" << (*this).y << "] = [" << typeid((*this).y).name() << "] : [" << typeid(this->y).name() << "])." << std::endl;
 				}
 
 			virtual void swap()		{T temp = (*this).x; (*this).x = (*this).y; (*this).y = temp;}
@@ -107,10 +108,10 @@ class Point2D
 			virtual void view()	const
 				{
 					std::cout << std::endl << "Information about the '2D Point' object." << std::endl;
-					std::cout << "+ ID:\t\t[" << (*this).id << "] = [" << this->id << "] = [" << typeid(this->id).name() << "]." << std::endl;
-					std::cout << "+ Counter:\t[" << (*this).counter << "] = [" << this->counter << "] = [" << typeid(this->counter).name() << "]." << std::endl;
-					std::cout << "+ X Coord:\t[" << (*this).x << "] = [" << this->x << "] = [" << typeid(this->x).name() << "]." << std::endl;
-					std::cout << "+ Y Coord:\t[" << (*this).y << "] = [" << this->y << "] = [" << typeid(this->y).name() << "]." << std::endl << std::endl;
+					std::cout << "+ ID:\t\t[" << (*this).id << "] : [" << this->id << "] = [" << typeid((*this).id).name() << "] : [" << typeid(this->id).name() << "]." << std::endl;
+					std::cout << "+ Counter:\t[" << (*this).counter << "] : [" << this->counter << "] = [" << typeid((*this).counter).name() << "] : [" << typeid(this->counter).name() << "]." << std::endl;
+					std::cout << "+ X Coord:\t[" << (*this).x << "] : [" << this->x << "] = [" << typeid((*this).x).name() << "] : [" << typeid(this->x).name() << "]." << std::endl;
+					std::cout << "+ Y Coord:\t[" << (*this).y << "] : [" << this->y << "] = [" << typeid((*this).y).name() << "] : [" << typeid(this->y).name() << "]." << std::endl << std::endl;
 				}
 
 			virtual void watch()	const
@@ -131,7 +132,7 @@ int main()
 	{
 		/* Preliminary working variables. */
 		int quantity = V_ZERO;
-		int x = V_ZERO, y = V_ZERO;
+		double x = V_ZERO, y = V_ZERO;
 
 		/* Initial header messages. */
 		std::cout << "Creating 'Point2D' objects on an array." << std::endl;
