@@ -1,3 +1,7 @@
+/* This program calculates the area and perimeter of an instantiated class
+   called 'Circle' and this is used to calculate another instantiable class
+   called 'Cylinder'. */
+
 //Classes and uniform initialization.
 #include <iostream>
 #include <typeinfo>
@@ -21,7 +25,6 @@ class Circle
 			template <class C = T>
 			friend std::istream &operator>> (std::istream& in, Circle<C> &circle)
 				{circle.capture(); return in;}
-
 			template <class C = T>
 			friend std::ostream& operator<< (std::ostream &out, const Circle<C>& circle)
 				{circle.print(); return out;}
@@ -94,11 +97,19 @@ class Circle
 
 			virtual void see()		const
 				{
-					std::cout << "(ID = [" << (*this).id << "] : [" << this->id << "] = [" << typeid((*this).id).name() << "] : [" << typeid(this->id).name() << "], PI = [" << (*this).PI << "] : [" << this->PI << "] = [" << typeid((*this).PI).name() << "] : [" << typeid(this->PI).name() << "], Radius = [" << (*this).radius << "] : [" << this->radius << "] = [" << typeid((*this).radius).name() << "] : [" << typeid(this->radius).name() << "], Counter = [" << (*this).counter << "] : [" << this->counter << "] = [" << typeid((*this).counter).name() << "] : [" << typeid(this->counter).name() << "])." << std::endl;
-					std::cout << "(Area = [" << this->area() << "] : [" << (*this).area() << "], Perimeter = [" << this->perimeter() << "] : [" << (*this).perimeter() << "])." << std::endl;
+					std::cout << "(ID = [" << (*this).id << "] : [" << this->id << "] = ";
+					std::cout << "[" << typeid((*this).id).name() << "] : [" << typeid(this->id).name() << "], ";
+					std::cout << "PI = [" << (*this).PI << "] : [" << this->PI << "] = ";
+					std::cout << "[" << typeid((*this).PI).name() << "] : [" << typeid(this->PI).name() << "], ";
+					std::cout << "Radius = [" << (*this).radius << "] : [" << this->radius << "] = ";
+					std::cout << "[" << typeid((*this).radius).name() << "] : [" << typeid(this->radius).name() << "], ";
+					std::cout << "Counter = [" << (*this).counter << "] : [" << this->counter << "] = ";
+					std::cout << "[" << typeid((*this).counter).name() << "] : [" << typeid(this->counter).name() << "])." << std::endl;
+					std::cout << "(Area = [" << this->area() << "] : [" << (*this).area() << "], ";
+					std::cout << "Perimeter = [" << this->perimeter() << "] : [" << (*this).perimeter() << "])." << std::endl;
 				}
 
-			void setRadius(const T &radius)		{this->radius = radius;}
+			void setRadius(const T &radius = V_ZERO)	{this->radius = radius;}
 
 			virtual void view()		const
 				{
@@ -113,8 +124,12 @@ class Circle
 
 			virtual void watch()		const
 				{
-					std::cout << "(ID = [" << this->id << "], PI = [" << this->PI << "], Radius = [" << this->radius << "], Counter = [" << this->counter << "])." << std::endl;
-					std::cout << "(Area = [" << this->area() << "], Perimeter = [" << this->perimeter() << "])." << std::endl;
+					std::cout << "(ID = [" << this->id << "], ";
+					std::cout << "PI = [" << this->PI << "], ";
+					std::cout << "Radius = [" << this->radius << "], ";
+					std::cout << "Counter = [" << this->counter << "])." << std::endl;
+					std::cout << "(Area = [" << this->area() << "], ";
+					std::cout << "Perimeter = [" << this->perimeter() << "])." << std::endl;
 				}
 
 			virtual ~Circle() = default;
@@ -135,7 +150,7 @@ class Cylinder
 		public:
 			Cylinder(T radius, T height) : base(radius), height(height)	{}
 
-			virtual void print() const
+			virtual void print()	const
 				{
 					std::cout << std::endl << "Information about the 'Cylinder." << std::endl;
 					std::cout << "+ Height:\t[" << this->height << "]." << std::endl;
@@ -143,14 +158,14 @@ class Cylinder
 					(&base)->print();
 				}
 
-			operator T()		const		{return this->base;}
+			operator T()		const			{return this->base;}
 
-			const T& getHeight()	const		{return (*this).height;}
-			T& getHeight()				{return this->height;}
+			const T& getHeight()	const			{return (*this).height;}
+			T& getHeight()					{return this->height;}
 
-			void setHeight(const T& height)		{this->height = height;}
+			void setHeight(const T& height = V_ZERO)	{this->height = height;}
 
-			const T volume()	const		{return base.area() * this->height;}
+			const T volume()	const			{return base.area() * this->height;}
 
 			virtual ~Cylinder() = default;
 	};
