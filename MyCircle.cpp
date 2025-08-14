@@ -41,9 +41,9 @@ class Circle
 			Circle(Circle<T>&& circle) : id(circle.getId()), radius(circle.getRadius())
 				{this->counter--; circle.reset();}
 
-			Circle<T>& operator=(const Circle<T>& circle)
+			Circle<T>& operator= (const Circle<T>& circle)
 				{this->copy(circle); return *this;}
-			Circle<T>& operator=(const Circle<T>&& circle)
+			Circle<T>& operator= (const Circle<T>&& circle)
 				{this->counter--; (*this).copy(circle); circle.reset(); return *this;}
 
 			Circle<T>& operator()()
@@ -72,6 +72,9 @@ class Circle
 
 			virtual Circle<T>& copy(const Circle<T>& circle)
 				{(*this).radius = circle.getRadius(); return *this;}
+
+			virtual void explore()
+				{std::cout << *this << std::endl; std::cin >> *this; std::cout << *this << std::endl;}
 
 			const int &getId()		const	{return this->id;}
 			const double& getPI()		const	{return this->PI;}
