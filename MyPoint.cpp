@@ -39,9 +39,9 @@ class Point2D
 			Point2D(Point2D<T>&& Point2D) : id(Point2D.getId()), x(Point2D.getX()), y(Point2D.getY())
 				{(*this).counter--; Point2D.reset();}
 
-			Point2D<T>& operator=(const Point2D<T> &Point2D)
+			Point2D<T>& operator= (const Point2D<T> &Point2D)
 				{this->copy(Point2D); return *this;}
-			Point2D<T>& operator=(Point2D<T> &&Point2D)
+			Point2D<T>& operator= (Point2D<T> &&Point2D)
 				{this->counter--; (*this).copy(Point2D); Point2D.reset(); return *this;}
 
 			Point2D<T>& operator()()
@@ -66,6 +66,9 @@ class Point2D
 
 			virtual Point2D<T>& copy(const Point2D<T> &Point2D)
 				{this->x = Point2D.getX(); this->y = Point2D.getY(); return *this;}
+
+			virtual void explore()
+				{std::cout << *this << std::endl; std::cin >> *this; std::cout << *this << std::endl;}
 
 			const int& getId()	const	{return this->id;}
 			const T& getX()		const	{return this->x;}
