@@ -7,11 +7,11 @@
 class Pi
 	{
 		private:
-			double PI = V_PI;
+			const double PI = V_PI;
 
 		public:
-			const double& getPi()		{return this->PI;}
-			double& operator()()		{return this->PI;}
+			const double& getPi()		const	{return this->PI;}
+			const double operator()()	const	{return this->PI;}
 
 			virtual ~Pi() = default;
 	};
