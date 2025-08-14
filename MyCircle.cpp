@@ -4,7 +4,6 @@
 
 //Classes and uniform initialization.
 #include <iostream>
-#include <typeinfo>
 
 /* Symbolic work constants. */
 #define	V_ONE	1
@@ -45,13 +44,12 @@ class Circle
 			Circle<T>& operator=(const Circle<T>& circle)
 				{this->copy(circle); return *this;}
 			Circle<T>& operator=(const Circle<T>&& circle)
-				{this->c--; this->copy(circle); circle.reset(); return *this;}
+				{this->counter--; (*this).copy(circle); circle.reset(); return *this;}
 
 			Circle<T>& operator()()
 				{
 					std::cout << "Show the current values ​​of a 'Circle' object." << std::endl;
-					this->see(); this->watch();
-					return *this;
+					this->see(); this->watch(); return *this;
 				}
 
 			Circle<T>& operator++()			{++this->radius; return *this;}
@@ -114,10 +112,14 @@ class Circle
 			virtual void view()		const
 				{
 					std::cout << std::endl << "Information about the 'Circle' object." << std::endl;
-					std::cout << "+ ID:\t\t[" << this->id << "] : [" << (*this).id << "] = [" << typeid(this->id).name() << "] : [" << typeid((*this).id).name() << "]." << std::endl;
-					std::cout << "+ Counter:\t[" << this->counter << "] : [" << (*this).counter << "] = [" << typeid(this->counter).name() << "] : [" << typeid((*this).counter).name() << "]." << std::endl;
-					std::cout << "+ PI Value:\t[" << this->PI << "] : [" << (*this).PI << "] = [" << typeid(this->PI).name() << "] : [" << typeid((*this).PI).name() << "]." << std::endl;
-					std::cout << "+ Radius:\t[" << this->radius << "] : [" << (*this).radius << "] = [" << typeid(this->radius).name() << "] : [" << typeid((*this).radius).name() << "]." << std::endl;
+					std::cout << "+ ID:\t\t[" << this->id << "] : [" << (*this).id << "] = ";
+					std::cout << "[" << typeid(this->id).name() << "] : [" << typeid((*this).id).name() << "]." << std::endl;
+					std::cout << "+ Counter:\t[" << this->counter << "] : [" << (*this).counter << "] = ";
+					std::cout << "[" << typeid(this->counter).name() << "] : [" << typeid((*this).counter).name() << "]." << std::endl;
+					std::cout << "+ PI Value:\t[" << this->PI << "] : [" << (*this).PI << "] = ";
+					std::cout << "[" << typeid(this->PI).name() << "] : [" << typeid((*this).PI).name() << "]." << std::endl;
+					std::cout << "+ Radius:\t[" << this->radius << "] : [" << (*this).radius << "] = ";
+					std::cout << "[" << typeid(this->radius).name() << "] : [" << typeid((*this).radius).name() << "]." << std::endl;
 					std::cout << "+ Area:\t\t[" << this->area() << "] : [" << (*this).area() << "]." << std::endl;
 					std::cout << "+ Perimeter:\t[" << this->perimeter() << "] : [" << (*this).perimeter() << "]." << std::endl;
 				}
