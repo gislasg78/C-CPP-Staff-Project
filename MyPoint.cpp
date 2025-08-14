@@ -3,7 +3,6 @@
 */
 /* Common work libraries. */
 #include <iostream>
-#include <typeinfo>
 
 /* Symbolic work constants. */
 #define	TABULATOR	'\t'
@@ -43,13 +42,12 @@ class Point2D
 			Point2D<T>& operator=(const Point2D<T> &Point2D)
 				{this->copy(Point2D); return *this;}
 			Point2D<T>& operator=(Point2D<T> &&Point2D)
-				{this->counter--; this->copy(Point2D); Point2D.reset(); return *this;}
+				{this->counter--; (*this).copy(Point2D); Point2D.reset(); return *this;}
 
 			Point2D<T>& operator()()
 				{
 					std::cout << "Show the current values ​​of a '2D Point'." << std::endl;
-					this->see(); this->watch();
-					return *this;
+					this->see(); this->watch(); return *this;
 				}
 
 			Point2D<T>& operator++()	{++this->x; ++this->y; return *this;}
