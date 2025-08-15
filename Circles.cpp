@@ -12,7 +12,7 @@ class Pi
 
 		public:
 			const T& getPi()	const	{return this->PI;}
-			const T operator()()	const	{return this->PI;}
+			const T& operator()()	const	{return this->PI;}
 			operator T()		const	{return this->PI;}
 
 			virtual ~Pi() = default;
@@ -26,11 +26,11 @@ class Circle
 			T radius = V_ZERO;
 
 		public:
-			const T& getRadius()	const			{return (*this).radius;}
-			T& getRadius()					{return this->radius;}
+			const T& getRadius()	const	{return (*this).radius;}
+			T& getRadius()			{return this->radius;}
 
-			const T getArea()				{return pi() * this->radius * this->radius;}
-			const T getPerimeter()				{return V_TWO * pi.getPi() * this->radius;}
+			const T getArea()		{return pi() * this->radius * this->radius;}
+			const T getPerimeter()		{return V_TWO * pi.getPi() * this->radius;}
 
 			void setRadius(const T& radius = V_ZERO)	{this->radius = radius;}
 
@@ -47,12 +47,13 @@ int main()
 		std::cin >> radius;
 
 		Pi<double> pi;
+
 		Circle<double> circle;
 		circle.setRadius(radius);
 		circle.getRadius() = radius;
 
 		std::cout << std::endl << "Results of the 'Circle' calculations." << std::endl;
-		std::cout << "+ PI:\t\t[" << static_cast<double>(pi) << "]." << std::endl;
+		std::cout << "+ PI:\t\t[" << static_cast<double>(pi) << "] = [" << pi() << "]." << std::endl;
 		std::cout << "+ Radius:\t[" << circle.getRadius() << "]." << std::endl;
 		std::cout << "+ Area:\t\t[" << circle.getArea() << "]." << std::endl;
 		std::cout << "+ Perimeter:\t[" << circle.getPerimeter() << "]." << std::endl;
