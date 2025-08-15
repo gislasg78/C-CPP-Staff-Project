@@ -4,31 +4,35 @@
 #define V_TWO   2
 #define V_ZERO  0
 
+template <typename T>
 class Pi
 	{
 		private:
-			const double PI = V_PI;
+			const T PI = V_PI;
 
 		public:
-			const double& getPi()		const	{return this->PI;}
-			const double operator()()	const	{return this->PI;}
+			const T& getPi()	const	{return this->PI;}
+			const T operator()()	const	{return this->PI;}
+			operator T()		const	{return this->PI;}
 
 			virtual ~Pi() = default;
 	};
 
+template <typename T>
 class Circle
 	{
 		private:
-			Pi pi;
-			double radius = V_ZERO;
+			Pi<T> pi;
+			T radius = V_ZERO;
 
 		public:
-			const double& getRadius()	{return (*this).radius;}
+			const T& getRadius()	const			{return (*this).radius;}
+			T& getRadius()					{return this->radius;}
 
-			const double getArea()		{return pi() * this->radius * this->radius;}
-			const double getPerimeter()	{return V_TWO * pi.getPi() * this->radius;}
+			const T getArea()				{return pi() * this->radius * this->radius;}
+			const T getPerimeter()				{return V_TWO * pi.getPi() * this->radius;}
 
-			void setRadius(const double& radius = V_ZERO)	{this->radius = radius;}
+			void setRadius(const T& radius = V_ZERO)	{this->radius = radius;}
 
 			virtual ~Circle() = default;
 	};
@@ -42,11 +46,13 @@ int main()
 		std::cout << "Enter the value for the radius: ";
 		std::cin >> radius;
 
-		Circle circle;
-
+		Pi<double> pi;
+		Circle<double> circle;
 		circle.setRadius(radius);
+		circle.getRadius() = radius;
 
 		std::cout << std::endl << "Results of the 'Circle' calculations." << std::endl;
+		std::cout << "+ PI:\t\t[" << static_cast<double>(pi) << "]." << std::endl;
 		std::cout << "+ Radius:\t[" << circle.getRadius() << "]." << std::endl;
 		std::cout << "+ Area:\t\t[" << circle.getArea() << "]." << std::endl;
 		std::cout << "+ Perimeter:\t[" << circle.getPerimeter() << "]." << std::endl;
