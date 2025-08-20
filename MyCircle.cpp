@@ -12,7 +12,7 @@
 #define	V_ZERO	0
 
 
-/* Circle Class. */
+/* Circle Class. Base Class.*/
 template <class T>
 class Circle
 	{
@@ -32,9 +32,12 @@ class Circle
 			static int counter;
 
 		public:
-			Circle() : id(V_ZERO), radius(V_ZERO)				{(*this).counter++; this->capture();}
-			Circle(const int& id, const T& radius) : id(id), radius(radius)	{this->counter++;}
-			Circle(const T &radius) : id(V_ZERO), radius(radius)		{this->counter++;}
+			Circle() : id(V_ZERO), radius(V_ZERO)
+				{(*this).counter++; this->capture();}
+			Circle(const int& id, const T& radius) : id(id), radius(radius)
+				{this->counter++;}
+			Circle(const T &radius) : id(V_ZERO), radius(radius)
+				{this->counter++;}
 
 			Circle(const Circle<T>& circle) : id(circle.getId()), radius(circle.getRadius())
 				{(*this).counter++;};
@@ -144,33 +147,114 @@ template <class T>
 int Circle<T>::counter = V_ZERO;
 
 
-/* Cylinder Class. */
+/* Cylinder Class. Derived Class*/
 template <typename T>
-class Cylinder
+class Cylinder : public Circle<T>
 	{
 		private:
-			Circle<T> base;
 			T height = V_ZERO;
 
-		public:
-			Cylinder(T radius, T height) : base(radius), height(height)	{}
+			template <class C = T>
+			friend std::istream &operator>> (std::istream& in, Cylinder<C> &cylinder)
+				{cylinder.capture(); return in;}
+			template <class C = T>
+			friend std::ostream& operator<< (std::ostream &out, const Cylinder<C>& cylinder)
+				{cylinder.print(); return out;}
 
-			virtual void print()	const
+		public:
+			Cylinder() : Circle<T>(V_ZERO, V_ZERO), height(V_ZERO)
+				{(*this).counter++; this->capture();}
+			Cylinder(const int &id, const T &radius, const T &height) : Circle<T>(id, radius), height(height)
+				{this->counter++;}
+			Cylinder(const T &radius, const T &height) : Circle<T>(radius), height(height)
+				{(*this).counter++;}
+			Cylinder(const T &height) : Circle<T>(V_ZERO, V_ZERO), height(height)
+				{this->counter++;}
+
+			Cylinder(const Cylinder<T>& cylinder) : Circle<T>(cylinder.getId(), cylinder.getRadius()), height(cylinder.getHeight())
+				{(*this).counter++;};
+			Cylinder(Cylinder<T>&& cylinder) : Circle<T>(cylinder.getId(), cylinder.getRadius()), height(cylinder.getHeight())
+				{this->counter--; cylinder.reset();}
+
+			Cylinder<T>& operator= (const Cylinder<T>& cylinder)
+				{this->copy(cylinder); return *this;}
+			Cylinder<T>& operator= (const Cylinder<T>&& cylinder)
+				{this->counter--; (*this).copy(cylinder); cylinder.reset(); return *this;}
+
+			Cylinder<T>& operator()()
+				{
+					std::cout << "Show the current values ​​of a 'Cylinder' object." << std::endl;
+					this->see(); this->watch(); return *this;
+				}
+
+			Cylinder<T>& operator++()		{++this->height; return *this;}
+			Cylinder<T>& operator++(int)		{(*this).height++; return *this;}
+			Cylinder<T>& operator--()		{--(*this).height; return *this;}
+			Cylinder<T>& operator--(int)		{this->height--; return *this;}
+
+			operator int()			const	{return Circle<T>::getId();}
+			operator double()		const	{return Circle<T>::getPI();}
+
+			virtual void capture()
+				{
+					std::cout << "Capture of the height of the 'Cylinder' object." << std::endl;
+					std::cout << "Enter the desired height: ";
+					std::cin >> (*this).height;
+					Circle<T>::capture();
+				}
+
+			virtual Cylinder<T>& copy(const Cylinder<T>& cylinder)
+				{Circle<T>::setRadius(cylinder.getRadius()); (*this).height = cylinder.getHeight(); return *this;}
+
+			const T& getHeight()		const	{return (*this).height;}
+			T& getHeight()				{return this->height;}
+
+			virtual void explore()
+				{std::cout << *this << std::endl; std::cin >> *this; std::cout << *this << std::endl;}
+
+			const bool isitme(Cylinder<T>& cylinder)	const
+				{return (this == &cylinder);};
+
+			virtual Cylinder<T>& move(Cylinder<T>&& cylinder)
+				{(*this).counter--; this->copy(cylinder); cylinder.reset(); return *this;}
+
+			virtual void print()		const
 				{
 					std::cout << std::endl << "Information about the 'Cylinder." << std::endl;
 					std::cout << "+ Height:\t[" << this->height << "]." << std::endl;
-					std::cout << "+ Volume:\t[" << (*this).volume() << "]." << std::endl;
-					(&base)->print();
+					std::cout << "+ Volume:\t[" << (*this).volume() << "]." << std::endl << std::endl;
+					Circle<T>::print();
 				}
 
-			operator T()		const			{return this->base;}
+			virtual void reset()				{(*this).height = V_ZERO; this->getRadius() = V_ZERO;}
 
-			const T& getHeight()	const			{return (*this).height;}
-			T& getHeight()					{return this->height;}
+			virtual void see()		const
+				{
+					std::cout << "(Height = [" << (*this).height << "] : [" << this->height << "] = ";
+					std::cout << "[" << typeid((*this).height).name() << "] : [" << typeid(this->height).name() << "], ";
+					std::cout << "Volume = [" << (*this).volume() << "] : [" << this->volume() << "])." << std::endl;
+					Circle<T>::see();
+				}
 
 			void setHeight(const T& height = V_ZERO)	{this->height = height;}
 
-			const T volume()	const			{return base.area() * this->height;}
+			virtual void view()		const
+				{
+					std::cout << std::endl << "Information about the 'Cylinder' object." << std::endl;
+					std::cout << "+ Height:\t[" << this->height << "] : [" << (*this).height << "] = ";
+					std::cout << "[" << typeid(this->height).name() << "] : [" << typeid((*this).height).name() << "]." << std::endl;
+					std::cout << "+ Volume:\t[" << this->volume() << "] : [" << (*this).volume() << "]." << std::endl;
+					Circle<T>::view();
+				}
+
+			const T volume()		const		{return this->area() * this->height;}
+
+			virtual void watch()		const
+				{
+					std::cout << "(Height = [" << this->height << "], ";
+					std::cout << "Volume = [" << this->volume() << "])." << std::endl;
+					Circle<T>::watch();
+				}
 
 			virtual ~Cylinder() = default;
 	};
@@ -314,9 +398,9 @@ int main ()
 				std::cout << "Height: ";
 				std::cin >> height;
 
-				array_Cylinder[idx] = new Cylinder<double>(radius, height);
+				array_Cylinder[idx] = new Cylinder<double>(idx + V_ONE, radius, height);
 
-				std::cout << std::endl << "'Circle' created and assigned." << std::endl;
+				std::cout << std::endl << "'Cylinder' created and assigned." << std::endl;
 				std::cout << "+ PI Value:\t[" << static_cast<double>(*array_Cylinder[idx]) << "]." << std::endl;
 
 				(*(*(array_Cylinder + idx))).print();
