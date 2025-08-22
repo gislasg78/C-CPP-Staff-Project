@@ -81,6 +81,14 @@ class Circle
 					return converted_circle;
 				}
 
+			template <typename C = T>
+			const Circle<C> convert(const Circle<T> &circle)	const
+				{
+					Circle<C> converted_circle(V_ZERO);
+					converted_circle.setRadius(static_cast<C>(circle.getRadius()));
+					return converted_circle;
+				}
+
 			virtual Circle<T>& copy(const Circle<T>& circle)
 				{(*this).radius = circle.getRadius(); return *this;}
 
@@ -217,6 +225,15 @@ class Cylinder : public Circle<T>
 					return converted_cylinder;
 				}
 
+			template <typename C = T>
+			const Cylinder<C> convert(const Cylinder<T>& cylinder)	const
+				{
+					Cylinder<C> converted_cylinder(V_ZERO);
+					converted_cylinder.setRadius(static_cast<C>(cylinder.getRadius()));
+					converted_cylinder.setHeight(static_cast<C>(cylinder.getHeight()));
+					return converted_cylinder;
+				}
+
 			virtual Cylinder<T>& copy(const Cylinder<T>& cylinder)
 				{Circle<T>::setRadius(cylinder.getRadius()); (*this).height = cylinder.getHeight(); return *this;}
 			virtual Cylinder<T>& copy(const Circle<T>& circle) override
@@ -297,15 +314,10 @@ int main ()
 		for (int idx = V_ZERO; idx < quantity; idx++)
 			{
 				std::cout << std::endl << "'Cylinder' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
-				std::cout << "Radius = ";
-				std::cin >> radius;
-				std::cout << "Height = ";
-				std::cin >> height;
+				std::cout << "Radius = "; std::cin >> radius;
+				std::cout << "Height = "; std::cin >> height;
 
 				array_Circle[idx] = new Cylinder<double>(idx + V_ONE, radius, height);
-
-				(*array_Circle[idx]).getRadius() = radius;
-				(*array_Circle[idx]).setRadius(radius);
 
 				std::cout << std::endl << "Object 'Cylinder' created and assigned." << std::endl;
 				std::cout << "+ ID Value:\t\t[" << static_cast<int>(*array_Circle[idx]) << "]." << std::endl;
@@ -345,20 +357,6 @@ int main ()
 				std::cout << std::endl << "Recapturing the information of a 'Circle' class." << std::endl;
 				std::cout << std::endl << "'Circle' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
 				std::cin >> *(*(array_Circle + idx));
-				array_Circle[idx]->print();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the buffer.
-			}
-
-		/* The reassigned values ​​of each instantiated object of type 'Point2D' are displayed again. */
-		std::cout << std::endl << "Reprint of information from a 'Circle' class." << std::endl;
-		for (int idx = V_ZERO; idx < quantity; idx++)
-			{
-				std::cout << std::endl << "'Circle' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
 				std::cout << *array_Circle[idx];
 
 				/* Pause before continuing. */
