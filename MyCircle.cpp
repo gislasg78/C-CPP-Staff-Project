@@ -48,8 +48,6 @@ class Circle
 
 			Circle<T>& operator= (const Circle<T>& circle)
 				{this->copy(circle); return *this;}
-			Circle<T>& operator= (const Circle<T>&& circle)
-				{this->counter--; (*this).copy(circle); circle.reset(); return *this;}
 
 			Circle<T>& operator()()
 				{
@@ -73,6 +71,14 @@ class Circle
 					std::cout << "Capture of the radius of the 'Circle' object." << std::endl;
 					std::cout << "Enter the desired radius: ";
 					std::cin >> (*this).radius;
+				}
+
+			template <typename C = T>
+			const Circle<C> convert()	const
+				{
+					Circle<C> converted_circle(V_ZERO);
+					converted_circle.setRadius(static_cast<C>(this->getRadius()));
+					return converted_circle;
 				}
 
 			virtual Circle<T>& copy(const Circle<T>& circle)
@@ -179,8 +185,6 @@ class Cylinder : public Circle<T>
 
 			Cylinder<T>& operator= (const Cylinder<T>& cylinder)
 				{this->copy(cylinder); return *this;}
-			Cylinder<T>& operator= (const Cylinder<T>&& cylinder)
-				{this->counter--; (*this).copy(cylinder); cylinder.reset(); return *this;}
 
 			Cylinder<T>& operator()()
 				{
@@ -202,6 +206,15 @@ class Cylinder : public Circle<T>
 					std::cout << "Enter the desired height: ";
 					std::cin >> (*this).height;
 					Circle<T>::capture();
+				}
+
+			template <typename C = T>
+			const Cylinder<C> convert()	const
+				{
+					Cylinder<C> converted_cylinder(V_ZERO);
+					converted_cylinder.setRadius(static_cast<C>(this->getRadius()));
+					converted_cylinder.setHeight(static_cast<C>(this->getHeight()));
+					return converted_cylinder;
 				}
 
 			virtual Cylinder<T>& copy(const Cylinder<T>& cylinder)
