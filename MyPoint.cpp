@@ -18,21 +18,23 @@ class Point2D
 			const int id = V_ZERO;
 			T x = V_ZERO, y = V_ZERO;
 
-			template <typename U>
-			friend std::istream &operator>> (std::istream& in, Point2D<U> &Point2D)
+			friend std::istream &operator>> (std::istream& in, Point2D<T> &Point2D)
 				{Point2D.capture(); return in;}
-			template <typename U>
-			friend std::ostream& operator<< (std::ostream &out, const Point2D<U>& Point2D)
+			friend std::ostream& operator<< (std::ostream &out, const Point2D<T>& Point2D)
 				{Point2D.print(); return out;}
 
 		protected:
 			static int counter;
 
 		public:
-			Point2D() : id(V_ZERO), x(V_ZERO), y(V_ZERO)				{this->counter++; this->capture();}
-			Point2D(const int &id) : id(id), x(V_ZERO), y(V_ZERO)			{(*this).counter++;}
-			Point2D(const int &id, const T &x, const T &y) : id(id), x(x), y(y)	{this->counter++;}
-			Point2D(const T &x, const T &y) : id(V_ZERO), x(x), y(y)		{(*this).counter++;}
+			Point2D() : id(V_ZERO), x(V_ZERO), y(V_ZERO)
+				{this->counter++; this->capture();}
+			Point2D(const int &id) : id(id), x(V_ZERO), y(V_ZERO)
+				{(*this).counter++;}
+			Point2D(const int &id, const T &x, const T &y) : id(id), x(x), y(y)
+				{this->counter++;}
+			Point2D(const T &x, const T &y) : id(V_ZERO), x(x), y(y)
+				{(*this).counter++;}
 
 			Point2D(const Point2D<T>& Point2D) : id(Point2D.getId()), x(Point2D.getX()), y(Point2D.getY())
 				{this->counter++;}
@@ -62,6 +64,24 @@ class Point2D
 					std::cout << "Capture the coordinates of a '2D Point'." << std::endl;
 					std::cout << "+ X Coord = "; std::cin >> this->x;
 					std::cout << "+ Y Coord = "; std::cin >> this->y;
+				}
+
+			template <typename C = T>
+			const Point2D<C> convert()	const
+				{
+					Point2D<C> converted_Point2D(V_ZERO, V_ZERO);
+					converted_Point2D.setX(static_cast<C>(this->getX()));
+					converted_Point2D.setY(static_cast<C>(this->getY()));
+					return converted_Point2D;
+				}
+
+			template <typename C = T>
+			const Point2D<C> convert(const Point2D<T>& other_Point2D)	const
+				{
+					Point2D<C> converted_Point2D(V_ZERO, V_ZERO);
+					converted_Point2D.setX(static_cast<C>(other_Point2D.getX()));
+					converted_Point2D.setY(static_cast<C>(other_Point2D.getY()));
+					return converted_Point2D;
 				}
 
 			virtual Point2D<T>& copy(const Point2D<T> &Point2D)
@@ -163,10 +183,6 @@ int main()
 
 				array_Point2D[idx] = new Point2D<int>(idx + V_ONE, x, y);
 
-				(*array_Point2D[idx]).getX() = x;
-				(*array_Point2D[idx]).getY() = y;
-				(*array_Point2D[idx]).setXY(x, y);
-
 				std::cout << std::endl << "Object created and assigned." << std::endl;
 				std::cout << "+ ID Value:\t[" << static_cast<int>(*array_Point2D[idx]) << "]." << std::endl;
 				std::cout << "+ Values:\tId: [" << array_Point2D[idx]->getId() << "].\t(x = [" << (*array_Point2D[idx]).getX() << "], y = [" << (*array_Point2D[idx]).getY() << "])." << std::endl;
@@ -185,19 +201,7 @@ int main()
 		for (int idx = V_ZERO; idx < quantity; idx++)
 			{
 				std::cout << std::endl << "'Point2D' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
-
-				(*array_Point2D[idx]).reset();
-				(*array_Point2D[idx]).print();
-
 				std::cin >> *(*(array_Point2D + idx));
-				array_Point2D[idx]->print();
-			}
-
-		/* The reassigned values ​​of each instantiated object of type 'Point2D' are displayed again. */
-		std::cout << std::endl;
-		for (int idx = V_ZERO; idx < quantity; idx++)
-			{
-				std::cout << std::endl << "'Point2D' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
 				std::cout << *array_Point2D[idx];
 			}
 
@@ -210,57 +214,52 @@ int main()
 				array_Point2D[idx]->print();
 
 				/* Different nomenclatures with pointer notation with 'Point2D' objects and array notation. */
-				std::cout << "Increment by one unit the coordinates of a '2D Point' object." << std::endl;
+				std::cout << std::endl << "Increment by one unit the coordinates of a '2D Point' object." << std::endl;
 				(*array_Point2D[idx])++;
-				(*array_Point2D[idx]).print();
+				(*array_Point2D[idx]).watch();
 
-				std::cout << "Exchange values ​​in the units of the coordinates of a '2D Point' object." << std::endl;
+				std::cout << std::endl << "Exchange values ​​in the units of the coordinates of a '2D Point' object." << std::endl;
 				(*array_Point2D[idx]).swap();
-				(*array_Point2D[idx]).print();
+				(*array_Point2D[idx]).watch();
 
-				std::cout << "Decrement by one unit the coordinates of a '2D Point' object." << std::endl;
+				std::cout << std::endl << "Decrement by one unit the coordinates of a '2D Point' object." << std::endl;
 				(*array_Point2D[idx])--;
-				(*array_Point2D[idx]).print();
+				(*array_Point2D[idx]).watch();
 
-				std::cout << "Exchange values ​​in the units of the coordinates of a '2D Point' object." << std::endl;
+				std::cout << std::endl << "Exchange values ​​in the units of the coordinates of a '2D Point' object." << std::endl;
 				(*array_Point2D[idx]).swap();
-				(*array_Point2D[idx]).print();
+				(*array_Point2D[idx]).watch();
 
-				std::cout << "Increment by one unit the coordinates of a '2D Point' object." << std::endl;
+				std::cout << std::endl << "Increment by one unit the coordinates of a '2D Point' object." << std::endl;
 				(*(*(array_Point2D + idx)))++;
-				(*(*(array_Point2D + idx))).print();
+				(*(*(array_Point2D + idx))).watch();
 
-				std::cout << "Exchange values ​​in the units of the coordinates of a '2D Point' object." << std::endl;
+				std::cout << std::endl << "Exchange values ​​in the units of the coordinates of a '2D Point' object." << std::endl;
 				(*(*(array_Point2D + idx))).swap();
-				(*(*(array_Point2D + idx))).print();
+				(*(*(array_Point2D + idx))).watch();
 
-				std::cout << "Decrement by one unit the coordinates of a '2D Point' object." << std::endl;
+				std::cout << std::endl << "Decrement by one unit the coordinates of a '2D Point' object." << std::endl;
 				(*(*(array_Point2D + idx)))--;
-				(*(*(array_Point2D + idx))).print();
+				(*(*(array_Point2D + idx))).watch();
 
-				std::cout << "Exchange values ​​in the units of the coordinates of a '2D Point' object." << std::endl;
+				std::cout << std::endl << "Exchange values ​​in the units of the coordinates of a '2D Point' object." << std::endl;
 				(*(*(array_Point2D + idx))).swap();
-				(*(*(array_Point2D + idx))).print();
+				(*(*(array_Point2D + idx))).watch();
 
 				/* Various ways to call methods on an array of object pointers (pointer of pointers). */
-				std::cout << "Initializing the values ​​in the units of the coordinates of a 'Point2D' object." << std::endl;
+				std::cout << std::endl << "Initializing the values ​​in the units of the coordinates of a 'Point2D' object." << std::endl;
 				array_Point2D[idx]->reset();
-				array_Point2D[idx]->print();
-
-				std::cout << "Initializing the values ​​in the units of the coordinates of a 'Point2D' object." << std::endl;
 				(*array_Point2D[idx]).reset();
-				(*array_Point2D[idx]).print();
-
-				std::cout << "Initializing the values ​​in the units of the coordinates of a 'Point2D' object." << std::endl;
 				(*(array_Point2D + idx))->reset();
-				(*(array_Point2D + idx))->print();
-
-				std::cout << "Initializing the values ​​in the units of the coordinates of a 'Point2D' object." << std::endl;
 				(*(*(array_Point2D + idx))).reset();
-				(*(*(array_Point2D + idx))).print();
+
+				array_Point2D[idx]->see();
+				(*array_Point2D[idx]).see();
+				(*(array_Point2D + idx))->see();
+				(*(*(array_Point2D + idx))).see();
 
 				/* Calling in various ways to an overloaded operator. */
-				std::cout << "Succinct display of the coordinate values ​​of a 'Point2D' object." << std::endl;
+				std::cout << std::endl << "Succinct display of the coordinate values ​​of a 'Point2D' object." << std::endl;
 				(*array_Point2D[idx])();
 				(*(*(array_Point2D + idx)))();
 			}
