@@ -48,6 +48,8 @@ class Circle
 
 			Circle<T>& operator= (const Circle<T>& circle)
 				{this->copy(circle); return *this;}
+			Circle<T>& operator= (Circle<T>&& circle)
+				{(*this).counter--; this->copy(circle); circle.reset(); return *this;}
 
 			Circle<T>& operator()()
 				{
@@ -193,6 +195,8 @@ class Cylinder : public Circle<T>
 
 			Cylinder<T>& operator= (const Cylinder<T>& cylinder)
 				{this->copy(cylinder); return *this;}
+			Cylinder<T>& operator= (Cylinder<T>&& cylinder)
+				{(*this).counter--; this->copy(cylinder); cylinder.reset(); return *this;}
 
 			Cylinder<T>& operator()()
 				{
