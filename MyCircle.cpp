@@ -36,9 +36,9 @@ class Circle
 		public:
 			Circle() : id(V_ZERO), radius(V_ZERO)
 				{(*this).counter++; this->capture();}
-			Circle(const int& id, const T& radius) : id(id), radius(radius)
-				{this->counter++;}
 			Circle(const T &radius) : id(V_ZERO), radius(radius)
+				{this->counter++;}
+			Circle(const int& id, const T& radius) : id(id), radius(radius)
 				{this->counter++;}
 
 			Circle(const Circle<T>& circle) : id(circle.getId()), radius(circle.getRadius())
@@ -181,11 +181,11 @@ class Cylinder : public Circle<T>
 		public:
 			Cylinder() : Circle<T>(V_ZERO, V_ZERO), height(V_ZERO)
 				{(*this).counter++; this->capture();}
-			Cylinder(const int &id, const T &radius, const T &height) : Circle<T>(id, radius), height(height)
+			Cylinder(const T &height) : Circle<T>(V_ZERO, V_ZERO), height(height)
 				{this->counter++;}
 			Cylinder(const T &radius, const T &height) : Circle<T>(radius), height(height)
 				{(*this).counter++;}
-			Cylinder(const T &height) : Circle<T>(V_ZERO, V_ZERO), height(height)
+			Cylinder(const int &id, const T &radius, const T &height) : Circle<T>(id, radius), height(height)
 				{this->counter++;}
 
 			Cylinder(const Cylinder<T>& cylinder) : Circle<T>(cylinder.getId(), cylinder.getRadius()), height(cylinder.getHeight())
