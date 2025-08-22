@@ -25,11 +25,9 @@ class Circle
 			const double PI = V_PI;
 			T radius = V_ZERO;
 
-			template <class C = T>
-			friend std::istream &operator>> (std::istream& in, Circle<C> &circle)
+			friend std::istream &operator>> (std::istream& in, Circle<T> &circle)
 				{circle.capture(); return in;}
-			template <class C = T>
-			friend std::ostream& operator<< (std::ostream &out, const Circle<C>& circle)
+			friend std::ostream& operator<< (std::ostream &out, const Circle<T>& circle)
 				{circle.print(); return out;}
 
 		protected:
@@ -159,11 +157,9 @@ class Cylinder : public Circle<T>
 			Circle<T> base;
 			T height = V_ZERO;
 
-			template <class C = T>
-			friend std::istream &operator>> (std::istream& in, Cylinder<C> &cylinder)
+			friend std::istream &operator>> (std::istream& in, Cylinder<T> &cylinder)
 				{cylinder.capture(); return in;}
-			template <class C = T>
-			friend std::ostream& operator<< (std::ostream &out, const Cylinder<C>& cylinder)
+			friend std::ostream& operator<< (std::ostream &out, const Cylinder<T>& cylinder)
 				{cylinder.print(); return out;}
 
 		public:
