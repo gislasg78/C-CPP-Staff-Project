@@ -1,6 +1,7 @@
 #include <iostream>
 #include <type_traits> // Required for std::is_same
 
+/* Symbolic working variables. */
 #define	MY_CHAR		'a'
 #define	MY_DOUBLE	3.1415926
 #define	MY_FLOAT	1.60f
@@ -12,33 +13,36 @@
 
 //Template function that displays the type of variable sent.
 template <typename T>
-void checkVariableType(T var)
+T process_number(T var)
 	{
-		std::cout << "Type of variable detected: [";
+		std::cout << std::boolalpha << std::endl;
+		std::cout << "Type of variable detected:" << std::endl;
 
 		if (std::is_same<T, char>::value)
 			{
-				std::cout << "char";
+				std::cout << "[char]\t:\t{" << std::is_same<T, char>::value << "}." << std::endl;
 			}
 		else if (std::is_same<T, double>::value)
 			{
-				std::cout << "double";
+				std::cout << "[double]:\t{" << std::is_same<T, double>::value << "}." << std::endl;
 			}
 		else if (std::is_same<T, float>::value)
 			{
-				std::cout << "float";
+				std::cout << "[float]\t:\t{" << std::is_same<T, float>::value << "}." << std::endl;
+				std::cout << "is_floating_point<float>: [" << std::is_floating_point<T>::value << "]." << std::endl;
 			}
 		else if (std::is_same<T, int>::value)
 			{
-				std::cout << "int";
+				std::cout << "[int]\t:\t{" << std::is_same<T, int>::value << "}." << std::endl;
+				std::cout << "is_integral<int>: [" << std::is_integral<T>::value << "]." << std::endl;
 			}
 		else if (std::is_same<T, long>::value)
 			{
-				std::cout << "long";
+				std::cout << "[long]\t:\t{" << std::is_same<T, long>::value << "}." << std::endl;
 			}
 		else if (std::is_same<T, short>::value)
 			{
-				std::cout << "short";
+				std::cout << "[short]\t:\t{" << std::is_same<T, short>::value << "}." << std::endl;
 			}
 		else
 			{
@@ -46,8 +50,9 @@ void checkVariableType(T var)
 				std::cout << "(char, double, float, int, long or short)." << std::endl;
 			}
 
-		std::cout << "]." << std::endl;
-		std::cout << "Value: [" << var << "]" << std::endl;
+		std::cout << "Value:\t\t[" << var << "]." << std::endl;
+
+		return var;
 	}
 
 
@@ -65,12 +70,12 @@ int main()
 		std::cout << "Variable type detector." << std::endl;
 
 		/* Value corroboration function. */
-		checkVariableType(my_char);
-		checkVariableType(my_double);
-		checkVariableType(my_float);
-		checkVariableType(my_int);
-		checkVariableType(my_long);
-		checkVariableType(my_short);
+		process_number(my_char);
+		process_number(my_double);
+		process_number(my_float);
+		process_number(my_int);
+		process_number(my_long);
+		process_number(my_short);
 
 		return V_ZERO;
 	}
