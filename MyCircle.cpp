@@ -46,9 +46,9 @@ class Circle
 			Circle(Circle<T>&& circle) : id(circle.getId()), radius(circle.getRadius())
 				{this->counter--; circle.reset();}
 
-			Circle<T>& operator= (const Circle<T>& circle)
+			Circle<T>& operator=(const Circle<T>& circle)
 				{this->copy(circle); return *this;}
-			Circle<T>& operator= (Circle<T>&& circle)
+			Circle<T>& operator=(Circle<T>&& circle)
 				{(*this).counter--; this->copy(circle); circle.reset(); return *this;}
 
 			Circle<T>& operator()()
@@ -97,11 +97,20 @@ class Circle
 			virtual void explore()
 				{std::cout << *this << std::endl; std::cin >> *this; std::cout << *this << std::endl;}
 
+			const int getDiameter()		const	{return this->radius * V_TWO;}
 			const int &getId()		const	{return this->id;}
 			const double& getPI()		const	{return this->PI;}
 			const T& getRadius()		const	{return this->radius;}
 
 			T& getRadius()				{return (*this).radius;}
+
+			template <typename U = T>
+			typename std::enable_if<std::is_floating_point<T>::value, U>::type
+			getValue()				{return this->PI;}
+
+			template <typename U = T>
+			typename std::enable_if<std::is_integral<T>::value, U>::type
+			getValue()				{return this->id;}
 
 			const bool isitme(Circle<T>& circle)	const
 				{return (this == &circle);};
@@ -123,6 +132,7 @@ class Circle
 					std::cout << "[" << typeid((*this).id).name() << "] : [" << typeid(this->id).name() << "], ";
 					std::cout << "PI = [" << (*this).PI << "] : [" << this->PI << "] = ";
 					std::cout << "[" << typeid((*this).PI).name() << "] : [" << typeid(this->PI).name() << "], ";
+					std::cout << "Diameter = [" << (*this).radius * V_TWO << "] : [" << this->radius * V_TWO << "], ";
 					std::cout << "Radius = [" << (*this).radius << "] : [" << this->radius << "] = ";
 					std::cout << "[" << typeid((*this).radius).name() << "] : [" << typeid(this->radius).name() << "], ";
 					std::cout << "Counter = [" << (*this).counter << "] : [" << this->counter << "] = ";
@@ -131,7 +141,10 @@ class Circle
 					std::cout << "Perimeter = [" << this->perimeter() << "] : [" << (*this).perimeter() << "])." << std::endl;
 				}
 
+			void setDiameter(const T& diameter = V_ZERO)		{this->radius = diameter / V_TWO;}
 			void setRadius(const T &radius = V_ZERO)		{this->radius = radius;}
+
+			virtual void swap()		const			{return;}
 
 			virtual void view()		const
 				{
@@ -142,6 +155,7 @@ class Circle
 					std::cout << "[" << typeid(this->counter).name() << "] : [" << typeid((*this).counter).name() << "]." << std::endl;
 					std::cout << "+ PI Value:\t[" << this->PI << "] : [" << (*this).PI << "] = ";
 					std::cout << "[" << typeid(this->PI).name() << "] : [" << typeid((*this).PI).name() << "]." << std::endl;
+					std::cout << "+ Diameter:\t[" << (*this).radius * V_TWO << "] : [" << this->radius * V_TWO << "]." << std::endl;
 					std::cout << "+ Radius:\t[" << this->radius << "] : [" << (*this).radius << "] = ";
 					std::cout << "[" << typeid(this->radius).name() << "] : [" << typeid((*this).radius).name() << "]." << std::endl;
 					std::cout << "+ Area:\t\t[" << this->area() << "] : [" << (*this).area() << "]." << std::endl;
@@ -152,6 +166,7 @@ class Circle
 				{
 					std::cout << std::endl << "(ID = [" << this->id << "], ";
 					std::cout << "PI = [" << this->PI << "], ";
+					std::cout << "Diameter = [" << (*this).radius * V_TWO << "], ";
 					std::cout << "Radius = [" << this->radius << "], ";
 					std::cout << "Counter = [" << this->counter << "])." << std::endl;
 					std::cout << "(Area = [" << this->area() << "], ";
@@ -246,6 +261,14 @@ class Cylinder : public Circle<T>
 			const T& getHeight()		const	{return (*this).height;}
 			T& getHeight()				{return this->height;}
 
+			template <typename U = T>
+			typename std::enable_if<std::is_floating_point<T>::value, U>::type
+			getValue()				{return Circle<T>::getPI();}
+
+			template <typename U = T>
+			typename std::enable_if<std::is_integral<T>::value, U>::type
+			getValue()				{return this->getHeight();}
+
 			virtual void explore() override
 				{std::cout << *this << std::endl; std::cin >> *this; std::cout << *this << std::endl;}
 
@@ -276,6 +299,8 @@ class Cylinder : public Circle<T>
 				}
 
 			void setHeight(const T& height = V_ZERO)	{this->height = height;}
+
+			virtual void swap()				{T temp = this->height; this->getHeight() = this->getRadius(); this->setRadius(temp);}
 
 			virtual void view()		const override
 				{
@@ -327,9 +352,16 @@ int main ()
 				std::cout << "+ ID Value:\t\t[" << static_cast<int>(*array_Circle[idx]) << "]." << std::endl;
 				std::cout << "+ PI Value:\t\t[" << static_cast<double>(*array_Circle[idx]) << "]." << std::endl;
 				std::cout << "+ Radius:\t\t[" << (*array_Circle[idx]).getRadius() << "]." << std::endl;
+				std::cout << "+ Diameter:\t\t[" << (*array_Circle[idx]).getDiameter() << "]." << std::endl;
 
 				if (Cylinder<double>* my_cylinder = dynamic_cast<Cylinder<double>*>(array_Circle[idx]))
-					std::cout << "+ Height:\t\t[" << (*my_cylinder).getHeight() << "] = [" << my_cylinder->getHeight() << "]." << std::endl;
+					{
+						std::cout << "+ Height:\t\t[" << (*my_cylinder).getHeight() << "] = [" << my_cylinder->getHeight() << "]." << std::endl;
+						std::cout << "+ Cylinder:\t\t[" << my_cylinder->getValue() << "]." << std::endl;
+					}
+
+				if (Circle<double>* my_circle = dynamic_cast<Circle<double>*>(*(array_Circle + idx)))
+					std::cout << "+ Circle:\t\t[" << my_circle->getValue() << "]." << std::endl;
 
 				std::cout << "+ Is it me?:\t\t[" << array_Circle[idx]->isitme(*array_Circle[idx]) << "]." << std::endl;
 
@@ -388,6 +420,30 @@ int main ()
 				/* Increase the radius of the 'Circle' object. */
 				std::cout << std::endl << "Increase the radius of the 'Circle' object." << std::endl;
 				(*array_Circle[idx])++;
+				(*array_Circle[idx]).print();
+
+				/* Pause before continuing. */
+				std::cout << std::endl << "Press the ENTER key to continue...";
+				std::cin.get();		// Wait for the user to press Enter.
+				std::cin.clear();	// Clear the error state.
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the buffer.
+
+
+				/* Initial exchange of values. */
+				std::cout << std::endl << "Initial exchange of values." << std::endl;
+				array_Circle[idx]->swap();
+				array_Circle[idx]->print();
+
+				/* Pause before continuing. */
+				std::cout << std::endl << "Press the ENTER key to continue...";
+				std::cin.get();		// Wait for the user to press Enter.
+				std::cin.clear();	// Clear the error state.
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the buffer.
+
+
+				/* Final exchange of values. */
+				std::cout << std::endl << "Final exchange of values." << std::endl;
+				(*array_Circle[idx]).swap();
 				(*array_Circle[idx]).print();
 
 				/* Pause before continuing. */
