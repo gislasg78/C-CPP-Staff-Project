@@ -8,6 +8,7 @@
 
 #define	NULL_CHARACTER	'\0'
 
+/* Numerical working constants. */
 #define	V_FIVE		5
 #define	V_SEVEN		7
 #define	V_THREE		3
@@ -56,18 +57,67 @@ process (T var)
 		return var;
 	}
 
-// 6. Another syntax for calling template conditionals.
+//7. Template function that displays the type of variable sent.
+template <typename T>
+T process_data(T var)
+	{
+		std::cout << std::boolalpha << std::endl;
+		std::cout << "Data type validation." << std::endl;
+		std::cout << "Type of variable detected: [" << typeid(var).name() << "]" << std::endl;
+		std::cout << "is_integral<int>: [" << std::is_integral<T>::value << "]." << std::endl;
+		std::cout << "is_floating_point<float>: [" << std::is_floating_point<T>::value << "]." << std::endl;
+
+		if (std::is_same<T, char>::value)
+			{
+				std::cout << "[char]\t:\t{" << std::is_same<T, char>::value << "}." << std::endl;
+			}
+		else if (std::is_same<T, double>::value)
+			{
+				std::cout << "[double]:\t{" << std::is_same<T, double>::value << "}." << std::endl;
+			}
+		else if (std::is_same<T, float>::value)
+			{
+				std::cout << "[float]\t:\t{" << std::is_same<T, float>::value << "}." << std::endl;
+			}
+		else if (std::is_same<T, int>::value)
+			{
+				std::cout << "[int]\t:\t{" << std::is_same<T, int>::value << "}." << std::endl;
+			}
+		else if (std::is_same<T, long>::value)
+			{
+				std::cout << "[long]\t:\t{" << std::is_same<T, long>::value << "}." << std::endl;
+			}
+		else if (std::is_same<T, short>::value)
+			{
+				std::cout << "[short]\t:\t{" << std::is_same<T, short>::value << "}." << std::endl;
+			}
+		else
+			{
+				std::cout << std::endl << "The variable type is not one of those specified:" << std::endl;
+				std::cout << "(char, double, float, int, long or short)." << std::endl;
+			}
+
+		std::cout << "Value:\t\t[" << var << "]." << std::endl;
+
+		return var;
+	}
+
+// 8. Another syntax for calling template conditionals.
 template <typename T, typename std::enable_if<std::is_same<T, int>::value>::type* = nullptr>
 T process_number (T var)
 	{
+		std::cout << std::endl << "Results." << std::endl;
+		std::cout << "Type of variable detected: [" << typeid(var).name() << "]" << std::endl;
 		std::cout << "* Value integer\t\t:\t[" << var << "]." << std::endl;
 		return var;
 	}
 
-// 7. Another syntax to overload the same function but with template-based conditionals.
+// 9. Another syntax to overload the same function but with template-based conditionals.
 template <typename T, typename std::enable_if<std::is_same<T, double>::value>::type* = nullptr>
 T process_number(T var)
 	{
+		std::cout << std::endl << "Results." << std::endl;
+		std::cout << "Type of variable detected: [" << typeid(var).name() << "]" << std::endl;
 		std::cout << "* Value double\t\t:\t[" << var << "]." << std::endl;
 		return var;
 	}
@@ -107,7 +157,6 @@ int main()
 		std::cout << "+ Is prime?\t\t:\t{" << is_prime(int_value) << "}." << std::endl;
 
 		/* Calls to template functions of exclusively 'integer' or 'double precision' types. */
-		std::cout << std::endl << "Results." << std::endl;
 		process_number(int_value);
 		process_number(dbl_value);
 
@@ -118,6 +167,14 @@ int main()
 		process(int_value);
 		process(lng_value);
 		process(shrt_value);
+
+		/* Data type validation. */
+		process_data(chr_value);
+		process_data(dbl_value);
+		process_data(flt_value);
+		process_data(int_value);
+		process_data(lng_value);
+		process_data(shrt_value);
 
 		return V_ZERO;
 	}
