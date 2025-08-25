@@ -43,9 +43,9 @@ class Point2D
 			Point2D(Point2D<T>&& Point2D) : id(Point2D.getId()), x(Point2D.getX()), y(Point2D.getY())
 				{(*this).counter--; Point2D.reset();}
 
-			Point2D<T>& operator= (const Point2D<T> &Point2D)
+			Point2D<T>& operator=(const Point2D<T> &Point2D)
 				{this->copy(Point2D); return *this;}
-			Point2D<T>& operator= (Point2D<T> &&Point2D)
+			Point2D<T>& operator=(Point2D<T> &&Point2D)
 				{this->counter--; (*this).copy(Point2D); Point2D.reset(); return *this;}
 
 			Point2D<T>& operator()()
@@ -93,6 +93,15 @@ class Point2D
 				{std::cout << *this << std::endl; std::cin >> *this; std::cout << *this << std::endl;}
 
 			const int& getId()	const	{return this->id;}
+
+			template <typename U = T>
+			typename std::enable_if<std::is_integral<T>::value, U>::type
+			getValue()			{return this->getId();}
+
+			template <typename U = T>
+			typename std::enable_if<std::is_floating_point<T>::value, U>::type
+			getValue()			{return V_ZERO;}
+
 			const T& getX()		const	{return this->x;}
 			const T& getY()		const	{return this->y;}
 
@@ -244,6 +253,14 @@ class Point3D : public Point2D<T>
 			virtual void explore()
 				{std::cout << *this << std::endl; std::cin >> *this; std::cout << *this << std::endl;}
 
+			template <typename U = T>
+			typename std::enable_if<std::is_integral<T>::value, U>::type
+			getValue()			{return this->getZ();}
+
+			template <typename U = T>
+			typename std::enable_if<std::is_floating_point<T>::value, U>::type
+			getValue()			{return V_ZERO;}
+
 			const T& getZ()		const	{return this->z;}
 			T& getZ()			{return (*this).z;}
 
@@ -261,7 +278,7 @@ class Point3D : public Point2D<T>
 					(*this).see(); (*this).view(); (*this).watch();
 				}
 
-			virtual void reset()		{this->z = V_ZERO;}
+			virtual void reset()		{Point2D<T>::reset(); this->z = V_ZERO;}
 
 			void setZ(const T &z = V_ZERO)	{(*this).z = z;}
 
@@ -319,7 +336,18 @@ int main()
 				std::cout << "+ Values:\tId: [" << array_Point2D[idx]->getId() << "].\t(x = [" << (*array_Point2D[idx]).getX() << "], y = [" << (*array_Point2D[idx]).getY() << "])." << std::endl;
 
 				if (Point3D<int> *my_Point3D = dynamic_cast<Point3D<int>*>(array_Point2D[idx]))
-					std::cout << "\t\t\t\t(z = [" << (*my_Point3D).getZ() << "])." << std::endl;
+					{
+						std::cout << "\t\t\t\t(z = [" << (*my_Point3D).getZ() << "])." << std::endl;
+						std::cout << "+ Point3D:\t[" << my_Point3D->getValue() << "]." << std::endl;
+					}
+
+				std::cout << "+ Point2D:\t[" << array_Point2D[idx]->getValue() << "]." << std::endl;
+
+				if (Point2D<int>* my_Point2D = dynamic_cast<Point2D<int>*>(*(array_Point2D + idx)))
+					{
+						std::cout << "+ Point2D:\t[" << my_Point2D->getValue() << "]." << std::endl;
+					}
+
 
 				std::cout << "+ Is it me?:\t[" << array_Point2D[idx]->isitme(*array_Point2D[idx]) << "]." << std::endl;
 
