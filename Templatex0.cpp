@@ -6,6 +6,8 @@
 #define	V_AUREUM	1.6180339f
 #define	V_PI		3.1415926
 
+#define	NULL_CHARACTER	'\0'
+
 #define	V_FIVE		5
 #define	V_SEVEN		7
 #define	V_THREE		3
@@ -74,6 +76,7 @@ T process_number(T var)
 int main()
 	{
 		/* Preliminary working variables. */
+		char chr_value = NULL_CHARACTER;
 		double dbl_value = V_PI;
 		float flt_value = V_AUREUM;
 		int int_value = V_ZERO;	// Code does not compile if type of 'int_value' var is not integral.
@@ -82,6 +85,8 @@ int main()
 
 		/* Main headings start. */
 		std::cout << "Conditional templates." << std::endl;
+		std::cout << "Enter a char    value : ";
+		std::cin >> chr_value;
 		std::cout << "Enter a double  number: ";
 		std::cin >> dbl_value;
 		std::cout << "Enter a float   number: ";
@@ -107,6 +112,7 @@ int main()
 		process_number(dbl_value);
 
 		/* Calls to template functions of exclusively 'integer', 'single precision' or 'double precision' types. */
+		process(chr_value);
 		process(dbl_value);
 		process(flt_value);
 		process(int_value);
