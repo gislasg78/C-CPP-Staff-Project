@@ -64,8 +64,8 @@ class Point2D
 			virtual void capture()
 				{
 					std::cout << "Capture the coordinates of a '2D Point'." << std::endl;
-					std::cout << "+ X Coord = "; std::cin >> this->x;
-					std::cout << "+ Y Coord = "; std::cin >> this->y;
+					std::cout << "+ X Coord = "; (*this).x = (*this).enter_a_data(&this->x);
+					std::cout << "+ Y Coord = "; this->y = this->enter_a_data(&(*this).y);
 				}
 
 			template <typename C = T>
@@ -88,6 +88,25 @@ class Point2D
 
 			virtual Point2D<T>& copy(const Point2D<T> &Point2D)
 				{this->x = Point2D.getX(); this->y = Point2D.getY(); return *this;}
+
+			static const T &enter_a_data(T *const ptr_data)
+				{
+					if (ptr_data)
+						if (std::cin >> *ptr_data)
+							std::cout << "Value entered: [" << *ptr_data << "]. OK!" << std::endl;
+						else
+							{
+								*ptr_data = V_ZERO;
+								std::cerr << "Error! The input does not have a valid value." << std::endl;
+							}
+					else
+						std::cerr << "A valid memory address was not provided." << std::endl;
+
+					std::cin.clear();
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+
+					return *ptr_data;
+				};
 
 			virtual void explore()
 				{std::cout << *this << std::endl; std::cin >> *this; std::cout << *this << std::endl;}
@@ -200,9 +219,9 @@ class Point3D : public Point2D<T>
 			Point3D(Point3D<T>&& Point3D) : Point2D<T>(Point3D.getId(), Point3D.getX(), Point3D.getY()), z(Point3D.getZ())
 				{(*this).counter--; Point3D.reset();}
 
-			Point3D<T>& operator= (const Point3D<T> &Point3D)
+			Point3D<T>& operator=(const Point3D<T> &Point3D)
 				{this->copy(Point3D); return *this;}
-			Point3D<T>& operator= (Point3D<T> &&Point3D)
+			Point3D<T>& operator=(Point3D<T> &&Point3D)
 				{this->counter--; (*this).copy(Point3D); Point3D.reset(); return *this;}
 
 			Point3D<T>& operator()()
@@ -221,7 +240,7 @@ class Point3D : public Point2D<T>
 			virtual void capture()
 				{
 					std::cout << "Capture the coordinates of a '3D Point'." << std::endl;
-					std::cout << "+ Z Coord = "; std::cin >> this->z;
+					std::cout << "+ Z Coord = "; this->z = this->enter_a_data(&this->z);
 					Point2D<T>::capture();
 				}
 
@@ -306,6 +325,17 @@ class Point3D : public Point2D<T>
 			virtual ~Point3D() = default;
 	};
 
+//Pause function.
+void pause()
+	{
+		/* Pause before continuing. */
+		std::cout << std::endl << "Press the ENTER key to continue...";
+		std::cin.get();		// Wait for the user to press Enter.
+		std::cin.clear();	// Clear the error state.
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);  // Clear the buffer.
+	}
+
+
 //Main function.
 int main()
 	{
@@ -316,7 +346,7 @@ int main()
 		/* Initial header messages. */
 		std::cout << "Creating 'Point2D' objects on an array." << std::endl;
 		std::cout << "How many 'Point2D' do you want to create? : ";
-		std::cin >> quantity;
+		quantity = Point2D<int>::enter_a_data(&quantity);
 
 		/* The dynamic array of pointers to objects of type 'Point2D' is created. */
 		Point2D<int> **array_Point2D = new Point2D<int>* [quantity];
@@ -325,9 +355,9 @@ int main()
 		for (int idx = V_ZERO; idx < quantity; idx++)
 			{
 				std::cout << std::endl << "'Point2D' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
-				std::cout << "x = "; std::cin >> x;
-				std::cout << "y = "; std::cin >> y;
-				std::cout << "z = "; std::cin >> z;
+				std::cout << "x = "; Point2D<int>::enter_a_data(&x);
+				std::cout << "y = "; Point2D<int>::enter_a_data(&y);
+				std::cout << "z = "; Point2D<int>::enter_a_data(&z);
 
 				array_Point2D[idx] = new Point3D<int>(idx + V_ONE, x, y, z);
 
@@ -351,11 +381,7 @@ int main()
 
 				std::cout << "+ Is it me?:\t[" << array_Point2D[idx]->isitme(*array_Point2D[idx]) << "]." << std::endl;
 
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the bufer.
+				pause();
 			}
 
 		/* An internal method of the 'Point2D' object is used to display the assigned values. */
@@ -363,12 +389,7 @@ int main()
 			{
 				std::cout << std::endl << "'Point2D' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
 				array_Point2D[idx]->print();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the bufer.
+				pause();
 			}
 
 		/* New values ​​are reassigned and captured to created objects of type 'Point2D' */
@@ -378,12 +399,7 @@ int main()
 				std::cout << std::endl << "'Point2D' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
 				std::cin >> *(*(array_Point2D + idx));
 				std::cout << *array_Point2D[idx];
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the bufer.
+				pause();
 			}
 
 		/* Using the overloaded increment and decrement operators in the 'Point2D' class. */
@@ -393,102 +409,48 @@ int main()
 				/* Display header. */
 				std::cout << std::endl << "'Point2D' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
 				array_Point2D[idx]->print();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the bufer.
-
+				pause();
 
 				/* Different nomenclatures with pointer notation with 'Point2D' objects and array notation. */
 				std::cout << std::endl << "Increment by one unit the coordinates of a '2D Point' object." << std::endl;
 				(*array_Point2D[idx])++;
 				(*array_Point2D[idx]).watch();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the bufer.
-
+				pause();
 
 				std::cout << std::endl << "Exchange values ​​in the units of the coordinates of a '2D Point' object." << std::endl;
 				(*array_Point2D[idx]).swap();
 				(*array_Point2D[idx]).watch();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the bufer.
-
+				pause();
 
 				std::cout << std::endl << "Decrement by one unit the coordinates of a '2D Point' object." << std::endl;
 				(*array_Point2D[idx])--;
 				(*array_Point2D[idx]).watch();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the bufer.
-
+				pause();
 
 				std::cout << std::endl << "Exchange values ​​in the units of the coordinates of a '2D Point' object." << std::endl;
 				(*array_Point2D[idx]).swap();
 				(*array_Point2D[idx]).watch();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the bufer.
-
+				pause();
 
 				std::cout << std::endl << "Increment by one unit the coordinates of a '2D Point' object." << std::endl;
 				(*(*(array_Point2D + idx)))++;
 				(*(*(array_Point2D + idx))).watch();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the bufer.
-
+				pause();
 
 				std::cout << std::endl << "Exchange values ​​in the units of the coordinates of a '2D Point' object." << std::endl;
 				(*(*(array_Point2D + idx))).swap();
 				(*(*(array_Point2D + idx))).watch();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the bufer.
-
+				pause();
 
 				std::cout << std::endl << "Decrement by one unit the coordinates of a '2D Point' object." << std::endl;
 				(*(*(array_Point2D + idx)))--;
 				(*(*(array_Point2D + idx))).watch();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the bufer.
-
+				pause();
 
 				std::cout << std::endl << "Exchange values ​​in the units of the coordinates of a '2D Point' object." << std::endl;
 				(*(*(array_Point2D + idx))).swap();
 				(*(*(array_Point2D + idx))).watch();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the bufer.
-
+				pause();
 
 				/* Various ways to call methods on an array of object pointers (pointer of pointers). */
 				std::cout << std::endl << "Initializing the values ​​in the units of the coordinates of a 'Point2D' object." << std::endl;
@@ -501,24 +463,13 @@ int main()
 				(*array_Point2D[idx]).see();
 				(*(array_Point2D + idx))->see();
 				(*(*(array_Point2D + idx))).see();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the bufer.
-
+				pause();
 
 				/* Calling in various ways to an overloaded operator. */
 				std::cout << std::endl << "Succinct display of the coordinate values ​​of a 'Point2D' object." << std::endl;
 				(*array_Point2D[idx])();
 				(*(*(array_Point2D + idx)))();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the bufer.
+				pause();
 			}
 
 		/* All dynamically created instances of objects of type 'Point2D' are purged. */
