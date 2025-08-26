@@ -72,7 +72,7 @@ class Circle
 				{
 					std::cout << "Capture of the radius of the 'Circle' object." << std::endl;
 					std::cout << "Enter the desired radius: ";
-					std::cin >> (*this).radius;
+					(*this).radius = (*this).enter_a_data(&this->radius);
 				}
 
 			template <typename C = T>
@@ -94,10 +94,29 @@ class Circle
 			virtual Circle<T>& copy(const Circle<T>& circle)
 				{(*this).radius = circle.getRadius(); return *this;}
 
+			static const T &enter_a_data(T *const ptr_data)
+				{
+					if (ptr_data)
+						if (std::cin >> *ptr_data)
+							std::cout << "Value entered: [" << *ptr_data << "]. OK!" << std::endl;
+						else
+							{
+								*ptr_data = V_ZERO;
+								std::cerr << "Error! The input does not have a valid value." << std::endl;
+							}
+					else
+						std::cerr << "A valid memory address was not provided." << std::endl;
+
+					std::cin.clear();
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+
+					return *ptr_data;
+				};
+
 			virtual void explore()
 				{std::cout << *this << std::endl; std::cin >> *this; std::cout << *this << std::endl;}
 
-			const int getDiameter()		const	{return this->radius * V_TWO;}
+			const T	getDiameter()		const	{return this->radius * V_TWO;}
 			const int &getId()		const	{return this->id;}
 			const double& getPI()		const	{return this->PI;}
 			const T& getRadius()		const	{return this->radius;}
@@ -208,9 +227,9 @@ class Cylinder : public Circle<T>
 			Cylinder(Cylinder<T>&& cylinder) : Circle<T>(cylinder.getId(), cylinder.getRadius()), height(cylinder.getHeight())
 				{this->counter--; cylinder.reset();}
 
-			Cylinder<T>& operator= (const Cylinder<T>& cylinder)
+			Cylinder<T>& operator=(const Cylinder<T>& cylinder)
 				{this->copy(cylinder); return *this;}
-			Cylinder<T>& operator= (Cylinder<T>&& cylinder)
+			Cylinder<T>& operator=(Cylinder<T>&& cylinder)
 				{(*this).counter--; this->copy(cylinder); cylinder.reset(); return *this;}
 
 			Cylinder<T>& operator()()
@@ -227,11 +246,11 @@ class Cylinder : public Circle<T>
 			operator int()			const	{return Circle<T>::getId();}
 			operator double()		const	{return Circle<T>::getPI();}
 
-			virtual void capture() override
+			virtual void capture()	override
 				{
 					std::cout << "Capture of the height of the 'Cylinder' object." << std::endl;
 					std::cout << "Enter the desired height: ";
-					std::cin >> (*this).height;
+					(*this).height = (*this).enter_a_data(&this->height);
 					Circle<T>::capture();
 				}
 
@@ -269,7 +288,7 @@ class Cylinder : public Circle<T>
 			typename std::enable_if<std::is_integral<T>::value, U>::type
 			getValue()				{return this->getHeight();}
 
-			virtual void explore() override
+			virtual void explore()	override
 				{std::cout << *this << std::endl; std::cin >> *this; std::cout << *this << std::endl;}
 
 			const bool isitme(Cylinder<T>& cylinder)	const
@@ -324,6 +343,17 @@ class Cylinder : public Circle<T>
 	};
 
 
+//Pause function.
+void pause()
+	{
+		/* Pause before continuing. */
+		std::cout << std::endl << "Press the ENTER key to continue...";
+		std::cin.get();		// Wait for the user to press Enter.
+		std::cin.clear();	// Clear the error state.
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the buffer.
+	}
+
+
 //Main function.
 int main ()
 	{
@@ -334,7 +364,7 @@ int main ()
 		/* Initial header messages. */
 		std::cout << "Creating 'Circle' objects on an array." << std::endl;
 		std::cout << "How many 'Circle' do you want to create? : ";
-		std::cin >> quantity;
+		quantity = Circle<int>::enter_a_data(&quantity);
 
 		/* The dynamic array of pointers to objects of type 'Circle' is created. */
 		Circle<double> **array_Circle = new Circle<double>* [quantity];
@@ -343,8 +373,8 @@ int main ()
 		for (int idx = V_ZERO; idx < quantity; idx++)
 			{
 				std::cout << std::endl << "'Cylinder' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
-				std::cout << "Radius = "; std::cin >> radius;
-				std::cout << "Height = "; std::cin >> height;
+				std::cout << "Radius = "; radius = Circle<double>::enter_a_data(&radius);
+				std::cout << "Height = "; height = Circle<double>::enter_a_data(&height);
 
 				array_Circle[idx] = new Cylinder<double>(idx + V_ONE, radius, height);
 
@@ -364,12 +394,7 @@ int main ()
 					std::cout << "+ Circle:\t\t[" << my_circle->getValue() << "]." << std::endl;
 
 				std::cout << "+ Is it me?:\t\t[" << array_Circle[idx]->isitme(*array_Circle[idx]) << "]." << std::endl;
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the buffer.
+				pause();
 			}
 
 		/* An internal method of the 'Circle' object is used to display the assigned values. */
@@ -378,12 +403,7 @@ int main ()
 			{
 				std::cout << std::endl << "'Circle' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
 				array_Circle[idx]->print();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the buffer.
+				pause();
 			}
 
 		/* New values ​​are reassigned and captured to created objects of type 'Point2D' */
@@ -394,12 +414,7 @@ int main ()
 				std::cout << std::endl << "'Circle' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
 				std::cin >> *(*(array_Circle + idx));
 				std::cout << *array_Circle[idx];
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the buffer.
+				pause();
 			}
 
 		/* Using the overloaded increment and decrement operators in the 'Circle' class. */
@@ -409,85 +424,52 @@ int main ()
 				/* Different nomenclatures with pointer notation and array notation. */
 				std::cout << std::endl << "'Circle' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
 				array_Circle[idx]->print();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the buffer.
-
+				pause();
 
 				/* Increase the radius of the 'Circle' object. */
 				std::cout << std::endl << "Increase the radius of the 'Circle' object." << std::endl;
 				(*array_Circle[idx])++;
 				(*array_Circle[idx]).print();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the buffer.
-
+				pause();
 
 				/* Initial exchange of values. */
 				std::cout << std::endl << "Initial exchange of values." << std::endl;
-				array_Circle[idx]->swap();
+
+				if (Cylinder<double>* my_cylinder = dynamic_cast<Cylinder<double>*>(array_Circle[idx]))
+					(*my_cylinder).swap();
+				else
+					array_Circle[idx]->swap();
+
 				array_Circle[idx]->print();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the buffer.
-
+				pause();
 
 				/* Final exchange of values. */
 				std::cout << std::endl << "Final exchange of values." << std::endl;
-				(*array_Circle[idx]).swap();
+				if (Cylinder<double>* my_cylinder = dynamic_cast<Cylinder<double>*>(array_Circle[idx]))
+					my_cylinder->swap();
+				else
+					(*array_Circle[idx]).swap();
+
 				(*array_Circle[idx]).print();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the buffer.
-
+				pause();
 
 				/* Decrease the radius of the 'Circle' object. */
 				std::cout << std::endl << "Decrease the radius of the 'Circle' object." << std::endl;
 				(*array_Circle[idx])--;
 				(*array_Circle[idx]).print();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the buffer.
-
+				pause();
 
 				/* Increase the radius of the 'Circle' object. */
 				std::cout << std::endl << "Increase the radius of the 'Circle' object." << std::endl;
 				(*(*(array_Circle + idx)))++;
 				(*(*(array_Circle + idx))).watch();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the buffer.
-
+				pause();
 
 				/* Decrease the radius of the 'Circle' object. */
 				std::cout << std::endl << "Decrease the radius of the 'Circle' object." << std::endl;
 				(*(*(array_Circle + idx)))--;
 				(*(*(array_Circle + idx))).watch();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the buffer.
-
+				pause();
 
 				/* Various ways to call methods on an array of object pointers (pointer of pointers). */
 				std::cout << std::endl << "Initialize the radius of the 'Circle' object." << std::endl;
@@ -500,23 +482,13 @@ int main ()
 				(*array_Circle[idx]).see();
 				(*(array_Circle + idx))->see();
 				(*(*(array_Circle + idx))).see();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the buffer.
+				pause();
 
 				/* Calling in various ways to an overloaded operator. */
 				std::cout << std::endl << "Displaying information about the 'Circle' object." << std::endl;
 				(*array_Circle[idx])();
 				(*(*(array_Circle + idx)))();
-
-				/* Pause before continuing. */
-				std::cout << std::endl << "Press the ENTER key to continue...";
-				std::cin.get();		// Wait for the user to press Enter.
-				std::cin.clear();	// Clear the error state.
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the buffer.
+				pause();
 		}
 
 		/* All dynamically created instances of objects of type 'Circle' are purged. */
