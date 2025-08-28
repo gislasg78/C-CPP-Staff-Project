@@ -286,7 +286,7 @@ class Cylinder : public Circle<T>
 
 			template <typename U = T>
 			typename std::enable_if<std::is_integral<T>::value, U>::type
-			getValue()				{return Circle<T>::getId;}
+			getValue()				{return Circle<T>::getId();}
 
 			virtual void explore()	override
 				{std::cout << *this << std::endl; std::cin >> *this; std::cout << *this << std::endl;}
