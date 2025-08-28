@@ -357,9 +357,9 @@ int main()
 		for (int idx = V_ZERO; idx < quantity; idx++)
 			{
 				std::cout << std::endl << "'Point2D' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
-				std::cout << "x = "; x = Point2D<int>::enter_a_data(&x);
-				std::cout << "y = "; y = Point2D<int>::enter_a_data(&y);
-				std::cout << "z = "; z = Point2D<int>::enter_a_data(&z);
+				std::cout << "+ x = "; x = Point2D<int>::enter_a_data(&x);
+				std::cout << "+ y = "; y = Point2D<int>::enter_a_data(&y);
+				std::cout << "+ z = "; z = Point2D<int>::enter_a_data(&z);
 
 				array_Point2D[idx] = new Point3D<int>(idx + V_ONE, x, y, z);
 
