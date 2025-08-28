@@ -178,12 +178,12 @@ class Circle
 					std::cout << "+ Radius:\t[" << this->radius << "] : [" << (*this).radius << "] = ";
 					std::cout << "[" << typeid(this->radius).name() << "] : [" << typeid((*this).radius).name() << "]." << std::endl;
 					std::cout << "+ Area:\t\t[" << this->area() << "] : [" << (*this).area() << "]." << std::endl;
-					std::cout << "+ Perimeter:\t[" << this->perimeter() << "] : [" << (*this).perimeter() << "]." << std::endl;
+					std::cout << "+ Perimeter:\t[" << this->perimeter() << "] : [" << (*this).perimeter() << "]." << std::endl << std::endl;
 				}
 
 			virtual void watch()		const
 				{
-					std::cout << std::endl << "(ID = [" << this->id << "], ";
+					std::cout << "(ID = [" << this->id << "], ";
 					std::cout << "PI = [" << this->PI << "], ";
 					std::cout << "Diameter = [" << (*this).radius * V_TWO << "], ";
 					std::cout << "Radius = [" << this->radius << "], ";
@@ -286,7 +286,7 @@ class Cylinder : public Circle<T>
 
 			template <typename U = T>
 			typename std::enable_if<std::is_integral<T>::value, U>::type
-			getValue()				{return this->getHeight();}
+			getValue()				{return Circle<T>::getId;}
 
 			virtual void explore()	override
 				{std::cout << *this << std::endl; std::cin >> *this; std::cout << *this << std::endl;}
@@ -334,7 +334,7 @@ class Cylinder : public Circle<T>
 
 			virtual void watch()		const override
 				{
-					std::cout << std::endl << "(Height = [" << this->height << "], ";
+					std::cout << "(Height = [" << this->height << "], ";
 					std::cout << "Volume = [" << this->volume() << "])." << std::endl;
 					Circle<T>::watch();
 				}
