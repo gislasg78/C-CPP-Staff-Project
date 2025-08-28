@@ -60,6 +60,7 @@ class Point2D
 			Point2D<T>& operator--(int)	{this->x--; this->y--; return *this;}
 
 			operator int()		const	{return this->id;}
+			operator double()	const	{return ((double) this->x / (double) this->y);}
 
 			virtual void capture()
 				{
@@ -119,7 +120,7 @@ class Point2D
 
 			template <typename U = T>
 			typename std::enable_if<std::is_floating_point<T>::value, U>::type
-			getValue()			{return V_ZERO;}
+			getValue()			{return ((double) (*this).x / (double) (*this).y);}
 
 			const T& getX()		const	{return this->x;}
 			const T& getY()		const	{return this->y;}
@@ -236,6 +237,7 @@ class Point3D : public Point2D<T>
 			Point3D<T>& operator--(int)	{this->z--; return *this;}
 
 			operator int()		const	{return (*this).getId();}
+			operator double()	const	{return (*this).getZ();}
 
 			virtual void capture()
 				{
@@ -274,11 +276,11 @@ class Point3D : public Point2D<T>
 
 			template <typename U = T>
 			typename std::enable_if<std::is_integral<T>::value, U>::type
-			getValue()			{return this->getZ();}
+			getValue()			{return this->getId();}
 
 			template <typename U = T>
 			typename std::enable_if<std::is_floating_point<T>::value, U>::type
-			getValue()			{return V_ZERO;}
+			getValue()			{return this->getZ();}
 
 			const T& getZ()		const	{return this->z;}
 			T& getZ()			{return (*this).z;}
@@ -355,14 +357,15 @@ int main()
 		for (int idx = V_ZERO; idx < quantity; idx++)
 			{
 				std::cout << std::endl << "'Point2D' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
-				std::cout << "x = "; Point2D<int>::enter_a_data(&x);
-				std::cout << "y = "; Point2D<int>::enter_a_data(&y);
-				std::cout << "z = "; Point2D<int>::enter_a_data(&z);
+				std::cout << "x = "; x = Point2D<int>::enter_a_data(&x);
+				std::cout << "y = "; y = Point2D<int>::enter_a_data(&y);
+				std::cout << "z = "; z = Point2D<int>::enter_a_data(&z);
 
 				array_Point2D[idx] = new Point3D<int>(idx + V_ONE, x, y, z);
 
 				std::cout << std::endl << "Object created and assigned." << std::endl;
 				std::cout << "+ ID Value:\t[" << static_cast<int>(*array_Point2D[idx]) << "]." << std::endl;
+				std::cout << "+ [x] / [y]:\t[" << static_cast<double>(*array_Point2D[idx]) << "]." << std::endl;
 				std::cout << "+ Values:\tId: [" << array_Point2D[idx]->getId() << "].\t(x = [" << (*array_Point2D[idx]).getX() << "], y = [" << (*array_Point2D[idx]).getY() << "])." << std::endl;
 
 				if (Point3D<int> *my_Point3D = dynamic_cast<Point3D<int>*>(array_Point2D[idx]))
