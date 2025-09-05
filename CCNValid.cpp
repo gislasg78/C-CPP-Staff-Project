@@ -1,7 +1,7 @@
 /******** Luhn algorithm to validate credit card numbers. ********
  ** Source Code:        CCNValid.cpp				**
  ** Author:             Gustavo Islas Gálvez.                   **
- ** Creation Date:      Saturday, December 30, 2023.            **
+ ** Creation Date:      Tuesday, December 31, 2024.		**
  ** Purpose:		The Luhn algorithm or Luhn formula,	**
  **			also known as "modulo 10 algorithm",	**
  **			is a checksum formula, used to validate **
@@ -32,7 +32,7 @@
 #include <iostream>
 
 //Work Constants.
-#define	V_CHAR_ZERO	'0'
+#define	V_CHAR_DIG_ZERO	'\x30'
 
 //C Standard Constants.
 #define	V_MINUS_ONE	-1
@@ -42,7 +42,7 @@
 #define	V_ZERO		0
 
 //Definition of function prototypes.
-int int_getADigit(const int int_digit_number);		//Obtain a single digit if the value obtained is greater than 4.
+int int_getADigit(const int& int_digit_number);		//Obtain a single digit if the value obtained is greater than 4.
 int int_sumOfDigits(const std::string &str_CardNumber);	//Add the digits of even and odd positions on the credit card.
 
 /*****************************************************************
@@ -76,12 +76,12 @@ int main()
 	{
 		/* Initial declaration of work variables. */
 		int int_result = V_ZERO;
-		std::string str_CardNumber;
+		std::string str_CardNumber{};
 
 		/* Welcome messages. */
-		std::cout << "+---|----+---|----+---|----+---|----+---|----+" << std::endl;
-		std::cout << "+  Luhn algorithm to validate credit cards.  +" << std::endl;
-		std::cout << "+---|----+---|----+---|----+---|----+---|----+" << std::endl;
+		std::cout << "+===|====+====|====+====|====+====|" << std::endl;
+		std::cout << "+  Credit Cards Luhn Algorithm.   +" << std::endl;
+		std::cout << "+===|====+====|====+====|====+====|" << std::endl;
 		std::cout << "Enter a valid credit card number  # : ";
 
 		/* Get the character string with the credit card number. */
@@ -106,8 +106,8 @@ int main()
 	}
 
 /*****************************************************************
- ** Function:		int int_getADigit(const int		**
- **				int_digit_number);		**
+ ** Function:		int int_getADigit			**
+ **				(const int& int_digit_number);	**
  ** Explanation:	Check Digit Calculation.		**
  **								**
  **			The above implementation checked the	**
@@ -128,14 +128,14 @@ int main()
  **			as they are, or they are doubled and a	**
  **			single figure is extracted.		**
  ****************************************************************/
-int int_getADigit(const int int_digit_number)
+int int_getADigit(const int& int_digit_number)
 	{
 		return int_digit_number % V_TEN + (int_digit_number / V_TEN % V_TEN);
 	}
 
 /*****************************************************************
- ** Function:		int int_sumOfDigits(			**
- **				const std::string		**
+ ** Function:		int int_sumOfDigits			**
+				(const std::string		**
  **					&str_CardNumber).	**
  ** Explanation:	The formula checks a number against its	**
  **			included check digit, which is usually	**
@@ -159,6 +159,7 @@ int int_getADigit(const int int_digit_number)
  **			(if the total ends in zero), then	**
  **			the number is valid according to the	**
  **			Luhn formula, otherwise it is invalid.	**
+ **								**
  ** Input Parms:	const std::string &str_CardNumber.	**
  ** Output Parms:	None.					**
  ** Result:		The bank card number is the number found**
@@ -173,6 +174,7 @@ int int_getADigit(const int int_digit_number)
  **			They have certain levels of internal	**
  **			structure and share a common numbering	**
  **			scheme.					**
+ **								**
  **			Bank card numbers are assigned		**
  **			accordingly with ISO/IEC 7812 standard.	**
  ****************************************************************/
@@ -184,8 +186,11 @@ int int_sumOfDigits(const std::string &str_CardNumber)
 
 		/* Initial declaration of work variables. */
 		int int_counting_items = V_ZERO;
+		int int_counting_pos_items = V_ZERO;
 		int int_counting_odds = V_ZERO;
+		int int_counting_pos_odds = V_ZERO;
 		int int_counting_pairs = V_ZERO;
+		int int_counting_pos_pairs = V_ZERO;
 
 		/* Special work variables. */
 		int int_Current_Digit = V_ZERO;
@@ -193,57 +198,66 @@ int int_sumOfDigits(const std::string &str_CardNumber)
 		int int_sumOfOdds = V_ZERO;
 		int int_sumTotal = V_ZERO;
 
+		/* Array character string of type number. */
+		std::string str_TypeOfNumber[] = {"Pair", "Odd"};
+
 		/* Welcome messages. */
 		std::cout << std::endl;
-		std::cout << "+---|----+---|----+---|----+---|----+---|----+" << std::endl;
-		std::cout << "+ Digit-by-digit analysis of the card number.+" << std::endl;
-		std::cout << "+---|----+---|----+---|----+---|----+---|----+" << std::endl;
+		std::cout << "+===|====+====|====+====|====+====|" << std::endl;
+		std::cout << "+  Card Digit-by-digit Analysis.  +" << std::endl;
+		std::cout << "+===|====+====|====+====|====+====|" << std::endl;
 
 		/* Cycle to go through each digit of the credit or debit card number from right to left. */
-		for (int int_ind = V_ONE, int_idx = int_CardNumber_Size + V_MINUS_ONE; int_idx >= V_ZERO; int_ind++, int_idx--)
+		for (int int_ind = V_ONE, int_idx = int_CardNumber_Size + V_MINUS_ONE; int_ind <= int_CardNumber_Size && int_idx >= V_ZERO; int_ind++, int_idx--)
 			{
-				int_counting_items++;
-				int_Current_Digit = str_CardNumber[int_idx] - V_CHAR_ZERO;
+				int_counting_items++; int_counting_pos_items++;
+				int_Current_Digit = str_CardNumber[int_idx] - V_CHAR_DIG_ZERO;
+
+				std::cout << "# [" << int_ind << "]\t{" << str_TypeOfNumber[int_ind % V_TWO] << "}\t[" << int_Current_Digit << "]\t{"<< str_TypeOfNumber[int_Current_Digit % V_TWO] << "}\t[" << int_idx + V_ONE << "]." << std::endl;
 
 				if (int_ind % V_TWO)
 					{
-						std::cout << "# [" << int_ind << "]\tOdd:\t[" << int_idx << "]\t=\t[" << int_Current_Digit << "]." << std::endl;
-						int_counting_odds++;
+						int_counting_pos_odds++;
 						int_sumOfOdds += int_Current_Digit;
 					}
 				else
 					{
-						std::cout << "# [" << int_ind << "]\tPair:\t[" << int_idx << "]\t=\t[" << int_Current_Digit << "]\t:\t[" << int_Current_Digit * V_TWO << "]\t:\t[" << int_getADigit(int_Current_Digit * V_TWO) << "]." << std::endl;
-						int_counting_pairs++;
+						int_counting_pos_pairs++;
 						int_sumOfEvens += int_getADigit(int_Current_Digit * V_TWO);
 					}
+
+				if (int_Current_Digit % V_TWO) int_counting_odds++; else int_counting_pairs++;
 			}
 
-		std::cout << "[" << int_counting_items << "] Generated output results." << std::endl;
+		std::cout << "[" << int_counting_pos_items << "] Generated output results." << std::endl;
 
 		/* Result of the validation of the entered card number. */
 		int_sumTotal = int_sumOfOdds + int_sumOfEvens;
 
+		/* Output messages with detailed results. */
 		std::cout << std::endl;
-		std::cout << "+---|----+---|----+---|----+---|----+---|----+" << std::endl;
-		std::cout << "+ Validation results of the Luhn Algorithm.  +" << std::endl;
-		std::cout << "+---|----+---|----+---|----+---|----+---|----+" << std::endl;
-		std::cout << "+  Basic Information Content's Card Number.  +" << std::endl;
-		std::cout << "+--------+--------+--------+--------+--------+" << std::endl;
-		std::cout << "| Items\t\t:\t[" << int_counting_items << "]." << std::endl;
-		std::cout << "| Odds\t\t:\t[" << int_counting_odds << "]." << std::endl;
-		std::cout << "| Pairs\t\t:\t[" << int_counting_pairs << "]." << std::endl;
-		std::cout << "+--------+--------+--------+--------+--------+" << std::endl;
-		std::cout << "| Length\t:\t[" << int_CardNumber_Length << "]." << std::endl;
-		std::cout << "| Size\t\t:\t[" << int_CardNumber_Size << "]." << std::endl;
-		std::cout << "+--------+--------+--------+--------+--------+" << std::endl;
-		std::cout << "+ Digits sum calculated by relative position.+" << std::endl;
-		std::cout << "+--------+--------+--------+--------+--------+" << std::endl;
-		std::cout << "| Evens\t\t:\t[" << int_sumOfEvens << "]." << std::endl;
-		std::cout << "| Odds\t\t:\t[" << int_sumOfOdds << "]." << std::endl;
-		std::cout << "+--------+--------+--------+--------+--------+" << std::endl;
-		std::cout << "| Total\t\t:\t[" << int_sumTotal << "]." << std::endl;
-		std::cout << "+---|----+---|----+---|----+---|----+---|----+" << std::endl;
+		std::cout << "+===|====+====|====+====|====+====|" << std::endl;
+		std::cout << "+ Validation Card Luhn Algorithm. +" << std::endl;
+		std::cout << "+===|====+====|====+====|====+====|" << std::endl;
+		std::cout << "+---|----+----|----+----|----+----|" << std::endl;
+		std::cout << "+   Basic Content's Card Number.  +" << std::endl;
+		std::cout << "+---|----+----|----+----|----+----|" << std::endl;
+		std::cout << "| + Items:\t[" << int_counting_pos_items << "]\t[" << int_counting_items << "]." << std::endl;
+		std::cout << "| + Odds:\t[" << int_counting_pos_odds << "]\t[" << int_counting_odds << "]." << std::endl;
+		std::cout << "| + Pairs:\t[" << int_counting_pos_pairs << "]\t[" << int_counting_pairs << "]." << std::endl;
+		std::cout << "+---|----+----|----+----|----+----|" << std::endl;
+		std::cout << "+   Chain's General Information.  |" << std::endl;
+		std::cout << "+---|----+----|----+----|----+----|" << std::endl;
+		std::cout << "| * Length:\t[" << int_CardNumber_Length << "]." << std::endl;
+		std::cout << "| * Size:\t[" << int_CardNumber_Size << "]." << std::endl;
+		std::cout << "+---|----+----|----+----|----+----|" << std::endl;
+		std::cout << "+ Digits sum by relative position.+" << std::endl;
+		std::cout << "+---|----+----|----+----|----+----|" << std::endl;
+		std::cout << "| - Evens:\t[" << int_sumOfEvens << "]." << std::endl;
+		std::cout << "| - Odds:\t[" << int_sumOfOdds << "]." << std::endl;
+		std::cout << "+---|----+----|----+----|----+----|" << std::endl;
+		std::cout << "| > Total:\t[" << int_sumTotal << "]." << std::endl;
+		std::cout << "+===|====+====|====+====|====+====|" << std::endl;
 
 		/* Return the summed number of both odd and even digits. */
 		return int_sumTotal;
