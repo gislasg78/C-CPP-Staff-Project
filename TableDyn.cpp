@@ -74,7 +74,7 @@ int main()
 		std::cout << "[" << items << "] Captured input values." << std::endl;
 
 		/* Process of dumping each column, each row, each matrix. */
-		std::cout << std::endl << "Displaying captured values..." << std::endl;
+		std::cout << "Displaying captured values..." << std::endl;
 
 		/* Dump of each matrix. */
 		for (int m = V_ZERO; m < n_matrix; m++)
@@ -101,7 +101,7 @@ int main()
 		std::cout << "[" << items << "] Generated output results." << std::endl;
 
 		/* The allocated memory is freed from each allocated row of each created array. */
-		std::cout << std::endl << "Freeing the memory of all dynamically allocated pointers..." << std::endl;
+		std::cout << "Freeing the memory of all dynamically allocated pointers..." << std::endl;
 
 		/* Freeing each memory space allocated to each array. */
 		for (int m = V_ZERO; m < n_matrix; m++)
@@ -130,7 +130,7 @@ int main()
 		delete [] matrix;
 
 		/* Program closure notice. */
-		std::cout << std::endl << "[End of the assigment!]." << std::endl;
+		std::cout << "[End of the assigment!]." << std::endl;
 
 		return V_ZERO;
 	}
