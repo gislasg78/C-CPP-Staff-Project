@@ -1,7 +1,7 @@
 /******** Luhn algorithm to validate credit card numbers. ********
- ** Source Code:        CCNValid.cpp				**
+ ** Source Code:        CreditCard.cpp				**
  ** Author:             Gustavo Islas Gálvez.                   **
- ** Creation Date:      Tuesday, December 31, 2024.		**
+ ** Creation Date:      Wednesday, December 31, 2025.		**
  ** Purpose:		The Luhn algorithm or Luhn formula,	**
  **			also known as "modulo 10 algorithm",	**
  **			is a checksum formula, used to validate **
@@ -26,6 +26,10 @@
  **					two & three.		**
  **				5. If step four is divisible	**
  **					by ten, # is valid.	**
+ **			+---|----+---|----+---|----+---|----+	**
+ **			Valid test values:			**
+ **				1234432112344321		**
+ **				1234123443214321		**
 *****************************************************************/
 //C Standard Libraries.
 #include <algorithm>
@@ -87,20 +91,26 @@ int main()
 		/* Get the character string with the credit card number. */
 		std::getline(std::cin >> std::ws, str_CardNumber);
 
-		/* Eliminate any blank spaces in the card number. */
-		str_CardNumber.erase(std::remove_if(str_CardNumber.begin(), str_CardNumber.end(), ::isspace), str_CardNumber.end());
-
-		/* Call to function that adds the digits of even and odd positions of the credit card. */
-		int_result = int_sumOfDigits(str_CardNumber);
-
-		/* Result of the validation of the entered card number. */
-		std::cout << std::endl << "Credit Card Number validated      # : [" << str_CardNumber << "] = ";
-
-		/* If the remainder of dividing by ten the sum of digits of even and odd positions is zero, the card number is valid. */
-		if (int_result % V_TEN)
-			std::cout << "[is not valid]." << std::endl;
+		/* Validate that it is not an empty string. */
+		if (str_CardNumber.empty())
+			std::cout << std::endl << "Enter a credit card number that has values. " << std::endl;
 		else
-			std::cout << "[is valid]." << std::endl;
+			{
+				/* Eliminate any blank spaces in the card number. */
+				str_CardNumber.erase(std::remove_if(str_CardNumber.begin(), str_CardNumber.end(), ::isspace), str_CardNumber.end());
+
+				/* Call to function that adds the digits of even and odd positions of the credit card. */
+				int_result = int_sumOfDigits(str_CardNumber);
+
+				/* Result of the validation of the entered card number. */
+				std::cout << std::endl << "Credit Card Number validated      # : [" << str_CardNumber << "] = ";
+
+				/* If the remainder of dividing by ten the sum of digits of even and odd positions is zero, the card number is valid. */
+				if (int_result % V_TEN)
+					std::cout << "[is not valid]." << std::endl;
+				else
+					std::cout << "[is valid]." << std::endl;
+			}
 
 		return V_ZERO;
 	}
@@ -185,12 +195,9 @@ int int_sumOfDigits(const std::string &str_CardNumber)
 		int int_CardNumber_Size = str_CardNumber.size();
 
 		/* Initial declaration of work variables. */
-		int int_counting_items = V_ZERO;
-		int int_counting_pos_items = V_ZERO;
-		int int_counting_odds = V_ZERO;
-		int int_counting_pos_odds = V_ZERO;
-		int int_counting_pairs = V_ZERO;
-		int int_counting_pos_pairs = V_ZERO;
+		int int_counting_items = V_ZERO, int_counting_pos_items = V_ZERO;
+		int int_counting_odds = V_ZERO, int_counting_pos_odds = V_ZERO;
+		int int_counting_pairs = V_ZERO, int_counting_pos_pairs = V_ZERO;
 
 		/* Special work variables. */
 		int int_Current_Digit = V_ZERO;
@@ -239,6 +246,7 @@ int int_sumOfDigits(const std::string &str_CardNumber)
 		std::cout << "+===|====+====|====+====|====+====|" << std::endl;
 		std::cout << "+ Validation Card Luhn Algorithm. +" << std::endl;
 		std::cout << "+===|====+====|====+====|====+====|" << std::endl;
+		std::cout << "| > Credit Card Number: [" << str_CardNumber << "]." << std::endl;
 		std::cout << "+---|----+----|----+----|----+----|" << std::endl;
 		std::cout << "+   Basic Content's Card Number.  +" << std::endl;
 		std::cout << "+---|----+----|----+----|----+----|" << std::endl;
