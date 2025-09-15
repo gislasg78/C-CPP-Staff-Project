@@ -2,7 +2,7 @@
 
 #define	V_ZERO	0
 
-/* Greater than 'x', 'y' and 'z' values */
+/* Greater than 'x', 'y' and 'z' values. */
 int greater(int x, int y, int z)
 	{
 		int major = V_ZERO;
@@ -21,20 +21,22 @@ int greater(int x, int y, int z)
 		return major;
 	}
 
+//Main function.
 int main()
 	{
-		int major = V_ZERO, x = V_ZERO, y = V_ZERO, z = V_ZERO;
+		int x = V_ZERO, y = V_ZERO, z = V_ZERO;
 
 		printf("Choosing the largest number from three values.\n");
-		printf("\nEnter the first  value of three: ");
+		printf("Enter the value of 'x': ");
 		scanf("%d", &x);
-		printf("Enter the second value of three: ");
+		printf("Enter the value of 'y': ");
 		scanf("%d", &y);
-		printf("Enter the third  value of three: ");
+		printf("Enter the value of 'z': ");
 		scanf("%d", &z);
 
-		major = greater(x, y, z);
-		printf("\nThe largest value of the three entered is: [%d].\n", major);
+		printf("\nValues ​​entered.\n");
+		printf("(x = [%d], y = [%d], z = [%d]).\n", x, y, z);
+		printf("The largest value is: [%d].\n", greater(x, y, z));
 
 		return V_ZERO;
 	}
