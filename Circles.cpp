@@ -29,11 +29,7 @@ class Circle
 			T radius = V_ZERO;
 
 		public:
-			Circle() : radius(V_ZERO)
-				{
-					(*this).radius = captureRadius<T>();
-				}
-
+			Circle() : radius(V_ZERO)			{(*this).radius = captureRadius<T>();}
 			Circle(const T& radius) : radius(radius)	{this->radius = radius;}
 
 			const T  getPi()	const			{return static_cast<T>(pi);}
@@ -43,10 +39,12 @@ class Circle
 			const T getArea()				{return pi() * this->radius * this->radius;}
 			const T getPerimeter()				{return V_TWO * pi.getPi() * this->radius;}
 
+			void print()					{infoCircle(*this);}
 			void setRadius(const T& radius = V_ZERO)	{this->radius = radius;}
 
 			virtual ~Circle() = default;
 	};
+
 
 template <typename T>
 T captureRadius()
@@ -61,7 +59,7 @@ T captureRadius()
 	}
 
 template <typename T>
-void infoCircle(Circle<T> &circle)
+void infoCircle(Circle<T>& circle)
 	{
 		std::cout << std::endl << "Results of the 'Circle' calculations." << std::endl;
 		std::cout << " + PI:\t\t[" << circle.getPi() << "]." << std::endl;
@@ -76,11 +74,12 @@ int main()
 		std::cout << "Creating objects of type 'Circle'." << std::endl;
 
 		Pi<double> pi;
+
 		Circle<double> circle(captureRadius<double>());
 		infoCircle(circle);
 
 		Circle<double> foo;						//Functional form.
-		infoCircle(foo);
+		foo.print();
 
 		Circle<double> bar = captureRadius<double>();			//Assignment init.
 		infoCircle(bar);
@@ -89,10 +88,10 @@ int main()
 		infoCircle(baz);
 
 		Circle<double> qux = {captureRadius<double>()};			//POD-like
-		infoCircle(qux);
+		qux.print();
 
 		Circle<double> quz = Circle<double>(captureRadius<double>());	//Traditional assignment form.
-		infoCircle(quz);
+		quz.print();
 
 		return V_ZERO;
 	}
