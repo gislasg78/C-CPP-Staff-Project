@@ -57,6 +57,9 @@ class Circle
 					this->see(); this->view(); this->watch(); return *this;
 				}
 
+			Circle<T>& operator+(const Circle<T>& circle)
+				{(*this).radius += circle.getRadius(); return *this;}
+
 			Circle<T>& operator++()			{++this->radius; return *this;}
 			Circle<T>& operator++(int)		{(*this).radius++; return *this;}
 			Circle<T>& operator--()			{--(*this).radius; return *this;}
@@ -79,7 +82,7 @@ class Circle
 			const Circle<C> convert()	const
 				{
 					Circle<C> converted_circle(V_ZERO);
-					converted_circle.setRadius(static_cast<C>(this->getRadius()));
+					converted_circle.setRadius(static_cast<C>(this->radius));
 					return converted_circle;
 				}
 
@@ -87,7 +90,7 @@ class Circle
 			const Circle<C> convert(const Circle<T> &circle)	const
 				{
 					Circle<C> converted_circle(V_ZERO);
-					converted_circle.setRadius(static_cast<C>(circle.getRadius()));
+					converted_circle.getRadius() = static_cast<C>(circle.getRadius());
 					return converted_circle;
 				}
 
@@ -143,53 +146,51 @@ class Circle
 					(*this).see(); (*this).view(); (*this).watch();
 				}
 
-			virtual void reset()			{this->radius = V_ZERO;}
-
-			virtual void see()		const
-				{
-					std::cout << "(ID = [" << (*this).id << "] : [" << this->id << "] = ";
-					std::cout << "[" << typeid((*this).id).name() << "] : [" << typeid(this->id).name() << "], ";
-					std::cout << "PI = [" << (*this).PI << "] : [" << this->PI << "] = ";
-					std::cout << "[" << typeid((*this).PI).name() << "] : [" << typeid(this->PI).name() << "], ";
-					std::cout << "Diameter = [" << (*this).radius * V_TWO << "] : [" << this->radius * V_TWO << "], ";
-					std::cout << "Radius = [" << (*this).radius << "] : [" << this->radius << "] = ";
-					std::cout << "[" << typeid((*this).radius).name() << "] : [" << typeid(this->radius).name() << "], ";
-					std::cout << "Counter = [" << (*this).counter << "] : [" << this->counter << "] = ";
-					std::cout << "[" << typeid((*this).counter).name() << "] : [" << typeid(this->counter).name() << "])." << std::endl;
-					std::cout << "(Area = [" << this->area() << "] : [" << (*this).area() << "], ";
-					std::cout << "Perimeter = [" << this->perimeter() << "] : [" << (*this).perimeter() << "])." << std::endl;
-				}
+			virtual void reset()					{this->radius = V_ZERO;}
 
 			void setDiameter(const T& diameter = V_ZERO)		{this->radius = diameter / V_TWO;}
 			void setRadius(const T &radius = V_ZERO)		{this->radius = radius;}
 
 			virtual void swap()		const			{return;}
 
+			virtual void see()		const
+				{
+					std::cout << "Brief information about the object 'Circle'." << std::endl;
+					std::cout << "+ ID:\t\t[" << this->id << "]." << std::endl;
+					std::cout << "+ Counter:\t[" << (*this).counter << "]." << std::endl;
+					std::cout << "+ PI Value:\t[" << this->PI << "]." << std::endl;
+					std::cout << "+ Diameter:\t[" << (*this).radius * V_TWO << "]." << std::endl;
+					std::cout << "+ Radius:\t[" << this->radius << "]." << std::endl;
+					std::cout << "+ Area:\t\t[" << this->area() << "]." << std::endl;
+					std::cout << "+ Perimeter:\t[" << (*this).perimeter() << "]." << std::endl << std::endl;
+				}
+
 			virtual void view()		const
 				{
-					std::cout << std::endl << "Information about the 'Circle' object." << std::endl;
-					std::cout << "+ ID:\t\t[" << this->id << "] : [" << (*this).id << "] = ";
-					std::cout << "[" << typeid(this->id).name() << "] : [" << typeid((*this).id).name() << "]." << std::endl;
-					std::cout << "+ Counter:\t[" << this->counter << "] : [" << (*this).counter << "] = ";
-					std::cout << "[" << typeid(this->counter).name() << "] : [" << typeid((*this).counter).name() << "]." << std::endl;
-					std::cout << "+ PI Value:\t[" << this->PI << "] : [" << (*this).PI << "] = ";
-					std::cout << "[" << typeid(this->PI).name() << "] : [" << typeid((*this).PI).name() << "]." << std::endl;
-					std::cout << "+ Diameter:\t[" << (*this).radius * V_TWO << "] : [" << this->radius * V_TWO << "]." << std::endl;
-					std::cout << "+ Radius:\t[" << this->radius << "] : [" << (*this).radius << "] = ";
-					std::cout << "[" << typeid(this->radius).name() << "] : [" << typeid((*this).radius).name() << "]." << std::endl;
-					std::cout << "+ Area:\t\t[" << this->area() << "] : [" << (*this).area() << "]." << std::endl;
-					std::cout << "+ Perimeter:\t[" << this->perimeter() << "] : [" << (*this).perimeter() << "]." << std::endl << std::endl;
+					std::cout << "Extended information about the 'Circle' object." << std::endl;
+					std::cout << "+ ID:\t\t[" << this->id << "]\t\t:\t[" << (*this).id << "]\t\t=\t";
+					std::cout << "[" << typeid(this->id).name() << "]\t:\t[" << typeid((*this).id).name() << "]." << std::endl;
+					std::cout << "+ Counter:\t[" << this->counter << "]\t\t:\t[" << (*this).counter << "]\t\t=\t";
+					std::cout << "[" << typeid(this->counter).name() << "]\t:\t[" << typeid((*this).counter).name() << "]." << std::endl;
+					std::cout << "+ PI Value:\t[" << this->PI << "]\t:\t[" << (*this).PI << "]\t=\t";
+					std::cout << "[" << typeid(this->PI).name() << "]\t:\t[" << typeid((*this).PI).name() << "]." << std::endl;
+					std::cout << "+ Diameter:\t[" << (*this).radius * V_TWO << "]\t\t:\t[" << this->radius * V_TWO << "]." << std::endl;
+					std::cout << "+ Radius:\t[" << this->radius << "]\t\t:\t[" << (*this).radius << "]\t\t=\t";
+					std::cout << "[" << typeid(this->radius).name() << "]\t:\t[" << typeid((*this).radius).name() << "]." << std::endl;
+					std::cout << "+ Area:\t\t[" << this->area() << "]\t:\t[" << (*this).area() << "]." << std::endl;
+					std::cout << "+ Perimeter:\t[" << this->perimeter() << "]\t:\t[" << (*this).perimeter() << "]." << std::endl << std::endl;
 				}
 
 			virtual void watch()		const
 				{
+					std::cout << "Specific information about the 'Circle' object." << std::endl;
 					std::cout << "(ID = [" << this->id << "], ";
 					std::cout << "PI = [" << this->PI << "], ";
 					std::cout << "Diameter = [" << (*this).radius * V_TWO << "], ";
 					std::cout << "Radius = [" << this->radius << "], ";
 					std::cout << "Counter = [" << this->counter << "])." << std::endl;
 					std::cout << "(Area = [" << this->area() << "], ";
-					std::cout << "Perimeter = [" << this->perimeter() << "])." << std::endl;
+					std::cout << "Perimeter = [" << this->perimeter() << "])." << std::endl << std::endl;
 				}
 
 			virtual ~Circle() = default;
@@ -238,6 +239,9 @@ class Cylinder : public Circle<T>
 					this->see(); this->view(); this->watch(); return *this;
 				}
 
+			Cylinder<T>& operator+(const Cylinder<T>& cylinder)
+				{(*this).getRadius() += cylinder.getRadius(); this->height += cylinder.getHeight(); return *this;}
+
 			Cylinder<T>& operator++()		{++this->height; return *this;}
 			Cylinder<T>& operator++(int)		{(*this).height++; return *this;}
 			Cylinder<T>& operator--()		{--(*this).height; return *this;}
@@ -267,8 +271,8 @@ class Cylinder : public Circle<T>
 			const Cylinder<C> convert(const Cylinder<T>& cylinder)	const
 				{
 					Cylinder<C> converted_cylinder(V_ZERO);
-					converted_cylinder.setRadius(static_cast<C>(cylinder.getRadius()));
-					converted_cylinder.setHeight(static_cast<C>(cylinder.getHeight()));
+					converted_cylinder.getRadius() = static_cast<C>(cylinder.getRadius());
+					converted_cylinder.getHeight() = static_cast<C>(cylinder.getHeight());
 					return converted_cylinder;
 				}
 
@@ -301,9 +305,8 @@ class Cylinder : public Circle<T>
 
 			virtual void print()		const override
 				{
-					std::cout << std::endl << "Information about the 'Cylinder." << std::endl;
-					std::cout << "+ Height:\t[" << this->height << "]." << std::endl;
-					std::cout << "+ Volume:\t[" << (*this).volume() << "]." << std::endl << std::endl;
+					std::cout << "Display the current values ​​of a 'Cylinder' object." << std::endl;
+					(*this).see(); (*this).view(); (*this).watch();
 					Circle<T>::print();
 				}
 
@@ -311,9 +314,9 @@ class Cylinder : public Circle<T>
 
 			virtual void see()		const override
 				{
-					std::cout << "(Height = [" << (*this).height << "] : [" << this->height << "] = ";
-					std::cout << "[" << typeid((*this).height).name() << "] : [" << typeid(this->height).name() << "], ";
-					std::cout << "Volume = [" << (*this).volume() << "] : [" << this->volume() << "])." << std::endl;
+					std::cout << "Brief information about the object 'Cylinder'." << std::endl;
+					std::cout << "+ Height:\t[" << (*this).height << "]." << std::endl;
+					std::cout << "+ Volume:\t[" << (*this).volume() << "]." << std::endl << std::endl;
 					Circle<T>::see();
 				}
 
@@ -323,10 +326,10 @@ class Cylinder : public Circle<T>
 
 			virtual void view()		const override
 				{
-					std::cout << std::endl << "Information about the 'Cylinder' object." << std::endl;
-					std::cout << "+ Height:\t[" << this->height << "] : [" << (*this).height << "] = ";
-					std::cout << "[" << typeid(this->height).name() << "] : [" << typeid((*this).height).name() << "]." << std::endl;
-					std::cout << "+ Volume:\t[" << this->volume() << "] : [" << (*this).volume() << "]." << std::endl;
+					std::cout << "Extended information about the 'Cylinder' object." << std::endl;
+					std::cout << "+ Height:\t[" << this->height << "]\t\t:\t[" << (*this).height << "]\t=\t";
+					std::cout << "[" << typeid(this->height).name() << "]\t:\t[" << typeid((*this).height).name() << "]." << std::endl;
+					std::cout << "+ Volume:\t[" << this->volume() << "]\t:\t[" << (*this).volume() << "]." << std::endl << std::endl;
 					Circle<T>::view();
 				}
 
@@ -334,8 +337,9 @@ class Cylinder : public Circle<T>
 
 			virtual void watch()		const override
 				{
+					std::cout << "Specific information about the 'Cylinder' object." << std::endl;
 					std::cout << "(Height = [" << this->height << "], ";
-					std::cout << "Volume = [" << this->volume() << "])." << std::endl;
+					std::cout << "Volume = [" << this->volume() << "])." << std::endl << std::endl;
 					Circle<T>::watch();
 				}
 
@@ -462,13 +466,13 @@ int main ()
 				/* Increase the radius of the 'Circle' object. */
 				std::cout << std::endl << "Increase the radius of the 'Circle' object." << std::endl;
 				(*(*(array_Circle + idx)))++;
-				(*(*(array_Circle + idx))).watch();
+				(*(*(array_Circle + idx))).see();
 				pause();
 
 				/* Decrease the radius of the 'Circle' object. */
 				std::cout << std::endl << "Decrease the radius of the 'Circle' object." << std::endl;
 				(*(*(array_Circle + idx)))--;
-				(*(*(array_Circle + idx))).watch();
+				(*(*(array_Circle + idx))).see();
 				pause();
 
 				/* Various ways to call methods on an array of object pointers (pointer of pointers). */
@@ -478,10 +482,10 @@ int main ()
 				(*(array_Circle + idx))->reset();
 				(*(*(array_Circle + idx))).reset();
 
-				array_Circle[idx]->see();
-				(*array_Circle[idx]).see();
-				(*(array_Circle + idx))->see();
-				(*(*(array_Circle + idx))).see();
+				array_Circle[idx]->watch();
+				(*array_Circle[idx]).watch();
+				(*(array_Circle + idx))->watch();
+				(*(*(array_Circle + idx))).watch();
 				pause();
 
 				/* Calling in various ways to an overloaded operator. */
