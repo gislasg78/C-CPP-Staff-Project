@@ -50,9 +50,12 @@ class Point2D
 
 			Point2D<T>& operator()()
 				{
-					std::cout << "Show the current values ​​of a '2D Point'." << std::endl;
+					std::cout << "Show the current values ​​of a 'Point2D' object." << std::endl;
 					this->see(); this->view(); this->watch(); return *this;
 				}
+
+			Point2D<T>& operator+(const Point2D<T>& Point2D)
+				{this->x += Point2D.getX(); this->y += Point2D.getY(); return *this;}
 
 			Point2D<T>& operator++()	{++this->x; ++this->y; return *this;}
 			Point2D<T>& operator++(int)	{(*this).x++; (*this).y++; return *this;}
@@ -64,7 +67,7 @@ class Point2D
 
 			virtual void capture()
 				{
-					std::cout << "Capture the coordinates of a '2D Point'." << std::endl;
+					std::cout << "Capture the coordinates of a 'Point2D' object." << std::endl;
 					std::cout << "+ X Coord = "; (*this).x = (*this).enter_a_data(&this->x);
 					std::cout << "+ Y Coord = "; this->y = this->enter_a_data(&(*this).y);
 				}
@@ -82,8 +85,8 @@ class Point2D
 			const Point2D<C> convert(const Point2D<T>& other_Point2D)	const
 				{
 					Point2D<C> converted_Point2D(V_ZERO, V_ZERO);
-					converted_Point2D.setX(static_cast<C>(other_Point2D.getX()));
-					converted_Point2D.setY(static_cast<C>(other_Point2D.getY()));
+					converted_Point2D.getX() = static_cast<C>(other_Point2D.getX());
+					converted_Point2D.getY() = static_cast<C>(other_Point2D.getY());
 					return converted_Point2D;
 				}
 
@@ -115,12 +118,12 @@ class Point2D
 			const int& getId()	const	{return this->id;}
 
 			template <typename U = T>
-			typename std::enable_if<std::is_integral<T>::value, U>::type
-			getValue()			{return this->getId();}
-
-			template <typename U = T>
 			typename std::enable_if<std::is_floating_point<T>::value, U>::type
 			getValue()			{return ((double) (*this).x / (double) (*this).y);}
+
+			template <typename U = T>
+			typename std::enable_if<std::is_integral<T>::value, U>::type
+			getValue()			{return this->getId();}
 
 			const T& getX()		const	{return this->x;}
 			const T& getY()		const	{return this->y;}
@@ -136,8 +139,8 @@ class Point2D
 
 			virtual void print()	const
 				{
-					std::cout << "Display the current values ​​of a '2D Point'." << std::endl;
-					(*this).see(); (*this).view();
+					std::cout << "Display the current values ​​of a 'Point2D' object." << std::endl;
+					(*this).see(); (*this).view(); (*this).watch();
 				}
 
 			virtual void reset()		{this->x = V_ZERO; this->y = V_ZERO;}
@@ -150,37 +153,35 @@ class Point2D
 
 			virtual void see()	const
 				{
-					std::cout << "(ID = [" << (*this).id << "] : [" << this->id << "] = ";
-					std::cout << "[" << typeid((*this).id).name() << "] : [" << typeid(this->id).name() << "], ";
-					std::cout << "Counter = [" << (*this).counter << "] : [" << this->counter << "] = ";
-					std::cout << "[" << typeid((*this).counter).name()<< "] : [" << typeid(this->counter).name() << "])." << TABULATOR;
-					std::cout << "(X Coord = [" << this->x << "] : [" << (*this).x << "] = ";
-					std::cout << "[" << typeid((*this).x).name() << "] : [" << typeid(this->x).name() << "], ";
-					std::cout << "Y Coord = [" << this->y << "] : [" << (*this).y << "] = ";
-					std::cout << "[" << typeid((*this).y).name() << "] : [" << typeid(this->y).name() << "])." << std::endl;
+					std::cout << "Brief information about the 'Point2D' object." << std::endl;
+					std::cout << "+ ID:\t\t[" << (*this).id << "]." << std::endl;
+					std::cout << "+ Counter:\t[" << this->counter << "]." << std::endl;
+					std::cout << "+ X Coord:\t[" << (*this).x << "]." << std::endl;
+					std::cout << "+ Y Coord:\t[" << (*this).y << "]." << std::endl << std::endl;
 				}
 
 			virtual void swap()		{T temp = (*this).x; (*this).x = (*this).y; (*this).y = temp;}
 
 			virtual void view()	const
 				{
-					std::cout << std::endl << "Information about the '2D Point' object." << std::endl;
-					std::cout << "+ ID:\t\t[" << (*this).id << "] : [" << this->id << "] = ";
-					std::cout << "[" << typeid((*this).id).name() << "] : [" << typeid(this->id).name() << "]." << std::endl;
-					std::cout << "+ Counter:\t[" << (*this).counter << "] : [" << this->counter << "] = ";
-					std::cout << "[" << typeid((*this).counter).name() << "] : [" << typeid(this->counter).name() << "]." << std::endl;
-					std::cout << "+ X Coord:\t[" << (*this).x << "] : [" << this->x << "] = ";
-					std::cout << "[" << typeid((*this).x).name() << "] : [" << typeid(this->x).name() << "]." << std::endl;
-					std::cout << "+ Y Coord:\t[" << (*this).y << "] : [" << this->y << "] = ";
-					std::cout << "[" << typeid((*this).y).name() << "] : [" << typeid(this->y).name() << "]." << std::endl << std::endl;
+					std::cout << "Extended information about the 'Point2D' object." << std::endl;
+					std::cout << "+ ID:\t\t[" << (*this).id << "]\t:\t[" << this->id << "]\t=\t";
+					std::cout << "[" << typeid((*this).id).name() << "]\t:\t[" << typeid(this->id).name() << "]." << std::endl;
+					std::cout << "+ Counter:\t[" << (*this).counter << "]\t:\t[" << this->counter << "]\t=\t";
+					std::cout << "[" << typeid((*this).counter).name() << "]\t:\t[" << typeid(this->counter).name() << "]." << std::endl;
+					std::cout << "+ X Coord:\t[" << (*this).x << "]\t:\t[" << this->x << "]\t=\t";
+					std::cout << "[" << typeid((*this).x).name() << "]\t:\t[" << typeid(this->x).name() << "]." << std::endl;
+					std::cout << "+ Y Coord:\t[" << (*this).y << "]\t:\t[" << this->y << "]\t=\t";
+					std::cout << "[" << typeid((*this).y).name() << "]\t:\t[" << typeid(this->y).name() << "]." << std::endl << std::endl;
 				}
 
 			virtual void watch()	const
 				{
+					std::cout << "Specific information about the 'Point2D' object." << std::endl;
 					std::cout << "(ID = [" << this->id << "], ";
 					std::cout << "Counter = [" << this->counter << "])." << TABULATOR;
 					std::cout << "(X Coord = [" << this->x << "], ";
-					std::cout << "Y Coord = [" << this->y << "])." << std::endl;
+					std::cout << "Y Coord = [" << this->y << "])." << std::endl << std::endl;
 				}
 
 			virtual ~Point2D() = default;
@@ -227,9 +228,12 @@ class Point3D : public Point2D<T>
 
 			Point3D<T>& operator()()
 				{
-					std::cout << "Show the current values ​​of a '3D Point'." << std::endl;
+					std::cout << "Show the current values ​​of a 'Point3D' object." << std::endl;
 					this->see(); this->watch(); return *this;
 				}
+
+			Point3D<T>& operator+(const Point3D<T>& Point3D)
+				{(*this).getX() += Point3D.getX(); (*this).getY() += Point3D.getY(); this->z += Point3D.getZ(); return *this;}
 
 			Point3D<T>& operator++()	{++this->z; return *this;}
 			Point3D<T>& operator++(int)	{(*this).z++; return *this;}
@@ -241,7 +245,7 @@ class Point3D : public Point2D<T>
 
 			virtual void capture()
 				{
-					std::cout << "Capture the coordinates of a '3D Point'." << std::endl;
+					std::cout << "Capture the coordinates of a 'Point3D' object." << std::endl;
 					std::cout << "+ Z Coord = "; this->z = this->enter_a_data(&this->z);
 					Point2D<T>::capture();
 				}
@@ -260,9 +264,9 @@ class Point3D : public Point2D<T>
 			const Point3D<C> convert(const Point3D<T>& other_Point3D)	const
 				{
 					Point3D<C> converted_Point3D(V_ZERO, V_ZERO, V_ZERO);
-					converted_Point3D.setX(static_cast<C>(other_Point3D.getX()));
-					converted_Point3D.setY(static_cast<C>(other_Point3D.getY()));
-					converted_Point3D.setZ(static_cast<C>(other_Point3D.getZ()));
+					converted_Point3D.getX() = static_cast<C>(other_Point3D.getX());
+					converted_Point3D.getY() = static_cast<C>(other_Point3D.getY());
+					converted_Point3D.getZ() = static_cast<C>(other_Point3D.getZ());
 					return converted_Point3D;
 				}
 
@@ -275,12 +279,12 @@ class Point3D : public Point2D<T>
 				{std::cout << *this << std::endl; std::cin >> *this; std::cout << *this << std::endl;}
 
 			template <typename U = T>
-			typename std::enable_if<std::is_integral<T>::value, U>::type
-			getValue()			{return this->getId();}
-
-			template <typename U = T>
 			typename std::enable_if<std::is_floating_point<T>::value, U>::type
 			getValue()			{return this->getZ();}
+
+			template <typename U = T>
+			typename std::enable_if<std::is_integral<T>::value, U>::type
+			getValue()			{return this->getId();}
 
 			const T& getZ()		const	{return this->z;}
 			T& getZ()			{return (*this).z;}
@@ -295,7 +299,7 @@ class Point3D : public Point2D<T>
 
 			virtual void print()	const
 				{
-					std::cout << "Display the current values ​​of a '3D Point'." << std::endl;
+					std::cout << "Display the current values ​​of a 'Point3D' object." << std::endl;
 					(*this).see(); (*this).view(); (*this).watch();
 				}
 
@@ -305,22 +309,23 @@ class Point3D : public Point2D<T>
 
 			virtual void see()	const
 				{
-					std::cout << "(Z Coord = [" << this->z << "] : [" << (*this).z << "] = ";
-					std::cout << "[" << typeid((*this).z).name() << "] : [" << typeid(this->z).name() << "])." << std::endl;
+					std::cout << "Brief information about the 'Point3D' object." << std::endl;
+					std::cout << "+ Z Coord:\t[" << this->z << "]." << std::endl << std::endl;
 					Point2D<T>::see();
 				}
 
 			virtual void view()	const
 				{
-					std::cout << std::endl << "Information about the '3D Point' object." << std::endl;
-					std::cout << "+ Z Coord:\t[" << (*this).z << "] : [" << this->z << "] = ";
-					std::cout << "[" << typeid((*this).z).name() << "] : [" << typeid(this->z).name() << "]." << std::endl;
+					std::cout << "Extended information about the 'Point3D' object." << std::endl;
+					std::cout << "+ Z Coord:\t[" << (*this).z << "]\t:\t[" << this->z << "]\t=\t";
+					std::cout << "[" << typeid((*this).z).name() << "]\t:\t[" << typeid(this->z).name() << "]." << std::endl << std::endl;
 					Point2D<T>::view();
 				}
 
 			virtual void watch()	const
 				{
-					std::cout << "(Z Coord = [" << this->z << "])." << std::endl;
+					std::cout << "Specific information about the 'Point3D' object." << std::endl;
+					std::cout << "(Z Coord = [" << this->z << "])." << std::endl << std::endl;
 					Point2D<T>::watch();
 				}
 
