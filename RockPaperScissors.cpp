@@ -38,10 +38,12 @@ struct strct_outcomes
 		char chr_key_user_choice;
 		char chr_description_outcome_computer[V_NINE];
 		char chr_description_outcome_user[V_NINE];
+		bool bln_computer_winner;
+		bool bln_user_winner;
 	} array_strct_outcomes[V_NINE] = {
-						{'r', 'r', "Tie", "Tie"}, {'r', 'p', "Lose", "Win"}, {'r', 's', "Win", "Lose"},
-						{'p', 'r', "Win", "Lose"}, {'p', 'p', "Tie", "Tie"}, {'p', 's', "Lose", "Win"},
-						{'s', 'r', "Lose", "Win"}, {'s', 'p', "Win", "Lose"}, {'s', 's', "Tie", "Tie"},
+						{'r', 'r', "Tie", "Tie", false, false}, {'r', 'p', "Lose", "Win", false, true}, {'r', 's', "Win", "Lose", true, false},
+						{'p', 'r', "Win", "Lose", true, false}, {'p', 'p', "Tie", "Tie", false, false}, {'p', 's', "Lose", "Win", false, true},
+						{'s', 'r', "Lose", "Win", false, true}, {'s', 'p', "Win", "Lose", true, false}, {'s', 's', "Tie", "Tie", false, false},
 					};
 
 const int size_of_strct_outcomes = sizeof(array_strct_outcomes) / sizeof(struct strct_outcomes);
@@ -110,7 +112,11 @@ struct strct_choices ChooseWinner(const struct strct_choices& strct_computer_cho
 						std::cout << "| * Computer:\t[" << array_strct_outcomes[int_idx].chr_key_computer_choice << "] = [" << array_strct_outcomes[int_idx].chr_description_outcome_computer << "]." << std::endl;
 						std::cout << "| * User:\t[" << array_strct_outcomes[int_idx].chr_key_user_choice << "] = [" <<  array_strct_outcomes[int_idx].chr_description_outcome_user << "]." << std::endl;
 
-						strct_own_choice = strct_user_choice;
+						if (array_strct_outcomes[int_idx].bln_computer_winner)
+							strct_own_choice = strct_computer_choice;
+						else if (array_strct_outcomes[int_idx].bln_user_winner)
+							strct_own_choice = strct_user_choice;
+
 						break;
 					}
 			}
