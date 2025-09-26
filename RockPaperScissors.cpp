@@ -34,13 +34,14 @@ const int size_of_strct_choices = sizeof(array_strct_choices) / sizeof(struct st
 
 struct strct_outcomes
 	{
-		char chr_key_user_choice;
 		char chr_key_computer_choice;
-		char chr_description_outcome[V_NINE];
+		char chr_key_user_choice;
+		char chr_description_outcome_computer[V_NINE];
+		char chr_description_outcome_user[V_NINE];
 	} array_strct_outcomes[V_NINE] = {
-						{'r', 'r', "Tie"}, {'r', 'p', "Lose"}, {'r', 's', "Win"},
-						{'p', 'r', "Win"}, {'p', 'p', "Tie"}, {'p', 's', "Lose"},
-						{'s', 'r', "Lose"}, {'s', 'p', "Win"}, {'s', 's', "Tie"},
+						{'r', 'r', "Tie", "Tie"}, {'r', 'p', "Lose", "Win"}, {'r', 's', "Win", "Lose"},
+						{'p', 'r', "Win", "Lose"}, {'p', 'p', "Tie", "Tie"}, {'p', 's', "Lose", "Win"},
+						{'s', 'r', "Lose", "Win"}, {'s', 'p', "Win", "Lose"}, {'s', 's', "Tie", "Tie"},
 					};
 
 const int size_of_strct_outcomes = sizeof(array_strct_outcomes) / sizeof(struct strct_outcomes);
@@ -106,10 +107,8 @@ struct strct_choices ChooseWinner(const struct strct_choices& strct_computer_cho
 						std::cout << "| * Size:\t[" << size_of_strct_outcomes << "]." << std::endl;
 						std::cout << "| * Index:\t[" << int_idx << "]." << std::endl;
 						std::cout << "+---+----+---+----+" << std::endl;
-						std::cout << "| * Computer:\t[" << array_strct_outcomes[int_idx].chr_key_computer_choice << "]." << std::endl; 
-						std::cout << "| * User:\t[" << array_strct_outcomes[int_idx].chr_key_user_choice << "]." << std::endl;
-						std::cout << "+---+----+---+----+" << std::endl;
-						std::cout << "| * User:\t[" << array_strct_outcomes[int_idx].chr_description_outcome << "]." << std::endl;
+						std::cout << "| * Computer:\t[" << array_strct_outcomes[int_idx].chr_key_computer_choice << "] = [" << array_strct_outcomes[int_idx].chr_description_outcome_computer << "]." << std::endl;
+						std::cout << "| * User:\t[" << array_strct_outcomes[int_idx].chr_key_user_choice << "] = [" <<  array_strct_outcomes[int_idx].chr_description_outcome_user << "]." << std::endl;
 
 						strct_own_choice = strct_user_choice;
 						break;
