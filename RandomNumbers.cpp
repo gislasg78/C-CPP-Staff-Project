@@ -133,7 +133,7 @@ class RandomNumber
 			typename std::enable_if<std::is_integral<T>::value, U>::type
 			&getValue()					{return this->random_number;}
 
-			const T getWithin(const T& minimum, const T& maximum)
+			const T getWithin(const T& minimum, const T& maximum) const
 				{
 					return ((static_cast<int>(this->random_number) % (static_cast<int>(maximum) - static_cast<int>(minimum) + V_ONE)) + static_cast<int>(minimum));
 				}
