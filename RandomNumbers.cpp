@@ -176,6 +176,7 @@ class RandomNumber
 					T temp = this->random_seed;
 					this->random_seed = this->random_number;
 					this->random_number = temp;
+					(*this).restore();
 				}
 
 			virtual ~RandomNumber() = default;
