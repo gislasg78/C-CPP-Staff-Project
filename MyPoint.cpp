@@ -62,6 +62,9 @@ class Point2D
 			Point2D<T>& operator--()	{--(*this).x; --(*this).y; return *this;}
 			Point2D<T>& operator--(int)	{this->x--; this->y--; return *this;}
 
+			Point2D<T>& operator-(const Point2D<T>& Point2D)
+				{this->x -= Point2D.getX(); this->y -= Point2D.getY(); return *this;}
+
 			operator int()		const	{return this->id;}
 			operator double()	const	{return ((double) this->x / (double) this->y);}
 
@@ -239,6 +242,9 @@ class Point3D : public Point2D<T>
 			Point3D<T>& operator++(int)	{(*this).z++; return *this;}
 			Point3D<T>& operator--()	{--(*this).z; return *this;}
 			Point3D<T>& operator--(int)	{this->z--; return *this;}
+
+			Point3D<T>& operator-(const Point3D<T>& Point3D)
+				{(*this).getX() -= Point3D.getX(); (*this).getY() -= Point3D.getY(); this->z -= Point3D.getZ(); return *this;}
 
 			operator int()		const	{return (*this).getId();}
 			operator double()	const	{return (*this).getZ();}
