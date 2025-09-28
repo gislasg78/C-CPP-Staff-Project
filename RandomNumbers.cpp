@@ -81,7 +81,7 @@ class RandomNumber
 				}
 
 			template <typename C = T>
-			const RandomNumber<C> convert(const RandomNumber<T>& object_random)
+			const RandomNumber<C> convert(const RandomNumber<T>& object_random) const
 				{
 					RandomNumber<C> random_instance(object_random.getSeed());
 					return random_instance;
