@@ -52,7 +52,7 @@ class RandomNumber
 					return *this;
 				}
 
-			RandomNumber<T>& operator+ (const RandomNumber<T> object_random)
+			RandomNumber<T>& operator+ (const RandomNumber<T>& object_random)
 				{this->random_seed += object_random.getSeed(); this->restore(); return *this;}
 
 			RandomNumber<T>& operator++()			{++this->random_seed; this->restore(); return *this;}
@@ -60,7 +60,7 @@ class RandomNumber
 			RandomNumber<T>& operator--()			{--(*this).random_seed; (*this).restore(); return *this;}
 			RandomNumber<T>& operator--(int)		{this->random_seed--; this->restore(); return *this;}
 
-			RandomNumber<T>& operator- (const RandomNumber<T> object_random)
+			RandomNumber<T>& operator- (const RandomNumber<T>& object_random)
 				{(*this).random_seed -= object_random.getSeed(); (*this).restore(); return *this;}
 
 			operator T()					{return this->random_number;}
