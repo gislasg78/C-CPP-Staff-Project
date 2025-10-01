@@ -37,15 +37,16 @@ class RandomNumber
 			static int counter;
 
 		public:
-			RandomNumber() : random_index(V_MINUS_ONE)	{this->counter++; this->capture();}
+			RandomNumber() : random_index(V_MINUS_ONE), random_seed(V_ZERO), random_number(V_ZERO)
+				{this->counter++; this->capture();}
 			RandomNumber(const T& random_seed) : random_index(V_MINUS_ONE), random_seed(random_seed), random_number(random_seed)
 				{this->counter++; this->random_number = this->GenerateRandom();}
 			RandomNumber(const T& random_seed, const T& random_index) : random_index(random_index), random_seed(random_seed), random_number(random_seed)
 				{(*this).random_number = getRandom(random_seed, random_index);}
 
-			RandomNumber(const RandomNumber<T>& object_random) : random_index(object_random.getCounter()), random_seed(object_random.getSeed()), random_number(object_random.getNumber())
+			RandomNumber(const RandomNumber<T>& object_random) : random_index(object_random.getIndex()), random_seed(object_random.getSeed()), random_number(object_random.getNumber())
 				{this->counter++;}
-			RandomNumber(RandomNumber<T>&& object_random) : random_index(object_random.getCounter()), random_seed(object_random.getSeed()), random_number(object_random.getNumber())
+			RandomNumber(RandomNumber<T>&& object_random) : random_index(object_random.getIndex()), random_seed(object_random.getSeed()), random_number(object_random.getNumber())
 				{this->counter--; object_random.reset();}
 
 			RandomNumber<T>& operator= (const RandomNumber<T> &object_random)
@@ -73,29 +74,27 @@ class RandomNumber
 
 			virtual void capture()
 				{
-					std::cout << std::endl << "Random Number Generator." << std::endl;
-					std::cout << "Enter a random initial seed value: ";
-					(*this).random_seed = (*this).enter_a_value(&this->random_seed);
-					this->restore();
+					T random_seed = V_ZERO, random_index = V_ZERO;
+
+					std::cout << std::endl << "Random Number Generator Object." << std::endl;
+					std::cout << "+ Enter a random seed: ";
+					random_seed = (*this).enter_a_data(&random_seed);
+					std::cout << "+ Enter a index value: ";
+					random_index = (*this).enter_a_value(&random_index);
+
+					(*this).random_number = getRandom(random_seed, random_index);
 				}
 
 			template <typename C = T>
 			const RandomNumber<C> convert() const
-				{
-					RandomNumber<C> object_random((*this).random_seed);
-					return object_random;
-				}
-
+				{RandomNumber<C> object_random((*this).random_seed); return object_random;}
 			template <typename C = T>
 			const RandomNumber<C> convert(const RandomNumber<T>& object_random) const
-				{
-					RandomNumber<C> random_instance(object_random.getSeed());
-					return random_instance;
-				}
+				{RandomNumber<C> random_instance(object_random.getSeed()); return random_instance;}
 
 			virtual RandomNumber<T>& copy(const RandomNumber<T>& object_random)
 				{
-					this->random_index = object_random.getCounter();
+					this->random_index = object_random.getIndex();
 					this->random_number = object_random.getNumber();
 					this->random_seed = object_random.getSeed();
 					return *this;
@@ -128,7 +127,7 @@ class RandomNumber
 							std::getline(std::cin >> std::ws, str_value);
 							std::stringstream(str_value) >> *p_value;
 
-							std::cout << std::endl << "Value entered:\t[" << *p_value << "]. OK!" << std::endl;
+							std::cout << "Value entered:\t[" << *p_value << "]. OK!" << std::endl;
 						}
 					else
 						std::cerr << std::endl << "A valid memory address was not provided." << std::endl;
@@ -145,7 +144,7 @@ class RandomNumber
 					return (this->random_number = RANDOM_GENERATOR(static_cast<int>(this->random_number)));
 				}
 
-			const T& getCounter()	const			{return (*this).random_index;}
+			const T& getIndex()	const			{return (*this).random_index;}
 			const T& getNumber()	const			{return (*this).random_number;}
 
 			const T& getRandom(const T& random_seed = V_ZERO, const T &random_index = V_ZERO)
@@ -174,12 +173,9 @@ class RandomNumber
 
 			const T getWithin(const T& minimum = V_ZERO, const T& maximum = V_ZERO) const
 				{
-					T highest = V_ZERO, interval = V_ZERO, lowest = V_ZERO;
-
-					lowest = std::min(minimum, maximum);
-					highest = std::max(minimum, maximum);
-
-					interval = (highest - lowest) + V_ONE;
+					T highest = std::max(minimum, maximum);
+					T lowest = std::min(minimum, maximum);
+					T interval = highest - lowest + V_ONE;
 
 					return (static_cast<int>(this->random_number) % static_cast<int>(interval) + lowest);
 				}
@@ -201,10 +197,7 @@ class RandomNumber
 				}
 
 			virtual void reset()
-				{
-					this->random_index = V_MINUS_ONE;
-					this->random_number = this->random_seed = V_ZERO;
-				}
+				{this->random_index = V_MINUS_ONE; this->random_number = this->random_seed = V_ZERO;}
 
 			virtual void restore()
 				{
@@ -214,10 +207,7 @@ class RandomNumber
 				}
 
 			void setSeed(const T &random_seed = V_ZERO)
-				{
-					this->random_seed = random_seed;
-					this->restore();
-				}
+				{this->random_seed = random_seed; this->restore();}
 
 			virtual void swap()
 				{
