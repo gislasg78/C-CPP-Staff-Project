@@ -8,7 +8,6 @@
 #define	CARRIAGE_RETURN		'\n'
 
 /* Numeric symbolic constants. */
-#define	V_MINUS_ONE		-1
 #define V_ONE			1
 #define V_ZERO			0
 
@@ -24,7 +23,7 @@ template <typename T>
 class RandomNumber
 	{
 		private:
-			T random_index = V_MINUS_ONE;
+			T random_counter = V_ZERO;
 			T random_seed = V_ZERO;
 			T random_number = V_ZERO;
 
@@ -37,16 +36,16 @@ class RandomNumber
 			static int counter;
 
 		public:
-			RandomNumber() : random_index(V_MINUS_ONE), random_seed(V_ZERO), random_number(V_ZERO)
+			RandomNumber() : random_counter(V_ZERO), random_seed(V_ZERO), random_number(V_ZERO)
 				{this->counter++; this->capture();}
-			RandomNumber(const T& random_seed) : random_index(V_MINUS_ONE), random_seed(random_seed), random_number(random_seed)
+			RandomNumber(const T& random_seed) : random_counter(V_ZERO), random_seed(random_seed), random_number(random_seed)
 				{this->counter++; this->random_number = this->GenerateRandom();}
-			RandomNumber(const T& random_seed, const T& random_index) : random_index(random_index), random_seed(random_seed), random_number(random_seed)
-				{(*this).random_number = getRandom(random_seed, random_index);}
+			RandomNumber(const T& random_seed, const T& random_counter) : random_counter(random_counter), random_seed(random_seed), random_number(random_seed)
+				{this->counter++; (*this).random_number = this->getRandom(random_seed, random_counter);}
 
-			RandomNumber(const RandomNumber<T>& object_random) : random_index(object_random.getIndex()), random_seed(object_random.getSeed()), random_number(object_random.getNumber())
+			RandomNumber(const RandomNumber<T>& object_random) : random_counter(object_random.getCounter()), random_seed(object_random.getSeed()), random_number(object_random.getNumber())
 				{this->counter++;}
-			RandomNumber(RandomNumber<T>&& object_random) : random_index(object_random.getIndex()), random_seed(object_random.getSeed()), random_number(object_random.getNumber())
+			RandomNumber(RandomNumber<T>&& object_random) : random_counter(object_random.getCounter()), random_seed(object_random.getSeed()), random_number(object_random.getNumber())
 				{this->counter--; object_random.reset();}
 
 			RandomNumber<T>& operator= (const RandomNumber<T> &object_random)
@@ -56,8 +55,8 @@ class RandomNumber
 
 			RandomNumber<T>& operator()()
 				{this->random_number = this->GenerateRandom(); return *this;}
-			RandomNumber<T>& operator()(const T &random_seed, const T& random_index = V_ZERO)
-				{this->random_number = getRandom(random_seed, random_index); return *this;}
+			RandomNumber<T>& operator()(const T &random_seed, const T& random_counter = V_ZERO)
+				{this->random_number = this->getRandom(random_seed, random_counter); return *this;}
 
 			RandomNumber<T>& operator+ (const RandomNumber<T>& object_random)
 				{this->random_seed += object_random.getSeed(); this->restore(); return *this;}
@@ -74,15 +73,15 @@ class RandomNumber
 
 			virtual void capture()
 				{
-					T random_seed = V_ZERO, random_index = V_ZERO;
+					T random_counter = V_ZERO, random_seed = V_ZERO;
 
 					std::cout << std::endl << "Random Number Generator Object." << std::endl;
 					std::cout << "+ Enter a random seed: ";
 					random_seed = (*this).enter_a_data(&random_seed);
 					std::cout << "+ Enter a index value: ";
-					random_index = (*this).enter_a_value(&random_index);
+					random_counter = (*this).enter_a_value(&random_counter);
 
-					(*this).random_number = getRandom(random_seed, random_index);
+					(*this).random_number = getRandom(random_seed, random_counter);
 				}
 
 			template <typename C = T>
@@ -94,7 +93,7 @@ class RandomNumber
 
 			virtual RandomNumber<T>& copy(const RandomNumber<T>& object_random)
 				{
-					this->random_index = object_random.getIndex();
+					this->random_counter = object_random.getCounter();
 					this->random_number = object_random.getNumber();
 					this->random_seed = object_random.getSeed();
 					return *this;
@@ -104,7 +103,7 @@ class RandomNumber
 				{
 					if (p_data)
 						if (std::cin >> *p_data)
-							std::cout << "Value entered: [" << *p_data << "]. OK!" << std::endl;
+							std::cout << "Value entered:\t[" << *p_data << "]. OK!" << std::endl;
 						else
 							{
 								*p_data = V_ZERO;
@@ -140,22 +139,20 @@ class RandomNumber
 
 			const T& GenerateRandom()
 				{
-					(*this).random_index++;
+					(*this).random_counter++;
 					return (this->random_number = RANDOM_GENERATOR(static_cast<int>(this->random_number)));
 				}
 
-			const T& getIndex()	const			{return (*this).random_index;}
+			const T& getCounter()	const			{return (*this).random_counter;}
 			const T& getNumber()	const			{return (*this).random_number;}
 
-			const T& getRandom(const T& random_seed = V_ZERO, const T &random_index = V_ZERO)
+			const T& getRandom(const T& random_seed = V_ZERO, const T &random_counter = V_ZERO)
 				{
-					(*this).random_index = V_ZERO;
+					(*this).random_counter = V_ZERO;
 					(*this).random_number = (*this).random_seed = random_seed;
 
-					for (int counter = V_ZERO; counter <= random_index; counter++)
+					for (int counter = V_ZERO; counter < random_counter; counter++)
 						(*this).random_number = (*this).GenerateRandom();
-
-					this->random_index -= (this->random_index > V_ZERO) ? V_ONE : V_ZERO;
 
 					return (*this).random_number;
 				}
@@ -190,18 +187,18 @@ class RandomNumber
 				{
 					std::cout << std::endl << "Random Number Information." << std::endl;
 					std::cout << "+ Number of Objects:\t[" << this->counter << "]." << std::endl;
-					std::cout << "+ Random Index Value:\t[" << (*this).random_index << "]." << std::endl;
+					std::cout << "+ Random Count Value:\t[" << (*this).random_counter << "]." << std::endl;
 					std::cout << "+ Random Seed Number:\t[" << (*this).random_seed << "]." << std::endl;
 					std::cout << "+ Last Random Number:\t[" << (*this).random_number << "] = [" << this->getValue() << "]." << std::endl;
 					std::cout << std::endl;
 				}
 
 			virtual void reset()
-				{this->random_index = V_MINUS_ONE; this->random_number = this->random_seed = V_ZERO;}
+				{this->random_counter = this->random_number = this->random_seed = V_ZERO;}
 
 			virtual void restore()
 				{
-					(*this).random_index = V_MINUS_ONE;
+					(*this).random_counter = V_ZERO;
 					(*this).random_number = (*this).random_seed;
 					(*this).random_number = (*this).GenerateRandom();
 				}
@@ -245,7 +242,7 @@ int main()
 		std::cout << "List of generated random numbers." << std::endl;
 		for (int idx = V_ZERO; idx < numbers; idx++)
 			{
-				std::cout << "#: [" << counter++ << "]\t:\t[" << my_random_number.getNumber() << "]\t=\t[" << my_random_number.getValue() << "]." << std::endl;
+				std::cout << "#: [" << (counter++) + V_ONE << "]\t:\t[" << my_random_number.getNumber() << "]\t=\t[" << my_random_number.getValue() << "]." << std::endl;
 				my_random_number();	//Activate the generator to get the next number.
 			}
 		std::cout << "[" << counter << "] Output results generated." << std::endl;
