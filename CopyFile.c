@@ -83,9 +83,9 @@ int CopyFile(const char *strSource, const char *strTarget, const int numRecords)
 		printf("- Source file: [%s]. Open mode: [%s].\n", strSource, _READ_ONLY_FILE_);
 		printf("- Target file: [%s]. Open mode: [%s].\n", strTarget, _WRITE_ONLY_FILE_);
 
-		if (pFTarget = fopen(strTarget, _WRITE_ONLY_FILE_))
+		if ((pFTarget = fopen(strTarget, _WRITE_ONLY_FILE_)))
 			{
-				if (pFSource = fopen(strSource, _READ_ONLY_FILE_))
+				if ((pFSource = fopen(strSource, _READ_ONLY_FILE_)))
 					{
 						printf("File: [%s] is copied to file: [%s].\n", strSource, strTarget);
 
@@ -132,7 +132,7 @@ int CreateFile(const char *strFile)
 		printf("\nCreate file.\n");
 		printf("Loading File: [%s]. Opening mode: [%s].\n", strFile, _WRITE_ONLY_FILE_);
 
-		if (pFile = fopen(strFile, _WRITE_ONLY_FILE_))
+		if ((pFile = fopen(strFile, _WRITE_ONLY_FILE_)))
 			{
 				printf("Capturing file...\n");
 
@@ -177,7 +177,7 @@ int DumpFile(const char *strFile, const int numRecords)
 		printf("\nDump file.\n");
 		printf("Unloading File: [%s]. Opening mode: [%s].\n", strFile, _READ_ONLY_FILE_);
 
-		if (pFile = fopen(strFile, _READ_ONLY_FILE_))
+		if ((pFile = fopen(strFile, _READ_ONLY_FILE_)))
 			{
 				printf("Viewing file content...\n");
 
@@ -210,7 +210,7 @@ char *GetFileName(const char *strMessage, char *strFile)
 			{
 				printf("\n%s", strMessage);
 
-				if (scanf("%s%*c", strFile) == V_ONE)
+				if (scanf("%[^\n]%*c", strFile) == V_ONE)
 					printf("Correct entry: [%s]. OK!\n", strFile);
 				else
 					{
