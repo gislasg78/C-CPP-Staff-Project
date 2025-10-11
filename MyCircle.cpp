@@ -5,6 +5,7 @@
 //Classes and uniform initialization.
 #include <iostream>
 #include <limits>
+#include <sstream>
 
 /* Character constants. */
 #define	CARRIAGE_RETURN	'\n'
@@ -104,7 +105,7 @@ class Circle
 				{
 					if (ptr_data)
 						if (std::cin >> *ptr_data)
-							std::cout << "Value entered: [" << *ptr_data << "]. OK!" << std::endl;
+							std::cout << "Value entered:\t[" << *ptr_data << "]. OK!" << std::endl;
 						else
 							{
 								*ptr_data = V_ZERO;
@@ -118,6 +119,22 @@ class Circle
 
 					return *ptr_data;
 				};
+
+			static const T& enter_a_value(T *const ptr_value)
+				{
+					if (ptr_value)
+						{
+							std::string str_value;
+							std::getline(std::cin >> std::ws, str_value);
+							std::stringstream(str_value) >> *ptr_value;
+
+							std::cout << "Value entered:\t[" << *ptr_value << "]. OK!" << std::endl;
+						}
+					else
+						std::cerr << std::endl << "A valid memory address was not provided." << std::endl;
+
+					return *ptr_value;
+			}
 
 			virtual void explore()
 				{std::cout << *this << std::endl; std::cin >> *this; std::cout << *this << std::endl;}
@@ -158,7 +175,7 @@ class Circle
 
 			virtual void see()		const
 				{
-					std::cout << "Brief information about the object 'Circle'." << std::endl;
+					std::cout << "Brief information about the 'Circle' object." << std::endl;
 					std::cout << "+ ID:\t\t[" << this->id << "]." << std::endl;
 					std::cout << "+ Counter:\t[" << (*this).counter << "]." << std::endl;
 					std::cout << "+ PI Value:\t[" << this->PI << "]." << std::endl;
@@ -374,7 +391,7 @@ int main ()
 		/* Initial header messages. */
 		std::cout << "Creating 'Circle' objects on an array." << std::endl;
 		std::cout << "How many 'Circle' do you want to create? : ";
-		quantity = Circle<int>::enter_a_data(&quantity);
+		quantity = Circle<int>::enter_a_value(&quantity);
 
 		/* The dynamic array of pointers to objects of type 'Circle' is created. */
 		Circle<double> **array_Circle = new Circle<double>* [quantity];
@@ -383,8 +400,8 @@ int main ()
 		for (int idx = V_ZERO; idx < quantity; idx++)
 			{
 				std::cout << std::endl << "'Cylinder' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
-				std::cout << "Radius = "; radius = Circle<double>::enter_a_data(&radius);
-				std::cout << "Height = "; height = Circle<double>::enter_a_data(&height);
+				std::cout << "Radius = "; radius = Circle<double>::enter_a_value(&radius);
+				std::cout << "Height = "; height = Circle<double>::enter_a_value(&height);
 
 				array_Circle[idx] = new Cylinder<double>(idx + V_ONE, radius, height);
 
