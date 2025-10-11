@@ -4,6 +4,7 @@
 /* Common work libraries. */
 #include <iostream>
 #include <limits>
+#include <sstream>
 
 /* Symbolic work constants. */
 #define	CARRIAGE_RETURN	'\n'
@@ -100,7 +101,7 @@ class Point2D
 				{
 					if (ptr_data)
 						if (std::cin >> *ptr_data)
-							std::cout << "Value entered: [" << *ptr_data << "]. OK!" << std::endl;
+							std::cout << "Value entered:\t[" << *ptr_data << "]. OK!" << std::endl;
 						else
 							{
 								*ptr_data = V_ZERO;
@@ -114,6 +115,22 @@ class Point2D
 
 					return *ptr_data;
 				};
+
+			static const T& enter_a_value(T *const ptr_value)
+				{
+					if (ptr_value)
+						{
+							std::string str_value;
+							std::getline(std::cin >> std::ws, str_value);
+							std::stringstream(str_value) >> *ptr_value;
+
+							std::cout << "Value entered:\t[" << *ptr_value << "]. OK!" << std::endl;
+						}
+					else
+						std::cerr << std::endl << "A valid memory address was not provided." << std::endl;
+
+					return *ptr_value;
+				}
 
 			virtual void explore()
 				{std::cout << *this << std::endl; std::cin >> *this; std::cout << *this << std::endl;}
@@ -359,7 +376,7 @@ int main()
 		/* Initial header messages. */
 		std::cout << "Creating 'Point2D' objects on an array." << std::endl;
 		std::cout << "How many 'Point2D' do you want to create? : ";
-		quantity = Point2D<int>::enter_a_data(&quantity);
+		quantity = Point2D<int>::enter_a_value(&quantity);
 
 		/* The dynamic array of pointers to objects of type 'Point2D' is created. */
 		Point2D<int> **array_Point2D = new Point2D<int>* [quantity];
@@ -368,9 +385,9 @@ int main()
 		for (int idx = V_ZERO; idx < quantity; idx++)
 			{
 				std::cout << std::endl << "'Point2D' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
-				std::cout << "+ x = "; x = Point2D<int>::enter_a_data(&x);
-				std::cout << "+ y = "; y = Point2D<int>::enter_a_data(&y);
-				std::cout << "+ z = "; z = Point2D<int>::enter_a_data(&z);
+				std::cout << "+ x = "; x = Point2D<int>::enter_a_value(&x);
+				std::cout << "+ y = "; y = Point2D<int>::enter_a_value(&y);
+				std::cout << "+ z = "; z = Point2D<int>::enter_a_value(&z);
 
 				array_Point2D[idx] = new Point3D<int>(idx + V_ONE, x, y, z);
 
