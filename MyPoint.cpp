@@ -67,7 +67,7 @@ class Point2D
 				{this->x -= Point2D.getX(); this->y -= Point2D.getY(); return *this;}
 
 			operator int()		const	{return this->id;}
-			operator double()	const	{return ((double) this->x / (double) this->y);}
+			operator double()	const	{return ((this->y) ? ((double) (*this).x / (double) (*this).y) : V_ZERO);}
 
 			virtual void capture()
 				{
@@ -139,7 +139,7 @@ class Point2D
 
 			template <typename U = T>
 			typename std::enable_if<std::is_floating_point<T>::value, U>::type
-			getValue()			{return ((double) (*this).x / (double) (*this).y);}
+			getValue()			{return ((this->y) ? ((double) (*this).x / (double) (*this).y) : V_ZERO);}
 
 			template <typename U = T>
 			typename std::enable_if<std::is_integral<T>::value, U>::type
