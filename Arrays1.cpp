@@ -4,28 +4,29 @@
 #define V_ZERO  0
 
 //Cumulative sum of the increased and shifted value.
-int summatory(int *start, int *stop)
+template <typename T>
+auto sum_all(const T *start, const T *stop)
 	{
-		int sum = V_ZERO;
+		T sum = V_ZERO;
 
 		while (start != stop)
-			{
-				sum += *start;
-				start++;
-			}
+			{sum += *start++;}
 
 		return sum;
 	}
 
-int view_all(const int *start, const int *stop)
+//Counting of the values.
+template <typename T>
+T view_all(const T *start, const T *stop)
 	{
-		int count = V_ZERO;
+		T count = V_ZERO;
 
 		std::cout << "Dumping the array elements." << std::endl;
 
 		while (start != stop)
 			{
-				std::cout << "#: " << count++ << "\t[" << start << "]\t:\t[" << *start++ << "]." << std::endl;
+				std::cout << "#: [" << count++ << "]\t:\t{" << start << "}\t=\t(" << *start << ")." << std::endl;
+				start++;
 			}
 
 		std::cout << "[" << count << "] Output results generated." << std::endl;
@@ -34,14 +35,19 @@ int view_all(const int *start, const int *stop)
 	}
 
 
+//Main function.
 int main()
 	{
-		int numbers[] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97};
-		const int n_elements = sizeof(numbers) / sizeof(numbers[V_ZERO]);
+		int count = V_ZERO, sum = V_ZERO;
+		int array_numbers[] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97};
+		const int num_elements = sizeof(array_numbers) / sizeof(*array_numbers);
 
-		view_all(numbers, numbers + n_elements);
+		count = view_all<int>(array_numbers, array_numbers + num_elements);
+		sum = sum_all<int>(array_numbers, array_numbers + num_elements);
 
-		std::cout << std::endl << "Sum: [" << summatory(numbers, numbers + n_elements) << "]." << std::endl;
+		std::cout << std::endl << "Final Statistics." << std::endl;
+		std::cout << "+ Counter:\t[" << count << "]." << std::endl;
+		std::cout << "+ Summation:\t[" << sum << "]." << std::endl;
 
 		return V_ZERO;
 	}
