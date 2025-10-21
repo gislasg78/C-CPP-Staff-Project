@@ -3,14 +3,17 @@
 
 /* Standard work libraries. */
 #include <iostream>
+#include <limits>
 #include <sstream>
 
 //Symbolic work constants.
-#define	V_FIVE	5
-#define	V_SEVEN	7
-#define V_THREE	3
-#define V_TWO	2
-#define V_ZERO  0
+#define CARRIAGE_RETURN	'\n'
+
+#define	V_FIVE		5
+#define	V_SEVEN		7
+#define V_THREE		3
+#define V_TWO		2
+#define V_ZERO		0
 
 
 //Determine whether a given number is prime or not.
@@ -37,6 +40,38 @@ T* create_array(const T& size, const T& last_number, T** array)
 
 		*array = dynamic_array;
 		return dynamic_array;
+	}
+
+//Get a given value from the keyboard.
+template <typename T>
+auto getData(T* data_value)
+	{
+		std::string str_data_value {};
+
+		std::getline(std::cin >> std::ws, str_data_value);
+		std::stringstream(str_data_value) >> *data_value;
+
+		return *data_value;
+	}
+
+//Generate a pause to continue later.
+void getPause(const std::string& str_Message)
+	{
+		std::cout << std::endl << str_Message;
+		std::cin.get();
+		std::cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+	}
+
+//Display final statistics messages.
+template <typename T>
+void statistics(const T& count, const T& sum)
+	{
+		std::cout << std::endl << "Final Statistics." << std::endl;
+		std::cout << "+ Counter:\t[" << count << "]." << std::endl;
+		std::cout << "+ Summation:\t[" << sum << "]." << std::endl;
+
+		getPause("Press the ENTER key to continue...");
 	}
 
 //Cumulative sum of the increased and shifted value.
@@ -79,13 +114,11 @@ int main()
 		const int num_elements = sizeof(array_numbers) / sizeof(*array_numbers);
 
 		int count = V_ZERO, size {V_ZERO}, sum = V_ZERO;
-		std::string str_size {};
 
 		/* Header messages. */
 		std::cout << "Generator of an array with prime numbers." << std::endl;
 		std::cout << "Enter the number of items: ";
-		std::getline(std::cin >> std::ws, str_size);
-		std::stringstream(str_size) >> size;
+		size = getData<int>(&size);
 
 		/* Code block to create a dynamic array with prime numbers. */
 		int *ptr_array_numbers = create_array<int>(size, V_TWO, &ptr_array_numbers);
@@ -94,31 +127,17 @@ int main()
 			{
 				count = view_array<int>(ptr_array_numbers, ptr_array_numbers + size);
 				sum = sum_array<int>(ptr_array_numbers, ptr_array_numbers + size);
-
-				std::cout << std::endl << "Dynamic Final Statistics." << std::endl;
-				std::cout << "+ Counter:\t[" << count << "]." << std::endl;
-				std::cout << "+ Summation:\t[" << sum << "]." << std::endl;
+				statistics<int>(count, sum);
 
 				delete ptr_array_numbers;
 			}
 		else
 			std::cerr << std::endl << "Error allocating memory for a dynamic array of prime numbers." << std::endl;
 
-		std::cout << std::endl << "Press the ENTER key to continue...";
-		std::cin.get();
-		std::cin.clear();
-
 		/* Code block to read a static array with predefined prime numbers. */
 		count = view_array<int>(array_numbers, array_numbers + num_elements);
 		sum = sum_array<int>(array_numbers, array_numbers + num_elements);
-
-		std::cout << std::endl << "Static Final Statistics." << std::endl;
-		std::cout << "+ Counter:\t[" << count << "]." << std::endl;
-		std::cout << "+ Summation:\t[" << sum << "]." << std::endl;
-
-		std::cout << std::endl << "Press the ENTER key to continue...";
-		std::cin.get();
-		std::cin.clear();
+		statistics<int>(count, sum);
 
 		return V_ZERO;
 	}
