@@ -37,13 +37,13 @@ struct Node
 
 
 /* Function prototypes. */
-struct Node* addNode(int data, struct Node **rootNode);
-int captureNodes(struct Node **rootNode);
+struct Node* addNode(int data, struct Node **rootNode, int *counter);
+int captureNodes(struct Node **rootNode, int *counter);
 struct Node *createNode(int data, struct Node *leftNode, struct Node *rightNode);
-void deleteTree(struct Node *rootNode);
-struct Node* searchNode(int data, struct Node *rootNode);
-void viewAllTree(struct Node *rootNode);
-void viewTree(struct Node *rootNode, enum enm_TreeTour enm_TT);
+int deleteTree(struct Node *rootNode, int *counter);
+struct Node* searchNode(int data, struct Node *rootNode, int *counter);
+int viewAllTree(struct Node *rootNode, int *counter);
+int viewTree(struct Node *rootNode, enum enm_TreeTour enm_TT, int *counter);
 
 
 //Main function.
@@ -54,56 +54,60 @@ int main()
 		struct Node *rootNode = NULL;   /* Point to the root of the binary search tree. */
 
 		/* Loading the binary search tree. */
-		counter = captureNodes(&rootNode);
+		counter = captureNodes(&rootNode, &counter);
 		printf("[%d] Nodes captured.\n", counter);
 
 		/* View the entire tree in all its forms. */
-		viewAllTree(rootNode);
+		counter = V_ZERO;
+		counter = viewAllTree(rootNode, &counter);
+		printf("[%d] Invoked traversal processes.\n", counter);
 
 		/* Perform a search test for a given value in the tree. */
-		printf("\n\nSearch for a specific value in the tree.\n");
+		printf("\nSearch for a specific value in the binary tree.\n");
 		printf("Enter a value to search for : ");
 		scanf("%d", &data);
-		searchNode(data, rootNode);
+
+		counter = V_ZERO;
+		searchNode(data, rootNode, &counter);
 
 		/* Remove all nodes from the entire tree. */
 		printf("\nDelete the entire binary tree and free its memory...\n");
-		deleteTree(rootNode);
+		counter = V_ZERO;
+		counter = deleteTree(rootNode, &counter);
+		printf("[%d] Nodes deleted.\n", counter);
 
 		return EXIT_SUCCESS;
 	}
 
 /* Adding a key to the binary search tree. */
-struct Node* addNode(int data, struct Node **rootNode)
+struct Node* addNode(int data, struct Node **rootNode, int *counter)
 	{
-		static int counter = V_ZERO;
-
 		if (*rootNode)
 			{
 				if (data < (*rootNode)->data)
-					addNode(data, &(*rootNode)->leftNode);
+					addNode(data, &(*rootNode)->leftNode, counter);
 
 				if (data > (*rootNode)->data)
-					addNode(data, &(*rootNode)->rightNode);
+					addNode(data, &(*rootNode)->rightNode, counter);
 
 				if (data == (*rootNode)->data)
-					printf("The value: [%d] = [%d] was already inserted previously!\n", data, (*rootNode)->data);
+					printf("* The value # [%d] : [%d] = [%d] was already inserted previously!\n", *counter + V_ONE, data, (*rootNode)->data);
 			}
 		else
 			{
 				*rootNode = createNode(data, NULL, NULL);
-				printf("Inserted data\t# [%d] = [%d].\n", (counter++) + V_ONE, data);
+				printf("+ Inserted data\t# [%d] = [%d].\n", ((*counter)++) + V_ONE, data);
 			}
 
 		return *rootNode;
 	}
 
 /* Function to capture values ​​and enter them into the binary search tree. */
-int captureNodes(struct Node **rootNode)
+int captureNodes(struct Node **rootNode, int *counter)
 	{
 		/* Preliminary working variables. */
 		char chr_Char = NULL_CHARACTER;
-		int counter = V_ZERO, data = V_ZERO;
+		int data = V_ZERO;
 
 		/* Header messages. */
 		printf("Entering integer values to build a binary search tree.\n");
@@ -119,12 +123,13 @@ int captureNodes(struct Node **rootNode)
 					{
 						if (data)
 							{
-								printf("Input value\t# [%d] = [%d]. OK!\n", (counter++) + V_ONE, data);
-								*rootNode = addNode(data, rootNode);
+								printf("+ Input value\t# [%d] = [%d]. OK!\n", *counter + V_ONE, data);
+								*rootNode = addNode(data, rootNode, counter);
 							}
 					}
 				else
 					{
+						printf("* The entry is not valid!\n");
 						scanf("%*[^\n]%*c");
 						while ((chr_Char = getchar()) != CARRIAGE_RETURN && chr_Char != EOF);
 					}
@@ -134,9 +139,9 @@ int captureNodes(struct Node **rootNode)
 			}
 		while (data);
 
-		printf("\n[%d] Generated output results.\n", counter);
+		printf("\n[%d] Generated output results.\n", *counter);
 
-		return counter;
+		return *counter;
 	}
 
 /* Free the memory allocated to each of the nodes in the binary search tree. */
@@ -160,110 +165,127 @@ struct Node *createNode(int data, struct Node *leftNode, struct Node *rightNode)
 	};
 
 /* Free the memory allocated to each of the nodes in the binary search tree. */
-void deleteTree(struct Node *rootNode)
+int deleteTree(struct Node *rootNode, int *counter)
 	{
 		if (rootNode)
 			{
-				deleteTree(rootNode->leftNode);
-				deleteTree(rootNode->rightNode);
+				*counter = deleteTree(rootNode->leftNode, counter);
+				*counter = deleteTree(rootNode->rightNode, counter);
+
+				(*counter)++;
 				free(rootNode);
 			}
+
+		return *counter;
 	}
 
 /* It is responsible for searching for a specific value within the binary search tree. */
-struct Node* searchNode(int data, struct Node *rootNode)
+struct Node* searchNode(int data, struct Node *rootNode, int *counter)
 	{
 		struct Node* tempNode = NULL;
 
 		if (rootNode)
 			{
+				(*counter)++;
+
 				if (data < rootNode->data)
-					tempNode = searchNode(data, rootNode->leftNode);
+					tempNode = searchNode(data, rootNode->leftNode, counter);
 
 				if (data > rootNode->data)
-					tempNode = searchNode(data, rootNode->rightNode);
+					tempNode = searchNode(data, rootNode->rightNode, counter);
 
 				if (data == rootNode->data)
 					{
-						printf("The value: [%d] = [%d] was found!\n", data, rootNode->data);
+						printf("The value: [%d] = [%d] was found in [%d] cycles!\n", data, rootNode->data, *counter);
 						tempNode = rootNode;
 					}
 			}
 		else
-			printf("The value: [%d] was not found!\n", data);
+			printf("The value: [%d] was not found despite having traversed [%d] nodes!\n", data, *counter);
 
 		return tempNode;
 	}
 
 /* Allows viewing of all types of binary search tree traversals. */
-void viewAllTree(struct Node *rootNode)
+int viewAllTree(struct Node *rootNode, int *counter)
 	{
+		int counting = V_ZERO;
 		printf("\nEntire display of the binary search tree.");
 
 		/* Root node is tracked for each node level and for each node type. */
-		for (int int_idx = (int) enm_TT_PreOrder; int_idx <= (int) enm_TT_Inv_PostOrder; int_idx++)
+		for (int int_idx = (int) enm_TT_PreOrder; int_idx <= (int) enm_TT_Inv_PostOrder; int_idx++, counting++)
 			{
-				printf("\n[%s].\n", str_Modes[int_idx]);
-				viewTree(rootNode, (enum enm_TreeTour) int_idx);
+				printf("\n[%s]\n", str_Modes[int_idx]);
+				*counter = viewTree(rootNode, (enum enm_TreeTour) int_idx, counter);
 			}
+
+		printf("\n[%d] Generated exit routes.\n", counting);
+
+		return *counter;
 	}
 
 /* Display the tree directed by the root node. */
-void viewTree(struct Node *rootNode, enum enm_TreeTour enm_TT)
+int viewTree(struct Node *rootNode, enum enm_TreeTour enm_TT, int *counter)
 	{
 		switch (enm_TT)
 			{
 				case enm_TT_PreOrder:    //PreOrder.	{data, left, right}.
 					if (rootNode)
 						{
-							printf("[%d].\t", rootNode->data);
-							viewTree(rootNode->leftNode, enm_TT_PreOrder);
-							viewTree(rootNode->rightNode, enm_TT_PreOrder);
+							(*counter)++;
+							printf("%d\t", rootNode->data);
+							*counter = viewTree(rootNode->leftNode, enm_TT_PreOrder, counter);
+							*counter = viewTree(rootNode->rightNode, enm_TT_PreOrder, counter);
 						}
 					break;
 
 				case enm_TT_InOrder:	//InOrder.	{left, data, right}.
 					if (rootNode)
 						{
-							viewTree(rootNode->leftNode, enm_TT_InOrder);
-							printf("[%d].\t", rootNode->data);
-							viewTree(rootNode->rightNode, enm_TT_InOrder);
+							(*counter)++;
+							*counter = viewTree(rootNode->leftNode, enm_TT_InOrder, counter);
+							printf("%d\t", rootNode->data);
+							*counter = viewTree(rootNode->rightNode, enm_TT_InOrder, counter);
 						}
 					break;
 
 				case enm_TT_PostOrder:	//PostOrder.	{left, right, data}.
 					if (rootNode)
 						{
-							viewTree(rootNode->leftNode, enm_TT_PostOrder);
-							viewTree(rootNode->rightNode, enm_TT_PostOrder);
-							printf("[%d].\t", rootNode->data);
+							(*counter)++;
+							*counter = viewTree(rootNode->leftNode, enm_TT_PostOrder, counter);
+							*counter = viewTree(rootNode->rightNode, enm_TT_PostOrder, counter);
+							printf("%d\t", rootNode->data);
 						}
 					break;
 
 				case enm_TT_Inv_PreOrder:	//Inverse PreOrder.
 					if (rootNode)
 						{
-							printf("[%d].\t", rootNode->data);
-							viewTree(rootNode->rightNode, enm_TT_Inv_PreOrder);
-							viewTree(rootNode->leftNode, enm_TT_Inv_PreOrder);
+							(*counter)++;
+							printf("%d\t", rootNode->data);
+							*counter = viewTree(rootNode->rightNode, enm_TT_Inv_PreOrder, counter);
+							*counter = viewTree(rootNode->leftNode, enm_TT_Inv_PreOrder, counter);
 						}
 					break;
 
 				case enm_TT_Inv_InOrder:	//Inverse InOrder.
 					if (rootNode)
 						{
-							viewTree(rootNode->rightNode, enm_TT_Inv_InOrder);
-							printf("[%d].\t", rootNode->data);
-							viewTree(rootNode->leftNode, enm_TT_Inv_InOrder);
+							(*counter)++;
+							*counter = viewTree(rootNode->rightNode, enm_TT_Inv_InOrder, counter);
+							printf("%d\t", rootNode->data);
+							*counter = viewTree(rootNode->leftNode, enm_TT_Inv_InOrder, counter);
 						}
 					break;
 
 				case enm_TT_Inv_PostOrder:	//Inverse PostOrder.
 					if (rootNode)
 						{
-							viewTree(rootNode->rightNode, enm_TT_Inv_PostOrder);
-							viewTree(rootNode->leftNode, enm_TT_Inv_PostOrder);
-							printf("[%d].\t", rootNode->data);
+							(*counter)++;
+							*counter = viewTree(rootNode->rightNode, enm_TT_Inv_PostOrder, counter);
+							*counter = viewTree(rootNode->leftNode, enm_TT_Inv_PostOrder, counter);
+							printf("%d\t", rootNode->data);
 						}
 					break;
 
@@ -271,4 +293,6 @@ void viewTree(struct Node *rootNode, enum enm_TreeTour enm_TT)
 					printf("Invalid Option!\n");
 					break;
 			}
+
+		return *counter;
 	}
