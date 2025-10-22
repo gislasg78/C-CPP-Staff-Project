@@ -1,120 +1,150 @@
-/******************* Árbol binario de búsqueda *********************
- * BSTree.c
- *
- */
+/* This program builds a binary search tree and
+   provides basic maintenance for the tree. */
+/* Standard Work Libraries. */
 #include <stdio.h>
 #include <stdlib.h>
 
-#define	V_ZERO	0
+/* Symbolic character variables. */
+#define CARRIAGE_RETURN	'\n'
+#define NULL_CHARACTER	'\0'
 
-enum enm_TreeTour   /* Modalidades de recorrido de un árbol binario. */
+/* Symbolic work constants. */
+#define	V_ONE		1
+#define	V_ZERO		0
+
+
+/* Traversal modes of a binary search tree. */
+enum enm_TreeTour
 	{
-		enm_TT_Normal_PreOrder,
-		enm_TT_Normal_InOrder,
-		enm_TT_Normal_PostOrder,
-		enm_TT_Inverse_PreOrder,
-		enm_TT_Inverse_InOrder,
-		enm_TT_Inverse_PostOrder
+		enm_TT_PreOrder,
+		enm_TT_InOrder,
+		enm_TT_PostOrder,
+		enm_TT_Inv_PreOrder,
+		enm_TT_Inv_InOrder,
+		enm_TT_Inv_PostOrder
 	};
 
-static char *str_Modes[] = {"Normal PreOrder", "Normal InOrder", "Normal PostOrder", "Inverse PreOrder", "Inverse InOrder", "Inverse PostOrder"};
+/* Legends for the traversal type of a binary search tree. */
+static char *str_Modes[] = {"PreOrder", "InOrder", "PostOrder", "Inverse PreOrder", "Inverse InOrder", "Inverse PostOrder"};
 
-struct Node     /* Estructura de un nodo del árbol. */
+/* Structure of a node in a binary search tree. */
+struct Node
 	{
-		int data;
-		struct Node *leftNode;  /* Puntero a la raíz del subárbol izquierdo. */
-		struct Node *rightNode; /* Puntero a la raíz del subárbol derecho. */
+		int data;		/* Data value. */
+		struct Node *leftNode;  /* Pointer to the root of the left subtree. */
+		struct Node *rightNode; /* Pointer to the root of the right subtree. */
 	};
 
-/* Prototipos de funciones. */
-void addNodetoTree(int data, struct Node **rootNode);
+
+/* Function prototypes. */
+struct Node* addNode(int data, struct Node **rootNode);
 int captureNodes(struct Node **rootNode);
 struct Node *createNode(int data, struct Node *leftNode, struct Node *rightNode);
-void deleteAllTree(struct Node *rootNode);
-void searchNode(int data, struct Node *rootNode);
+void deleteTree(struct Node *rootNode);
+struct Node* searchNode(int data, struct Node *rootNode);
 void viewAllTree(struct Node *rootNode);
 void viewTree(struct Node *rootNode, enum enm_TreeTour enm_TT);
 
 
-int main()  /* Función principal. */
+//Main function.
+int main()
 	{
-		int int_counting_items = V_ZERO;
-		int data = V_ZERO;
-		struct Node *rootNode = NULL;   /* Apunta a la raíz del árbol. */
+		/* Preliminary working variables. */
+		int counter = V_ZERO, data = V_ZERO;
+		struct Node *rootNode = NULL;   /* Point to the root of the binary search tree. */
 
-		int_counting_items = captureNodes(&rootNode);
+		/* Loading the binary search tree. */
+		counter = captureNodes(&rootNode);
+		printf("[%d] Nodes captured.\n", counter);
+
+		/* View the entire tree in all its forms. */
 		viewAllTree(rootNode);
 
-		printf("\n");
-		printf("\nEnter a value to search for : ");
+		/* Perform a search test for a given value in the tree. */
+		printf("\n\nSearch for a specific value in the tree.\n");
+		printf("Enter a value to search for : ");
 		scanf("%d", &data);
 		searchNode(data, rootNode);
 
-		printf("\n");
-		printf("Delete the entire binary tree and free its memory...\n");
-		deleteAllTree(rootNode);
+		/* Remove all nodes from the entire tree. */
+		printf("\nDelete the entire binary tree and free its memory...\n");
+		deleteTree(rootNode);
 
 		return EXIT_SUCCESS;
 	}
 
-
-/* Añadir una clave en el árbol binario de búsqueda.
-    Se busca por un determinado nodo y si no se encuentra el valor se inserta.
-    El valor para el nodo raíz es pasado por referencia para hacer posibles
-    los nuevos enlaces entre nodo y nodo cuando se crea uno nuevo.
-*/
-void addNodetoTree(int data, struct Node **rootNode)
+/* Adding a key to the binary search tree. */
+struct Node* addNode(int data, struct Node **rootNode)
 	{
-		static int int_counting_items = V_ZERO;
+		static int counter = V_ZERO;
 
 		if (*rootNode)
 			{
 				if (data < (*rootNode)->data)
-					addNodetoTree(data, &(*rootNode)->leftNode);
+					addNode(data, &(*rootNode)->leftNode);
 
 				if (data > (*rootNode)->data)
-					addNodetoTree(data, &(*rootNode)->rightNode);
+					addNode(data, &(*rootNode)->rightNode);
 
 				if (data == (*rootNode)->data)
-					printf("The value: [%d] : [%d] was already inserted previously!\n", data, (*rootNode)->data);
+					printf("The value: [%d] = [%d] was already inserted previously!\n", data, (*rootNode)->data);
 			}
 		else
 			{
 				*rootNode = createNode(data, NULL, NULL);
-				printf("Inserted data # [%d] : [%d].\n", int_counting_items++, data);
+				printf("Inserted data\t# [%d] = [%d].\n", (counter++) + V_ONE, data);
 			}
+
+		return *rootNode;
 	}
 
-/* Función para capturar valores e ingresarlos al árbol binario de búsqueda. */
+/* Function to capture values ​​and enter them into the binary search tree. */
 int captureNodes(struct Node **rootNode)
 	{
-		int data = V_ZERO, datas = V_ZERO;
-		int int_counting_items = V_ZERO;
+		/* Preliminary working variables. */
+		char chr_Char = NULL_CHARACTER;
+		int counter = V_ZERO, data = V_ZERO;
 
+		/* Header messages. */
 		printf("Entering integer values to build a binary search tree.\n");
-		printf("Finish by pressing [CTRL] + [D].\n");
+		printf("To end the capture, enter the value zero.\n");
 
-		printf("Enter a entire data [%d] : ", int_counting_items++);
-		while (scanf("%d", &data) != EOF)
+		/* The root tree is passed by value its memory address stored in the pointer variable. */
+		do
 			{
-				addNodetoTree(data, rootNode);  /* Raíz se pasa por referencia. */
-				printf("Enter a entire data [%d] : ", int_counting_items++);
+				printf("\nEnter a entire data (0 to exit) : ");
+
+				/* Validate that only one value is received. */
+				if (scanf("%d%*c", &data) == V_ONE)
+					{
+						if (data)
+							{
+								printf("Input value\t# [%d] = [%d]. OK!\n", (counter++) + V_ONE, data);
+								*rootNode = addNode(data, rootNode);
+							}
+					}
+				else
+					{
+						scanf("%*[^\n]%*c");
+						while ((chr_Char = getchar()) != CARRIAGE_RETURN && chr_Char != EOF);
+					}
+
+				clearerr(stdin);
+				fflush(stdin);
 			}
+		while (data);
 
-		clearerr(stdin);
+		printf("\n[%d] Generated output results.\n", counter);
 
-		printf("\n");
-		printf("[%d] Generated output results...\n", int_counting_items);
-
-		return int_counting_items;
+		return counter;
 	}
 
-/* Función de creación de un nuevo nodo. */
+/* Free the memory allocated to each of the nodes in the binary search tree. */
 struct Node *createNode(int data, struct Node *leftNode, struct Node *rightNode)
 	{
 		struct Node *newNode = NULL;
 
-		if (newNode = (struct Node *) malloc(sizeof(struct Node)))
+		if ((newNode = (struct Node *) malloc(sizeof(struct Node))))
 			{
 				newNode->data = data;
 				newNode->leftNode = leftNode;
@@ -129,124 +159,112 @@ struct Node *createNode(int data, struct Node *leftNode, struct Node *rightNode)
 		return newNode;
 	};
 
-
-/* Liberar la memoria asignada a cada uno de los nodos del árbol direccionado por
-    el nodo raíz. Se recorre el árbol, generalmente en PostOrden.
-*/
-void deleteAllTree(struct Node *rootNode)
+/* Free the memory allocated to each of the nodes in the binary search tree. */
+void deleteTree(struct Node *rootNode)
 	{
 		if (rootNode)
 			{
-				deleteAllTree(rootNode->leftNode);
-				deleteAllTree(rootNode->rightNode);
+				deleteTree(rootNode->leftNode);
+				deleteTree(rootNode->rightNode);
 				free(rootNode);
 			}
 	}
 
-/* Se encarga de buscar un valor determinado dentro del árbol binario de búsqueda. */
-void searchNode(int data, struct Node *rootNode)
+/* It is responsible for searching for a specific value within the binary search tree. */
+struct Node* searchNode(int data, struct Node *rootNode)
 	{
+		struct Node* tempNode = NULL;
+
 		if (rootNode)
 			{
 				if (data < rootNode->data)
-					searchNode(data, rootNode->leftNode);
+					tempNode = searchNode(data, rootNode->leftNode);
 
 				if (data > rootNode->data)
-					searchNode(data, rootNode->rightNode);
+					tempNode = searchNode(data, rootNode->rightNode);
 
 				if (data == rootNode->data)
-					printf("The value: [%d] : [%d] was found!\n", data, rootNode->data);
+					{
+						printf("The value: [%d] = [%d] was found!\n", data, rootNode->data);
+						tempNode = rootNode;
+					}
 			}
 		else
 			printf("The value: [%d] was not found!\n", data);
+
+		return tempNode;
 	}
 
-/* Permite la visualización de todos los tipos de recorridos del
- * árbol binario de búsqueda.
- */
+/* Allows viewing of all types of binary search tree traversals. */
 void viewAllTree(struct Node *rootNode)
 	{
-		printf("\n");
-		printf("Entire display of the binary search tree.\n");
+		printf("\nEntire display of the binary search tree.");
 
-		/* Nodo raíz y nivel de cada nodo. */
-		for (int int_idx = (int) enm_TT_Normal_PreOrder; int_idx <= (int) enm_TT_Inverse_PostOrder; int_idx++)
+		/* Root node is tracked for each node level and for each node type. */
+		for (int int_idx = (int) enm_TT_PreOrder; int_idx <= (int) enm_TT_Inv_PostOrder; int_idx++)
 			{
 				printf("\n[%s].\n", str_Modes[int_idx]);
 				viewTree(rootNode, (enum enm_TreeTour) int_idx);
 			}
 	}
 
-/* Visualizar el árbol direccionado por raíz.
- * Cada nivel de nodo se visualiza cuando se recorre el árbol.
- *
- * Esencialmente pueden utilizarse tres formas para recorrer un árbol binario: preorden, inorden y postorden.
- * Cuando se visitan los nodos en preorden, primero se visita la raí2, después el subiírbol izquierdo y por último el subárbol derecho.
- * Cuando se visitan los nodos en inorden, primero se visita el subárbol izquierdo, después la raíz y por último el subárbol derecho.
- * Cuando se visitan los nodos en postorden, primero se visita el subárbol izquierdo, después el subárbol derecho y por último la raí2.
- */
+/* Display the tree directed by the root node. */
 void viewTree(struct Node *rootNode, enum enm_TreeTour enm_TT)
 	{
 		switch (enm_TT)
 			{
-				case enm_TT_Normal_PreOrder:    //PreOrder.
+				case enm_TT_PreOrder:    //PreOrder.	{data, left, right}.
 					if (rootNode)
 						{
 							printf("[%d].\t", rootNode->data);
-							viewTree(rootNode->leftNode, enm_TT_Normal_PreOrder);
-							viewTree(rootNode->rightNode, enm_TT_Normal_PreOrder);
+							viewTree(rootNode->leftNode, enm_TT_PreOrder);
+							viewTree(rootNode->rightNode, enm_TT_PreOrder);
 						}
-
 					break;
 
-				case enm_TT_Normal_InOrder:	//InOrder.
+				case enm_TT_InOrder:	//InOrder.	{left, data, right}.
 					if (rootNode)
 						{
-							viewTree(rootNode->leftNode, enm_TT_Normal_InOrder);
+							viewTree(rootNode->leftNode, enm_TT_InOrder);
 							printf("[%d].\t", rootNode->data);
-							viewTree(rootNode->rightNode, enm_TT_Normal_InOrder);
+							viewTree(rootNode->rightNode, enm_TT_InOrder);
 						}
-
 					break;
 
-				case enm_TT_Normal_PostOrder:	//PostOrder.
+				case enm_TT_PostOrder:	//PostOrder.	{left, right, data}.
 					if (rootNode)
 						{
-							viewTree(rootNode->leftNode, enm_TT_Normal_PostOrder);
-							viewTree(rootNode->rightNode, enm_TT_Normal_PostOrder);
+							viewTree(rootNode->leftNode, enm_TT_PostOrder);
+							viewTree(rootNode->rightNode, enm_TT_PostOrder);
 							printf("[%d].\t", rootNode->data);
 						}
-
 					break;
 
-				case enm_TT_Inverse_PreOrder:	//Inverse PreOrder.
+				case enm_TT_Inv_PreOrder:	//Inverse PreOrder.
 					if (rootNode)
 						{
 							printf("[%d].\t", rootNode->data);
-							viewTree(rootNode->rightNode, enm_TT_Inverse_PreOrder);
-							viewTree(rootNode->leftNode, enm_TT_Inverse_PreOrder);
+							viewTree(rootNode->rightNode, enm_TT_Inv_PreOrder);
+							viewTree(rootNode->leftNode, enm_TT_Inv_PreOrder);
 						}
-
 					break;
 
-				case enm_TT_Inverse_InOrder:	//Inverse InOrder.
+				case enm_TT_Inv_InOrder:	//Inverse InOrder.
 					if (rootNode)
 						{
-							viewTree(rootNode->rightNode, enm_TT_Inverse_InOrder);
+							viewTree(rootNode->rightNode, enm_TT_Inv_InOrder);
 							printf("[%d].\t", rootNode->data);
-							viewTree(rootNode->leftNode, enm_TT_Inverse_InOrder);
+							viewTree(rootNode->leftNode, enm_TT_Inv_InOrder);
 						}
-
 					break;
 
-				case enm_TT_Inverse_PostOrder:	//Inverse PostOrder.
+				case enm_TT_Inv_PostOrder:	//Inverse PostOrder.
 					if (rootNode)
 						{
-							viewTree(rootNode->rightNode, enm_TT_Inverse_PostOrder);
-							viewTree(rootNode->leftNode, enm_TT_Inverse_PostOrder);
+							viewTree(rootNode->rightNode, enm_TT_Inv_PostOrder);
+							viewTree(rootNode->leftNode, enm_TT_Inv_PostOrder);
 							printf("[%d].\t", rootNode->data);
 						}
-
 					break;
 
 				default:
