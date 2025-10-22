@@ -101,7 +101,7 @@ struct Node *push(int data, struct Node *stack)
 	{
 		struct Node *tempNode = NULL;
 
-		if (tempNode = (struct Node *) malloc(sizeof(struct Node)))
+		if ((tempNode = (struct Node *) malloc(sizeof(struct Node))))
 			{
 				tempNode->data = data;
 				tempNode->nextNode = stack;

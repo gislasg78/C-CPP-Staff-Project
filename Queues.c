@@ -43,7 +43,7 @@ struct Node *createNode(int data, struct Node *nextNode)
 	{
 		struct Node *tempNode = NULL;
 
-		if (tempNode = (struct Node *) malloc(sizeof(struct Node)))
+		if ((tempNode = (struct Node *) malloc(sizeof(struct Node))))
 			{
 				tempNode->data = data;
 				tempNode->nextNode = nextNode;
@@ -80,7 +80,7 @@ struct Node *enqueueNode(int data, struct Node **front, struct Node **final)
 	{
 		struct Node *tempNode = NULL;
 
-		if (tempNode = createNode(data, NULL))
+		if ((tempNode = createNode(data, NULL)))
 			{
 				if (*front)
 					(*final)->nextNode = tempNode;
