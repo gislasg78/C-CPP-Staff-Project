@@ -6,7 +6,7 @@
 #include <limits>
 #include <sstream>
 
-//Symbolic work constants.
+/* Symbolic work constants. */
 #define CARRIAGE_RETURN	'\n'
 
 #define	V_FIVE		5
@@ -44,14 +44,21 @@ T* create_array(const T& size, const T& last_number, T** array)
 
 //Get a given value from the keyboard.
 template <typename T>
-auto getData(T* data_value)
+auto getData(T* ptr_data_value)
 	{
-		std::string str_data_value {};
+		if (ptr_data_value)
+			{
+				std::string str_data_value {};
 
-		std::getline(std::cin >> std::ws, str_data_value);
-		std::stringstream(str_data_value) >> *data_value;
+				std::getline(std::cin >> std::ws, str_data_value);
+				std::stringstream(str_data_value) >> *ptr_data_value;
 
-		return *data_value;
+				std::cout << "Value entered:\t[" << *ptr_data_value << "]. OK!" << std::endl;
+			}
+		else
+			std::cerr << std::endl << "A valid memory address was not provided." << std::endl;
+
+		return *ptr_data_value;
 	}
 
 //Generate a pause to continue later.
@@ -101,6 +108,7 @@ T view_array(const T *start, const T *stop)
 			}
 
 		std::cout << "[" << count << "] Output results generated." << std::endl;
+		getPause("Press the ENTER key to continue...");
 
 		return count;
 	}
