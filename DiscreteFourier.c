@@ -1,7 +1,7 @@
 /****************** Discrete Fourier Transform. ******************
- ** Source Code:        Fourier.c				**
+ ** Source Code:        DiscreteFourier.c			**
  ** Author:             Gustavo Islas Gálvez.                   **
- ** Creation Date:      Saturday, December 30, 2023.            **
+ ** Creation Date:      Wednesday, December 31, 2025.		**
  ** Purpose:		We have another way of characterizing	**
  **			L.T.I systems very powerful tool for 	**
  **			determine outputs when inputs.		**
@@ -11,19 +11,23 @@
  **			in the temporal domain are difficult to	**
  **			understand (e.g. filtering).		**
  ** +---!----+---!----+---!----++---!----+---!----+---!----+---	**
- **			Test Values:				**
+ **			Test Values (six basic examples):	**
  **				1.5, 2.5, 3.5, 4.5, 5.5, 6.5.	**
+ **				6.5, 5.5, 4.5, 3.5, 2.5, 1.5.	**
 *****************************************************************/
 //C Standard Libraries.
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 
 //C Standard Constants.
+#define	CARRIAGE_RETURN		'\n'
+#define NULL_CHARACTER		'\0'
+
+//Symbolic numerical constants.
 #define V_ONE			1
 #define V_TWO			2
 #define V_ZERO			0
-#define NULL_CHARACTER		'\0'
 
 //C Limit Constants.
 #define V_LOWER_LIMIT_DFT	1
@@ -63,7 +67,7 @@ typedef struct strct_ComplexNumber
  ****************************************************************/
 t_s_ComplexNumber addComplexNumbers(t_s_ComplexNumber firstNumber, t_s_ComplexNumber secondNumber)
 	{
-		t_s_ComplexNumber goal_ComplexNumber;
+		t_s_ComplexNumber goal_ComplexNumber = {V_ZERO, V_ZERO};
 
 		goal_ComplexNumber.real = firstNumber.real + secondNumber.real;
 		goal_ComplexNumber.imag = firstNumber.imag + secondNumber.imag;
@@ -104,7 +108,7 @@ t_s_ComplexNumber addComplexNumbers(t_s_ComplexNumber firstNumber, t_s_ComplexNu
  ****************************************************************/
 t_s_ComplexNumber multiplyComplexNumbers(t_s_ComplexNumber firstNumber, t_s_ComplexNumber secondNumber)
 	{
-		t_s_ComplexNumber goal_ComplexNumber;
+		t_s_ComplexNumber goal_ComplexNumber = {V_ZERO, V_ZERO};
 
 		goal_ComplexNumber.real = firstNumber.real * secondNumber.real - firstNumber.imag * secondNumber.imag;
 		goal_ComplexNumber.imag = firstNumber.real * secondNumber.imag + firstNumber.imag * secondNumber.real;
@@ -148,7 +152,8 @@ void calculateDFT(t_s_ComplexNumber *X_ComplexNumbers, const double *const x_rea
 	{
 		/* Declaration of local scope variables. */
 		double t = V_ZERO;
-		t_s_ComplexNumber firstNumber, secondNumber;
+		int counter = V_ZERO;
+		t_s_ComplexNumber firstNumber = {V_ZERO, V_ZERO}, secondNumber = {V_ZERO, V_ZERO};
 
 		/* Cycles for the calculation of each real value obtained in the captured array of real numbers. */
 		for (int int_idx = V_ZERO; int_idx < int_NumItems; int_idx++)
@@ -180,13 +185,17 @@ void calculateDFT(t_s_ComplexNumber *X_ComplexNumbers, const double *const x_rea
 
 		/* Print on the screen the results obtained from the calculation with the real numbers. */
 		printf("\n");
-		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
 		printf("+    Obtaining DFT calculations.    +\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
+		printf("| PI Value:\t[%lf].\n", M_PI);
 		printf("+---|----+---|----+---|----+---|----+\n");
 
 		/* Display the results of the calculated arrangements on the screen itself. */
-		for (int int_idx = V_ZERO; int_idx < int_NumItems; int_idx++)
-			printf("#: [%d] of [%d].\t:\tValue: [%lf].\t=\tReal: [%lf].\tImaginary: [%lf].\t<j>.\n", int_idx + V_ONE, int_NumItems, x_realNumbers[int_idx], X_ComplexNumbers[int_idx].real, X_ComplexNumbers[int_idx].imag);
+		for (int int_idx = V_ZERO; int_idx < int_NumItems; int_idx++, counter++)
+			printf("#: [%2d] of [%2d].\t:\tValue: [%lf].\t=\tReal: [%lf].\tImaginary: [%lf].\t<j>.\n", int_idx + V_ONE, int_NumItems, x_realNumbers[int_idx], X_ComplexNumbers[int_idx].real, X_ComplexNumbers[int_idx].imag);
+
+		printf("[%d] Output results generated.\n", counter);
 	}
 
 /*****************************************************************
@@ -221,17 +230,26 @@ void calculateDFT(t_s_ComplexNumber *X_ComplexNumbers, const double *const x_rea
 void initializeDFT(t_s_ComplexNumber **X_ComplexNumbers, double **x_realNumbers, const int int_NumItems)
 	{
 		/* Initial declaration of work variables. */
+		char c = NULL_CHARACTER;
 		double *x = NULL;
+		int counter = V_ZERO;
 		t_s_ComplexNumber *X = NULL;
 
+		printf("\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
+		printf("+       Capturing DFT values.       +\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
+
 		/* Generation and initialization of the array of complex numbers. */
-		if (X = (t_s_ComplexNumber *) malloc(int_NumItems * sizeof(t_s_ComplexNumber)))
-			for (int int_idx = V_ZERO; int_idx < int_NumItems; int_idx++)
-				{
-					/* A preventive initialization is performed per element. */
-					X[int_idx].real = V_ZERO;
-					X[int_idx].imag = V_ZERO;
-				}
+		if ((X = (t_s_ComplexNumber *) malloc(int_NumItems * sizeof(t_s_ComplexNumber))))
+			{
+				for (int int_idx = V_ZERO; int_idx < int_NumItems; int_idx++)
+					{
+						/* A preventive initialization is performed per element. */
+						X[int_idx].real = V_ZERO;
+						X[int_idx].imag = V_ZERO;
+					}
+			}
 		else
 			{
 				perror("Insufficient memory to accommodate Complex Numbers pointer...");
@@ -239,16 +257,36 @@ void initializeDFT(t_s_ComplexNumber **X_ComplexNumbers, double **x_realNumbers,
 			}
 
 		/* Generation and initialization of the array of floating point real numbers. */
-		if (x = (double *) malloc(int_NumItems * sizeof(double)))
-			for (int int_idx = V_ZERO; int_idx < int_NumItems; int_idx++)
-				{
-					/* A preventive initialization is performed per element. */
-					*(x + int_idx) = V_ZERO;
+		if ((x = (double *) malloc(int_NumItems * sizeof(double))))
+			{
+				for (int int_idx = V_ZERO; int_idx < int_NumItems; int_idx++)
+					{
+						/* A preventive initialization is performed per element. */
+						*(x + int_idx) = V_ZERO;
 
-					/* Request to capture each value of the array of numbers in double precision. */
-					printf("Floating point value to enter #: [%d] of [%d] : ", int_idx + V_ONE, int_NumItems);
-					scanf("%lf", &x[int_idx]);
-				}
+						/* Request to capture each value of the array of numbers in double precision. */
+						printf("Floating value to enter #: [%2d] of [%2d] : ", int_idx + V_ONE, int_NumItems);
+
+						/* Validate that only one value is received. */
+						if (scanf("%lf%*c", &x[int_idx]) == V_ONE)
+							{
+								printf("+ Input value\t# [%2d] : [%lf] = [%lf]. OK!\n", (counter++) + V_ONE, *(x + int_idx), x[int_idx]);
+							}
+						else
+							{
+								x[int_idx] = V_ZERO;
+								printf("* The entry is not valid!\n");
+								printf("* Assumed value #: [%d] is: [%lf] = [%lf].\n", int_idx + V_ONE, x[int_idx], *(x + int_idx));
+								scanf("%*[^\n]%*c");
+								while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
+							}
+
+						clearerr(stdin);
+						fflush(stdin);
+					}
+
+				printf("[%d] Captured data entries.\n", counter);
+			}
 		else
 			{
 				perror("Insufficient memory to accommodate Real Numbers pointer...");
@@ -289,8 +327,9 @@ void initializeDFT(t_s_ComplexNumber **X_ComplexNumbers, double **x_realNumbers,
  **				results obtained from the	**
  **				Discrete Fourier Transform	**
  ** +---!----+---!----+---!----++---!----+---!----+---!----+---	**
- **			Test Values:				**
+ **			Test Values (six basic examples):	**
  **				1.5, 2.5, 3.5, 4.5, 5.5, 6.5.	**
+ **				6.5, 5.5, 4.5, 3.5, 2.5, 1.5.	**
 *****************************************************************/
 int main()
 	{
@@ -300,17 +339,17 @@ int main()
 		t_s_ComplexNumber *X_ComplexNumbers = NULL;
 
 		/* Main splash screen messages of this program. */
-		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
 		printf("+    Discrete Fourier Transform.    +\n");
-		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
 		printf("Amount of real values to enter between [%d] and [%d] : ", V_LOWER_LIMIT_DFT, V_UPPER_LIMIT_DFT);
-		scanf("%d", &int_NumItems);
+		scanf("%d%*c", &int_NumItems);
 
 		/* Allocate memory for t_s_ComplexNumbers number array 'X' and floating point number array 'x'. */
 		if (int_NumItems >= V_LOWER_LIMIT_DFT  && int_NumItems <= V_UPPER_LIMIT_DFT)
 			{
-				initializeDFT(&X_ComplexNumbers, &x_realNumbers, int_NumItems);
-				calculateDFT(X_ComplexNumbers, x_realNumbers, int_NumItems);
+				initializeDFT(&X_ComplexNumbers, &x_realNumbers, int_NumItems);	//Initialize to zero values.
+				calculateDFT(X_ComplexNumbers, x_realNumbers, int_NumItems);	//Calculate preliminary values.
 
 				free(X_ComplexNumbers);	/* Free memory from the array of complex numbers. */
 				free(x_realNumbers);	/* Free memory from the array of real numbers. */
