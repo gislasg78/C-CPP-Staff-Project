@@ -1,5 +1,7 @@
 /* This program builds a binary search tree and
-   provides basic maintenance for the tree. */
+   provides basic maintenance for the tree.
+   Example: 8, 3, 1, 6, 4, 7, 10, 14, 13. */
+
 /* Standard Work Libraries. */
 #include <stdio.h>
 #include <stdlib.h>
@@ -219,6 +221,11 @@ int MainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootNode, int *coun
 					{
 						/* Loading the binary search tree. */
 						case enm_opt_addNode:
+							if (*rootNode)
+								printf("\nThe tree already had values ​​previously entered.\n");
+							else
+								printf("\nThe binary search tree is completely empty!\n");
+
 							*counter = captureNodes(rootNode, counter);
 							printf("[%d] Nodes captured.\n", *counter);
 							break;
@@ -227,71 +234,95 @@ int MainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootNode, int *coun
 						case enm_opt_deleteTree:
 							printf("\nDelete the entire binary tree and free its memory...\n");
 
-							*counter = deleteTree(*rootNode, counter);
-							printf("[%d] Nodes deleted.\n", *counter);
-							*rootNode = NULL;
+							if (*rootNode)
+								{
+									*counter = deleteTree(*rootNode, counter);
+									printf("[%d] Nodes deleted.\n", *counter);
+									*rootNode = NULL;
+								}
+							else
+								printf("\nThe binary search tree is completely empty!\n");
 
 							break;
 
 						/* Iteratively searches for a node and modifies it if it finds one. */
 						case enm_opt_modifyNode:
-							printf("\nModify a specific value in the binary tree.\n");
-							printf("Enter a value to search for : ");
-
-							data = getData(&data, counter);
-							tempRootNode = searchNode(data, *rootNode, counter);
-
-							/* Validate the existence of the sought value. */
-							if (tempRootNode)
+							if (*rootNode)
 								{
-									printf("* Value located: [%d] with [%d] iterations! *\n", tempRootNode->data, *counter);
-									printf("\nEnter a unique value to modify the value: [%d] : ", tempRootNode->data);
+									printf("\nModify a specific value in the binary tree.\n");
+									printf("Enter a value to search for : ");
 
-									*counter = V_ZERO;
 									data = getData(&data, counter);
+									tempRootNode = searchNode(data, *rootNode, counter);
 
-									*counter = V_ZERO;
-									struct Node *newTempNode = searchNode(data, *rootNode, counter);
-
-									/* Verify the node value change is not a repeated. */
-									if (newTempNode)
+									/* Validate the existence of the sought value. */
+									if (tempRootNode)
 										{
-											printf("The value: [%d] already existed previously and cannot be changed to: [%d].\n", tempRootNode->data, newTempNode->data);
+											printf("* Value located: [%d] with [%d] iterations! *\n", tempRootNode->data, *counter);
+											printf("\nEnter a unique value to modify the value: [%d] : ", tempRootNode->data);
+
+											*counter = V_ZERO;
+											data = getData(&data, counter);
+
+											*counter = V_ZERO;
+											struct Node *newTempNode = searchNode(data, *rootNode, counter);
+
+											/* Verify the node value change is not a repeated. */
+											if (newTempNode)
+												{
+													printf("The value: [%d] already existed previously and cannot be changed to: [%d].\n", tempRootNode->data, newTempNode->data);
+												}
+											else
+												{
+													printf("The value: [%d] found in [%d] iterations has been changed to the value: [%d].\n", tempRootNode->data, *counter, data);
+													tempRootNode->data = data;
+												}
+
+											newTempNode = tempRootNode = NULL;
 										}
 									else
-										{
-											printf("The value: [%d] found in [%d] iterations has been changed to the value: [%d].\n", tempRootNode->data, *counter, data);
-											tempRootNode->data = data;
-										}
-
-									newTempNode = tempRootNode = NULL;
+										printf("* The value: [%d] was not located in the tree with [%d] iterations. *\n", data, *counter);
 								}
 							else
-								printf("* The value: [%d] was not located in the tree with [%d] iterations. *\n", data, *counter);
+								printf("\nThe binary search tree is completely empty!\n");
 
 							break;
 
 						/* Perform a search test for a given value in the tree. */
 						case enm_opt_searchNode:
-							printf("\nSearch for a specific value in the binary tree.\n");
-							printf("Enter a value to search for : ");
+							if (*rootNode)
+								{
+									printf("\nSearch for a specific value in the binary tree.\n");
+									printf("Enter a value to search for : ");
 
-							data = getData(&data, counter);
-							tempRootNode = searchNode(data, *rootNode, counter);
+									data = getData(&data, counter);
+									tempRootNode = searchNode(data, *rootNode, counter);
 
-							/* Validate the existence of the sought value. */
-							if (tempRootNode)
-								printf("* Value located: [%d] with [%d] iterations! *\n", tempRootNode->data, *counter);
+									/* Validate the existence of the sought value. */
+									if (tempRootNode)
+										printf("* Value located: [%d] with [%d] iterations! *\n", tempRootNode->data, *counter);
+									else
+										printf("* The value: [%d] was not located in the tree with [%d] iterations. *\n", data, *counter);
+
+									tempRootNode = NULL;
+								}
 							else
-								printf("* The value: [%d] was not located in the tree with [%d] iterations. *\n", data, *counter);
+								printf("\nThe binary search tree is completely empty!\n");
 
 							break;
 
 						/* Graphical arrangement of binary search tree. */
 						case enm_opt_showGraphic:
 							printf("\nGraphical arrangement of Binary Search Tree.\n");
-							*counter = showGraphicTree(*rootNode, count, counter);
-							printf("\n[%d] Evenly distributed spaces.\n", *counter);
+
+							if (*rootNode)
+								{
+									*counter = showGraphicTree(*rootNode, count, counter);
+									printf("\n[%d] Evenly distributed spaces.\n", *counter);
+								}
+							else
+								printf("\nThe binary search tree is completely empty!\n");
+
 							break;
 
 						/* View the entire tree in all its forms. */
@@ -304,9 +335,14 @@ int MainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootNode, int *coun
 						case enm_opt_exitMenu:
 							printf("\nLeaving this program...\n");
 
-							*counter = deleteTree(*rootNode, counter);
-							printf("[%d] Nodes deleted.\n", *counter);
-							*rootNode = NULL;
+							if (*rootNode)
+								{
+									*counter = deleteTree(*rootNode, counter);
+									printf("[%d] Nodes deleted.\n", *counter);
+									*rootNode = NULL;
+								}
+							else
+								printf("\nThe binary search tree is completely empty!\n");
 
 							break;
 
@@ -375,12 +411,18 @@ int viewAllTree(struct Node *rootNode, int *counter)
 		int counting = V_ZERO;
 		printf("\nEntire display of the binary search tree.");
 
-		/* Root node is tracked for each node level and for each node type. */
-		for (int int_idx = (int) enm_TT_PreOrder; int_idx <= (int) enm_TT_Inv_PostOrder; int_idx++, counting++)
+		/* Check if the tree has at least one node in its structure. */
+		if (rootNode)
 			{
-				printf("\n[%s].\n", str_Modes[int_idx]);
-				*counter = viewTree(rootNode, (enum enm_TreeTour) int_idx, counter);
+				/* Root node is tracked for each node level and for each node type. */
+				for (int int_idx = (int) enm_TT_PreOrder; int_idx <= (int) enm_TT_Inv_PostOrder; int_idx++, counting++)
+					{
+						printf("\n[%s].\n", str_Modes[int_idx]);
+						*counter = viewTree(rootNode, (enum enm_TreeTour) int_idx, counter);
+					}
 			}
+		else
+			printf("\nThe binary search tree is completely empty!\n");
 
 		printf("\n[%d] Generated exit routes.\n", counting);
 
