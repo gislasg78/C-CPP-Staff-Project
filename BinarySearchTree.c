@@ -161,6 +161,8 @@ int deleteTree(struct Node *rootNode, int *counter)
 			{
 				*counter = deleteTree(rootNode->leftNode, counter);
 				*counter = deleteTree(rootNode->rightNode, counter);
+
+				(*counter)++;
 				free(rootNode);
 			}
 
