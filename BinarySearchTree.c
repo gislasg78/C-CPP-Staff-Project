@@ -19,6 +19,7 @@
 enum enm_opt
 	{
 		enm_opt_addNode = V_ONE,
+		enm_opt_deleteNode,
 		enm_opt_deleteTree,
 		enm_opt_modifyNode,
 		enm_opt_searchNode,
@@ -45,21 +46,27 @@ static char *str_Modes[] = {"PreOrder", "InOrder", "PostOrder", "Inverse PreOrde
 /* Structure of a node in a binary search tree. */
 struct Node
 	{
-		int data;		/* Data value. */
-		struct Node *leftNode;  /* Pointer to the root of the left subtree. */
-		struct Node *rightNode; /* Pointer to the root of the right subtree. */
+		int data;			/* Data value. */
+		struct Node *leftNode;  	/* Pointer to the root of the left subtree. */
+		struct Node *rightNode;		/* Pointer to the root of the right subtree. */
+		struct Node *fatherNode;	/* Parent or head node to which a node belongs.*/
 	};
 
 
 /* Function prototypes. */
-struct Node* addNode(int data, struct Node **rootNode, int *counter);
+struct Node* addNode(int data, struct Node **rootNode, int *counter, struct Node *fatherNode);
 int captureNodes(struct Node **rootNode, int *counter);
-struct Node *createNode(int data, struct Node *leftNode, struct Node *rightNode);
+struct Node *createNode(int data, struct Node *leftNode, struct Node *rightNode, struct Node *fatherNode);
+void delNode(struct Node* rootNode, int data, int *counter);
+void deleteNode(struct Node *rootNode, int *counter);
 int deleteTree(struct Node *rootNode, int *counter);
+void destroyNode(struct Node *rootNode, int *counter);
 int getData(int *data, int *counter);
 int MainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootNode, int *counter);
+struct Node* minimumNode(struct Node *rootNode, int *counter);
 struct Node* modifyNode(int data, int value, struct Node *rootNode, int *counter);
 struct Node* searchNode(int data, struct Node *rootNode, int *counter);
+void replaceNode(struct Node *rootNode, struct Node *newNode);
 int SelectedOptionMainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootNode, int *counter);
 int showGraphicTree(struct Node *rootNode, int count, int *counter);
 int viewAllTree(struct Node *rootNode, int *counter);
@@ -81,22 +88,22 @@ int main()
 	}
 
 /* Adding a key to the binary search tree. */
-struct Node* addNode(int data, struct Node **rootNode, int *counter)
+struct Node* addNode(int data, struct Node **rootNode, int *counter, struct Node* fatherNode)
 	{
 		if (*rootNode)
 			{
 				if (data < (*rootNode)->data)
-					addNode(data, &(*rootNode)->leftNode, counter);
+					addNode(data, &(*rootNode)->leftNode, counter, *rootNode);
 
 				if (data > (*rootNode)->data)
-					addNode(data, &(*rootNode)->rightNode, counter);
+					addNode(data, &(*rootNode)->rightNode, counter, *rootNode);
 
 				if (data == (*rootNode)->data)
 					printf("The value # [%d] : [%d] = [%d] was already inserted previously!\n", *counter + V_ONE, data, (*rootNode)->data);
 			}
 		else
 			{
-				*rootNode = createNode(data, NULL, NULL);
+				*rootNode = createNode(data, NULL, NULL, fatherNode);
 				printf("Inserted data\t# [%d] = [%d].\n", ((*counter)++) + V_ONE, data);
 			}
 
@@ -119,7 +126,7 @@ int captureNodes(struct Node **rootNode, int *counter)
 				printf("\nEnter a entire data (0 to exit) : ");
 
 				if ((data = getData(&data, counter)))
-					*rootNode = addNode(data, rootNode, counter);
+					*rootNode = addNode(data, rootNode, counter, NULL);
 			}
 		while (data);
 
@@ -129,7 +136,7 @@ int captureNodes(struct Node **rootNode, int *counter)
 	}
 
 /* Free the memory allocated to each of the nodes in the binary search tree. */
-struct Node *createNode(int data, struct Node *leftNode, struct Node *rightNode)
+struct Node *createNode(int data, struct Node *leftNode, struct Node *rightNode, struct Node *fatherNode)
 	{
 		/* Preliminary working variables. */
 		struct Node *newNode = NULL;
@@ -139,6 +146,7 @@ struct Node *createNode(int data, struct Node *leftNode, struct Node *rightNode)
 				newNode->data = data;
 				newNode->leftNode = leftNode;
 				newNode->rightNode = rightNode;
+				newNode->fatherNode = fatherNode;
 			}
 		else
 			{
@@ -149,6 +157,52 @@ struct Node *createNode(int data, struct Node *leftNode, struct Node *rightNode)
 		return newNode;
 	};
 
+/* Function to remove the given node. */
+void delNode(struct Node* rootNode, int data, int *counter)
+	{
+		if (rootNode)
+			{
+				(*counter)++;
+
+				if (data < rootNode->data)
+					delNode(rootNode->leftNode, data, counter);
+				else if (data > rootNode->data)
+					delNode(rootNode->rightNode, data, counter);
+				else if (data == rootNode->data)
+					deleteNode(rootNode, counter);
+			}
+	}
+
+/* Function to remove the found node. */
+void deleteNode(struct Node *rootNode, int *counter)
+	{
+		if (rootNode)
+			{
+				/* Delete a node with two dependent child subtrees. */
+				if (rootNode->leftNode && rootNode->rightNode)	//Delete a tree with two child subtrees.
+					{
+						struct Node* myMinimumNode = minimumNode(rootNode->rightNode, counter);
+						rootNode->data = myMinimumNode->data;
+						deleteNode(myMinimumNode, counter);
+					}
+				else if (rootNode->leftNode)			//If it only has one child node on the left.
+					{
+						replaceNode(rootNode, rootNode->leftNode);
+						destroyNode(rootNode, counter);
+					}
+				else if (rootNode->rightNode)			//If it only has one child node on the right.
+					{
+						replaceNode(rootNode, rootNode->rightNode);
+						destroyNode(rootNode, counter);
+					}
+				else						//If it doesn't have any children.
+					{
+						replaceNode(rootNode, NULL);
+						destroyNode(rootNode, counter);
+					}
+			}
+	}
+
 /* Free the memory allocated to each of the nodes in the binary search tree. */
 int deleteTree(struct Node *rootNode, int *counter)
 	{
@@ -156,13 +210,27 @@ int deleteTree(struct Node *rootNode, int *counter)
 			{
 				*counter = deleteTree(rootNode->leftNode, counter);
 				*counter = deleteTree(rootNode->rightNode, counter);
-
-				(*counter)++;
-				free(rootNode);
+				destroyNode(rootNode, counter);
 			}
 
 		return *counter;
 	}
+
+/* Removes the memory occupied by a node from the binary search tree. */
+void destroyNode(struct Node *rootNode, int *counter)
+	{
+		if (rootNode)
+			{
+				rootNode->data = V_ZERO;
+				rootNode->leftNode = NULL;
+				rootNode->rightNode = NULL;
+				rootNode->fatherNode = NULL;
+
+				(*counter)++;
+				free(rootNode);
+			}
+	}
+
 
 /* Control function for capturing a particular data. */
 int getData(int *data, int *counter)
@@ -203,12 +271,13 @@ int MainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootNode, int *coun
 				printf("| Menu of Binary Search Trees. |\n");
 				printf("+---+----+---+----+---+----+---+\n");
 				printf("| [1]. Insert nodes.           |\n");
-				printf("| [2]. Delete the entire tree. |\n");
-				printf("| [3]. Modify a node.          |\n");
-				printf("| [4]. Find a specific node.   |\n");
-				printf("| [5]. Display graphically.    |\n");
-				printf("| [6]. Display routes.         |\n");
-				printf("| [7]. Exit this program.      |\n");
+				printf("| [2]. Delete a node.          |\n");
+				printf("| [3]. Delete the entire tree. |\n");
+				printf("| [4]. Modify a node.          |\n");
+				printf("| [5]. Find a specific node.   |\n");
+				printf("| [6]. Display graphically.    |\n");
+				printf("| [7]. Display routes.         |\n");
+				printf("| [8]. Exit this program.      |\n");
 				printf("+===+====+===+====+===+====+===+\n");
 				printf("Option: ");
 
@@ -222,6 +291,28 @@ int MainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootNode, int *coun
 			}
 
 		return option;
+	}
+
+/* Returns the deepest and smallest left node of the binary search tree. */
+struct Node* minimumNode(struct Node *rootNode, int *counter)
+	{
+		/* Preliminary working variables. */
+		struct Node *tempNode = NULL;
+
+		if (rootNode)
+			{
+				(*counter)++;
+
+				//If it has a left child node.
+				if (rootNode->leftNode)
+					//We look for the deepest and most left part possible.
+					tempNode = minimumNode(rootNode->leftNode, counter);
+				else
+					//If it has no left child, we return to the same node.
+					tempNode = rootNode;
+			}
+
+		return tempNode;
 	}
 
 /* This function modifies a node by the specified value. */
@@ -256,6 +347,41 @@ struct Node* modifyNode(int data, int value, struct Node *rootNode, int *counter
 		return tempRootNode;
 	}
 
+/* Parent or head node to which a node belongs. */
+void replaceNode(struct Node *rootNode, struct Node *newNode)
+	{
+		if (rootNode)
+			{
+				/* The parent tree must be assigned to its new dependent child node. */
+				if (rootNode->fatherNode)
+					{
+						/* It is validated if the parent node of the root node on its left node has valid information. */
+						if (rootNode->fatherNode->leftNode)
+							{
+								if (rootNode->data == rootNode->fatherNode->leftNode->data)
+									{
+										rootNode->fatherNode->leftNode = newNode;
+									}
+							}
+
+						/* It is validated if the parent node of the root node on its right node has valid information. */
+						if (rootNode->fatherNode->rightNode)
+							{
+								if (rootNode->data == rootNode->fatherNode->rightNode->data)
+									{
+										rootNode->fatherNode->rightNode = newNode;
+									}
+							}
+					}
+
+				/* The new node is assigned its new parent. */
+				if (newNode)
+					{
+						newNode->fatherNode = rootNode->fatherNode;
+					}
+			}
+	}
+
 /* Function to perform a specific operation on the binary search tree. */
 int SelectedOptionMainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootNode, int *counter)
 	{
@@ -276,6 +402,27 @@ int SelectedOptionMainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootN
 				case enm_opt_addNode:
 					*counter = captureNodes(rootNode, counter);
 					printf("[%d] Nodes captured.\n", *counter);
+					break;
+
+				/* Removes a given or user-specified node. */
+				case enm_opt_deleteNode:
+					printf("\nDelete a specific value in the binary tree.\n");
+					printf("Enter a value to search for : ");
+					data = getData(&data, counter);
+
+					*counter = V_ZERO;
+					tempRootNode = searchNode(data, *rootNode, counter);
+
+					/* Validate the existence of the sought value. */
+					if (tempRootNode)
+						{
+							printf("Value located: [%d] with [%d] iterations!\n", tempRootNode->data, *counter);
+							delNode(*rootNode, data, counter);
+						}
+					else
+						printf("The value: [%d] was not located in the tree with [%d] iterations.\n", data, *counter);
+
+					tempRootNode = NULL;
 					break;
 
 				/* Remove all nodes from the entire tree. */
