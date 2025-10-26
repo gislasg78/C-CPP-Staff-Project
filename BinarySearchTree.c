@@ -57,16 +57,13 @@ struct Node
 struct Node* addNode(int data, struct Node **rootNode, int *counter, struct Node *fatherNode);
 int captureNodes(struct Node **rootNode, int *counter);
 struct Node *createNode(int data, struct Node *leftNode, struct Node *rightNode, struct Node *fatherNode);
-void delNode(struct Node* rootNode, int data, int *counter);
-void deleteNode(struct Node *rootNode, int *counter);
 int deleteTree(struct Node *rootNode, int *counter);
-void destroyNode(struct Node *rootNode, int *counter);
+struct Node *eliminateNode(struct Node* rootNode, int data, int *counter);
 int getData(int *data, int *counter);
 int MainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootNode, int *counter);
 struct Node* minimumNode(struct Node *rootNode, int *counter);
 struct Node* modifyNode(int data, int value, struct Node *rootNode, int *counter);
 struct Node* searchNode(int data, struct Node *rootNode, int *counter);
-void replaceNode(struct Node *rootNode, struct Node *newNode);
 int SelectedOptionMainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootNode, int *counter);
 int showGraphicTree(struct Node *rootNode, int count, int *counter);
 int viewAllTree(struct Node *rootNode, int *counter);
@@ -157,52 +154,6 @@ struct Node *createNode(int data, struct Node *leftNode, struct Node *rightNode,
 		return newNode;
 	};
 
-/* Function to remove the given node. */
-void delNode(struct Node* rootNode, int data, int *counter)
-	{
-		if (rootNode)
-			{
-				(*counter)++;
-
-				if (data < rootNode->data)
-					delNode(rootNode->leftNode, data, counter);
-				else if (data > rootNode->data)
-					delNode(rootNode->rightNode, data, counter);
-				else if (data == rootNode->data)
-					deleteNode(rootNode, counter);
-			}
-	}
-
-/* Function to remove the found node. */
-void deleteNode(struct Node *rootNode, int *counter)
-	{
-		if (rootNode)
-			{
-				/* Delete a node with two dependent child subtrees. */
-				if (rootNode->leftNode && rootNode->rightNode)	//Delete a tree with two child subtrees.
-					{
-						struct Node* myMinimumNode = minimumNode(rootNode->rightNode, counter);
-						rootNode->data = myMinimumNode->data;
-						deleteNode(myMinimumNode, counter);
-					}
-				else if (rootNode->leftNode)			//If it only has one child node on the left.
-					{
-						replaceNode(rootNode, rootNode->leftNode);
-						destroyNode(rootNode, counter);
-					}
-				else if (rootNode->rightNode)			//If it only has one child node on the right.
-					{
-						replaceNode(rootNode, rootNode->rightNode);
-						destroyNode(rootNode, counter);
-					}
-				else						//If it doesn't have any children.
-					{
-						replaceNode(rootNode, NULL);
-						destroyNode(rootNode, counter);
-					}
-			}
-	}
-
 /* Free the memory allocated to each of the nodes in the binary search tree. */
 int deleteTree(struct Node *rootNode, int *counter)
 	{
@@ -210,27 +161,58 @@ int deleteTree(struct Node *rootNode, int *counter)
 			{
 				*counter = deleteTree(rootNode->leftNode, counter);
 				*counter = deleteTree(rootNode->rightNode, counter);
-				destroyNode(rootNode, counter);
+				free(rootNode);
 			}
 
 		return *counter;
 	}
 
-/* Removes the memory occupied by a node from the binary search tree. */
-void destroyNode(struct Node *rootNode, int *counter)
+/* Function to permanently remove a node from the binary search tree. */
+struct Node *eliminateNode(struct Node* rootNode, int data, int *counter)
 	{
+		/* The node to be deleted must contain valid information. */
 		if (rootNode)
 			{
-				rootNode->data = V_ZERO;
-				rootNode->leftNode = NULL;
-				rootNode->rightNode = NULL;
-				rootNode->fatherNode = NULL;
-
 				(*counter)++;
-				free(rootNode);
-			}
-	}
 
+				/* Depth-first search of the node to be located. */
+				if (data < rootNode->data)
+					{
+						rootNode->leftNode = eliminateNode(rootNode->leftNode, data, counter);
+					}
+				else if (data > rootNode->data)
+					{
+						rootNode->rightNode = eliminateNode(rootNode->rightNode, data, counter);
+					}
+				else
+					{
+						/* A specific node with either a single child (left or right) or no children. */
+						if (rootNode->leftNode && rootNode->rightNode)
+							{
+								/* For a node with two children, the successor must be obtained in order. */
+								struct Node* tempNode = minimumNode(rootNode->rightNode, counter);
+								rootNode->data = tempNode->data;
+								rootNode->rightNode = eliminateNode(rootNode->rightNode, tempNode->data, counter);
+							}
+						else if (rootNode->leftNode == NULL)
+							{
+								/* Only the current node has information in the right node. */
+								struct Node* tempNode = rootNode->rightNode;
+								free(rootNode);
+								rootNode = tempNode;
+							}
+						else if (rootNode->rightNode == NULL)
+							{
+								/* Only the current node has information in the left node. */
+								struct Node* tempNode = rootNode->leftNode;
+								free(rootNode);
+								rootNode = tempNode;
+							}
+					}
+			}
+
+		return rootNode;
+	}
 
 /* Control function for capturing a particular data. */
 int getData(int *data, int *counter)
@@ -347,41 +329,6 @@ struct Node* modifyNode(int data, int value, struct Node *rootNode, int *counter
 		return tempRootNode;
 	}
 
-/* Parent or head node to which a node belongs. */
-void replaceNode(struct Node *rootNode, struct Node *newNode)
-	{
-		if (rootNode)
-			{
-				/* The parent tree must be assigned to its new dependent child node. */
-				if (rootNode->fatherNode)
-					{
-						/* It is validated if the parent node of the root node on its left node has valid information. */
-						if (rootNode->fatherNode->leftNode)
-							{
-								if (rootNode->data == rootNode->fatherNode->leftNode->data)
-									{
-										rootNode->fatherNode->leftNode = newNode;
-									}
-							}
-
-						/* It is validated if the parent node of the root node on its right node has valid information. */
-						if (rootNode->fatherNode->rightNode)
-							{
-								if (rootNode->data == rootNode->fatherNode->rightNode->data)
-									{
-										rootNode->fatherNode->rightNode = newNode;
-									}
-							}
-					}
-
-				/* The new node is assigned its new parent. */
-				if (newNode)
-					{
-						newNode->fatherNode = rootNode->fatherNode;
-					}
-			}
-	}
-
 /* Function to perform a specific operation on the binary search tree. */
 int SelectedOptionMainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootNode, int *counter)
 	{
@@ -417,7 +364,7 @@ int SelectedOptionMainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootN
 					if (tempRootNode)
 						{
 							printf("Value located: [%d] with [%d] iterations!\n", tempRootNode->data, *counter);
-							delNode(*rootNode, data, counter);
+							*rootNode = eliminateNode(*rootNode, data, counter);
 						}
 					else
 						printf("The value: [%d] was not located in the tree with [%d] iterations.\n", data, *counter);
