@@ -121,7 +121,7 @@ class RandomNumber
 					return *p_data;
 				};
 
-			static void enter_a_pause(std::string str_Message)
+			static void enter_a_pause(const std::string& str_Message)
 				{
 					std::cout << str_Message;
 					std::cin.clear();
