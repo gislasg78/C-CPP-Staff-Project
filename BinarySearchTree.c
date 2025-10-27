@@ -1,6 +1,6 @@
 /* This program builds a binary search tree and
    provides basic maintenance for the tree.
-   Example: 8, 3, 2, 1, 6, 5, 4, 7, 14, 13, 12, 11, 10 */
+   Example: 8, 3, 1, 6, 5, 4, 9, 14, 11, 12, 13, 15. */
 
 /* Standard Work Libraries. */
 #include <stdio.h>
@@ -472,6 +472,8 @@ int SelectedOptionMainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootN
 				case enm_opt_deleteNode:
 					printf("\nDelete a specific value in the binary tree.\n");
 					printf("Enter a value to search for : ");
+
+					*counter = V_ZERO;
 					data = getData(&data, counter);
 
 					*counter = V_ZERO;
@@ -506,6 +508,8 @@ int SelectedOptionMainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootN
 				case enm_opt_eliminateNode:
 					printf("\nEliminate a specific value in the binary tree.\n");
 					printf("Enter a value to search for : ");
+
+					*counter = V_ZERO;
 					data = getData(&data, counter);
 
 					*counter = V_ZERO;
