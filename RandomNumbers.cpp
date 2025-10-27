@@ -59,7 +59,7 @@ class RandomNumber
 				{(*this).random_number = this->giveRandom(random_seed, random_counter); return *this;}
 
 			RandomNumber<T> operator[](const T &random_counter)
-				{return getRandom((*this).random_seed, random_counter);}
+				{return this->getRandom((*this).random_seed, random_counter);}
 
 			RandomNumber<T>& operator+ (const RandomNumber<T>& object_random)
 				{this->random_seed += object_random.getSeed(); this->restore(); return *this;}
@@ -120,6 +120,15 @@ class RandomNumber
 
 					return *p_data;
 				};
+
+			static void enter_a_pause(std::string str_Message)
+				{
+					std::cout << str_Message;
+					std::cin.clear();
+					std::cin.get();
+					std::cin.clear();
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+				}
 
 			static const T& enter_a_value(T *const p_value)
 				{
@@ -250,6 +259,7 @@ int main()
 		/* Create a class with the overloaded 'int' operator to generate series of numbers. */
 		RandomNumber<double> my_random_number(random_seed);
 		my_random_number.print();
+		my_random_number.enter_a_pause("Press the ENTER key to continue...");
 
 		/* We use the generator to take 'n' given values. */
 		std::cout << "List of generated random numbers." << std::endl;
@@ -259,7 +269,10 @@ int main()
 				my_random_number();	//Activate the generator to get the next number.
 			}
 		std::cout << "[" << counter << "] Output results generated." << std::endl;
+		my_random_number.enter_a_pause("Press the ENTER key to continue...");
+
 		std::cout << my_random_number;
+		RandomNumber<double>::enter_a_pause("Press the ENTER key to continue...");
 
 		return V_ZERO;
 	}
