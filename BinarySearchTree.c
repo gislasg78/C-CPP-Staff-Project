@@ -61,7 +61,7 @@ struct Node *createNode(int data, struct Node *leftNode, struct Node *rightNode,
 void delNode(struct Node* rootNode, int data, int *counter);
 void deleteNode(struct Node *rootNode, int data, int *counter);
 int deleteTree(struct Node *rootNode, int *counter);
-void destroyNode(struct Node *rootNode, int *counter);
+struct Node* destroyNode(struct Node *rootNode, int *counter);
 struct Node *eliminateNode(struct Node* rootNode, int data, int *counter);
 int getData(int *data, int *counter);
 int MainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootNode, int *counter);
@@ -194,19 +194,19 @@ void deleteNode(struct Node *rootNode, int data, int *counter)
 					{
 						/* Only the current node has information in the left node. */
 						replaceNode(rootNode, rootNode->leftNode);
-						destroyNode(rootNode, counter);
+						rootNode = destroyNode(rootNode, counter);
 					}
 				else if (rootNode->rightNode)			//If it only has one child node on the right.
 					{
 						/* Only the current node has information in the right node. */
 						replaceNode(rootNode, rootNode->rightNode);
-						destroyNode(rootNode, counter);
+						rootNode = destroyNode(rootNode, counter);
 					}
 				else						//If it doesn't have any children.
 					{
 						/* Only if the current node lacks both left and right slopes. */
 						replaceNode(rootNode, NULL);
-						destroyNode(rootNode, counter);
+						rootNode = destroyNode(rootNode, counter);
 					}
 			}
 	}
@@ -221,14 +221,14 @@ int deleteTree(struct Node *rootNode, int *counter)
 				*counter = deleteTree(rootNode->rightNode, counter);
 
 				(*counter)++;
-				destroyNode(rootNode, counter);
+				rootNode = destroyNode(rootNode, counter);
 			}
 
 		return *counter;
 	}
 
 /* Removes the memory occupied by a node from the binary search tree. */
-void destroyNode(struct Node *rootNode, int *counter)
+struct Node* destroyNode(struct Node *rootNode, int *counter)
 	{
 		/* The node to be deleted must contain valid information. */
 		if (rootNode)
@@ -242,6 +242,8 @@ void destroyNode(struct Node *rootNode, int *counter)
 				free(rootNode);
 				rootNode = NULL;
 			}
+
+		return rootNode;
 	}
 
 /* Function to permanently remove a node from the binary search tree. */
@@ -275,14 +277,14 @@ struct Node *eliminateNode(struct Node* rootNode, int data, int *counter)
 							{
 								/* Only the current node has information in the right node. */
 								struct Node* tempNode = rootNode->rightNode;
-								destroyNode(rootNode, counter);
+								rootNode = destroyNode(rootNode, counter);
 								rootNode = tempNode;
 							}
 						else if (rootNode->rightNode == NULL)
 							{
 								/* Only the current node has information in the left node. */
 								struct Node* tempNode = rootNode->leftNode;
-								destroyNode(rootNode, counter);
+								rootNode = destroyNode(rootNode, counter);
 								rootNode = tempNode;
 							}
 					}
