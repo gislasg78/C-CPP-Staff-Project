@@ -41,7 +41,7 @@ class RandomNumber
 			RandomNumber(const T& random_seed) : random_counter(V_ZERO), random_seed(random_seed), random_number(random_seed)
 				{this->counter++; this->random_number = this->GenerateRandom();}
 			RandomNumber(const T& random_seed, const T& random_counter) : random_counter(random_counter), random_seed(random_seed), random_number(random_seed)
-				{this->counter++; (*this).random_number = this->getRandom(random_seed, random_counter);}
+				{this->counter++; (*this).random_number = this->giveRandom(random_seed, random_counter);}
 
 			RandomNumber(const RandomNumber<T>& object_random) : random_counter(object_random.getCounter()), random_seed(object_random.getSeed()), random_number(object_random.getNumber())
 				{this->counter++;}
@@ -56,7 +56,10 @@ class RandomNumber
 			RandomNumber<T>& operator()()
 				{this->random_number = this->GenerateRandom(); return *this;}
 			RandomNumber<T>& operator()(const T &random_seed, const T& random_counter = V_ZERO)
-				{this->random_number = this->getRandom(random_seed, random_counter); return *this;}
+				{(*this).random_number = this->giveRandom(random_seed, random_counter); return *this;}
+
+			RandomNumber<T> operator[](const T &random_counter)
+				{return getRandom((*this).random_seed, random_counter);}
 
 			RandomNumber<T>& operator+ (const RandomNumber<T>& object_random)
 				{this->random_seed += object_random.getSeed(); this->restore(); return *this;}
@@ -81,7 +84,7 @@ class RandomNumber
 					std::cout << "+ Enter a index value: ";
 					random_counter = (*this).enter_a_value(&random_counter);
 
-					(*this).random_number = getRandom(random_seed, random_counter);
+					this->random_number = (*this).giveRandom(random_seed, random_counter);
 				}
 
 			template <typename C = T>
@@ -146,15 +149,14 @@ class RandomNumber
 			const T& getCounter()	const			{return (*this).random_counter;}
 			const T& getNumber()	const			{return (*this).random_number;}
 
-			const T& getRandom(const T& random_seed = V_ZERO, const T &random_counter = V_ZERO)
+			const T getRandom(const T& random_seed = V_ZERO, const T &random_counter = V_ZERO)
 				{
-					(*this).random_counter = V_ZERO;
-					(*this).random_number = (*this).random_seed = random_seed;
+					T random_number = random_seed;
 
 					for (int counter = V_ZERO; counter < random_counter; counter++)
-						(*this).random_number = (*this).GenerateRandom();
+						random_number = RANDOM_GENERATOR(static_cast<int>(random_number));
 
-					return (*this).random_number;
+					return random_number;
 				}
 
 			const T& getSeed()	const			{return (*this).random_seed;}
@@ -175,6 +177,17 @@ class RandomNumber
 					T interval = highest - lowest + V_ONE;
 
 					return (static_cast<int>(this->random_number) % static_cast<int>(interval) + lowest);
+				}
+
+			const T& giveRandom(const T& random_seed = V_ZERO, const T &random_counter = V_ZERO)
+				{
+					(*this).random_counter = V_ZERO;
+					(*this).random_number = (*this).random_seed = random_seed;
+
+					for (int counter = V_ZERO; counter < random_counter; counter++)
+						(*this).random_number = (*this).GenerateRandom();
+
+					return (*this).random_number;
 				}
 
 			const bool isitme(const RandomNumber<T>& object_random)
