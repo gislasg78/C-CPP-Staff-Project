@@ -61,7 +61,7 @@ struct Node *createNode(int data, struct Node *leftNode, struct Node *rightNode,
 void delNode(struct Node* rootNode, int data, int *counter);
 void deleteNode(struct Node *rootNode, int data, int *counter);
 int deleteTree(struct Node *rootNode, int *counter);
-struct Node* destroyNode(struct Node *rootNode, int *counter);
+struct Node* destroyNode(struct Node **rootNode, int *counter);
 struct Node *eliminateNode(struct Node* rootNode, int data, int *counter);
 int getData(int *data, int *counter);
 int MainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootNode, int *counter);
@@ -194,19 +194,19 @@ void deleteNode(struct Node *rootNode, int data, int *counter)
 					{
 						/* Only the current node has information in the left node. */
 						replaceNode(rootNode, rootNode->leftNode);
-						rootNode = destroyNode(rootNode, counter);
+						rootNode = destroyNode(&rootNode, counter);
 					}
 				else if (rootNode->rightNode)			//If it only has one child node on the right.
 					{
 						/* Only the current node has information in the right node. */
 						replaceNode(rootNode, rootNode->rightNode);
-						rootNode = destroyNode(rootNode, counter);
+						rootNode = destroyNode(&rootNode, counter);
 					}
 				else						//If it doesn't have any children.
 					{
 						/* Only if the current node lacks both left and right slopes. */
 						replaceNode(rootNode, NULL);
-						rootNode = destroyNode(rootNode, counter);
+						rootNode = destroyNode(&rootNode, counter);
 					}
 			}
 	}
@@ -221,29 +221,29 @@ int deleteTree(struct Node *rootNode, int *counter)
 				*counter = deleteTree(rootNode->rightNode, counter);
 
 				(*counter)++;
-				rootNode = destroyNode(rootNode, counter);
+				rootNode = destroyNode(&rootNode, counter);
 			}
 
 		return *counter;
 	}
 
 /* Removes the memory occupied by a node from the binary search tree. */
-struct Node* destroyNode(struct Node *rootNode, int *counter)
+struct Node* destroyNode(struct Node **rootNode, int *counter)
 	{
 		/* The node to be deleted must contain valid information. */
-		if (rootNode)
+		if (*rootNode)
 			{
-				rootNode->data = V_ZERO;
-				rootNode->leftNode = NULL;
-				rootNode->rightNode = NULL;
-				rootNode->fatherNode = NULL;
+				(*rootNode)->data = V_ZERO;
+				(*rootNode)->leftNode = NULL;
+				(*rootNode)->rightNode = NULL;
+				(*rootNode)->fatherNode = NULL;
 
 				(*counter)++;
-				free(rootNode);
-				rootNode = NULL;
+				free(*rootNode);
+				*rootNode = NULL;
 			}
 
-		return rootNode;
+		return *rootNode;
 	}
 
 /* Function to permanently remove a node from the binary search tree. */
@@ -277,14 +277,14 @@ struct Node *eliminateNode(struct Node* rootNode, int data, int *counter)
 							{
 								/* Only the current node has information in the right node. */
 								struct Node* tempNode = rootNode->rightNode;
-								rootNode = destroyNode(rootNode, counter);
+								rootNode = destroyNode(&rootNode, counter);
 								rootNode = tempNode;
 							}
 						else if (rootNode->rightNode == NULL)
 							{
 								/* Only the current node has information in the left node. */
 								struct Node* tempNode = rootNode->leftNode;
-								rootNode = destroyNode(rootNode, counter);
+								rootNode = destroyNode(&rootNode, counter);
 								rootNode = tempNode;
 							}
 					}
@@ -463,6 +463,7 @@ int SelectedOptionMainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootN
 			{
 				/* Loading the binary search tree. */
 				case enm_opt_addNode:
+					*counter = V_ZERO;
 					*counter = captureNodes(rootNode, counter);
 					printf("[%d] Nodes captured.\n", *counter);
 					break;
@@ -480,6 +481,8 @@ int SelectedOptionMainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootN
 					if (tempRootNode)
 						{
 							printf("Value located: [%d] with [%d] iterations!\n", tempRootNode->data, *counter);
+
+							*counter = V_ZERO;
 							delNode(*rootNode, data, counter);
 						}
 					else
@@ -492,8 +495,10 @@ int SelectedOptionMainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootN
 				case enm_opt_deleteTree:
 					printf("\nDelete the entire binary tree and free its memory...\n");
 
+					*counter = V_ZERO;
 					*counter = deleteTree(*rootNode, counter);
 					printf("[%d] Nodes deleted.\n", *counter);
+
 					*rootNode = NULL;
 					break;
 
@@ -510,6 +515,8 @@ int SelectedOptionMainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootN
 					if (tempRootNode)
 						{
 							printf("Value located: [%d] with [%d] iterations!\n", tempRootNode->data, *counter);
+
+							*counter = V_ZERO;
 							*rootNode = eliminateNode(*rootNode, data, counter);
 						}
 					else
@@ -520,13 +527,15 @@ int SelectedOptionMainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootN
 
 				/* Iteratively searches for a node and modifies it if it finds one. */
 				case enm_opt_modifyNode:
-					*counter = V_ZERO;
 					printf("\nModify a specific value in the binary tree.\n");
 					printf("Enter a value to search for : ");
-					data = getData(&data, counter);
 
 					*counter = V_ZERO;
+					data = getData(&data, counter);
+
 					printf("\nEnter a unique value to modify the value: [%d] : ", data);
+
+					*counter = V_ZERO;
 					value = getData(&value, counter);
 
 					*counter = V_ZERO;
@@ -543,11 +552,12 @@ int SelectedOptionMainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootN
 				/* Perform a search test for a given value in the tree. */
 				case enm_opt_searchNode:
 					printf("\nSearch for a specific value in the binary tree.\n");
+					printf("Enter a value to search for : ");
 
 					*counter = V_ZERO;
-					printf("Enter a value to search for : ");
 					data = getData(&data, counter);
 
+					*counter = V_ZERO;
 					tempRootNode = searchNode(data, *rootNode, counter);
 
 					/* Validate the existence of the sought value. */
@@ -563,13 +573,17 @@ int SelectedOptionMainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootN
 				case enm_opt_showGraphic:
 					printf("\nGraphical arrangement of Binary Search Tree.\n");
 
+					*counter = V_ZERO;
 					*counter = showGraphicTree(*rootNode, count, counter);
+
 					printf("\n[%d] Evenly distributed spaces.\n", *counter);
 					break;
 
 				/* View the entire tree in all its forms. */
 				case enm_opt_viewAllTree:
+					*counter = V_ZERO;
 					*counter = viewAllTree(*rootNode, counter);
+
 					printf("[%d] Invoked traversal processes.\n", *counter);
 					break;
 
@@ -577,8 +591,10 @@ int SelectedOptionMainMenu(enum enm_opt enm_opt_maintenance, struct Node **rootN
 				case enm_opt_exitMenu:
 					printf("\nLeaving this program...\n");
 
+					*counter = V_ZERO;
 					*counter = deleteTree(*rootNode, counter);
 					printf("[%d] Nodes deleted.\n", *counter);
+
 					*rootNode = NULL;
 					break;
 
