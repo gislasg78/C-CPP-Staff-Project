@@ -2,6 +2,7 @@
    and exemplifies different features of Object Oriented Programming in C++.
 */
 /* Common work libraries. */
+#include <algorithm>
 #include <iostream>
 #include <limits>
 #include <sstream>
@@ -129,8 +130,9 @@ class Point2D
 				{
 					if (ptr_value)
 						{
-							std::string str_value;
+							std::string str_value {};
 							std::getline(std::cin >> std::ws, str_value);
+							str_value.erase(std::remove_if(str_value.begin(), str_value.end(), ::isspace), str_value.end());
 							std::stringstream(str_value) >> *ptr_value;
 
 							std::cout << "Value entered:\t[" << *ptr_value << "]. OK!" << std::endl;
@@ -403,6 +405,7 @@ int main()
 					}
 
 				std::cout << "+ Point2D:\t[" << array_Point2D[idx]->getValue() << "]." << std::endl;
+				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 
 				if (Point2D<int>* my_Point2D = dynamic_cast<Point2D<int>*>(*(array_Point2D + idx)))
 					{
@@ -411,7 +414,7 @@ int main()
 					}
 
 
-				std::cout << "+ Is it me?:\t[" << array_Point2D[idx]->isitme(*array_Point2D[idx]) << "]." << std::endl;
+				std::cout << "+ Is it me?:\t[" << std::boolalpha << array_Point2D[idx]->isitme(*array_Point2D[idx]) << "]." << std::endl;
 				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 			}
 
