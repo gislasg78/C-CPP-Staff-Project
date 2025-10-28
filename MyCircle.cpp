@@ -3,6 +3,7 @@
    called 'Cylinder'. */
 
 /* Classes and uniform initialization. */
+#include <algorithm>
 #include <iostream>
 #include <limits>
 #include <sstream>
@@ -133,8 +134,9 @@ class Circle
 				{
 					if (ptr_value)
 						{
-							std::string str_value;
+							std::string str_value {};
 							std::getline(std::cin >> std::ws, str_value);
+							str_value.erase(std::remove_if(str_value.begin(), str_value.end(), ::isspace), str_value.end());
 							std::stringstream(str_value) >> *ptr_value;
 
 							std::cout << "Value entered:\t[" << *ptr_value << "]. OK!" << std::endl;
@@ -163,8 +165,7 @@ class Circle
 			typename std::enable_if<std::is_integral<T>::value, U>::type
 			getValue()				{return this->id;}
 
-			const bool isitme(Circle<T>& circle)	const
-				{return (this == &circle);};
+			const bool isitme(Circle<T>& circle)	const		{return (this == &circle);};
 
 			virtual Circle<T>& move(Circle<T>&& circle)
 				{(*this).counter--; this->copy(circle); circle.reset(); return *this;}
@@ -180,8 +181,6 @@ class Circle
 			void setDiameter(const T& diameter = V_ZERO)		{this->radius = diameter / V_TWO;}
 			void setRadius(const T &radius = V_ZERO)		{this->radius = radius;}
 
-			virtual void swap()		const			{return;}
-
 			virtual void see()		const
 				{
 					std::cout << "Brief information about the 'Circle' object." << std::endl;
@@ -193,6 +192,8 @@ class Circle
 					std::cout << "+ Area:\t\t[" << this->area() << "]." << std::endl;
 					std::cout << "+ Perimeter:\t[" << (*this).perimeter() << "]." << std::endl << std::endl;
 				}
+
+			virtual void swap()					{return;}
 
 			virtual void view()		const
 				{
@@ -342,7 +343,8 @@ class Cylinder : public Circle<T>
 					Circle<T>::print();
 				}
 
-			virtual void reset()		override	{(*this).height = V_ZERO; this->getRadius() = V_ZERO;}
+			virtual void reset()		override
+				{(*this).height = V_ZERO; this->getRadius() = V_ZERO;}
 
 			virtual void see()		const override
 				{
@@ -354,7 +356,8 @@ class Cylinder : public Circle<T>
 
 			void setHeight(const T& height = V_ZERO)	{this->height = height;}
 
-			virtual void swap()				{T temp = this->height; this->getHeight() = this->getRadius(); this->setRadius(temp);}
+			virtual void swap()		override
+				{T temp = this->height; this->getHeight() = this->getRadius(); this->setRadius(temp);}
 
 			virtual void view()		const override
 				{
@@ -407,17 +410,22 @@ int main ()
 				std::cout << "+ PI Value:\t\t[" << static_cast<double>(*array_Circle[idx]) << "]." << std::endl;
 				std::cout << "+ Radius:\t\t[" << (*array_Circle[idx]).getRadius() << "]." << std::endl;
 				std::cout << "+ Diameter:\t\t[" << (*array_Circle[idx]).getDiameter() << "]." << std::endl;
+				Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
 
 				if (Cylinder<double>* my_cylinder = dynamic_cast<Cylinder<double>*>(array_Circle[idx]))
 					{
 						std::cout << "+ Height:\t\t[" << (*my_cylinder).getHeight() << "] = [" << my_cylinder->getHeight() << "]." << std::endl;
 						std::cout << "+ Cylinder:\t\t[" << my_cylinder->getValue() << "]." << std::endl;
+						Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
 					}
 
 				if (Circle<double>* my_circle = dynamic_cast<Circle<double>*>(*(array_Circle + idx)))
-					std::cout << "+ Circle:\t\t[" << my_circle->getValue() << "]." << std::endl;
+					{
+						std::cout << "+ Circle:\t\t[" << my_circle->getValue() << "]." << std::endl;
+						Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
+					}
 
-				std::cout << "+ Is it me?:\t\t[" << array_Circle[idx]->isitme(*array_Circle[idx]) << "]." << std::endl;
+				std::cout << "+ Is it me?:\t\t[" << std::boolalpha << array_Circle[idx]->isitme(*array_Circle[idx]) << "]." << std::endl;
 				Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
 			}
 
