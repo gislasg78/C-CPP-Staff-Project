@@ -2,7 +2,7 @@
    called 'Circle' and this is used to calculate another instantiable class
    called 'Cylinder'. */
 
-//Classes and uniform initialization.
+/* Classes and uniform initialization. */
 #include <iostream>
 #include <limits>
 #include <sstream>
@@ -119,6 +119,15 @@ class Circle
 
 					return *ptr_data;
 				};
+
+			static void enter_a_pause(const std::string& str_Message)
+				{
+					std::cout << str_Message;
+					std::cin.clear();
+					std::cin.get();
+					std::cin.clear();
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+				}
 
 			static const T& enter_a_value(T *const ptr_value)
 				{
@@ -369,18 +378,6 @@ class Cylinder : public Circle<T>
 			virtual ~Cylinder() = default;
 	};
 
-
-//Pause function.
-void pause()
-	{
-		/* Pause before continuing. */
-		std::cout << std::endl << "Press the ENTER key to continue...";
-		std::cin.get();		// Wait for the user to press Enter.
-		std::cin.clear();	// Clear the error state.
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);	// Clear the buffer.
-	}
-
-
 //Main function.
 int main ()
 	{
@@ -421,7 +418,7 @@ int main ()
 					std::cout << "+ Circle:\t\t[" << my_circle->getValue() << "]." << std::endl;
 
 				std::cout << "+ Is it me?:\t\t[" << array_Circle[idx]->isitme(*array_Circle[idx]) << "]." << std::endl;
-				pause();
+				Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
 			}
 
 		/* An internal method of the 'Circle' object is used to display the assigned values. */
@@ -430,7 +427,7 @@ int main ()
 			{
 				std::cout << std::endl << "'Circle' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
 				array_Circle[idx]->print();
-				pause();
+				Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
 			}
 
 		/* New values ​​are reassigned and captured to created objects of type 'Point2D' */
@@ -441,7 +438,7 @@ int main ()
 				std::cout << std::endl << "'Circle' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
 				std::cin >> *(*(array_Circle + idx));
 				std::cout << *array_Circle[idx];
-				pause();
+				Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
 			}
 
 		/* Using the overloaded increment and decrement operators in the 'Circle' class. */
@@ -451,13 +448,13 @@ int main ()
 				/* Different nomenclatures with pointer notation and array notation. */
 				std::cout << std::endl << "'Circle' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
 				array_Circle[idx]->print();
-				pause();
+				Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
 
 				/* Increase the radius of the 'Circle' object. */
 				std::cout << std::endl << "Increase the radius of the 'Circle' object." << std::endl;
 				(*array_Circle[idx])++;
 				(*array_Circle[idx]).print();
-				pause();
+				Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
 
 				/* Initial exchange of values. */
 				std::cout << std::endl << "Initial exchange of values." << std::endl;
@@ -468,7 +465,7 @@ int main ()
 					array_Circle[idx]->swap();
 
 				array_Circle[idx]->print();
-				pause();
+				Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
 
 				/* Final exchange of values. */
 				std::cout << std::endl << "Final exchange of values." << std::endl;
@@ -478,25 +475,25 @@ int main ()
 					(*array_Circle[idx]).swap();
 
 				(*array_Circle[idx]).print();
-				pause();
+				Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
 
 				/* Decrease the radius of the 'Circle' object. */
 				std::cout << std::endl << "Decrease the radius of the 'Circle' object." << std::endl;
 				(*array_Circle[idx])--;
 				(*array_Circle[idx]).print();
-				pause();
+				Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
 
 				/* Increase the radius of the 'Circle' object. */
 				std::cout << std::endl << "Increase the radius of the 'Circle' object." << std::endl;
 				(*(*(array_Circle + idx)))++;
 				(*(*(array_Circle + idx))).see();
-				pause();
+				Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
 
 				/* Decrease the radius of the 'Circle' object. */
 				std::cout << std::endl << "Decrease the radius of the 'Circle' object." << std::endl;
 				(*(*(array_Circle + idx)))--;
 				(*(*(array_Circle + idx))).see();
-				pause();
+				Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
 
 				/* Various ways to call methods on an array of object pointers (pointer of pointers). */
 				std::cout << std::endl << "Initialize the radius of the 'Circle' object." << std::endl;
@@ -504,18 +501,21 @@ int main ()
 				(*array_Circle[idx]).reset();
 				(*(array_Circle + idx))->reset();
 				(*(*(array_Circle + idx))).reset();
+				Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
 
+				/* Observing initialized values ​​of the 'Circle' object. */
+				std::cout << std::endl << "Observing initialized values ​​of the 'Circle' object." << std::endl;
 				array_Circle[idx]->watch();
 				(*array_Circle[idx]).watch();
 				(*(array_Circle + idx))->watch();
 				(*(*(array_Circle + idx))).watch();
-				pause();
+				Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
 
 				/* Calling in various ways to an overloaded operator. */
 				std::cout << std::endl << "Displaying information about the 'Circle' object." << std::endl;
 				(*array_Circle[idx])();
 				(*(*(array_Circle + idx)))();
-				pause();
+				Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
 		}
 
 		/* All dynamically created instances of objects of type 'Circle' are purged. */
@@ -524,11 +524,13 @@ int main ()
 			{
 				std::cout << "Deleting object 'Circle' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
 				delete *(array_Circle + idx);
+				Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
 			}
 
                 /* Deleting the array of pointer objects of type 'Circle'. */
                 std::cout << "Deleting the array of pointers of type 'Circle'..." << std::endl;
 		delete [] array_Circle;
+		Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
 
 		return V_ZERO;
 	}
