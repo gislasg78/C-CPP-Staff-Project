@@ -116,6 +116,15 @@ class Point2D
 					return *ptr_data;
 				};
 
+			static void enter_a_pause(const std::string& str_Message)
+				{
+					std::cout << str_Message;
+					std::cin.clear();
+					std::cin.get();
+					std::cin.clear();
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+				}
+
 			static const T& enter_a_value(T *const ptr_value)
 				{
 					if (ptr_value)
@@ -355,17 +364,6 @@ class Point3D : public Point2D<T>
 			virtual ~Point3D() = default;
 	};
 
-//Pause function.
-void pause()
-	{
-		/* Pause before continuing. */
-		std::cout << std::endl << "Press the ENTER key to continue...";
-		std::cin.get();		// Wait for the user to press Enter.
-		std::cin.clear();	// Clear the error state.
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);  // Clear the buffer.
-	}
-
-
 //Main function.
 int main()
 	{
@@ -395,11 +393,13 @@ int main()
 				std::cout << "+ ID Value:\t[" << static_cast<int>(*array_Point2D[idx]) << "]." << std::endl;
 				std::cout << "+ [x] / [y]:\t[" << static_cast<double>(*array_Point2D[idx]) << "]." << std::endl;
 				std::cout << "+ Values:\tId: [" << array_Point2D[idx]->getId() << "].\t(x = [" << (*array_Point2D[idx]).getX() << "], y = [" << (*array_Point2D[idx]).getY() << "])." << std::endl;
+				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 
 				if (Point3D<int> *my_Point3D = dynamic_cast<Point3D<int>*>(array_Point2D[idx]))
 					{
 						std::cout << "\t\t\t\t(z = [" << (*my_Point3D).getZ() << "])." << std::endl;
 						std::cout << "+ Point3D:\t[" << my_Point3D->getValue() << "]." << std::endl;
+						Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 					}
 
 				std::cout << "+ Point2D:\t[" << array_Point2D[idx]->getValue() << "]." << std::endl;
@@ -407,12 +407,12 @@ int main()
 				if (Point2D<int>* my_Point2D = dynamic_cast<Point2D<int>*>(*(array_Point2D + idx)))
 					{
 						std::cout << "+ Point2D:\t[" << my_Point2D->getValue() << "]." << std::endl;
+						Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 					}
 
 
 				std::cout << "+ Is it me?:\t[" << array_Point2D[idx]->isitme(*array_Point2D[idx]) << "]." << std::endl;
-
-				pause();
+				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 			}
 
 		/* An internal method of the 'Point2D' object is used to display the assigned values. */
@@ -420,7 +420,7 @@ int main()
 			{
 				std::cout << std::endl << "'Point2D' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
 				array_Point2D[idx]->print();
-				pause();
+				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 			}
 
 		/* New values ​​are reassigned and captured to created objects of type 'Point2D' */
@@ -430,7 +430,7 @@ int main()
 				std::cout << std::endl << "'Point2D' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
 				std::cin >> *(*(array_Point2D + idx));
 				std::cout << *array_Point2D[idx];
-				pause();
+				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 			}
 
 		/* Using the overloaded increment and decrement operators in the 'Point2D' class. */
@@ -440,48 +440,48 @@ int main()
 				/* Display header. */
 				std::cout << std::endl << "'Point2D' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
 				array_Point2D[idx]->print();
-				pause();
+				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 
 				/* Different nomenclatures with pointer notation with 'Point2D' objects and array notation. */
 				std::cout << std::endl << "Increment by one unit the coordinates of a '2D Point' object." << std::endl;
 				(*array_Point2D[idx])++;
 				(*array_Point2D[idx]).watch();
-				pause();
+				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 
 				std::cout << std::endl << "Exchange values ​​in the units of the coordinates of a '2D Point' object." << std::endl;
 				(*array_Point2D[idx]).swap();
 				(*array_Point2D[idx]).watch();
-				pause();
+				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 
 				std::cout << std::endl << "Decrement by one unit the coordinates of a '2D Point' object." << std::endl;
 				(*array_Point2D[idx])--;
 				(*array_Point2D[idx]).watch();
-				pause();
+				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 
 				std::cout << std::endl << "Exchange values ​​in the units of the coordinates of a '2D Point' object." << std::endl;
 				(*array_Point2D[idx]).swap();
 				(*array_Point2D[idx]).watch();
-				pause();
+				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 
 				std::cout << std::endl << "Increment by one unit the coordinates of a '2D Point' object." << std::endl;
 				(*(*(array_Point2D + idx)))++;
 				(*(*(array_Point2D + idx))).watch();
-				pause();
+				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 
 				std::cout << std::endl << "Exchange values ​​in the units of the coordinates of a '2D Point' object." << std::endl;
 				(*(*(array_Point2D + idx))).swap();
 				(*(*(array_Point2D + idx))).watch();
-				pause();
+				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 
 				std::cout << std::endl << "Decrement by one unit the coordinates of a '2D Point' object." << std::endl;
 				(*(*(array_Point2D + idx)))--;
 				(*(*(array_Point2D + idx))).watch();
-				pause();
+				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 
 				std::cout << std::endl << "Exchange values ​​in the units of the coordinates of a '2D Point' object." << std::endl;
 				(*(*(array_Point2D + idx))).swap();
 				(*(*(array_Point2D + idx))).watch();
-				pause();
+				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 
 				/* Various ways to call methods on an array of object pointers (pointer of pointers). */
 				std::cout << std::endl << "Initializing the values ​​in the units of the coordinates of a 'Point2D' object." << std::endl;
@@ -489,18 +489,21 @@ int main()
 				(*array_Point2D[idx]).reset();
 				(*(array_Point2D + idx))->reset();
 				(*(*(array_Point2D + idx))).reset();
+				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 
+				/* Observing initialized values ​​of the 'Circle' object. */
+				std::cout << std::endl << "Observing initialized values ​​of the 'Point2D' object." << std::endl;
 				array_Point2D[idx]->see();
 				(*array_Point2D[idx]).see();
 				(*(array_Point2D + idx))->see();
 				(*(*(array_Point2D + idx))).see();
-				pause();
+				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 
 				/* Calling in various ways to an overloaded operator. */
 				std::cout << std::endl << "Succinct display of the coordinate values ​​of a 'Point2D' object." << std::endl;
 				(*array_Point2D[idx])();
 				(*(*(array_Point2D + idx)))();
-				pause();
+				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 			}
 
 		/* All dynamically created instances of objects of type 'Point2D' are purged. */
@@ -509,11 +512,13 @@ int main()
 			{
 				std::cout << "Deleting object 'Point2D' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
 				delete *(array_Point2D + idx);
+				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 			}
 
 		/* Deleting the array of pointer objects of type 'Point2D'. */
 		std::cout << "Deleting the array of pointers of type 'Point2D'..." << std::endl;
 		delete [] array_Point2D;
+		Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 
 		return V_ZERO;
 	}
