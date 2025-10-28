@@ -1,7 +1,7 @@
 /******************** Powers of Numbers Results. *****************
  ** Source Code:	Pow.c		               		**
  ** Author:		Gustavo Islas Gálvez.			**
- ** Creation Date:	Saturday, December 30, 2023.		**
+ ** Creation Date:	Wednesday, December 31, 2025.		**
  ** Purpose:		This program generates a series of	**
  **			multiplications or divisions of a base	**
  **			number raised to a given power,		**
@@ -22,7 +22,7 @@
 #define	V_ZERO		0
 
 /*****************************************************************
- ** Function:		static double dbl_potency.		**
+ ** Function:		double dbl_potency.			**
  ** Explanation:	Returns a base coefficient raised to the**
  **			specified power recursively by means of	**
  **			successive multiplications or divisions.**
@@ -39,6 +39,7 @@
  **					int_exp + V_ONE)	**
  **					/ dbl_base :		**
  **					V_ONE;			**
+ **								**
  ** Input Parms:	const double dbl_base,			**
  **			const int int_exp.			**
  ** Output Parms:	None.					**
@@ -49,7 +50,7 @@
  **			series of quotients in sequence from 1	**
  **			to '-n' .				**
 *****************************************************************/
-static double dbl_potency(const double dbl_base, const int int_exp)
+double dbl_potency(const double dbl_base, const int int_exp)
 	{
 		return	(int_exp > V_ZERO) ? dbl_potency(dbl_base, int_exp + V_MINUS_ONE) * dbl_base :
 			(int_exp == V_ZERO) ? V_ONE :
@@ -57,7 +58,7 @@ static double dbl_potency(const double dbl_base, const int int_exp)
 	}
 
 /*****************************************************************
- ** Function:           static double dbl_potw.			**
+ ** Function:           static dbl_potw.			**
  ** Explanation:        Returns a base coefficient raised to the**
  **                     specified power recursively by means of **
  **                     successive multiplications or divisions.**
@@ -71,7 +72,7 @@ static double dbl_potency(const double dbl_base, const int int_exp)
  **                     series of quotients in sequence from 1  **
  **                     to '-n' .                               **
 *****************************************************************/
-static double dbl_potw(const double dbl_base, const int int_exp)
+double dbl_potw(const double dbl_base, const int int_exp)
 	{
 		double dbl_result = V_ONE;
 
@@ -127,9 +128,10 @@ int main()
 		double dbl_potw_res = V_ZERO;
 		int int_exp = V_ZERO;
 
-		printf("+---|----+---|----+---|----+---|----+\n");
+		/* Initial presentation headers. */
+		printf("+===|====+===|====+===|====+===|====+\n");
 		printf("+   Positive and negative powers.   +\n");
-		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
 		printf("Base: ");
 		scanf("%lf", &dbl_base);
 		printf("Exponent: ");
@@ -140,15 +142,15 @@ int main()
 		dbl_potw_res = dbl_potw(dbl_base, int_exp);		//Obtaining power through established cycles.
 
 		printf("\n");
-		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
 		printf("+     Powers of Numbers Results.    +\n");
-		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
 		printf("| Base:\t\t[%lf].\n", dbl_base);
 		printf("| Exponent:\t[%d].\n", int_exp);
-		printf("+-----------------------------------+\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("| Potency:\t[%lf],\n", dbl_potency_res);
 		printf("! Power:\t[%lf].\n", dbl_potw_res);
-		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
 
 		return V_ZERO;
 	}
