@@ -20,9 +20,9 @@ class Shape
 			T area = V_ZERO, perimeter = V_ZERO;
 
 		public:
-			virtual const T& getAreaShape() const
+			virtual const T& getArea() const
 				{return (*this).area;}
-			virtual const T& getPerimeterShape() const
+			virtual const T& getPerimeter() const
 				{return (*this).perimeter;}
 	};
 
@@ -31,6 +31,11 @@ template <class T>
 class Circle: public Shape<T>
 	{
 		public:
+			const T& getArea() const override
+				{return (*this).area;}
+			const T& getPerimeter() const override
+				{return (*this).perimeter;}
+
 			const T getArea(const T& radius)
 				{return (*this).area = V_PI * radius * radius;}
 			const T getPerimeter(const T& radius)
@@ -42,6 +47,11 @@ template <class T>
 class Diamond: public Shape<T>
 	{
 		public:
+			const T& getArea() const override
+				{return (*this).area;}
+			const T& getPerimeter() const override
+				{return (*this).perimeter;}
+
 			const T getArea(const T& major_diameter, const T& minor_diameter)
 				{return this->area = (major_diameter * minor_diameter) / V_TWO;}
 			const T getPerimeter(const T &side)
@@ -53,6 +63,11 @@ template <class T>
 class Kite: public Shape<T>
 	{
 		public:
+			const T& getArea() const override
+				{return (*this).area;}
+			const T& getPerimeter() const override
+				{return (*this).perimeter;}
+
 			const T getArea(const T& major_diameter, const T& minor_diameter)
 				{return (*this).area = (major_diameter * minor_diameter) / V_TWO;}
 			const T getPerimeter(const T& top, const T& bottom)
@@ -64,6 +79,11 @@ template <typename T>
 class Parallelogram: public Shape<T>
 	{
 		public:
+			const T& getArea() const override
+				{return (*this).area;}
+			const T& getPerimeter() const override
+				{return (*this).perimeter;}
+
 			const T getArea(const T& bottom, const T& height)
 				{return (*this).area = bottom * height;}
 			const T getPerimeter(const T& side, const T& bottom)
@@ -75,9 +95,14 @@ template <class T>
 class Polygon: public Shape<T>
 	{
 		public:
-			virtual const T& getArea(const T& number, const T& side, const T& apothegm)
+			const T& getArea() const override
+				{return (*this).area;}
+			const T& getPerimeter() const override
+				{return (*this).perimeter;}
+
+			const T& getArea(const T& number, const T& side, const T& apothegm)
 				{return this->area = ((number * side) * apothegm) / V_TWO;}
-			virtual const T& getPerimeter(const T &number, const T &side)
+			const T& getPerimeter(const T &number, const T &side)
 				{return (*this).perimeter = number * side;}
 	};
 
@@ -86,6 +111,11 @@ template <class T>
 class Rectangle: public Shape<T>
 	{
 		public:
+			const T& getArea() const override
+				{return (*this).area;}
+			const T& getPerimeter() const override
+				{return (*this).perimeter;}
+
 			const T getArea(const T& width, const T& height)
 				{return (*this).area = width * height;}
 			const T getPerimeter(const T &width, const T &height)
@@ -97,6 +127,11 @@ template <class T>
 class Square: public Shape<T>
 	{
 		public:
+			const T& getArea() const override
+				{return (*this).area;}
+			const T& getPerimeter() const override
+				{return (*this).perimeter;}
+
 			const T getArea(const T &side)
 				{return this->area = side * side;}
 			const T getPerimeter(const T& side)
@@ -108,6 +143,11 @@ template <class T>
 class Trapeze: public Shape<T>
 	{
 		public:
+			const T& getArea() const override
+				{return (*this).area;}
+			const T& getPerimeter() const override
+				{return (*this).perimeter;}
+
 			const T getArea(const T& top, const T& bottom, const T& height)
 				{return (*this).area = ((top * bottom) * height) / V_TWO;}
 			const T getPerimeter(const T &top, const T &bottom, const T &left, const T &right)
@@ -119,6 +159,11 @@ template <class T>
 class Triangle: public Shape<T>
 	{
 		public:
+			const T& getArea() const override
+				{return (*this).area;}
+			const T& getPerimeter() const override
+				{return (*this).perimeter;}
+
 			const T getArea(const T& width, const T& height)
 				{return (*this).area = (width * height / V_TWO);}
 			const T getPerimeter(const T &side)
@@ -255,6 +300,17 @@ int main()
 				std::cout << "+ Perimeter:\t[" << r->getPerimeter(width, height) << "]." << std::endl << std::endl;
 			}
 
+		/* Shape Base Class. */
+		Shape<double> shp;
+		Shape<double> *pshp = &shp;
+		std::cout << "Shape." << std::endl;
+
+		if (Shape<double> *s = dynamic_cast<Shape<double>*>(pshp))
+			{
+				std::cout << std::endl << "[Shape]." << std::endl;
+				std::cout << "+ Area:\t\t[" << s->getArea() << "]." << std::endl;
+				std::cout << "+ Perimeter:\t[" << s->getPerimeter() << "]." << std::endl << std::endl;
+			}
 
 		/* Square. */
 		Square<double> sqr;
