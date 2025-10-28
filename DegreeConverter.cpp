@@ -7,8 +7,14 @@
 #include <iostream>
 #include <sstream>
 
+/* Unique character constants. */
+#define V_DECIMAL_POINT		'\x2e'
+#define V_PLUS_SIGN		'\x2b'
+#define V_MINUS_SIGN		'\x2d'
+
 /* Working symbolic variables. */
 #define V_THIRTY_TWO		32.0
+#define	V_ONE			1
 #define	V_ONE_POINT_EIGHT	1.8
 #define V_ZERO  		0
 
@@ -69,10 +75,49 @@ auto getData(const std::string& str_Message, T *const ptr_value)
 
 		if (ptr_value)
 			{
+				/* Function to validate that the type is numeric. */
+				std::function<bool(const std::string&)> IsNumeric = [](const std::string& str_value)
+					{
+						if (str_value.empty()) return false;
+
+						int plus_sign_count = V_ZERO, minus_sign_count = V_ZERO, decimal_point_count = V_ZERO;
+
+						return std::all_of(str_value.begin(), str_value.end(), [&](const unsigned char& c)
+							{
+								switch (c)
+									{
+										case V_PLUS_SIGN:
+										plus_sign_count++;
+										return plus_sign_count <= V_ONE;
+										break;
+
+										case V_MINUS_SIGN:
+										minus_sign_count++;
+										return minus_sign_count <= V_ONE;
+										break;
+
+										case V_DECIMAL_POINT:
+										decimal_point_count++;
+										return decimal_point_count <= V_ONE;
+										break;
+									}
+
+							return std::isdigit(c) || c == V_PLUS_SIGN || c == V_MINUS_SIGN || c == V_DECIMAL_POINT;
+							});
+					};
+
 				/* Receiving the value ​​as a string of characters. */
 				std::string str_value {};
 				std::getline(std::cin >> std::ws, str_value);
 				str_value.erase(std::remove_if(str_value.begin(), str_value.end(), ::isspace), str_value.end());
+
+				/* Validate if the character string is numeric. */
+				if (IsNumeric(str_value))
+					std::cout << std::endl << "There is a valid numeric value." << std::endl;
+				else
+					std::cout << std::endl << "There are invalid alphanumeric characters." << std::endl;
+
+				/* Convert the string to a valid and workable value. */
 				std::stringstream(str_value) >> *ptr_value;
 
 				std::cout << "Value entered:\t[" << *ptr_value << "]. OK!" << std::endl;
