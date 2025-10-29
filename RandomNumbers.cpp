@@ -1,5 +1,6 @@
 /* The purpose of this program is to create a class that returns
    the next element in a given range created by the user. */
+#include <algorithm>
 #include <iostream>
 #include <limits>
 #include <sstream>
@@ -136,6 +137,7 @@ class RandomNumber
 						{
 							std::string str_value;
 							std::getline(std::cin >> std::ws, str_value);
+							str_value.erase(std::remove_if(str_value.begin(), str_value.end(), ::isspace), str_value.end());
 							std::stringstream(str_value) >> *p_value;
 
 							std::cout << "Value entered:\t[" << *p_value << "]. OK!" << std::endl;
@@ -252,9 +254,9 @@ int main()
 		/* Generate a range of infinite series of numbers. */
 		std::cout << "Generator a range of infinite series of numbers." << std::endl;
 		std::cout << "Number of elements: ";
-		std::cin >> numbers;
+		numbers = RandomNumber<double>::enter_a_data(&numbers);
 		std::cout << "Random seed value: ";
-		std::cin >> random_seed;
+		random_seed = RandomNumber<double>::enter_a_value(&random_seed);
 
 		/* Create a class with the overloaded 'int' operator to generate series of numbers. */
 		RandomNumber<double> my_random_number(random_seed);
