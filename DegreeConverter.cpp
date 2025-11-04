@@ -1,5 +1,6 @@
 /* This program converts from degrees Celsius
-   to degrees Fahrenheit and Kelvin and vice versa. */
+   to degrees Fahrenheit and Kelvin and vice versa
+   combinations. */
 
 /* Standard work libraries. */
 #include <algorithm>
@@ -20,7 +21,16 @@
 #define V_ZERO  		0
 
 /* Determine the type of conversion to be performed. */
-enum class Converter : int {Celsius_to_Fahrenheit, Fahrenheit_to_Celsius, Celsius_to_Kelvin, Kelvin_to_Celsius, Exit_Converter} cnv_myConverter;
+enum class Converter : int
+	{
+		Celsius_to_Fahrenheit,
+		Fahrenheit_to_Celsius,
+		Celsius_to_Kelvin,
+		Kelvin_to_Celsius,
+		Fahrenheit_to_Kelvin,
+		Kelvin_to_Fahrenheit,
+		Exit_Converter
+	} cnv_myConverter;
 
 /* Function to display the values ​​obtained from the calculations. */
 template <typename T>
@@ -59,6 +69,16 @@ auto getCalculations(const Converter& cnv_Conv, const std::function<T(T)> fn_MyF
 						case Converter::Kelvin_to_Celsius:
 							std::cout << "| + Kelvin:\t[" << *t_degrees << "]." << std::endl;
 							std::cout << "| * Celsius:\t[" << *t_result << "]." << std::endl;
+							break;
+
+						case Converter::Fahrenheit_to_Kelvin:
+							std::cout << "| + Fahrenheit:\t[" << *t_degrees << "]." << std::endl;
+							std::cout << "| * Kelvin:\t[" << *t_result << "]." << std::endl;
+							break;
+
+						case Converter::Kelvin_to_Fahrenheit:
+							std::cout << "| + Kelvin:\t[" << *t_degrees << "]." << std::endl;
+							std::cout << "| * Fahrenheit:\t[" << *t_result << "]." << std::endl;
 							break;
 
 						case Converter::Exit_Converter:
@@ -159,9 +179,17 @@ int main()
 		std::function<double(double)> fn_celsius_to_kelvin = [&](const double& dbl_degrees) -> double
 			{return (dbl_degrees + V_273_15);};
 
-		/* Anonymous function to convert from Celsius degrees to Kelvin. */
+		/* Anonymous function to convert from Kelvin degrees to Celsius. */
 		std::function<double(double)> fn_kelvin_to_celsius = [&](const double& dbl_degrees) -> double
 			{return (dbl_degrees - V_273_15);};
+
+		/* Anonymous function to convert from Fahrenheit degrees to Kelvin. */
+		std::function<double(double)> fn_fahrenheit_to_kelvin = [&](const double& dbl_degrees) -> double
+			{return (((dbl_degrees - V_THIRTY_TWO) / V_ONE_POINT_EIGHT) + V_273_15);};
+
+		/* Anonymous function to convert from Kelvin degrees to Fahrenheit. */
+		std::function<double(double)> fn_kelvin_to_fahrenheit = [&](const double& dbl_degrees) -> double
+			{return ((dbl_degrees - V_273_15) * V_ONE_POINT_EIGHT) + V_THIRTY_TWO;};
 
 		/* Main loop that displays the conversion menu. */
 		while (cnv_myConverter != Converter::Exit_Converter)
@@ -174,7 +202,9 @@ int main()
 				std::cout << "| [2]. Fahrenheit to Celsius.  |" << std::endl;
 				std::cout << "| [3]. Celsius to Kelvin.      |" << std::endl;
 				std::cout << "| [4]. Kelvin to Celsius.      |" << std::endl;
-				std::cout << "| [5]. Quit this program.      |" << std::endl;
+				std::cout << "| [5]. Fahrenheit to Kelvin.   |" << std::endl;
+				std::cout << "| [6]. Kelvin to Fahrenheit.   |" << std::endl;
+				std::cout << "| [7]. Quit this program.      |" << std::endl;
 				std::cout << "+===+====+===+====+===+====+===+" << std::endl;
 
 				/* Converts an enumerated class to a primitive integer type. */
@@ -204,16 +234,32 @@ int main()
 							/* Capture the value in degrees 'Celsius'. */
 							dbl_degrees = getData<double>("Enter a value in degrees Celsius: ", &dbl_degrees);
 
-							/* Formula to convert from 'Fahrenheit' to 'Celsius'. */
+							/* Formula to convert from 'Celsius' to 'Kelvin'. */
 							dbl_result = getCalculations<double>(Converter::Celsius_to_Kelvin, fn_celsius_to_kelvin, &dbl_degrees, &dbl_result);
 							break;
 
 						case Converter::Kelvin_to_Celsius:
-							/* Capture the value in degrees 'Celsius'. */
+							/* Capture the value in degrees 'Kelvin'. */
 							dbl_degrees = getData<double>("Enter a value in degrees Kelvin: ", &dbl_degrees);
 
 							/* Formula to convert from 'Kelvin' to 'Celsius'. */
 							dbl_result = getCalculations<double>(Converter::Kelvin_to_Celsius, fn_kelvin_to_celsius, &dbl_degrees, &dbl_result);
+							break;
+
+						case Converter::Fahrenheit_to_Kelvin:
+							/* Capture the value in degrees 'Fahrenheit'*/
+							dbl_degrees = getData<double>("Enter a value in degrees Fahrenheit: ", &dbl_degrees);
+
+							/* Formula to convert from 'Fahrenheit' to 'Kelvin'.*/
+							dbl_result = getCalculations<double>(Converter::Fahrenheit_to_Kelvin, fn_fahrenheit_to_kelvin, &dbl_degrees, &dbl_result);
+							break;
+
+						case Converter::Kelvin_to_Fahrenheit:
+							/* Capture the value in degrees 'Kelvin'*/
+							dbl_degrees = getData<double>("Enter a value in degrees Kelvin: ", &dbl_degrees);
+
+							/* Formula to convert from 'Kelvin' to 'Fahrenheit'.*/
+							dbl_result = getCalculations<double>(Converter::Kelvin_to_Fahrenheit, fn_kelvin_to_fahrenheit, &dbl_degrees, &dbl_result);
 							break;
 
 						case Converter::Exit_Converter:
