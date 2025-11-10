@@ -266,9 +266,9 @@ class Cylinder : public Circle<T>
 				{(*this).counter++; this->capture();}
 			Cylinder(const T &height) : Circle<T>(V_ZERO, V_ZERO), height(height)
 				{this->counter++;}
-			Cylinder(const T &radius, const T &height) : Circle<T>(radius), height(height)
+			Cylinder(const T &height, const T &radius) : Circle<T>(radius), height(height)
 				{(*this).counter++;}
-			Cylinder(const int &id, const T &radius, const T &height) : Circle<T>(id, radius), height(height)
+			Cylinder(const int &id, const T &height, const T &radius) : Circle<T>(id, radius), height(height)
 				{this->counter++;}
 
 			Cylinder(const Cylinder<T>& cylinder) : Circle<T>(cylinder.getId(), cylinder.getRadius()), height(cylinder.getHeight())
@@ -441,7 +441,7 @@ int main ()
 				std::cout << "Radius = "; radius = Circle<double>::enter_a_value(&radius);
 				std::cout << "Height = "; height = Circle<double>::enter_a_value(&height);
 
-				array_Circle[idx] = new Cylinder<double>(idx + V_ONE, radius, height);
+				array_Circle[idx] = new Cylinder<double>(idx + V_ONE, height, radius);
 
 				std::cout << std::endl << "Object 'Cylinder' created and assigned." << std::endl;
 				std::cout << "+ ID Value:\t\t[" << static_cast<int>(*array_Circle[idx]) << "]." << std::endl;
