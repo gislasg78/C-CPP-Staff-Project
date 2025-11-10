@@ -64,8 +64,13 @@ class RandomNumber
 			RandomNumber<T> operator[](const T &random_counter)
 				{return this->getRandom((*this).random_seed, random_counter);}
 
-			RandomNumber<T>& operator+ (const RandomNumber<T>& object_random)
-				{this->random_seed += object_random.getSeed(); this->restore(); return *this;}
+			RandomNumber<T> operator+ (const RandomNumber<T>& object_random)
+				{
+					RandomNumber<T> random_instance(object_random.getSeed());
+					random_instance.getSeed() += (*this).random_seed;
+					random_instance.restore();
+					return random_instance;
+				}
 			RandomNumber<T>& operator+= (const RandomNumber<T>& object_random)
 				{(*this).random_seed += object_random.getSeed(); (*this).restore(); return *this;}
 			RandomNumber<T>& operator+= (const T& random_seed)
@@ -76,8 +81,13 @@ class RandomNumber
 			RandomNumber<T>& operator--()			{--(*this).random_seed; (*this).restore(); return *this;}
 			RandomNumber<T>& operator--(int)		{this->random_seed--; this->restore(); return *this;}
 
-			RandomNumber<T>& operator- (const RandomNumber<T>& object_random)
-				{(*this).random_seed -= object_random.getSeed(); (*this).restore(); return *this;}
+			RandomNumber<T> operator- (const RandomNumber<T>& object_random)
+				{
+					RandomNumber<T> random_instance(object_random.getSeed());
+					random_instance.getSeed() -= (*this).random_seed;
+					random_instance.restore();
+					return random_instance;
+				}
 			RandomNumber<T>& operator-= (const RandomNumber<T>& object_random)
 				{this->random_seed -= object_random.getSeed(); this->restore(); return *this;}
 			RandomNumber<T>& operator-= (const T& random_seed)
@@ -259,40 +269,69 @@ int RandomNumber<T>::counter = V_ZERO;
 int main()
 	{
 		/* Preliminary working variables. */
-		double counter = V_ZERO, numbers = V_ZERO, random_seed = V_ZERO;
 		double minimum = V_ZERO, maximum = V_ZERO;
+		double random_seed = V_ZERO;
+		int counter = V_ZERO, numbers = V_ZERO, quantity = V_ZERO;
 
 		/* Generate a range of infinite series of numbers. */
 		std::cout << "Generator a range of infinite series of numbers." << std::endl;
-		std::cout << "Number of elements: ";
-		numbers = RandomNumber<double>::enter_a_data(&numbers);
-		std::cout << "Random seed value: ";
-		random_seed = RandomNumber<double>::enter_a_value(&random_seed);
+		std::cout << "Number of random objects to generate: ";
+		quantity = RandomNumber<int>::enter_a_data(&quantity);
 
-		/* Ask the user for the minimum and maximum values ​​of the range. */
-		std::cout << std::endl << "Range of minimum and maximum values." << std::endl;
-		std::cout << "Minimum value in range: ";
-		minimum = RandomNumber<double>::enter_a_data(&minimum);
-		std::cout << "Maximum value in range: ";
-		maximum = RandomNumber<double>::enter_a_value(&maximum);
+		/* The dynamic array of pointers to objects of type 'RandomNumber' is created. */
+		RandomNumber<double>** array_Random_Number = new RandomNumber<double>* [quantity];
 
-		/* Create a class with the overloaded 'int' operator to generate series of numbers. */
-		RandomNumber<double> my_random_number(random_seed);
-		my_random_number.print();
-		my_random_number.enter_a_pause("Press the ENTER key to continue...");
-
-		/* We use the generator to take 'n' given values. */
-		std::cout << "List of generated random numbers." << std::endl;
-		for (int idx = V_ZERO; idx < numbers; idx++)
+		for (int idx = V_ZERO; idx < quantity; idx++)
 			{
-				std::cout << "#: [" << (counter++) + V_ONE << "]\t:\t[" << my_random_number.getNumber() << "]\t=\t[" << my_random_number.getValue() << "]\t=\t[" << my_random_number.getWithin(minimum, maximum) << "]." << std::endl;
-				my_random_number();	//Activate the generator to get the next number.
-			}
-		std::cout << "[" << counter << "] Output results generated." << std::endl;
-		my_random_number.enter_a_pause("Press the ENTER key to continue...");
+				std::cout << std::endl << "'Random Number Object' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
 
-		std::cout << my_random_number;
-		RandomNumber<double>::enter_a_pause("Press the ENTER key to continue...");
+				/* Obtain both the starting random seed and the positioning counter of the random number. */
+				std::cout << "Number of elements: ";
+				numbers = RandomNumber<int>::enter_a_data(&numbers);
+				std::cout << "Random seed value: ";
+				random_seed = RandomNumber<double>::enter_a_value(&random_seed);
+
+				/* Ask the user for the minimum and maximum values ​​of the range. */
+				std::cout << std::endl << "Range of minimum and maximum values." << std::endl;
+				std::cout << "Minimum value in range: ";
+				minimum = RandomNumber<double>::enter_a_data(&minimum);
+				std::cout << "Maximum value in range: ";
+				maximum = RandomNumber<double>::enter_a_value(&maximum);
+
+				/* Create a class with the overloaded 'int' operator to generate series of numbers. */
+				array_Random_Number[idx] = new RandomNumber<double>(random_seed);
+				array_Random_Number[idx]->print();
+				array_Random_Number[idx]->enter_a_pause("Press the ENTER key to continue...");
+
+				/* We use the generator to take 'n' given values. */
+				counter = V_ZERO;
+				std::cout << "List of generated random numbers." << std::endl;
+
+				for (int ind = V_ZERO; ind < numbers; ind++)
+					{
+						std::cout << "#: [" << (counter++) + V_ONE << "]\t:\t[" << array_Random_Number[idx]->getNumber() << "]\t=\t[" << array_Random_Number[idx]->getValue() << "]\t=\t[" << array_Random_Number[idx]->getWithin(minimum, maximum) << "]." << std::endl;
+						(*array_Random_Number[idx])();	//Activate the generator to get the next number.
+					}
+				std::cout << "[" << counter << "] Output results generated." << std::endl;
+				(*array_Random_Number[idx]).enter_a_pause("Press the ENTER key to continue...");
+
+				std::cout << *array_Random_Number[idx];
+				(*(*(array_Random_Number + idx))).enter_a_pause("Press the ENTER key to continue...");
+			}
+
+		/* All dynamically created instances of objects of type 'RandomNumber' are purged. */
+		std::cout << std::endl << "Clearing 'RandomNumber' objects..." << std::endl;
+		for (int idx = V_ZERO; idx < quantity; idx++)
+			{
+				std::cout << "Deleting object 'RandomNumber' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
+				delete *(array_Random_Number + idx);
+				RandomNumber<double>::enter_a_pause("\nPress the ENTER key to continue...");
+			}
+
+		/* Deleting the array of pointer objects of type 'RandomNumber'. */
+		std::cout << "Deleting the array of pointers of type 'RandomNumber'..." << std::endl;
+		delete [] array_Random_Number;
+		RandomNumber<double>::enter_a_pause("\nPress the ENTER key to continue...");
 
 		return V_ZERO;
 	}
