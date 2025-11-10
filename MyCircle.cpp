@@ -291,8 +291,9 @@ class Cylinder : public Circle<T>
 
 			Cylinder<T> operator+(const Cylinder<T>& cylinder)
 				{
-					Cylinder<T> object_cylinder(cylinder.getHeight());
+					Cylinder<T> object_cylinder(cylinder.getHeight(), cylinder.getRadius());
 					object_cylinder.getHeight() += (*this).height;
+					object_cylinder.getRadius() += (*this).getRadius();
 					return object_cylinder;
 				}
 			Cylinder<T>& operator+=(const Cylinder<T>& cylinder)
@@ -307,8 +308,9 @@ class Cylinder : public Circle<T>
 
 			Cylinder<T> operator-(const Cylinder<T>& cylinder)
 				{
-					Cylinder<T> object_cylinder(cylinder.getHeight());
+					Cylinder<T> object_cylinder(cylinder.getHeight(), cylinder.getRadius());
 					object_cylinder.getHeight() -= (*this).height;
+					object_cylinder.getRadius() -= (*this).getRadius();
 					return object_cylinder;
 				}
 			Cylinder<T>& operator-=(const Cylinder<T>& cylinder)
