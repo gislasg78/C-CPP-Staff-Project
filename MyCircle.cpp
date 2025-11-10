@@ -48,6 +48,8 @@ class Circle
 			Circle(Circle<T>&& circle) : id(circle.getId()), radius(circle.getRadius())
 				{this->counter--; circle.reset();}
 
+			Circle<T>& operator=(const T& radius)
+				{this->radius = radius; return *this;}
 			Circle<T>& operator=(const Circle<T>& circle)
 				{this->copy(circle); return *this;}
 			Circle<T>& operator=(Circle<T>&& circle)
@@ -61,6 +63,10 @@ class Circle
 
 			Circle<T>& operator+(const Circle<T>& circle)
 				{(*this).radius += circle.getRadius(); return *this;}
+			Circle<T>& operator+=(const Circle<T>& circle)
+				{(*this).radius += circle.getRadius(); return *this;}
+			Circle<T>& operator+=(const T& radius)
+				{this->radius += radius; return *this;}
 
 			Circle<T>& operator++()			{++this->radius; return *this;}
 			Circle<T>& operator++(int)		{(*this).radius++; return *this;}
@@ -69,6 +75,10 @@ class Circle
 
 			Circle<T>& operator-(const Circle<T>& circle)
 				{(*this).radius -= circle.getRadius(); return *this;}
+			Circle<T>& operator-=(const Circle<T>& circle)
+				{(*this).radius -= circle.getRadius(); return *this;}
+			Circle<T>& operator-=(const T& radius)
+				{this->radius -= radius; return *this;}
 
 			operator int()			const	{return this->id;}
 			operator double()		const	{return this->PI;}
@@ -258,6 +268,8 @@ class Cylinder : public Circle<T>
 			Cylinder(Cylinder<T>&& cylinder) : Circle<T>(cylinder.getId(), cylinder.getRadius()), height(cylinder.getHeight())
 				{this->counter--; cylinder.reset();}
 
+			Cylinder<T>& operator=(const T& height)
+				{(*this).height = height; return *this;}
 			Cylinder<T>& operator=(const Cylinder<T>& cylinder)
 				{this->copy(cylinder); return *this;}
 			Cylinder<T>& operator=(Cylinder<T>&& cylinder)
@@ -271,6 +283,10 @@ class Cylinder : public Circle<T>
 
 			Cylinder<T>& operator+(const Cylinder<T>& cylinder)
 				{(*this).getRadius() += cylinder.getRadius(); this->height += cylinder.getHeight(); return *this;}
+			Cylinder<T>& operator+=(const Cylinder<T>& cylinder)
+				{(*this).getRadius() += cylinder.getRadius(); this->height += cylinder.getHeight(); return *this;}
+			Cylinder<T>& operator+=(const T& height)
+				{this->height += height; return *this;}
 
 			Cylinder<T>& operator++()		{++this->height; return *this;}
 			Cylinder<T>& operator++(int)		{(*this).height++; return *this;}
@@ -279,6 +295,10 @@ class Cylinder : public Circle<T>
 
 			Cylinder<T>& operator-(const Cylinder<T>& cylinder)
 				{(*this).getRadius() -= cylinder.getRadius(); this->height -= cylinder.getHeight(); return *this;}
+			Cylinder<T>& operator-=(const Cylinder<T>& cylinder)
+				{(*this).getRadius() -= cylinder.getRadius(); this->height -= cylinder.getHeight(); return *this;}
+			Cylinder<T>& operator-=(const T& height)
+				{this->height -= height; return *this;}
 
 			operator int()			const	{return Circle<T>::getId();}
 			operator double()		const	{return Circle<T>::getPI();}
