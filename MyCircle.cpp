@@ -61,8 +61,12 @@ class Circle
 					this->see(); this->view(); this->watch(); return *this;
 				}
 
-			Circle<T>& operator+(const Circle<T>& circle)
-				{(*this).radius += circle.getRadius(); return *this;}
+			Circle<T> operator+(const Circle<T>& circle)
+				{
+					Circle<T> object_circle(circle.getRadius());
+					object_circle.getRadius() += (*this).radius;
+					return object_circle;
+				}
 			Circle<T>& operator+=(const Circle<T>& circle)
 				{(*this).radius += circle.getRadius(); return *this;}
 			Circle<T>& operator+=(const T& radius)
@@ -73,8 +77,12 @@ class Circle
 			Circle<T>& operator--()			{--(*this).radius; return *this;}
 			Circle<T>& operator--(int)		{this->radius--; return *this;}
 
-			Circle<T>& operator-(const Circle<T>& circle)
-				{(*this).radius -= circle.getRadius(); return *this;}
+			Circle<T> operator-(const Circle<T>& circle)
+				{
+					Circle<T> object_circle(circle.getRadius());
+					object_circle.getRadius() -= (*this).radius;
+					return object_circle;
+				}
 			Circle<T>& operator-=(const Circle<T>& circle)
 				{(*this).radius -= circle.getRadius(); return *this;}
 			Circle<T>& operator-=(const T& radius)
@@ -281,8 +289,12 @@ class Cylinder : public Circle<T>
 					this->see(); this->view(); this->watch(); return *this;
 				}
 
-			Cylinder<T>& operator+(const Cylinder<T>& cylinder)
-				{(*this).getRadius() += cylinder.getRadius(); this->height += cylinder.getHeight(); return *this;}
+			Cylinder<T> operator+(const Cylinder<T>& cylinder)
+				{
+					Cylinder<T> object_cylinder(cylinder.getHeight());
+					object_cylinder.getHeight() += (*this).height;
+					return object_cylinder;
+				}
 			Cylinder<T>& operator+=(const Cylinder<T>& cylinder)
 				{(*this).getRadius() += cylinder.getRadius(); this->height += cylinder.getHeight(); return *this;}
 			Cylinder<T>& operator+=(const T& height)
@@ -293,8 +305,12 @@ class Cylinder : public Circle<T>
 			Cylinder<T>& operator--()		{--(*this).height; return *this;}
 			Cylinder<T>& operator--(int)		{this->height--; return *this;}
 
-			Cylinder<T>& operator-(const Cylinder<T>& cylinder)
-				{(*this).getRadius() -= cylinder.getRadius(); this->height -= cylinder.getHeight(); return *this;}
+			Cylinder<T> operator-(const Cylinder<T>& cylinder)
+				{
+					Cylinder<T> object_cylinder(cylinder.getHeight());
+					object_cylinder.getHeight() -= (*this).height;
+					return object_cylinder;
+				}
 			Cylinder<T>& operator-=(const Cylinder<T>& cylinder)
 				{(*this).getRadius() -= cylinder.getRadius(); this->height -= cylinder.getHeight(); return *this;}
 			Cylinder<T>& operator-=(const T& height)
