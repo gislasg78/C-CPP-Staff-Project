@@ -49,6 +49,8 @@ class RandomNumber
 			RandomNumber(RandomNumber<T>&& object_random) : random_counter(object_random.getCounter()), random_seed(object_random.getSeed()), random_number(object_random.getNumber())
 				{this->counter--; object_random.reset();}
 
+			RandomNumber<T>& operator= (const T& random_seed)
+				{(*this).random_seed = random_seed; (*this).restore(); return *this;}
 			RandomNumber<T>& operator= (const RandomNumber<T> &object_random)
 				{this->copy(object_random); return *this;}
 			RandomNumber<T>& operator= (RandomNumber<T>&& object_random)
@@ -267,6 +269,7 @@ int main()
 		std::cout << "Random seed value: ";
 		random_seed = RandomNumber<double>::enter_a_value(&random_seed);
 
+		/* Ask the user for the minimum and maximum values ​​of the range. */
 		std::cout << std::endl << "Range of minimum and maximum values." << std::endl;
 		std::cout << "Minimum value in range: ";
 		minimum = RandomNumber<double>::enter_a_data(&minimum);
