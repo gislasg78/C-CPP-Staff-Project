@@ -64,6 +64,10 @@ class RandomNumber
 
 			RandomNumber<T>& operator+ (const RandomNumber<T>& object_random)
 				{this->random_seed += object_random.getSeed(); this->restore(); return *this;}
+			RandomNumber<T>& operator+= (const RandomNumber<T>& object_random)
+				{(*this).random_seed += object_random.getSeed(); (*this).restore(); return *this;}
+			RandomNumber<T>& operator+= (const T& random_seed)
+				{this->random_seed += random_seed; this->restore(); return *this;}
 
 			RandomNumber<T>& operator++()			{++this->random_seed; this->restore(); return *this;}
 			RandomNumber<T>& operator++(int)		{(*this).random_seed++; (*this).restore(); return *this;}
@@ -72,6 +76,10 @@ class RandomNumber
 
 			RandomNumber<T>& operator- (const RandomNumber<T>& object_random)
 				{(*this).random_seed -= object_random.getSeed(); (*this).restore(); return *this;}
+			RandomNumber<T>& operator-= (const RandomNumber<T>& object_random)
+				{this->random_seed -= object_random.getSeed(); this->restore(); return *this;}
+			RandomNumber<T>& operator-= (const T& random_seed)
+				{(*this).random_seed -= random_seed; (*this).restore(); return *this;}
 
 			operator T()					{return this->random_number;}
 
@@ -135,7 +143,7 @@ class RandomNumber
 				{
 					if (p_value)
 						{
-							std::string str_value;
+							std::string str_value {};
 							std::getline(std::cin >> std::ws, str_value);
 							str_value.erase(std::remove_if(str_value.begin(), str_value.end(), ::isspace), str_value.end());
 							std::stringstream(str_value) >> *p_value;
@@ -250,6 +258,7 @@ int main()
 	{
 		/* Preliminary working variables. */
 		double counter = V_ZERO, numbers = V_ZERO, random_seed = V_ZERO;
+		double minimum = V_ZERO, maximum = V_ZERO;
 
 		/* Generate a range of infinite series of numbers. */
 		std::cout << "Generator a range of infinite series of numbers." << std::endl;
@@ -257,6 +266,12 @@ int main()
 		numbers = RandomNumber<double>::enter_a_data(&numbers);
 		std::cout << "Random seed value: ";
 		random_seed = RandomNumber<double>::enter_a_value(&random_seed);
+
+		std::cout << std::endl << "Range of minimum and maximum values." << std::endl;
+		std::cout << "Minimum value in range: ";
+		minimum = RandomNumber<double>::enter_a_data(&minimum);
+		std::cout << "Maximum value in range: ";
+		maximum = RandomNumber<double>::enter_a_value(&maximum);
 
 		/* Create a class with the overloaded 'int' operator to generate series of numbers. */
 		RandomNumber<double> my_random_number(random_seed);
@@ -267,7 +282,7 @@ int main()
 		std::cout << "List of generated random numbers." << std::endl;
 		for (int idx = V_ZERO; idx < numbers; idx++)
 			{
-				std::cout << "#: [" << (counter++) + V_ONE << "]\t:\t[" << my_random_number.getNumber() << "]\t=\t[" << my_random_number.getValue() << "]." << std::endl;
+				std::cout << "#: [" << (counter++) + V_ONE << "]\t:\t[" << my_random_number.getNumber() << "]\t=\t[" << my_random_number.getValue() << "]\t=\t[" << my_random_number.getWithin(minimum, maximum) << "]." << std::endl;
 				my_random_number();	//Activate the generator to get the next number.
 			}
 		std::cout << "[" << counter << "] Output results generated." << std::endl;
