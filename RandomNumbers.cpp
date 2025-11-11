@@ -1,5 +1,6 @@
 /* The purpose of this program is to create a class that returns
    the next element in a given range created by the user. */
+/* Standard work libraries. */
 #include <algorithm>
 #include <iostream>
 #include <limits>
@@ -93,7 +94,7 @@ class RandomNumber
 			RandomNumber<T>& operator-= (const T& random_seed)
 				{(*this).random_seed -= random_seed; (*this).restore(); return *this;}
 
-			operator T()					{return this->random_number;}
+			operator T()					{return (*this).getValue();}
 
 			virtual void capture()
 				{
@@ -102,7 +103,7 @@ class RandomNumber
 					std::cout << std::endl << "Random Number Generator Object." << std::endl;
 					std::cout << "+ Enter a random seed: ";
 					random_seed = (*this).enter_a_data(&random_seed);
-					std::cout << "+ Enter a index value: ";
+					std::cout << "+ Enter a counter value: ";
 					random_counter = (*this).enter_a_value(&random_counter);
 
 					this->random_number = (*this).giveRandom(random_seed, random_counter);
@@ -252,9 +253,9 @@ class RandomNumber
 
 			virtual void swap()
 				{
-					T temp = this->random_seed;
+					T random_value = this->random_seed;
 					this->random_seed = this->random_number;
-					this->random_number = temp;
+					this->random_number = random_value;
 					(*this).restore();
 				}
 
@@ -315,6 +316,7 @@ int main()
 				std::cout << "[" << counter << "] Output results generated." << std::endl;
 				(*array_Random_Number[idx]).enter_a_pause("Press the ENTER key to continue...");
 
+				/* Display the last value at which the generator stopped. */
 				std::cout << *array_Random_Number[idx];
 				(*(*(array_Random_Number + idx))).enter_a_pause("Press the ENTER key to continue...");
 			}
@@ -325,13 +327,13 @@ int main()
 			{
 				std::cout << "Deleting object 'RandomNumber' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
 				delete *(array_Random_Number + idx);
-				RandomNumber<double>::enter_a_pause("\nPress the ENTER key to continue...");
+				RandomNumber<int>::enter_a_pause("Press the ENTER key to continue...");
 			}
 
 		/* Deleting the array of pointer objects of type 'RandomNumber'. */
 		std::cout << "Deleting the array of pointers of type 'RandomNumber'..." << std::endl;
 		delete [] array_Random_Number;
-		RandomNumber<double>::enter_a_pause("\nPress the ENTER key to continue...");
+		RandomNumber<int>::enter_a_pause("Press the ENTER key to continue...");
 
 		return V_ZERO;
 	}
