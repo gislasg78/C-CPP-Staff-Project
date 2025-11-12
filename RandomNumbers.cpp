@@ -1,5 +1,6 @@
 /* The purpose of this program is to create a class that returns
    the next element in a given range created by the user. */
+
 /* Standard work libraries. */
 #include <algorithm>
 #include <iostream>
@@ -62,8 +63,11 @@ class RandomNumber
 			RandomNumber<T>& operator()(const T &random_seed, const T& random_counter = V_ZERO)
 				{(*this).random_number = this->giveRandom(random_seed, random_counter); return *this;}
 
-			RandomNumber<T> operator[](const T &random_counter)
-				{return this->getRandom((*this).random_seed, random_counter);}
+			RandomNumber<T> operator[] (const T& random_counter)
+				{
+					RandomNumber<T> random_instance((*this).random_seed, random_counter);
+					return random_instance;
+				}
 
 			RandomNumber<T> operator+ (const RandomNumber<T>& object_random)
 				{
@@ -94,7 +98,7 @@ class RandomNumber
 			RandomNumber<T>& operator-= (const T& random_seed)
 				{(*this).random_seed -= random_seed; (*this).restore(); return *this;}
 
-			operator T()					{return (*this).getValue();}
+			operator T()					{return this->random_number;}
 
 			virtual void capture()
 				{
@@ -172,21 +176,52 @@ class RandomNumber
 			virtual void explore()
 				{std::cout << *this << std::endl; std::cin >> *this; std::cout << *this << std::endl;}
 
+			const T formulaRandomGenerator(const T& random_number)
+				{return RANDOM_GENERATOR(static_cast<int>(random_number));}
+
 			const T& GenerateRandom()
 				{
 					(*this).random_counter++;
-					return (this->random_number = RANDOM_GENERATOR(static_cast<int>(this->random_number)));
+					return (this->random_number = (*this).formulaRandomGenerator(this->random_number));
 				}
 
 			const T& getCounter()	const			{return (*this).random_counter;}
 			const T& getNumber()	const			{return (*this).random_number;}
+
+			const T getPosition(const T& random_seed, const T& random_number_to_find, const T& random_counter)
+				{
+					int counter = V_ZERO;
+					T random_number = random_seed;
+
+					std::cout << std::endl << "Searching for a random number from a seed." << std::endl;
+					std::cout << "+ Random seed:\t\t[" << random_seed << "]." << std::endl;
+					std::cout << "+ Random number:\t[" << random_number_to_find << "]." << std::endl;
+					std::cout << "+ Random counter:\t[" << random_counter << "]." << std::endl;
+					RandomNumber<T>::enter_a_pause("Press ENTER key to continue...");
+
+					std::cout << std::endl;
+					for (counter = V_ZERO; counter < random_counter && random_number != random_number_to_find; counter++)
+						{
+							random_number = this->formulaRandomGenerator(random_number);
+							std::cout << "- Iteration #: [" << (counter + V_ONE) << "]. Value: {" << random_number << "}. \r";
+						}
+
+					std::cout << std::endl << std::endl << "[" << counter << "] Iterations performed." << std::endl;
+					std::cout << "Random Number: [" << random_number << "] = [" << random_number_to_find << "]";
+					std::cout << " : {" << std::boolalpha << (random_number == random_number_to_find) << "}." << std::endl;
+					RandomNumber<T>::enter_a_pause("Press ENTER key to continue...");
+
+					return counter;
+				}
+
+			const T& getQuantity() const			{return this->counter;}
 
 			const T getRandom(const T& random_seed = V_ZERO, const T &random_counter = V_ZERO)
 				{
 					T random_number = random_seed;
 
 					for (int counter = V_ZERO; counter < random_counter; counter++)
-						random_number = RANDOM_GENERATOR(static_cast<int>(random_number));
+						random_number = this->formulaRandomGenerator(random_number);
 
 					return random_number;
 				}
@@ -200,7 +235,7 @@ class RandomNumber
 
 			template <typename U = T>
 			typename std::enable_if<std::is_integral<T>::value, U>::type
-			&getValue()					{return this->random_number;}
+			&getValue()					{return (this->random_number);}
 
 			const T getWithin(const T& minimum = V_ZERO, const T& maximum = V_ZERO) const
 				{
@@ -208,7 +243,7 @@ class RandomNumber
 					T lowest = std::min(minimum, maximum);
 					T interval = highest - lowest + V_ONE;
 
-					return (static_cast<int>(this->random_number) % static_cast<int>(interval) + lowest);
+					return (static_cast<int>(this->random_number) % static_cast<int>(interval) + static_cast<int>(lowest));
 				}
 
 			const T& giveRandom(const T& random_seed = V_ZERO, const T &random_counter = V_ZERO)
@@ -234,8 +269,7 @@ class RandomNumber
 					std::cout << "+ Number of Objects:\t[" << this->counter << "]." << std::endl;
 					std::cout << "+ Random Count Value:\t[" << (*this).random_counter << "]." << std::endl;
 					std::cout << "+ Random Seed Number:\t[" << (*this).random_seed << "]." << std::endl;
-					std::cout << "+ Last Random Number:\t[" << (*this).random_number << "] = [" << this->getValue() << "]." << std::endl;
-					std::cout << std::endl;
+					std::cout << "+ Last Random Number:\t[" << (*this).random_number << "] = [" << this->getValue() << "]." << std::endl << std::endl;
 				}
 
 			virtual void reset()
