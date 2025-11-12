@@ -1,14 +1,19 @@
-//Friend functions.
+/* Program that exemplifies a 'Rectangle' class
+   with some external 'friend' implementations and functions. */
+
+/* Standard work libraries. */
 #include <algorithm>
 #include <iostream>
 #include <limits>
 #include <sstream>
 
+/* Symbolic work constants. */
 #define	CARRIAGE_RETURN	'\n'
 
 #define	V_TWO		2
 #define V_ZERO		0
 
+/* 'Rectangle' class. */
 template <typename T>
 class Rectangle
 	{
@@ -29,7 +34,7 @@ class Rectangle
 
 			void capture()
 				{
-					std::cout << std::endl << "Capturing a 'Rectangle' object." << std::endl;
+					std::cout << "Capturing a 'Rectangle' object." << std::endl;
 					std::cout << "Enter the width: ";
 					this->width = Rectangle<T>::enter_a_value(&this->width);
 					std::cout << "Enter the height: ";
@@ -69,17 +74,27 @@ class Rectangle
 					return *ptr_value;
 				}
 
-			const T& getHeight() const		{return this->height;}
-			const T& getWidth() const		{return this->width;}
+			const T& getHeight() const			{return this->height;}
+			const T& getWidth() const			{return this->width;}
 
-			T& getHeight()				{return (*this).height;}
-			T& getWidth()				{return (*this).width;}
+			T& getHeight()					{return (*this).height;}
+			T& getWidth()					{return (*this).width;}
 
-			T getArea()				{return this->width * this->height;}
-			T getPerimeter()			{return V_TWO * (*this).width + V_TWO * (*this).height;}
+			T getArea()					{return this->width * this->height;}
+			T getPerimeter()				{return V_TWO * (*this).width + V_TWO * (*this).height;}
 
-			void setHeight(const T& height)		{(*this).height = height;}
-			void setWidth(const T& width)		{(*this).width = width;}
+			virtual void print()
+				{
+					std::cout << "Rectangle's outcomes." << std::endl;
+					std::cout << "+ Counter:\t[" << this->counter << "]." << std::endl;
+					std::cout << "+ Width:\t[" << this->width << "]." << std::endl;
+					std::cout << "+ Height:\t[" << this->height << "]." << std::endl;
+					std::cout << "> Area:\t\t[" << this->getArea() << "]." << std::endl;
+					std::cout << "> Perimeter:\t[" << this->getPerimeter() << "]." << std::endl << std::endl;
+				}
+
+			void setHeight(const T& height = V_ZERO)	{(*this).height = height;}
+			void setWidth(const T& width = V_ZERO)		{(*this).width = width;}
 
 			virtual ~Rectangle() = default;
 
@@ -90,12 +105,13 @@ class Rectangle
 template <typename T>
 int Rectangle<T>::counter = V_ZERO;
 
+/* Helpful function for visualizing results of the 'Rectangle' object. */
 template <typename U>
 const Rectangle<U> obtain_results (const Rectangle<U>& rect)
 	{
 		Rectangle<U> rec(rect.getWidth(), rect.getHeight());
 
-		std::cout << std::endl << "Rectangle's outcomes." << std::endl;
+		std::cout << "Rectangle's outcomes." << std::endl;
 		std::cout << "+ Counter:\t[" << rec.counter << "]." << std::endl;
 		std::cout << "+ Width:\t[" << rec.getWidth() << "]." << std::endl;
 		std::cout << "+ Height:\t[" << rec.getHeight() << "]." << std::endl;
@@ -105,32 +121,55 @@ const Rectangle<U> obtain_results (const Rectangle<U>& rect)
 		return rec;
 	}
 
+//Main function.
 int main()
 	{
+		std::cout << "Generating Rectangle class' instances." << std::endl;
+
+		/* Foo's instantiation. */
+		std::cout << std::endl << "Foo's instantiation." << std::endl;
 		Rectangle<int> foo;
 		Rectangle<int>::enter_a_pause("Press ENTER to continue...");
 
+		/* Bar's instantiation. */
+		std::cout << std::endl << "Bar's instantiation." << std::endl;
 		Rectangle<int> bar;
 		Rectangle<int>::enter_a_pause("Press ENTER to continue...");
 
+		/* Baz's instantiation. */
+		std::cout << std::endl << "Baz's instantiation." << std::endl;
 		Rectangle<int> baz;
 		Rectangle<int>::enter_a_pause("Press ENTER to continue...");
 
+
+		/* Foo's visualization. */
+		std::cout << std::endl << "Foo's visualization." << std::endl;
 		obtain_results<int>(foo);
 		Rectangle<int>::enter_a_pause("Press ENTER to continue...");
 
+		/* Bar's visualization. */
+		std::cout << std::endl << "Bar's visualization." << std::endl;
 		obtain_results<int>(bar);
 		Rectangle<int>::enter_a_pause("Press ENTER to continue...");
 
+		/* Baz's visualization. */
+		std::cout << std::endl << "Baz's visualization." << std::endl;
 		obtain_results<int>(baz);
 		Rectangle<int>::enter_a_pause("Press ENTER to continue...");
 
+
+		/* Foo's reasignation. */
+		std::cout << std::endl << "Foo's reasignation." << std::endl;
 		foo = obtain_results<int>(bar);
 		Rectangle<int>::enter_a_pause("Press ENTER to continue...");
 
+		/* Bar's reasignation. */
+		std::cout << std::endl << "Bar's reasignation." << std::endl;
 		bar = obtain_results<int>(baz);
 		Rectangle<int>::enter_a_pause("Press ENTER to continue...");
 
+		/* Baz's reasignation. */
+		std::cout << std::endl << "Baz's reasignation." << std::endl;
 		baz = obtain_results<int>(foo);
 		Rectangle<int>::enter_a_pause("Press ENTER to continue...");
 
