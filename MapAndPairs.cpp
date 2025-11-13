@@ -25,11 +25,11 @@ int main()
 		my_map_pair = myMap.insert(std::pair<char, int>('z', V_TWENTY_SIX));
 
 		if (!my_map_pair.second)
-			std::cout << std::endl << "The element: [" << my_map_pair.first->second << "] was already inserted." << std::endl;
+			std::cout << std::endl << "The element: {" << my_map_pair.first->second << "} was already inserted." << std::endl;
 
 		counter = V_ZERO;
 		std::cout << std::endl << "Dumping of map." << std::endl;
-		for (std::map<char, int>::iterator it_myMap = myMap.begin(); it_myMap != myMap.end(); it_myMap++)
+		for (std::map<char, int>::const_iterator it_myMap = myMap.cbegin(); it_myMap != myMap.cend(); it_myMap++)
 			std::cout << "#: " << std::setw(V_TWO) << std::setfill(SPACE) << std::fixed << counter ++ << " = [" << it_myMap->first << "] : {" << std::setw(V_THREE) << std::setfill(SPACE) << std::fixed << it_myMap->second << "}." << std::endl;
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
 
