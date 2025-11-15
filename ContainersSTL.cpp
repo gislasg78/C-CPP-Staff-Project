@@ -1,6 +1,7 @@
 /* Program that generates various containers. */
 
 /* Standard work libraries. */
+#include <deque>
 #include <iostream>
 #include <list>
 #include <map>
@@ -31,6 +32,7 @@ int main()
 		/* Creating a vector, list, stack, queue, priority_queue and set. */
 		std::vector<int> myVector = {V_EIGHT, V_ONE, V_SIX, V_FOUR, V_ZERO, V_SEVEN, V_TWO, V_NINE, V_FIVE, V_THREE};
 		std::list<int> myList;
+		std::deque<int> myDeq {};
 		std::stack<int> myS;
 		std::queue<int> myQ;
 		std::priority_queue<int> myPQL = {};
@@ -48,9 +50,13 @@ int main()
 			{
 				std::cout << "#: [" << counter++ << "]\t=\t{" << *itc_myVec << "}." << std::endl;
 
+				/* Sequence containers. */
 				myList.push_back(*itc_myVec);
+				myDeq.push_back(*itc_myVec);
 				myS.push(*itc_myVec); myQ.push(*itc_myVec);
 				myPQ.push(*itc_myVec); myPQL.push(*itc_myVec); myPQG.push(*itc_myVec);
+
+				/* Associative containers. */
 				mySet.insert(*itc_myVec);
 				myMap.insert(std::pair<int, int>(counter, *itc_myVec));
 			}
@@ -64,6 +70,14 @@ int main()
 				std::cout << "#: [" << counter++ << "]\t=\t{" << *itc_myList << "}." << std::endl;
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+
+		/* Display the deque. */
+		counter = V_ZERO;
+		std::cout << std::endl << "Dumping of deque." << std::endl;
+		for (std::deque<int>::const_iterator itc_myDeq = myDeq.cbegin(); itc_myDeq != myDeq.end(); itc_myDeq++)
+			{
+				std::cout << "#: [" << counter++ << "]\t=\t{" << *itc_myDeq << "}." << std::endl;
+			}
 
 		/* Display the stack. */
 		counter = V_ZERO;
