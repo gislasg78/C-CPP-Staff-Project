@@ -41,7 +41,7 @@ struct std::hash<Person>
 template <>
 struct std::hash<std::pair<std::string, int>>
 	{
-		std::size_t operator()(const std::pair<std::string, int>& pair_person) const
+		const std::size_t operator()(const std::pair<std::string, int>& pair_person) const
 			{
 				const std::size_t h1 = std::hash<std::string>{}(pair_person.first);
 				const std::size_t h2 = std::hash<int>{}(pair_person.second);
