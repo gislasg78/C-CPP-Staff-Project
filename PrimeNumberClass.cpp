@@ -1,6 +1,6 @@
 #include <algorithm>
-#include <iostream>
 #include <iterator>
+#include <iostream>
 #include <sstream>
 
 #define	V_FIVE		5
@@ -34,6 +34,7 @@ class DynamicArray
 						{
 							std::string str_value = {};
 							std::getline(std::cin >> std::ws, str_value);
+							str_value.erase(std::remove_if(str_value.begin(), str_value.end(), ::isspace), str_value.end());
 							std::stringstream(str_value) >> *ptr_value;
 
 							std::cout << "Value entered:\t[" << *ptr_value << "]. OK!" << std::endl;
