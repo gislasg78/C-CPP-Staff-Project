@@ -1,6 +1,7 @@
-/* Program that generates various containers. */
+/* Program that generates various C++ STL containers. */
 
 /* Standard work libraries. */
+#include <array>
 #include <deque>
 #include <iostream>
 #include <list>
@@ -18,6 +19,7 @@
 #define V_ONE   1
 #define	V_SEVEN	7
 #define	V_SIX	6
+#define	V_TEN	10
 #define	V_THREE	3
 #define	V_TWO	2
 #define V_ZERO  0
@@ -29,9 +31,10 @@ int main()
 		auto fn_cmp = [&](int x, int y){return x < y;};
 		int counter = V_ZERO;
 
-		/* Creating a vector, list, stack, queue, priority_queue and set. */
-		std::vector<int> myVector = {V_EIGHT, V_ONE, V_SIX, V_FOUR, V_ZERO, V_SEVEN, V_TWO, V_NINE, V_FIVE, V_THREE};
-		std::list<int> myList;
+		/* Creating a arraym vector, list, stack, queue, priority_queue, set and map. */
+		std::array<int, V_TEN> myArray = {V_EIGHT, V_ONE, V_SIX, V_FOUR, V_ZERO, V_SEVEN, V_TWO, V_NINE, V_FIVE, V_THREE};
+		std::vector<int> myVector = {};
+		std::list<int> myList {};
 		std::deque<int> myDeq {};
 		std::stack<int> myS;
 		std::queue<int> myQ;
@@ -42,23 +45,33 @@ int main()
 		std::map<int, int> myMap;
 
 		/* Main header message. */
-		std::cout << "Vectors and priority queues." << std::endl;
+		std::cout << "C++ STL library containers." << std::endl;
 
-		/* Flip the vector. */
+		/* Display de array. */
+		std::cout << std::endl << "Dumping of array." << std::endl;
+		for (std::array<int, V_TEN>::const_iterator itc_myArray = myArray.cbegin(); itc_myArray != myArray.cend(); itc_myArray++)
+			{
+				std::cout << "#: [" << counter++ << "]\t=\t{" << *itc_myArray << "}." << std::endl;
+
+				/* Sequence containers. */
+				myVector.push_back(*itc_myArray);
+				myList.push_back(*itc_myArray);
+				myDeq.push_back(*itc_myArray);
+				myS.push(*itc_myArray); myQ.push(*itc_myArray);
+				myPQ.push(*itc_myArray); myPQL.push(*itc_myArray); myPQG.push(*itc_myArray);
+
+				/* Associative containers. */
+				mySet.insert(*itc_myArray);
+				myMap.insert(std::pair<int, int>(counter, *itc_myArray));
+			}
+		std::cout << "[" << counter << "] Output generated results." << std::endl;
+
+		/* Display the vector. */
+		counter = V_ZERO;
 		std::cout << std::endl << "Dumping of vector." << std::endl;
 		for (std::vector<int>::const_iterator itc_myVec = myVector.cbegin(); itc_myVec != myVector.cend(); itc_myVec++)
 			{
 				std::cout << "#: [" << counter++ << "]\t=\t{" << *itc_myVec << "}." << std::endl;
-
-				/* Sequence containers. */
-				myList.push_back(*itc_myVec);
-				myDeq.push_back(*itc_myVec);
-				myS.push(*itc_myVec); myQ.push(*itc_myVec);
-				myPQ.push(*itc_myVec); myPQL.push(*itc_myVec); myPQG.push(*itc_myVec);
-
-				/* Associative containers. */
-				mySet.insert(*itc_myVec);
-				myMap.insert(std::pair<int, int>(counter, *itc_myVec));
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
 
