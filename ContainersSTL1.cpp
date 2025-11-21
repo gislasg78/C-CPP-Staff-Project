@@ -47,6 +47,7 @@ int main()
 		/* Main header message. */
 		std::cout << "C++ STL library containers." << std::endl;
 
+
 		/* Display de array. */
 		std::cout << std::endl << "Dumping of array." << std::endl;
 		for (std::array<int, V_TEN>::const_iterator itc_myArray = myArray.cbegin(); itc_myArray != myArray.cend(); itc_myArray++)
@@ -66,6 +67,13 @@ int main()
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
 
+		counter = V_ZERO;
+		std::cout << std::endl << "Array." << std::endl;
+		for (const int& item : myArray)
+			std::cout << "#: [" << counter++ << "]\t=\t{" << item << "}." << std::endl;
+		std::cout << "[" << counter << "] Output generated results." << std::endl;
+
+
 		/* Display the vector. */
 		counter = V_ZERO;
 		std::cout << std::endl << "Dumping of vector." << std::endl;
@@ -74,6 +82,13 @@ int main()
 				std::cout << "#: [" << counter++ << "]\t=\t{" << *itc_myVec << "}." << std::endl;
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+
+		counter = V_ZERO;
+		std::cout << std::endl << "Vector." << std::endl;
+		for (const int& item : myVector)
+			std::cout << "#: [" << counter++ << "]\t=\t{" << item << "}." << std::endl;
+		std::cout << "[" << counter << "] Output generated results." << std::endl;
+
 
 		/* Display the list. */
 		counter = V_ZERO;
@@ -84,6 +99,13 @@ int main()
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
 
+		counter = V_ZERO;
+		std::cout << std::endl << "List." << std::endl;
+		for (const int& item : myList)
+			std::cout << "#: [" << counter++ << "]\t=\t{" << item << "}." << std::endl;
+		std::cout << "[" << counter << "] Output generated results." << std::endl;
+
+
 		/* Display the deque. */
 		counter = V_ZERO;
 		std::cout << std::endl << "Dumping of deque." << std::endl;
@@ -91,6 +113,14 @@ int main()
 			{
 				std::cout << "#: [" << counter++ << "]\t=\t{" << *itc_myDeq << "}." << std::endl;
 			}
+		std::cout << "[" << counter << "] Output generated results." << std::endl;
+
+		counter = V_ZERO;
+		std::cout << std::endl << "Deque." << std::endl;
+		for (const int& item : myDeq)
+			std::cout << "#: [" << counter++ << "]\t=\t{" << item << "}." << std::endl;
+		std::cout << "[" << counter << "] Output generated results." << std::endl;
+
 
 		/* Display the stack. */
 		counter = V_ZERO;
@@ -102,6 +132,7 @@ int main()
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
 
+
 		/* Display the queue. */
 		counter = V_ZERO;
 		std::cout << std::endl << "Dumping of queue." << std::endl;
@@ -111,6 +142,7 @@ int main()
 				myQ.pop();
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+
 
 		/* Display the first priority queue (from highest to lowest order). */
 		counter = V_ZERO;
@@ -122,6 +154,7 @@ int main()
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
 
+
 		/* Display the second priority queue (from lowest to highest order). */
 		counter = V_ZERO;
 		std::cout << std::endl << "Dumping of second priority queue (greatest)." << std::endl;
@@ -131,6 +164,7 @@ int main()
 				myPQG.pop();
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+
 
 		/* Display the third priority queue (from owner lambda function). */
 		counter = V_ZERO;
@@ -142,6 +176,7 @@ int main()
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
 
+
 		/* Display the set. */
 		counter = V_ZERO;
 		std::cout << std::endl << "Dumping of set." << std::endl;
@@ -150,6 +185,13 @@ int main()
 				std::cout << "#: [" << counter++ << "]\t=\t{" << *itc_mySet << "}." << std::endl;
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+
+		counter = V_ZERO;
+		std::cout << std::endl << "Set." << std::endl;
+		for (const int& item : mySet)
+			std::cout << "#: [" << counter++ << "]\t=\t{" << item << "}." << std::endl;
+		std::cout << "[" << counter << "] Output generated results." << std::endl;
+
 
 		/* Display the map. */
 		counter = V_ZERO;
