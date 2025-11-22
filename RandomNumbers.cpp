@@ -5,7 +5,9 @@
 #include <algorithm>
 #include <iostream>
 #include <limits>
+#include <set>
 #include <sstream>
+#include <vector>
 
 /* Symbolic character constants. */
 #define	CARRIAGE_RETURN		'\n'
@@ -97,6 +99,19 @@ class RandomNumber
 				{this->random_seed -= object_random.getSeed(); this->restore(); return *this;}
 			RandomNumber<T>& operator-= (const T& random_seed)
 				{(*this).random_seed -= random_seed; (*this).restore(); return *this;}
+
+			const RandomNumber<T>& operator!= (const RandomNumber<T>& other_random)
+				{return ((this->random_counter != other_random.getCounter()) || (this->random_seed != other_random.getNumber()) || (this->random_seed != other_random.getSeed()));}
+			const RandomNumber<T>& operator== (const RandomNumber<T>& other_random)
+				{return ((this->random_counter == other_random.getCounter()) && (this->random_seed == other_random.getNumber()) && (this->random_seed == other_random.getSeed()));}
+			const RandomNumber<T>& operator> (const RandomNumber<T>& other_random)
+				{return ((*this).random_seed > other_random.getSeed());}
+			const RandomNumber<T>& operator>= (const RandomNumber<T>& other_random)
+				{return ((*this).random_seed > other_random.getSeed());}
+			const RandomNumber<T>& operator< (const RandomNumber<T>& other_random)
+				{return ((*this).random_seed < other_random.getSeed());}
+			const RandomNumber<T>& operator<= (const RandomNumber<T>& other_random)
+				{return ((*this).random_seed <= other_random.getSeed());}
 
 			operator T()					{return this->random_number;}
 
@@ -307,6 +322,7 @@ int main()
 		double minimum = V_ZERO, maximum = V_ZERO;
 		double random_seed = V_ZERO;
 		int counter = V_ZERO, numbers = V_ZERO, quantity = V_ZERO;
+		std::vector<std::set<int>> lottery;	//Vector that stores ordered sets of integers.
 
 		/* Generate a range of infinite series of numbers. */
 		std::cout << "Generator a range of infinite series of numbers." << std::endl;
@@ -318,6 +334,7 @@ int main()
 
 		for (int idx = V_ZERO; idx < quantity; idx++)
 			{
+				std::set<int> ticket;	//Ordered sets of integers.
 				std::cout << std::endl << "'Random Number Object' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
 
 				/* Obtain both the starting random seed and the positioning counter of the random number. */
@@ -344,10 +361,14 @@ int main()
 
 				for (int ind = V_ZERO; ind < numbers; ind++)
 					{
+						ticket.insert((*array_Random_Number[idx]).getWithin(minimum, maximum));
+
 						std::cout << "#: [" << (counter++) + V_ONE << "]\t:\t[" << array_Random_Number[idx]->getNumber() << "]\t=\t[" << array_Random_Number[idx]->getValue() << "]\t=\t[" << array_Random_Number[idx]->getWithin(minimum, maximum) << "]." << std::endl;
 						(*array_Random_Number[idx])();	//Activate the generator to get the next number.
 					}
 				std::cout << "[" << counter << "] Output results generated." << std::endl;
+
+				lottery.push_back(ticket);	//Store each set of sorted integers on one line of the vector.
 				(*array_Random_Number[idx]).enter_a_pause("Press the ENTER key to continue...");
 
 				/* Display the last value at which the generator stopped. */
@@ -356,17 +377,35 @@ int main()
 			}
 
 		/* All dynamically created instances of objects of type 'RandomNumber' are purged. */
+		counter = V_ZERO;
 		std::cout << std::endl << "Clearing 'RandomNumber' objects..." << std::endl;
 		for (int idx = V_ZERO; idx < quantity; idx++)
 			{
-				std::cout << "Deleting object 'RandomNumber' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
+				std::cout << "Deleting object 'RandomNumber' #: [" << (counter++) + V_ONE << "] of: [" << quantity << "]." << std::endl;
 				delete *(array_Random_Number + idx);
 				RandomNumber<int>::enter_a_pause("Press the ENTER key to continue...");
 			}
+		std::cout << "[" << counter << "] Output results generated." << std::endl;
+		RandomNumber<int>::enter_a_pause("Press the ENTER key to continue...");
 
 		/* Deleting the array of pointer objects of type 'RandomNumber'. */
-		std::cout << "Deleting the array of pointers of type 'RandomNumber'..." << std::endl;
+		std::cout << std::endl << "Deleting the array of pointers of type 'RandomNumber'..." << std::endl;
 		delete [] array_Random_Number;
+		RandomNumber<int>::enter_a_pause("Press the ENTER key to continue...");
+
+		/* Empty all tickets generated as sets into a vector of a draw. */
+		counter = V_ZERO;
+		std::cout << std::endl << "Empty all tickets generated as sets into a vector of a draw." << std::endl;
+		for (std::vector<std::set<int>>::const_iterator itc_lottery = lottery.cbegin(); itc_lottery != lottery.cend(); itc_lottery++)
+			{
+				std::cout << "Ticket #: [" << (counter++) + V_ONE << "] of: [" << lottery.size() << "]." << std::endl;
+
+				for (std::set<int>::const_iterator itc_ticket = (*itc_lottery).cbegin(); itc_ticket != (*itc_lottery).cend(); itc_ticket++)
+					std::cout << "[" << *itc_ticket << "].\t";
+
+				std::cout << std::endl << std::endl;
+			}
+		std::cout << "[" << counter << "] Output results generated." << std::endl;
 		RandomNumber<int>::enter_a_pause("Press the ENTER key to continue...");
 
 		return V_ZERO;
