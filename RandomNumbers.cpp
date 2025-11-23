@@ -107,7 +107,7 @@ class RandomNumber
 			const T operator> (const RandomNumber<T>& other_random)
 				{return ((*this).random_seed > other_random.getSeed());}
 			const T operator>= (const RandomNumber<T>& other_random)
-				{return ((*this).random_seed > other_random.getSeed());}
+				{return ((*this).random_seed >= other_random.getSeed());}
 			const T operator< (const RandomNumber<T>& other_random)
 				{return ((*this).random_seed < other_random.getSeed());}
 			const T operator<= (const RandomNumber<T>& other_random)
