@@ -1,12 +1,11 @@
-//General Work Libraries.
+/* General Work Libraries. */
 #include <iostream>
-#include <iterator>
 #include <vector>
 
-//Symbolic constant of work.
+/* Symbolic constant of work. */
 #define	V_ZERO	0
 
-//First '2D Point' template type class.
+/* First '2D Point' template type class. */
 template <typename T>
 class Point2D
 	{
@@ -23,7 +22,7 @@ class Point2D
 
 		public:
 			Point2D()				{this->c++; this->capture();}
-			Point2D (T &x, T &y) : x(x), y(y)	{this->c++;};
+			Point2D(T &x, T &y) : x(x), y(y)	{this->c++;};
 
 			virtual void capture()
 				{
@@ -48,11 +47,11 @@ class Point2D
 			virtual ~Point2D() = default;
 	};
 
-//Initialization of the static count value of created 2D points.
+/* Initialization of the static count value of created 2D points. */
 template <typename T>
 int Point2D<T>::c = V_ZERO;
 
-//Second '3D Point' template type class inherits its attributes and methods from the '2D Point' class.
+/* Second '3D Point' template type class inherits its attributes and methods from the '2D Point' class. */
 template <typename T>
 class Point3D : public Point2D<T>
 	{
@@ -66,7 +65,6 @@ class Point3D : public Point2D<T>
 
 		public:
 			Point3D()				{this->capture();}
-
 			Point3D(T &x, T &y, T &z) : Point2D<T>(x, y), z(z) {};
 
 			virtual void capture()
@@ -91,7 +89,7 @@ class Point3D : public Point2D<T>
 			virtual ~Point3D() = default;
 	};
 
-//Line class.
+/* Line class. */
 template <typename T>
 class Line
 	{
@@ -120,9 +118,9 @@ class Line
 				{
 					std::cout << "'Point2D' classes added to the 'Line' class." << std::endl;
 
-					for (auto it_vSp2D = std::begin(vSp2D); it_vSp2D != std::end(vSp2D); it_vSp2D++)
+					for (typename std::vector<Point2D<T>>::const_iterator itc_vSp2D = vSp2D.cbegin(); itc_vSp2D != vSp2D.cend(); itc_vSp2D++)
 						{
-							std::cout << "2D Point:\t(x = [" << it_vSp2D->getX() << "], y = [" << it_vSp2D->getY() << "])." << std::endl;
+							std::cout << "2D Point:\t(x = [" << itc_vSp2D->getX() << "], y = [" << itc_vSp2D->getY() << "])." << std::endl;
 						}
 
 					std::cout << "[" << vSp2D.size() << "] 'Point2D' classes contained." << std::endl;
