@@ -1,6 +1,6 @@
 /* This program creates a parent or base class called 'Point2D'
-   and exemplifies different features of Object Oriented Programming in C++.
-*/
+   and exemplifies different features of Object Oriented Programming in C++. */
+
 /* Common work libraries. */
 #include <algorithm>
 #include <iostream>
@@ -86,6 +86,19 @@ class Point2D
 				{(*this).x -= Point2D.getX(); (*this).y -= Point2D.getY(); return *this;}
 			Point2D<T>& operator-=(const T& value)
 				{this->x -= value; this->y -= value; return *this;}
+
+			const T operator!=(const Point2D<T>& Point2D) const
+				{return ((this->id != Point2D.getId()) || (this->x != Point2D.getX()) || (this->y != Point2D.getY()));}
+			const T operator==(const Point2D<T>& Point2D) const
+				{return ((this->id == Point2D.getId()) && (this->x == Point2D.getX()) && (this->y == Point2D.getY()));}
+			const T operator>(const Point2D<T>& Point2D) const
+				{return (((*this).x > Point2D.getX()) || ((*this).y > Point2D.getY()));}
+			const T operator>=(const Point2D<T>& Point2D) const
+				{return (((*this).x >= Point2D.getX()) || ((*this).y >= Point2D.getY()));}
+			const T operator<(const Point2D<T>& Point2D) const
+				{return (((*this).x < Point2D.getX()) || ((*this).y < Point2D.getY()));}
+			const T operator<=(const Point2D<T>& Point2D) const
+				{return (((*this).x <= Point2D.getX()) || ((*this).y <= Point2D.getY()));}
 
 			operator int()		const	{return this->id;}
 			operator double()	const	{return ((this->y) ? ((double) (*this).x / (double) (*this).y) : V_ZERO);}
@@ -315,6 +328,19 @@ class Point3D : public Point2D<T>
 				{(*this).getX() -= Point3D.getX(); (*this).getY() -= Point3D.getY(); this->z -= Point3D.getZ(); return *this;}
 			Point3D<T>& operator-=(const T& value)
 				{this->z -= value; return *this;}
+
+			const T operator!=(const Point3D<T>& Point3D) const
+				{return ((this->getId() != Point3D.getId()) || (this->getX() != Point3D.getX()) || (this->getY() != Point3D.getY()) || (this->z != Point3D.getZ()));}
+			const T operator==(const Point3D<T>& Point3D) const
+				{return ((this->getId() == Point3D.getId()) && (this->getX() == Point3D.getX()) && (this->getY() == Point3D.getY()) && (this->z != Point3D.getZ()));}
+			const T operator>(const Point3D<T>& Point3D) const
+				{return ((*this).z > Point3D.getZ());}
+			const T operator>=(const Point3D<T>& Point3D) const
+				{return ((*this).z >= Point3D.getZ());}
+			const T operator<(const Point3D<T>& Point3D) const
+				{return ((*this).z < Point3D.getZ());}
+			const T operator<=(const Point3D<T>& Point3D) const
+				{return ((*this).z <= Point3D.getZ());}
 
 			operator int()		const	{return (*this).getId();}
 			operator double()	const	{return (*this).getZ();}
