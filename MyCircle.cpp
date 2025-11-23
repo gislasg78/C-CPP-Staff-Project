@@ -88,6 +88,19 @@ class Circle
 			Circle<T>& operator-=(const T& radius)
 				{this->radius -= radius; return *this;}
 
+			const T operator!=(const Circle<T>& circle) const
+				{return ((this->id != circle.getId()) || (this->PI != circle.getPI()) || (this->radius != circle.getRadius()));}
+			const T operator==(const Circle<T>& circle) const
+				{return ((this->id == circle.getId()) && (this->PI == circle.getPI()) && (this->radius == circle.getRadius()));}
+			const T operator>(const Circle<T>& circle) const
+				{return ((*this).radius > circle.getRadius());}
+			const T operator>=(const Circle<T>& circle) const
+				{return ((*this).radius >= circle.getRadius());}
+			const T operator<(const Circle<T>& circle) const
+				{return ((*this).radius < circle.getRadius());}
+			const T operator<=(const Circle<T>& circle) const
+				{return ((*this).radius <= circle.getRadius());}
+
 			operator int()			const	{return this->id;}
 			operator double()		const	{return this->PI;}
 
@@ -297,7 +310,7 @@ class Cylinder : public Circle<T>
 					return object_cylinder;
 				}
 			Cylinder<T>& operator+=(const Cylinder<T>& cylinder)
-				{(*this).getRadius() += cylinder.getRadius(); this->height += cylinder.getHeight(); return *this;}
+				{this->height += cylinder.getHeight(); (*this).getRadius() += cylinder.getRadius(); return *this;}
 			Cylinder<T>& operator+=(const T& height)
 				{this->height += height; return *this;}
 
@@ -314,9 +327,22 @@ class Cylinder : public Circle<T>
 					return object_cylinder;
 				}
 			Cylinder<T>& operator-=(const Cylinder<T>& cylinder)
-				{(*this).getRadius() -= cylinder.getRadius(); this->height -= cylinder.getHeight(); return *this;}
+				{this->height -= cylinder.getHeight(); (*this).getRadius() -= cylinder.getRadius(); return *this;}
 			Cylinder<T>& operator-=(const T& height)
 				{this->height -= height; return *this;}
+
+			const T operator!=(const Cylinder<T>& cylinder) const
+				{return ((this->getId() != cylinder.getId()) || (this->getPI() != cylinder.getPI()) || (this->getRadius() != cylinder.getRadius()) || (this->height != cylinder.getHeight()));}
+			const T operator==(const Cylinder<T>& cylinder) const
+				{return ((this->getId() == cylinder.getId()) && (this->getPI() == cylinder.getPI()) || (this->getRadius() == cylinder.getRadius()) && (this->height == cylinder.getHeight()));}
+			const T operator>(const Cylinder<T>& cylinder) const
+				{return ((*this).height > cylinder.getHeight());}
+			const T operator>=(const Cylinder<T>& cylinder) const
+				{return ((*this).height >= cylinder.getHeight());}
+			const T operator<(const Cylinder<T>& cylinder) const
+				{return ((*this).height < cylinder.getHeight());}
+			const T operator<=(const Cylinder<T>& cylinder) const
+				{return ((*this).height <= cylinder.getHeight());}
 
 			operator int()			const	{return Circle<T>::getId();}
 			operator double()		const	{return Circle<T>::getPI();}
@@ -333,8 +359,8 @@ class Cylinder : public Circle<T>
 			const Cylinder<C> convert()	const
 				{
 					Cylinder<C> converted_cylinder(V_ZERO);
-					converted_cylinder.setRadius(static_cast<C>(this->getRadius()));
 					converted_cylinder.setHeight(static_cast<C>(this->getHeight()));
+					converted_cylinder.setRadius(static_cast<C>(this->getRadius()));
 					return converted_cylinder;
 				}
 
@@ -342,13 +368,13 @@ class Cylinder : public Circle<T>
 			const Cylinder<C> convert(const Cylinder<T>& cylinder)	const
 				{
 					Cylinder<C> converted_cylinder(V_ZERO);
-					converted_cylinder.getRadius() = static_cast<C>(cylinder.getRadius());
 					converted_cylinder.getHeight() = static_cast<C>(cylinder.getHeight());
+					converted_cylinder.getRadius() = static_cast<C>(cylinder.getRadius());
 					return converted_cylinder;
 				}
 
 			virtual Cylinder<T>& copy(const Cylinder<T>& cylinder)
-				{Circle<T>::setRadius(cylinder.getRadius()); (*this).height = cylinder.getHeight(); return *this;}
+				{(*this).height = cylinder.getHeight(); Circle<T>::setRadius(cylinder.getRadius()); return *this;}
 			virtual Cylinder<T>& copy(const Circle<T>& circle) override
 				{Circle<T>::copy(circle); return *this;}
 
