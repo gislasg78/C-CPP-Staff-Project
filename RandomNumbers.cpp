@@ -100,17 +100,17 @@ class RandomNumber
 			RandomNumber<T>& operator-= (const T& random_seed)
 				{(*this).random_seed -= random_seed; (*this).restore(); return *this;}
 
-			const RandomNumber<T>& operator!= (const RandomNumber<T>& other_random)
-				{return ((this->random_counter != other_random.getCounter()) || (this->random_seed != other_random.getNumber()) || (this->random_seed != other_random.getSeed()));}
-			const RandomNumber<T>& operator== (const RandomNumber<T>& other_random)
-				{return ((this->random_counter == other_random.getCounter()) && (this->random_seed == other_random.getNumber()) && (this->random_seed == other_random.getSeed()));}
-			const RandomNumber<T>& operator> (const RandomNumber<T>& other_random)
+			const T operator!= (const RandomNumber<T>& other_random)
+				{return ((this->random_counter != other_random.getCounter()) || (this->random_number != other_random.getNumber()) || (this->random_seed != other_random.getSeed()));}
+			const T operator== (const RandomNumber<T>& other_random)
+				{return ((this->random_counter == other_random.getCounter()) && (this->random_number == other_random.getNumber()) && (this->random_seed == other_random.getSeed()));}
+			const T operator> (const RandomNumber<T>& other_random)
 				{return ((*this).random_seed > other_random.getSeed());}
-			const RandomNumber<T>& operator>= (const RandomNumber<T>& other_random)
+			const T operator>= (const RandomNumber<T>& other_random)
 				{return ((*this).random_seed > other_random.getSeed());}
-			const RandomNumber<T>& operator< (const RandomNumber<T>& other_random)
+			const T operator< (const RandomNumber<T>& other_random)
 				{return ((*this).random_seed < other_random.getSeed());}
-			const RandomNumber<T>& operator<= (const RandomNumber<T>& other_random)
+			const T operator<= (const RandomNumber<T>& other_random)
 				{return ((*this).random_seed <= other_random.getSeed());}
 
 			operator T()					{return this->random_number;}
