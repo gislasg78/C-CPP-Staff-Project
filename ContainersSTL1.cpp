@@ -184,7 +184,7 @@ int main()
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
 
 		counter = V_ZERO;
-		std::cout << std::endl << "Set." << std::endl;
+		std::cout << std::endl << "Set (Ascending)." << std::endl;
 		for (std::set<int>::const_iterator itc_myASet = myASet.cbegin(); itc_myASet != myASet.cend(); itc_myASet++)
 			{
 				std::cout << "#: [" << counter++ << "]\t=\t{" << *itc_myASet << "}." << std::endl;
@@ -199,7 +199,7 @@ int main()
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
 
 		counter = V_ZERO;
-		std::cout << std::endl << "Set." << std::endl;
+		std::cout << std::endl << "Set (Descending)." << std::endl;
 		for (std::set<int>::const_iterator itc_myDSet = myDSet.cbegin(); itc_myDSet != myDSet.cend(); itc_myDSet++)
 			{
 				std::cout << "#: [" << counter++ << "]\t=\t{" << *itc_myDSet << "}." << std::endl;
@@ -224,6 +224,14 @@ int main()
 		/* Display the Map (Ascending). */
 		counter = V_ZERO;
 		std::cout << std::endl << "Dumping of Map (Ascending)." << std::endl;
+		for (const std::pair<const int, int>& item : myAMap)
+			{
+				std::cout << "#: [" << counter++ << "]\t=\t{" << item.first << "} = [" << item.second << "]." << std::endl;
+			}
+		std::cout << "[" << counter << "] Output generated results." << std::endl;
+
+		counter = V_ZERO;
+		std::cout << std::endl << "Map (Ascending)." << std::endl;
 		for (std::map<int, int>::const_iterator itc_myAMap = myAMap.cbegin(); itc_myAMap != myAMap.cend(); itc_myAMap++)
 			{
 				std::cout << "#: [" << counter++ << "]\t=\t{" << itc_myAMap->first << "} = [" << itc_myAMap->second << "]." << std::endl;
@@ -233,6 +241,14 @@ int main()
 		/* Display the Map (Descending). */
 		counter = V_ZERO;
 		std::cout << std::endl << "Dumping of Map (Descending)." << std::endl;
+		for (const std::pair<const int, int>& item : myDMap)
+			{
+				std::cout << "#: [" << counter++ << "]\t=\t{" << item.first << "} = [" << item.second << "]." << std::endl;
+			}
+		std::cout << "[" << counter << "] Output generated results." << std::endl;
+
+		counter = V_ZERO;
+		std::cout << std::endl << "Map (Descending)." << std::endl;
 		for (std::map<int, int>::const_iterator itc_myDMap = myDMap.cbegin(); itc_myDMap != myDMap.cend(); itc_myDMap++)
 			{
 				std::cout << "#: [" << counter++ << "]\t=\t{" << itc_myDMap->first << "} = [" << itc_myDMap->second << "]." << std::endl;
@@ -242,6 +258,14 @@ int main()
 		/* Display the Unordered Map. */
 		counter = V_ZERO;
 		std::cout << std::endl << "Dumping of Unordered Map." << std::endl;
+		for (const std::pair<const int, int>& item : myUMap)
+			{
+				std::cout << "#: [" << counter++ << "]\t=\t{" << item.first << "} = [" << item.second << "]." << std::endl;
+			}
+		std::cout << "[" << counter << "] Output generated results." << std::endl;
+
+		counter = V_ZERO;
+		std::cout << std::endl << "Unordered Map." << std::endl;
 		for (std::unordered_map<int, int>::const_iterator itc_myUMap = myUMap.cbegin(); itc_myUMap != myUMap.cend(); itc_myUMap++)
 			{
 				std::cout << "#: [" << counter++ << "]\t=\t{" << itc_myUMap->first << "} = [" << itc_myUMap->second << "]." << std::endl;
