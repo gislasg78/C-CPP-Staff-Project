@@ -157,7 +157,7 @@ struct Node *createNode(int data, struct Node *leftNode, struct Node *rightNode,
 			}
 
 		return newNode;
-	};
+	}
 
 /* Function to remove the given node. */
 void delNode(struct Node* rootNode, int data, int *counter)
