@@ -1,7 +1,7 @@
 /* Program that performs binary searches with cycles
    in the traditional way as well as with a 'delta' factor and other modalities. */
 
-//Standard work libraries.
+/* Standard work libraries. */
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -12,16 +12,16 @@
 #define V_MULTIPLIER		25173
 #define V_RESIDUAL_MODULUS	65535
 
-//Macro for partitioning a binary delta search.
+/* Macro for partitioning a binary delta search. */
 #define	MEDIUM(x)		(((x) + V_ONE) / V_TWO)
 
-//Symbolic constants of working characters.
+/* Symbolic constants of working characters. */
 #define	CARRIAGE_RETURN		'\n'
 #define	NULL_CHARACTER		'\0'
 #define	V_CHR_LOWER_Y		0x79
 #define	V_CHR_UPPER_Y		0x59
 
-//Symbolic work constants.
+/* Symbolic work constants. */
 #define	V_MINUS_ONE		-1
 #define	V_ONE_HUNDRED		100
 #define	V_TEN			10
@@ -30,7 +30,7 @@
 #define	V_ONE			1
 #define	V_ZERO			0
 
-//Enumeration with menu options.
+/* Enumeration with menu options. */
 enum enm_options
 	{
 		enm_opt_binary_search = V_ONE,
@@ -49,7 +49,7 @@ enum enm_options
 		enm_opt_exit_this_program
 	} enm_option;
 
-//Enumeration with type entry variables and its reseting.
+/* Enumeration with type entry variables and its reseting. */
 enum enm_type_entry
 	{
 		enm_type_entry_char,
@@ -60,31 +60,31 @@ enum enm_type_entry
 		enm_type_entry_short
 	} enm_type_value;
 
-//Enumeration for memory area reset system.
+/* Enumeration for memory area reset system. */
 enum enm_type_reset
 	{
 		enm_type_reset_NO,
 		enm_type_reset_YES
 	} enm_type_reset_OK;
 
-//Global static array of prime numbers.
+/* Global static array of prime numbers. */
 static const int array[] =	{
-					2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53,
-					59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131,
-					137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223,
-					227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311,
-					313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409,
-					419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503,
-					509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613,
-					617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719,
-					727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827,
-					829, 839, 853, 857, 859, 863, 869, 877, 881, 883, 889, 907, 911, 919, 929, 937,
-					941, 947, 953, 967, 971, 977, 983, 991, 997
+					2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97,
+					101, 103, 107, 109, 113, 121, 127, 131, 137, 139, 143, 149, 151, 157, 163, 167, 169, 173, 179, 181, 187, 191, 193, 197, 199,
+					209, 211, 221, 223, 227, 229, 233, 239, 241, 247, 251, 253, 257, 263, 269, 271, 277, 281, 283, 289, 293, 299,
+					307, 311, 313, 317, 319, 323, 331, 337, 341, 347, 349, 353, 359, 361, 367, 373, 377, 379, 383, 389, 391, 397,
+					401, 403, 407, 409, 419, 421, 431, 433, 437, 439, 443, 449, 451, 457, 461, 463, 467, 473, 479, 481, 487, 491, 493, 499,
+					503, 509, 517, 521, 523, 527, 529, 533, 541, 547, 551, 557, 559, 563, 569, 571, 577, 583, 587, 589, 593, 599,
+					601, 607, 611, 613, 617, 619, 629, 631, 641, 643, 647, 649, 653, 659, 661, 667, 671, 673, 677, 683, 689, 691, 697,
+					701, 703, 709, 713, 719, 727, 731, 733, 737, 739, 743, 751, 757, 761, 767, 769, 773, 779, 781, 787, 793, 797, 799,
+					803, 809, 811, 817, 821, 823, 827, 829, 839, 841, 851, 853, 857, 859, 863, 869, 871, 877, 881, 883, 887, 893, 899,
+					901, 907, 911, 913, 919, 923, 929, 937, 941, 943, 947, 949, 953, 961, 967, 971, 977, 979, 983, 989, 991, 997,
+					1003
 				};
 
 const int size_of_array = sizeof(array) / sizeof(*array);	//Overall determination of the fixed array size.
 
-//Array of pointers pointing to the main global array.
+/* Array of pointers pointing to the main global array. */
 const int *p_array = array,
 	*pa_array[] =
 		{
@@ -121,10 +121,23 @@ const int *p_array = array,
 			array + 150, array + 151, array + 152, array + 153, array + 154,
 			array + 155, array + 156, array + 157, array + 158, array + 159,
 			array + 160, array + 161, array + 162, array + 163, array + 164,
-			array + 165, array + 166, array + 167, array + 168
+			array + 165, array + 166, array + 167, array + 168, array + 169,
+			array + 170, array + 171, array + 172, array + 173, array + 174,
+			array + 175, array + 176, array + 177, array + 178, array + 179,
+			array + 180, array + 181, array + 182, array + 183, array + 184,
+			array + 185, array + 186, array + 187, array + 188, array + 189,
+			array + 190, array + 191, array + 192, array + 193, array + 194,
+			array + 195, array + 196, array + 197, array + 198, array + 199,
+			array + 200, array + 201, array + 202, array + 203, array + 204,
+			array + 205, array + 206, array + 207, array + 208, array + 209,
+			array + 210, array + 211, array + 212, array + 213, array + 214,
+			array + 215, array + 216, array + 217, array + 218, array + 219,
+			array + 220, array + 221, array + 222, array + 223, array + 224,
+			array + 225, array + 226, array + 227, array + 228, array + 229,
+			array + 230, array + 231
 		};
 
-//Prototype functions.
+/* Prototype service functions. */
 int BinarySearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
 int BinarySearchDelta(const int array[], const int start, const int finish, const int target_key, int *delta_factor, int *pos, int *iters);
 int BinarySearchRecursive(const int array[], const int bottom, const int top, const int target_key, int *pos, int *iters, int *itrvs);
@@ -391,7 +404,7 @@ int GetElement(const char *str_Message, const int array[], const int start, cons
 				printf("+-=-+----+---+----+-=-+\n");
 				printf("| Sought Information. |\n");
 				printf("+ --=----=---=----=-- +\n");
-				printf("| * Address  : [%p].\n", array + position);
+				printf("| * Address  : [%p].\n", (void *) (array + position));
 				printf("| * Content  : [%d].\n", array[position]);
 				printf("| * Position : [%d].\n", position);
 				printf("| * Size     : [%ld].\n", sizeof(*(array + position)));
@@ -483,31 +496,31 @@ void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_en
 								//Get a correct double value.
 								case enm_type_entry_double:
 									if ((number_arguments = sscanf(buffer, s_input_types_formats[option_type_entry].format_variable, (double *) void_var_address, &count_bytes)) == V_ONE)
-										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%lf]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(double), (double *) void_var_address, *((double *) void_var_address));
+										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%lf]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(double), (void *) (double *) void_var_address, *((double *) void_var_address));
 									break;
 
 								//Get a correct float value.
 								case enm_type_entry_float:
 									if ((number_arguments = sscanf(buffer, s_input_types_formats[option_type_entry].format_variable, (float *) void_var_address, &count_bytes)) == V_ONE)
-										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%f]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(float), (float *) void_var_address, *((float *) void_var_address));
+										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%f]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(float), (void *) (float *) void_var_address, *((float *) void_var_address));
 									break;
 
 								//Get a correct integer value.
 								case enm_type_entry_int:
 									if ((number_arguments = sscanf(buffer, s_input_types_formats[option_type_entry].format_variable, (int *) void_var_address, &count_bytes)) == V_ONE)
-										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%d]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(int), (int *) void_var_address, *((int *) void_var_address));
+										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%d]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(int), (void *) (int *) void_var_address, *((int *) void_var_address));
 									break;
 
 								//Get a correct long value.
 								case enm_type_entry_long:
 									if ((number_arguments = sscanf(buffer, s_input_types_formats[option_type_entry].format_variable, (long *) void_var_address, &count_bytes)) == V_ONE)
-										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%ld]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(long), (long *) void_var_address, *((long *) void_var_address));
+										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%ld]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(long), (void *) (long *) void_var_address, *((long *) void_var_address));
 									break;
 
 								//Get a correct short value.
 								case enm_type_entry_short:
 									if ((number_arguments = sscanf(buffer, s_input_types_formats[option_type_entry].format_variable, (short *) void_var_address, &count_bytes)) == V_ONE)
-										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%hi]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(short), (short *) void_var_address, *((short *) void_var_address));
+										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%hi]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(short), (void *) (short *) void_var_address, *((short *) void_var_address));
 									break;
 
 								//Option no valid.
@@ -1183,14 +1196,14 @@ int ViewAllItems(const int array[], const int start, const int finish, const int
 				printf("| Searched value  : <%d>.\n", target_key);
 				printf("+---+----+---+----+---+----+---+----+\n");
 				printf("| Addresses:\n");
-				printf("| * array    : {%p}.\n", &array);
-				printf("|              {%p} : [%p] = [%p].\n", array, &array[idx], array + idx);
+				printf("| * array    : {%p}.\n", (void *) &array);
+				printf("|              {%p} : [%p] = [%p].\n", (void *) array, (void *) &array[idx], (void *) (array + idx));
 				printf("|\n");
-				printf("| * p_array  : {%p}.\n", &p_array);
-				printf("|              [%p] : [%p] = [%p].\n", p_array, &p_array[idx], p_array + idx);
+				printf("| * p_array  : {%p}.\n", (void *) &p_array);
+				printf("|              [%p] : [%p] = [%p].\n", (void *) p_array, (void *) &p_array[idx], (void *) (p_array + idx));
 				printf("|\n");
-				printf("| * pa_array : {%p}.\n", &pa_array);
-				printf("|              {%p} : [%p] = [%p].\n", pa_array, &pa_array[idx], pa_array + idx);
+				printf("| * pa_array : {%p}.\n", (void *) &pa_array);
+				printf("|              {%p} : [%p] = [%p].\n", (void *) pa_array, (void *) &pa_array[idx], (void *) (pa_array + idx));
 				printf("+---+----+---+----+---+----+---+----+\n");
 				printf("| Values:\n");
 				printf("| + array    : {%d}.\n", *array);
@@ -1199,8 +1212,8 @@ int ViewAllItems(const int array[], const int start, const int finish, const int
 				printf("| + p_array  : {%d}.\n", *p_array);
 				printf("|              [%d] = [%d].\n", p_array[idx], *(p_array + idx));
 				printf("|\n");
-				printf("| + pa_array : {%p} : {%d}.\n", *pa_array, **pa_array);
-				printf("|              [%p] = [%p].\n", pa_array[idx], *(pa_array + idx));
+				printf("| + pa_array : {%p} : {%d}.\n", (void *) *pa_array, **pa_array);
+				printf("|              [%p] = [%p].\n", (void *) pa_array[idx], (void *) *(pa_array + idx));
 				printf("|              [%d] : [%d].\n", *pa_array[idx], *(*(pa_array + idx)));
 				printf("+===+====+===+====+===+====+===+====+\n");
 
