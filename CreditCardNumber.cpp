@@ -1,5 +1,5 @@
 /******** Luhn algorithm to validate credit card numbers. ********
- ** Source Code:        CreditCard.cpp				**
+ ** Source Code:        CreditCardNumber.cpp			**
  ** Author:             Gustavo Islas Gálvez.                   **
  ** Creation Date:      Wednesday, December 31, 2025.		**
  ** Purpose:		The Luhn algorithm or Luhn formula,	**
@@ -33,6 +33,7 @@
 *****************************************************************/
 //C Standard Libraries.
 #include <algorithm>
+#include <functional>
 #include <iostream>
 
 //Work Constants.
@@ -80,7 +81,16 @@ int main()
 	{
 		/* Initial declaration of work variables. */
 		int int_result = V_ZERO;
-		std::string str_CardNumber{};
+		std::string str_CardNumber {};
+
+		/* Function that returns a 'boolean' value to determine if the string of characters is purely numeric. */
+		std::function<bool(const std::string&)> IsNumeric = [](const std::string& str_value)
+			{
+				if (str_value.empty()) return false;
+
+				return std::all_of(str_value.begin(), str_value.end(), [](const unsigned char& c)
+					{return std::isdigit(c);});
+			};
 
 		/* Welcome messages. */
 		std::cout << "+===|====+====|====+====|====+====|" << std::endl;
@@ -99,17 +109,23 @@ int main()
 				/* Eliminate any blank spaces in the card number. */
 				str_CardNumber.erase(std::remove_if(str_CardNumber.begin(), str_CardNumber.end(), ::isspace), str_CardNumber.end());
 
-				/* Call to function that adds the digits of even and odd positions of the credit card. */
-				int_result = int_sumOfDigits(str_CardNumber);
+				/* Validate that the character string is pure numeric. */
+				if (IsNumeric(str_CardNumber))
+					{
+						/* Call to function that adds the digits of even and odd positions of the credit card. */
+						int_result = int_sumOfDigits(str_CardNumber);
 
-				/* Result of the validation of the entered card number. */
-				std::cout << std::endl << "Credit Card Number validated      # : [" << str_CardNumber << "] = ";
+						/* Result of the validation of the entered card number. */
+						std::cout << std::endl << "Credit Card Number validated      # : [" << str_CardNumber << "] = ";
 
-				/* If the remainder of dividing by ten the sum of digits of even and odd positions is zero, the card number is valid. */
-				if (int_result % V_TEN)
-					std::cout << "[is not valid]." << std::endl;
+						/* If the remainder of dividing by ten the sum of digits of even and odd positions is zero, the card number is valid. */
+						if (int_result % V_TEN)
+							std::cout << "[is not valid]." << std::endl;
+						else
+							std::cout << "[is valid]." << std::endl;
+					}
 				else
-					std::cout << "[is valid]." << std::endl;
+					std::cout << std::endl << "The credit card number: [" << str_CardNumber << "] must be exclusively numeric." << std::endl;
 			}
 
 		return V_ZERO;
@@ -222,6 +238,7 @@ int int_sumOfDigits(const std::string &str_CardNumber)
 
 				std::cout << "# [" << int_ind << "]\t{" << str_TypeOfNumber[int_ind % V_TWO] << "}\t[" << int_Current_Digit << "]\t{"<< str_TypeOfNumber[int_Current_Digit % V_TWO] << "}\t[" << int_idx + V_ONE << "]." << std::endl;
 
+				/* Even and odd validation point. */
 				if (int_ind % V_TWO)
 					{
 						int_counting_pos_odds++;
