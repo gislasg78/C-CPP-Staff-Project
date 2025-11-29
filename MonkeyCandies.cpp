@@ -1,53 +1,82 @@
-/* Testing values: 1; 5, 3; 2, 1, 7, 4, 2; */
+/* Monk and the Magical Candy Bags.
+	Imagine a monk named Monk who has a bag of candy.
+	On each turn, Monk can choose a bag of candy, and the number of candies in that bag is halved
+	(rounded down if odd).
+	Furthermore, Monk can repeatedly choose bags with more candy until a certain number of operations have been performed.
 
+	The task is to maximize the amount of candy Monk can obtain after performing 'k' operations
+	(where in each operation a bag is chosen, one candy is taken from it, and then the number of candies is halved).
+	Monk initially has 'n' bags of candy with different quantities.
+
+	Testing values: 5, 3; 2, 1, 7, 4, 2.
+*/
+
+/* Standard work libraries. */
 #include <iostream>
 #include <set>
 
-#define V_TWO   2
-#define V_ZERO  0
+/* Symbolic work constants. */
+#define	V_ONE	1
+#define	V_TWO	2
+#define	V_ZERO	0
 
+//Main function.
 int main()
 	{
-		int t = V_ZERO;
+		/* Preliminary working variables. */
+		int number_of_bags = V_ZERO, number_of_operations = V_ZERO;
 
-		std::cout << "Calculating the amount of candy for a monkey." << std::endl;
-		std::cout << "T number: ";
-		std::cin >> t;
+		/* Initial presentation messages. */
+		std::cout << "Monk and the Magical Candy Bags." << std::endl;
+		std::cout << "Bags: ";
+		std::cin >> number_of_bags;		/* N = number of bags. */
+		std::cout << "Operations: ";
+		std::cin >> number_of_operations;	/* K = number of operations. */
 
-		while (t--)
+		/* Definition of the ascending priority queue. */
+		std::multiset<int, std::less<int>> bags;
+
+		/* We read the quantities of candy in each bag. */
+		std::cout << std::endl << "Amount of candy per bag." << std::endl;
+		for (int idx = V_ZERO; idx < number_of_bags; idx++)
 			{
-				int k = V_ZERO, n = V_ZERO;
-
-				std::cout << "Number of bags for candy: ";
-				std::cin >> n;
-				std::cout << "Final reduced quantity of bags: ";
-				std::cin >> k;
-
-				std::multiset<int> bags;
-
-				std::cout << std::endl << "Capture the amount of candy per bag." << std::endl;
-				for (int idx = V_ZERO; idx < n; idx++)
-					{
-						int candy_count = V_ZERO;
-						std::cout << "Candies for bag #: [" << idx << "] of: [" << n << "]: ";
-						std::cin >> candy_count;
-						bags.insert(candy_count);
-					}
-
-				int total_candies = V_ZERO;
-
-				for (int idx = V_ZERO; idx < k; idx++)
-					{
-						auto last_it = --bags.end();
-						int candy_count = *last_it;
-						total_candies += candy_count;
-
-						bags.erase(last_it);
-						bags.insert(candy_count / V_TWO);
-					}
-
-				std::cout << std::endl << "Total candies: [" << total_candies << "]." << std::endl;
+				int number_of_candies = V_ZERO;
+				std::cout << "Sweets for bag #: [" << idx + V_ONE << "] of: [" << number_of_bags << "]: ";
+				std::cin >> number_of_candies;
+				bags.insert(number_of_candies);	/* We insert each quantity of candies into the bags. */
 			}
+
+		int totalCandies = V_ZERO;
+
+		/* We perform 'k' number of operations. */
+		for (int idx = V_ZERO; idx < number_of_operations; idx++)
+			{
+				/* We extract the maximum (the bag with the most candy). */
+				std::multiset<int, std::less<int>>::iterator it_last_candy = --bags.end();
+				int maxCandies = *it_last_candy;
+
+				/* Monk takes a candy from the current or concurrent bag. */
+				totalCandies += maxCandies;
+
+				/* We reduced the amount of candy in this bag by half. */
+				maxCandies /= V_TWO;
+
+				/* We will reinsert the current bag with the new calculated amount of candy. */
+				bags.erase(it_last_candy);
+				bags.insert(maxCandies);
+			}
+
+		/* The priority stack is emptied to display the current values. */
+		int counter = V_ZERO;
+		std::cout << std::endl << "Dumping the existing values." << std::endl;
+		for (std::multiset<int, std::less<int>>::const_iterator itc_bags = bags.begin(); itc_bags != bags.end(); itc_bags++)
+			{
+				std::cout << "#: [" << counter++ + V_ONE << "] = {" << *itc_bags << "}." << std::endl;
+			}
+		std::cout << "[" << counter << "] Output generated results." << std::endl;
+
+		/* We print the total number of candies that 'Monk' has taken in each operation 'k'. */
+		std::cout << std::endl << "Total candies: [" << totalCandies << "]." << std::endl;
 
 		return V_ZERO;
 	}
