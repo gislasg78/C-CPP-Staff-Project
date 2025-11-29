@@ -69,7 +69,7 @@ int main()
 		/* The priority stack is emptied to display the current values. */
 		int counter = V_ZERO;
 		std::cout << std::endl << "Dumping the existing values." << std::endl;
-		for (std::multiset<int, std::less<int>>::const_iterator itc_bags = bags.begin(); itc_bags != bags.end(); itc_bags++)
+		for (std::multiset<int, std::less<int>>::const_iterator itc_bags = bags.cbegin(); itc_bags != bags.cend(); itc_bags++)
 			{
 				std::cout << "#: [" << counter++ + V_ONE << "] = {" << *itc_bags << "}." << std::endl;
 			}
