@@ -113,6 +113,15 @@ class RandomNumber
 			const T operator<= (const RandomNumber<T>& other_random) const
 				{return ((*this).random_seed <= other_random.getSeed());}
 
+			const T operator>> (RandomNumber<T>& object_random)
+				{object_random.setSeed(this->random_seed); return this->random_seed;}
+			const T operator>> (const T& random_seed)
+				{return this->random_seed;}
+			RandomNumber<T>& operator<< (const RandomNumber<T>& object_random)
+				{(*this).setSeed(object_random.getSeed()); return *this;}
+			RandomNumber<T>& operator<< (const T& random_seed)
+				{(*this).setSeed(random_seed); return *this;}
+
 			operator T()					{return this->random_number;}
 
 			virtual void capture()
@@ -332,6 +341,7 @@ int main()
 		/* The dynamic array of pointers to objects of type 'RandomNumber' is created. */
 		RandomNumber<double>** array_Random_Number = new RandomNumber<double>* [quantity];
 
+		/* Critical assignment to each of the elements of the array of random number objects. */
 		for (int idx = V_ZERO; idx < quantity; idx++)
 			{
 				std::set<int> ticket;	//Ordered sets of integers.
