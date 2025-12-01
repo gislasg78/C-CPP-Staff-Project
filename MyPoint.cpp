@@ -100,6 +100,11 @@ class Point2D
 			const T operator<=(const Point2D<T>& Point2D) const
 				{return (((*this).x <= Point2D.getX()) || ((*this).y <= Point2D.getY()));}
 
+			const T operator>>(Point2D<T>& point2D)
+				{point2D.setX(this->x); point2D.setY(this->y); return this->id;}
+			Point2D<T>& operator<<(const Point2D<T>& point2D)
+				{(*this).setX(point2D.getX()); (*this).setY(point2D.getY()); return *this;}
+
 			operator int()		const	{return this->id;}
 			operator double()	const	{return ((this->y) ? ((double) (*this).x / (double) (*this).y) : V_ZERO);}
 
@@ -341,6 +346,15 @@ class Point3D : public Point2D<T>
 				{return ((*this).z < Point3D.getZ());}
 			const T operator<=(const Point3D<T>& Point3D) const
 				{return ((*this).z <= Point3D.getZ());}
+
+			const T operator>>(Point3D<T>& point3D)
+				{point3D.setX(this->x); point3D.setY(this->y); point3D.setZ(this->z); return this->getId();}
+			const T operator>> (const T& z)
+				{return this->z;}
+			Point3D<T>& operator<<(const Point3D<T>& point3D)
+				{(*this).setX(point3D.getX()); (*this).setY(point3D.getY()); (*this).z = point3D.getZ(); return *this;}
+			Point3D<T>& operator<<(const T& z)
+				{(*this).z = z; return *this;}
 
 			operator int()		const	{return (*this).getId();}
 			operator double()	const	{return (*this).getZ();}
