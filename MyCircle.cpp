@@ -101,6 +101,15 @@ class Circle
 			const T operator<=(const Circle<T>& circle) const
 				{return ((*this).radius <= circle.getRadius());}
 
+			const T operator>>(Circle<T>& circle)
+				{circle.setRadius(this->radius); return this->radius;}
+			const T operator>>(const T& radius)
+				{return this->radius;}
+			Circle<T>& operator<<(const Circle<T>& circle)
+				{(*this).setRadius(circle.getRadius()); return *this;}
+			Circle<T>& operator<<(const T& radius)
+				{(*this).setRadius(radius); return *this;}
+
 			operator int()			const	{return this->id;}
 			operator double()		const	{return this->PI;}
 
@@ -343,6 +352,15 @@ class Cylinder : public Circle<T>
 				{return ((*this).height < cylinder.getHeight());}
 			const T operator<=(const Cylinder<T>& cylinder) const
 				{return ((*this).height <= cylinder.getHeight());}
+
+			const T operator>>(Cylinder<T>& cylinder)
+				{cylinder.setHeight(this->height); cylinder.setRadius((*this).getRadius()); return this->height;}
+			const T operator>>(const T& height)
+				{return this->height;}
+			Cylinder<T>& operator<<(const Cylinder<T>& cylinder)
+				{(*this).setHeight(cylinder.getHeight()); (*this).setRadius(cylinder.getRadius()); return *this;}
+			Circle<T>& operator<<(const T& height)
+				{(*this).setHeight(height); return *this;}
 
 			operator int()			const	{return Circle<T>::getId();}
 			operator double()		const	{return Circle<T>::getPI();}
