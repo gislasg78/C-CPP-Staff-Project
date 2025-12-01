@@ -13,6 +13,7 @@
 
 /* Standard work libraries. */
 #include <iostream>
+#include <queue>
 #include <set>
 
 /* Symbolic work constants. */
@@ -24,6 +25,7 @@
 int main()
 	{
 		/* Preliminary working variables. */
+		int counter = V_ZERO;
 		int number_of_bags = V_ZERO, number_of_operations = V_ZERO;
 
 		/* Initial presentation messages. */
@@ -33,8 +35,11 @@ int main()
 		std::cout << "Operations: ";
 		std::cin >> number_of_operations;	/* K = number of operations. */
 
-		/* Definition of the ascending priority queue. */
+		/* Definition of the ascending multiset. */
 		std::multiset<int, std::less<int>> bags;
+
+		/* Definition of the ascending priority queue. */
+		std::priority_queue<int, std::vector<int>, std::less<int>> maxHeap;
 
 		/* We read the quantities of candy in each bag. */
 		std::cout << std::endl << "Amount of candy per bag." << std::endl;
@@ -43,10 +48,12 @@ int main()
 				int number_of_candies = V_ZERO;
 				std::cout << "Sweets for bag #: [" << idx + V_ONE << "] of: [" << number_of_bags << "]: ";
 				std::cin >> number_of_candies;
-				bags.insert(number_of_candies);	/* We insert each quantity of candies into the bags. */
+
+				bags.insert(number_of_candies);		/* We insert each quantity of candies into the bags. */
+				maxHeap.push(number_of_candies);	/* We insert each quantity of candies into the maxHeap. */
 			}
 
-		int totalCandies = V_ZERO;
+		int sumOfCandies = V_ZERO, totalCandies = V_ZERO;
 
 		/* We perform 'k' number of operations. */
 		for (int idx = V_ZERO; idx < number_of_operations; idx++)
@@ -64,11 +71,38 @@ int main()
 				/* We will reinsert the current bag with the new calculated amount of candy. */
 				bags.erase(it_last_candy);
 				bags.insert(maxCandies);
+
+
+				/* We extract the maximum (the bag with the most candy). */
+				maxCandies = maxHeap.top();
+				maxHeap.pop();
+
+				/* Monk takes a candy from the current or concurrent bag. */
+				sumOfCandies += maxCandies;
+
+				/* We reduced the amount of candy in this bag by half. */
+				maxCandies /= V_TWO;
+
+				/* We will reinsert the current bag with the new calculated amount of candy. */
+				maxHeap.push(maxCandies);
 			}
 
-		/* The priority stack is emptied to display the current values. */
-		int counter = V_ZERO;
-		std::cout << std::endl << "Dumping the existing values." << std::endl;
+		/* The priority queue is emptied to display the current values. */
+		counter = V_ZERO;
+		std::cout << std::endl << "Priority-queue values dumping." << std::endl;
+		while (!maxHeap.empty())
+			{
+				std::cout << "#: [" << counter++ + V_ONE << "] = {" << maxHeap.top() << "}." << std::endl;
+				maxHeap.pop();
+			}
+		std::cout << "[" << counter << "] Output generated results." << std::endl;
+
+		/* We print the total number of candies that 'Monk' has taken in each operation 'k'. */
+		std::cout << std::endl << "Sum of candies: [" << sumOfCandies << "]." << std::endl;
+
+		/* The multiset is emptied to display the current values. */
+		counter = V_ZERO;
+		std::cout << std::endl << "Multiset values dumping." << std::endl;
 		for (std::multiset<int, std::less<int>>::const_iterator itc_bags = bags.cbegin(); itc_bags != bags.cend(); itc_bags++)
 			{
 				std::cout << "#: [" << counter++ + V_ONE << "] = {" << *itc_bags << "}." << std::endl;
