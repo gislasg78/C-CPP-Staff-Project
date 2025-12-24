@@ -1,7 +1,7 @@
 /****** Get the list of remainders of an integer division. *******
- ** Source Code:        Remaindr.c				**
+ ** Source Code:        Remainder.c				**
  ** Author:             Gustavo Islas Gálvez.                   **
- ** Creation Date:      Saturday, December 30, 2023.            **
+ ** Creation Date:      Wednesday, December 31, 2025.		**
  ** Purpose:		The purpose of this program is to obtain**
  **			the remainder of an integer division	**
  **			based on various procedures: the first,	**
@@ -93,7 +93,7 @@ size_t *ptr_create_szt_remnant_list(const size_t szt_cte_dividen, const size_t s
 		size_t szt_size_list = (szt_cte_dividen / szt_cte_divisor) + V_ONE;
 
 		//Iterate until the dividend is less than the divisor.
-		if (ptr_szt_remnant_list = (size_t *) malloc(szt_size_list * sizeof(size_t)))
+		if ((ptr_szt_remnant_list = (size_t *) malloc(szt_size_list * sizeof(size_t))))
 			{
 				while (szt_remainder >= szt_cte_divisor)
 					{
@@ -138,15 +138,17 @@ size_t szt_view_szt_remnant_list(const size_t *const ptr_szt_remnant_list, const
 		/* Initial declaration of work variables. */
 		size_t szt_idx_iters = V_ZERO;
 
+		/* Initial header messages. */
 		printf("\n");
-		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
 		printf("+ Obtaining residual calculations.  +\n");
-		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
 
 		/* Show the content of the residual pointer. */
 		for (szt_idx_iters = V_ZERO; szt_idx_iters < szt_size_limit_list; szt_idx_iters++)
 			printf("#[%ld]\t:\t[%ld].\n", szt_idx_iters, *(ptr_szt_remnant_list + szt_idx_iters));
 
+		printf("+--------+--------+--------+--------+\n");
 		printf("[%ld] Obtained output results.\n", szt_idx_iters);
 
 		return szt_idx_iters;
@@ -192,27 +194,27 @@ int main()
 		size_t szt_size_limit_list = V_ZERO;
 
 		/* Requisition of the dividend and the division divisor. */
-		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
 		printf("+   Obtaining division remainder.   +\n");
-		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
 		printf("Dividend : ");
-		scanf("%ld", &szt_dividen);
+		scanf("%zu", &szt_dividen);
 		printf("Divisor  : ");
-		scanf("%ld", &szt_divisor);
+		scanf("%zu", &szt_divisor);
 
 		/* Results of an iterative function to obtain the remainder. */
 		ptr_szt_residuum_list = ptr_create_szt_remnant_list(szt_dividen, szt_divisor, &szt_quotient, &szt_rest);
 
 		printf("\n");
-		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
 		printf("+     Division residuum results.    +\n");
-		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
 		printf("| Dividend  :\t[%ld].\n", szt_dividen);
 		printf("| Divisor   :\t[%ld].\n", szt_divisor);
 		printf("+--------+--------+--------+--------+\n");
 		printf("| Quotient  :\t[%ld].\n", szt_quotient);
 		printf("| Remainder :\t[%ld].\n", szt_rest);
-		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
 
 		/* View the residual calculations for the entire division. */
 		szt_size_limit_list = szt_dividen / szt_divisor + V_ONE;
@@ -220,7 +222,7 @@ int main()
 
 		/* Obtaining the remainder through a direct function. */
 		szt_residuum = szt_remainder(szt_dividen, szt_divisor);
-		printf("\nThe remainder of [%ld] divided by [%ld] is equal to: [%ld].\n", szt_dividen, szt_divisor, szt_residuum);
+		printf("\nThe remainder of [%ld] divided by [%ld] is equal to [%ld] with [%ld] iterations.\n", szt_dividen, szt_divisor, szt_residuum, szt_idx_iters);
 
 		/* Free up memory space from the residual calculation pointer. */
 		free(ptr_szt_residuum_list);
