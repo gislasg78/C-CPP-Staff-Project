@@ -84,7 +84,7 @@ int main()
 		std::string str_CardNumber {};
 
 		/* Function that returns a 'boolean' value to determine if the string of characters is purely numeric. */
-		std::function<bool(const std::string&)> IsNumeric = [](const std::string& str_value)
+		std::function<bool(const std::string&)> IsNumeric = [](const std::string& str_value) -> bool
 			{
 				if (str_value.empty()) return false;
 
