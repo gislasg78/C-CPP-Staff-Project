@@ -58,12 +58,20 @@ struct Bucket
 				throw MemorySegmentAllocationException();
 			}
 
-		void static deallocate_memory(Bucket& bucket, void *ptr)
+		void static deallocate_memory(Bucket& bucket, void *ptr, size_t bytes)
 			{
 				for (std::size_t idx{}; idx < number_of_buckets; idx++)
 					{
 						if (bucket.matrix_buckets[idx] == ptr)
 							{
+								if (bytes <= size_of_bucket)
+									{
+										for (std::size_t ind{}; ind < size_of_bucket && ind <= bytes; ind++)
+											bucket.matrix_buckets[idx][ind] = static_cast<std::byte>(NULL_CHARACTER);
+									}
+								else
+									throw std::bad_alloc();
+
 								bucket.bucket_used[idx] = false;
 								return;
 							}
@@ -94,15 +102,21 @@ const T& capture_a_value(T* const ptr_value)
 	}
 
 /* Overloading the 'new' operator whose argument is a number of characters to assign. */
-void* operator new (size_t bytes)
+void* operator new(size_t bytes)
 	{
 		return Bucket::allocate_memory(bucket, bytes);
 	}
 
 /* Overloading the 'delete' operator whose argument is a 'void' pointer to be evicted. */
-void operator delete (void* ptr)
+void operator delete(void* ptr)
 	{
-		return Bucket::deallocate_memory(bucket, ptr);
+		return Bucket::deallocate_memory(bucket, ptr, bucket.size_of_bucket);
+	}
+
+/* Overloading the 'delete' operator whose argument is a 'void' pointer to be evicted and quantity of bytes to free. */
+void operator delete(void* ptr, size_t bytes)
+	{
+		return Bucket::deallocate_memory(bucket, ptr, bytes);
 	}
 
 //Main function.
