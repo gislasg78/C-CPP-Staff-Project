@@ -27,7 +27,7 @@ enum enm_opt
 		enm_opt_showGraphic,
 		enm_opt_viewAllTree,
 		enm_opt_exitMenu
-	} enm_opt_maintenance;
+	} enm_opt_global_maintenance;
 
 /* Traversal modes of a binary search tree. */
 enum enm_TreeTour
@@ -59,7 +59,7 @@ struct Node* addNode(int data, struct Node **rootNode, int *counter, struct Node
 int captureNodes(struct Node **rootNode, int *counter);
 struct Node *createNode(int data, struct Node *leftNode, struct Node *rightNode, struct Node *fatherNode);
 void delNode(struct Node* rootNode, int data, int *counter);
-void deleteNode(struct Node *rootNode, int data, int *counter);
+void deleteNode(struct Node *rootNode, int *counter);
 int deleteTree(struct Node *rootNode, int *counter);
 struct Node* destroyNode(struct Node **rootNode, int *counter);
 struct Node *eliminateNode(struct Node* rootNode, int data, int *counter);
@@ -83,7 +83,7 @@ int main()
 		struct Node *rootNode = NULL;   /* Point to the root of the binary search tree. */
 
 		/* Call the Main Menu. */
-		option = MainMenu(enm_opt_maintenance, &rootNode, &counter);
+		option = MainMenu(enm_opt_global_maintenance, &rootNode, &counter);
 		printf("\nFinal option chosen: [%d].\n", option);
 
 		return EXIT_SUCCESS;
@@ -172,12 +172,12 @@ void delNode(struct Node* rootNode, int data, int *counter)
 				else if (data > rootNode->data)
 					delNode(rootNode->rightNode, data, counter);
 				else if (data == rootNode->data)
-					deleteNode(rootNode, data, counter);
+					deleteNode(rootNode, counter);
 			}
 	}
 
 /* Function to remove the found node. */
-void deleteNode(struct Node *rootNode, int data, int *counter)
+void deleteNode(struct Node *rootNode, int *counter)
 	{
 		/* The node to be deleted must contain valid information. */
 		if (rootNode)
@@ -188,7 +188,7 @@ void deleteNode(struct Node *rootNode, int data, int *counter)
 						/* For a node with two children, the successor must be obtained in order. */
 						struct Node* myMinimumNode = minimumNode(rootNode->rightNode, counter);
 						rootNode->data = myMinimumNode->data;
-						deleteNode(rootNode->rightNode, myMinimumNode->data, counter);
+						deleteNode(rootNode->rightNode, counter);
 					}
 				else if (rootNode->leftNode)			//If it only has one child node on the left.
 					{
@@ -297,7 +297,7 @@ struct Node *eliminateNode(struct Node* rootNode, int data, int *counter)
 int getData(int *data, int *counter)
 	{
 		/* Preliminary working variables. */
-		char chr_Char = NULL_CHARACTER;
+		int int_char = NULL_CHARACTER;
 
 		/* Validate that only one value is received. */
 		if (scanf("%d%*c", data) == V_ONE)
@@ -306,7 +306,7 @@ int getData(int *data, int *counter)
 			{
 				printf("* The entry is not valid!\n");
 				scanf("%*[^\n]%*c");
-				while ((chr_Char = getchar()) != CARRIAGE_RETURN && chr_Char != EOF);
+				while ((int_char = getchar()) != CARRIAGE_RETURN && int_char != EOF);
 			}
 
 		/* Reset input stream flags. */
