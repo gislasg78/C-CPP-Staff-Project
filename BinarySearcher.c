@@ -65,10 +65,10 @@ enum enm_type_reset
 	{
 		enm_type_reset_NO,
 		enm_type_reset_YES
-	} enm_type_reset_OK;
+	} enm_type_reset_global_OK;
 
 /* Global static array of prime numbers. */
-static const int array[] =	{
+static const int global_array[] =	{
 					2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97,
 					101, 103, 107, 109, 113, 121, 127, 131, 137, 139, 143, 149, 151, 157, 163, 167, 169, 173, 179, 181, 187, 191, 193, 197, 199,
 					209, 211, 221, 223, 227, 229, 233, 239, 241, 247, 251, 253, 257, 263, 269, 271, 277, 281, 283, 289, 293, 299,
@@ -80,61 +80,61 @@ static const int array[] =	{
 					803, 809, 811, 817, 821, 823, 827, 829, 839, 841, 851, 853, 857, 859, 863, 869, 871, 877, 881, 883, 887, 893, 899,
 					901, 907, 911, 913, 919, 923, 929, 937, 941, 943, 947, 949, 953, 961, 967, 971, 977, 979, 983, 989, 991, 997,
 					1003
-				};
+					};
 
-const int size_of_array = sizeof(array) / sizeof(*array);	//Overall determination of the fixed array size.
+const int size_of_global_array = sizeof(global_array) / sizeof(*global_array);	//Overall determination of the fixed array size.
 
 /* Array of pointers pointing to the main global array. */
-const int *p_array = array,
+const int *p_array = global_array,
 	*pa_array[] =
 		{
-			array + 0, array + 1, array + 2, array + 3, array + 4,
-			array + 5, array + 6, array + 7, array + 8, array + 9,
-			array + 10, array + 11, array + 12, array + 13, array + 14,
-			array + 15, array + 16, array + 17, array + 18, array + 19,
-			array + 20, array + 21, array + 22, array + 23, array + 24,
-			array + 25, array + 26, array + 27, array + 28, array + 29,
-			array + 30, array + 31, array + 32, array + 33, array + 34,
-			array + 35, array + 36, array + 37, array + 38, array + 39,
-			array + 40, array + 41, array + 42, array + 43, array + 44,
-			array + 45, array + 46, array + 47, array + 48, array + 49,
-			array + 50, array + 51, array + 52, array + 53, array + 54,
-			array + 55, array + 56, array + 57, array + 58, array + 59,
-			array + 60, array + 61, array + 62, array + 63, array + 64,
-			array + 65, array + 66, array + 67, array + 68, array + 69,
-			array + 70, array + 71, array + 72, array + 73, array + 74,
-			array + 75, array + 76, array + 77, array + 78, array + 79,
-			array + 80, array + 81, array + 82, array + 83, array + 84,
-			array + 85, array + 86, array + 87, array + 88, array + 89,
-			array + 90, array + 91, array + 92, array + 93, array + 94,
-			array + 95, array + 96, array + 97, array + 98, array + 99,
-			array + 100, array + 101, array + 102, array + 103, array + 104,
-			array + 105, array + 106, array + 107, array + 108, array + 109,
-			array + 110, array + 111, array + 112, array + 113, array + 114,
-			array + 115, array + 116, array + 117, array + 118, array + 119,
-			array + 120, array + 121, array + 122, array + 123, array + 124,
-			array + 125, array + 126, array + 127, array + 128, array + 129,
-			array + 130, array + 131, array + 132, array + 133, array + 134,
-			array + 135, array + 136, array + 137, array + 138, array + 139,
-			array + 140, array + 141, array + 142, array + 143, array + 144,
-			array + 145, array + 146, array + 147, array + 148, array + 149,
-			array + 150, array + 151, array + 152, array + 153, array + 154,
-			array + 155, array + 156, array + 157, array + 158, array + 159,
-			array + 160, array + 161, array + 162, array + 163, array + 164,
-			array + 165, array + 166, array + 167, array + 168, array + 169,
-			array + 170, array + 171, array + 172, array + 173, array + 174,
-			array + 175, array + 176, array + 177, array + 178, array + 179,
-			array + 180, array + 181, array + 182, array + 183, array + 184,
-			array + 185, array + 186, array + 187, array + 188, array + 189,
-			array + 190, array + 191, array + 192, array + 193, array + 194,
-			array + 195, array + 196, array + 197, array + 198, array + 199,
-			array + 200, array + 201, array + 202, array + 203, array + 204,
-			array + 205, array + 206, array + 207, array + 208, array + 209,
-			array + 210, array + 211, array + 212, array + 213, array + 214,
-			array + 215, array + 216, array + 217, array + 218, array + 219,
-			array + 220, array + 221, array + 222, array + 223, array + 224,
-			array + 225, array + 226, array + 227, array + 228, array + 229,
-			array + 230, array + 231
+			global_array + 0, global_array + 1, global_array + 2, global_array + 3, global_array + 4,
+			global_array + 5, global_array + 6, global_array + 7, global_array + 8, global_array + 9,
+			global_array + 10, global_array + 11, global_array + 12, global_array + 13, global_array + 14,
+			global_array + 15, global_array + 16, global_array + 17, global_array + 18, global_array + 19,
+			global_array + 20, global_array + 21, global_array + 22, global_array + 23, global_array + 24,
+			global_array + 25, global_array + 26, global_array + 27, global_array + 28, global_array + 29,
+			global_array + 30, global_array + 31, global_array + 32, global_array + 33, global_array + 34,
+			global_array + 35, global_array + 36, global_array + 37, global_array + 38, global_array + 39,
+			global_array + 40, global_array + 41, global_array + 42, global_array + 43, global_array + 44,
+			global_array + 45, global_array + 46, global_array + 47, global_array + 48, global_array + 49,
+			global_array + 50, global_array + 51, global_array + 52, global_array + 53, global_array + 54,
+			global_array + 55, global_array + 56, global_array + 57, global_array + 58, global_array + 59,
+			global_array + 60, global_array + 61, global_array + 62, global_array + 63, global_array + 64,
+			global_array + 65, global_array + 66, global_array + 67, global_array + 68, global_array + 69,
+			global_array + 70, global_array + 71, global_array + 72, global_array + 73, global_array + 74,
+			global_array + 75, global_array + 76, global_array + 77, global_array + 78, global_array + 79,
+			global_array + 80, global_array + 81, global_array + 82, global_array + 83, global_array + 84,
+			global_array + 85, global_array + 86, global_array + 87, global_array + 88, global_array + 89,
+			global_array + 90, global_array + 91, global_array + 92, global_array + 93, global_array + 94,
+			global_array + 95, global_array + 96, global_array + 97, global_array + 98, global_array + 99,
+			global_array + 100, global_array + 101, global_array + 102, global_array + 103, global_array + 104,
+			global_array + 105, global_array + 106, global_array + 107, global_array + 108, global_array + 109,
+			global_array + 110, global_array + 111, global_array + 112, global_array + 113, global_array + 114,
+			global_array + 115, global_array + 116, global_array + 117, global_array + 118, global_array + 119,
+			global_array + 120, global_array + 121, global_array + 122, global_array + 123, global_array + 124,
+			global_array + 125, global_array + 126, global_array + 127, global_array + 128, global_array + 129,
+			global_array + 130, global_array + 131, global_array + 132, global_array + 133, global_array + 134,
+			global_array + 135, global_array + 136, global_array + 137, global_array + 138, global_array + 139,
+			global_array + 140, global_array + 141, global_array + 142, global_array + 143, global_array + 144,
+			global_array + 145, global_array + 146, global_array + 147, global_array + 148, global_array + 149,
+			global_array + 150, global_array + 151, global_array + 152, global_array + 153, global_array + 154,
+			global_array + 155, global_array + 156, global_array + 157, global_array + 158, global_array + 159,
+			global_array + 160, global_array + 161, global_array + 162, global_array + 163, global_array + 164,
+			global_array + 165, global_array + 166, global_array + 167, global_array + 168, global_array + 169,
+			global_array + 170, global_array + 171, global_array + 172, global_array + 173, global_array + 174,
+			global_array + 175, global_array + 176, global_array + 177, global_array + 178, global_array + 179,
+			global_array + 180, global_array + 181, global_array + 182, global_array + 183, global_array + 184,
+			global_array + 185, global_array + 186, global_array + 187, global_array + 188, global_array + 189,
+			global_array + 190, global_array + 191, global_array + 192, global_array + 193, global_array + 194,
+			global_array + 195, global_array + 196, global_array + 197, global_array + 198, global_array + 199,
+			global_array + 200, global_array + 201, global_array + 202, global_array + 203, global_array + 204,
+			global_array + 205, global_array + 206, global_array + 207, global_array + 208, global_array + 209,
+			global_array + 210, global_array + 211, global_array + 212, global_array + 213, global_array + 214,
+			global_array + 215, global_array + 216, global_array + 217, global_array + 218, global_array + 219,
+			global_array + 220, global_array + 221, global_array + 222, global_array + 223, global_array + 224,
+			global_array + 225, global_array + 226, global_array + 227, global_array + 228, global_array + 229,
+			global_array + 230, global_array + 231
 		};
 
 /* Prototype service functions. */
@@ -142,7 +142,7 @@ int BinarySearch(const int array[], const int start, const int finish, const int
 int BinarySearchDelta(const int array[], const int start, const int finish, const int target_key, int *delta_factor, int *pos, int *iters);
 int BinarySearchRecursive(const int array[], const int bottom, const int top, const int target_key, int *pos, int *iters, int *itrvs);
 int DumpAllItems(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
-int *Fibonacci_Series_Numbers(const int max_number, int *qty_items, int **Fibo_Series_Nums);
+int *Fibonacci_Series_Numbers(const int max_number, size_t *qty_items, int **Fibo_Series_Nums);
 int FibonacciSearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
 int GetElement(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, const int size, const int position, const int calls, const int iterations, const int iters, const int random_seed);
 int GetItem(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int position, const int iterations);
@@ -266,7 +266,7 @@ int DumpAllItems(const int array[], const int start, const int finish, const int
 	}
 
 //Function that generates a Fibonacci number up to the maximum value sent.
-int *Fibonacci_Series_Numbers(const int max_number, int *qty_items, int **Fibo_Series_Nums)
+int *Fibonacci_Series_Numbers(const int max_number, size_t *qty_items, int **Fibo_Series_Nums)
 	{
 		/* Preliminary working variables. */
 		char char_key = V_ZERO;
@@ -286,7 +286,7 @@ int *Fibonacci_Series_Numbers(const int max_number, int *qty_items, int **Fibo_S
 			{
 				addition_value = V_ZERO, first_value = V_ZERO, second_value = V_ONE;
 
-				for (int idx = V_ZERO; idx < *qty_items; idx++)
+				for (size_t idx = V_ZERO; idx < *qty_items; idx++)
 					{
 						addition_value = first_value + second_value;
 						*(vector_Fibonacci_Numbers + idx) = addition_value;
@@ -297,10 +297,10 @@ int *Fibonacci_Series_Numbers(const int max_number, int *qty_items, int **Fibo_S
 
 				printf("\nFibonacci Series Numbers.\n");
 
-				for (int idx = V_ZERO; idx < *qty_items; idx++)
-					printf("#: [%2d].\t[%d].\n", idx, vector_Fibonacci_Numbers[idx]);
+				for (size_t idx = V_ZERO; idx < *qty_items; idx++)
+					printf("#: [%2ld].\t[%d].\n", idx, vector_Fibonacci_Numbers[idx]);
 
-				printf("[%d] Generated output results.\n", *qty_items);
+				printf("[%ld] Generated output results.\n", *qty_items);
 
 				char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 			}
@@ -318,7 +318,8 @@ int FibonacciSearch(const int array[], const int start, const int finish, const 
 	{
 		/* Preliminary working variables. */
 		int adjust = V_ZERO, fibM_minus_two = V_ZERO, fibM_minus_three = V_ZERO, index = V_ZERO, tmp = V_ZERO;
-		int qty_items = V_ZERO, size = start + (finish - start) + V_ONE, *vector_Fibonacci_Numbers = NULL;
+		int size = start + (finish - start) + V_ONE, *vector_Fibonacci_Numbers = NULL;
+		size_t qty_items = V_ZERO;
 
 		/* Verify the Fibonacci series created. */
 		if ((vector_Fibonacci_Numbers = Fibonacci_Series_Numbers(size, &qty_items, &vector_Fibonacci_Numbers)))
@@ -326,9 +327,9 @@ int FibonacciSearch(const int array[], const int start, const int finish, const 
 				if (qty_items > V_TWO)
 					{
 						/* Preliminary assignment of starting positions. */
-						adjust = (size + V_MINUS_ONE) - vector_Fibonacci_Numbers[qty_items + V_MINUS_ONE];
+						adjust = (size + V_MINUS_ONE) - vector_Fibonacci_Numbers[qty_items - V_ONE];
 
-						index = vector_Fibonacci_Numbers[qty_items + V_MINUS_ONE];
+						index = vector_Fibonacci_Numbers[qty_items - V_ONE];
 						fibM_minus_two = vector_Fibonacci_Numbers[qty_items - V_TWO];
 						fibM_minus_three = vector_Fibonacci_Numbers[qty_items - V_THREE];
 
@@ -461,9 +462,11 @@ int GetItem(const char *str_Message, const int array[], const int start, const i
 void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_entry enm_type_data, enum enm_type_reset enm_type_reset_OK)
 	{
 		//Preliminary working variables.
-		char c = NULL_CHARACTER, *buffer = NULL;
-		int count_bytes = V_ZERO, number_arguments = V_ZERO, number_elements = V_ONE_HUNDRED;
+		char *buffer = NULL;
+		int count_bytes = V_ZERO, number_arguments = V_ZERO;
+		int int_char = NULL_CHARACTER;
 		int option_type_entry = (int) enm_type_data;
+		size_t number_elements = V_ONE_HUNDRED;
 
 		/* Structure with the type of the returned variable. */
 		struct s_input_type_format
@@ -542,7 +545,7 @@ void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_en
 										{
 											printf("\nThe value entered is not valid. Trying again!\n");
 											scanf("%*[^\n]%*c");
-											while((c = getchar()) != CARRIAGE_RETURN && c != EOF);
+											while((int_char = getchar()) != CARRIAGE_RETURN && int_char != EOF);
 										}
 
 									/* Initialize the specified memory area. */
@@ -585,7 +588,7 @@ void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_en
 
 						/* We must always clear the input buffer of impurities. */
 						printf("Address: [%p] = {%s}. Clearing buffer...\n", buffer, buffer);
-						while ((c = getchar()) != CARRIAGE_RETURN && c != EOF);
+						while ((int_char = getchar()) != CARRIAGE_RETURN && int_char != EOF);
 
 						free(buffer);
 					}
@@ -682,6 +685,7 @@ int InterpolationLocate(const int array[], const int bottom, const int top, cons
 		/* Preliminary working variables. */
 		*middle_top = top + ((target_key - array[top]) * (bottom - top)) / (array[bottom] - array[top] + V_ONE);
 		*middle_bottom = bottom + ((target_key - array[bottom]) * (top - bottom)) / (array[top] - array[bottom] + V_ONE);
+		(*iters)++;
 
 		//The located position of the element is returned as a result.
 		return (*middle_top >= bottom && *middle_top <= top) && (*middle_bottom >= bottom && *middle_bottom <= top);
@@ -729,12 +733,12 @@ int MainMenu(int *option)
 int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls, int *iter, int *iters, int *position, int *random_seed, int *value)
 	{
 		/* Preliminary working variables. */
-		char char_key = NULL_CHARACTER;				//Variable to obtain a pause character.
-		int delta_factor = V_ZERO;				//Delta factor that adjusts the position of the medium.
-		int iteratives = V_ZERO;				//Number of iterations performed.
-		int middle_bottom = V_ZERO, middle_top = V_ZERO;	//Positions for interpolations.
-		int bottom = V_ZERO, top = size_of_array + V_MINUS_ONE;	//Lower and upper bounds of the array.
-		int size = size_of_array;				//Calculated array size.
+		char char_key = NULL_CHARACTER;					//Variable to obtain a pause character.
+		int delta_factor = V_ZERO;					//Delta factor that adjusts the position of the medium.
+		int iteratives = V_ZERO;					//Number of iterations performed.
+		int middle_bottom = V_ZERO, middle_top = V_ZERO;		//Positions for interpolations.
+		int bottom = V_ZERO, top = size_of_global_array + V_MINUS_ONE;	//Lower and upper bounds of the array.
+		int size = size_of_global_array;					//Calculated array size.
 
 		/* Convert integer value to enumerated value. */
 		enm_option = (enum enm_options) *value;
@@ -753,12 +757,12 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 				case enm_opt_binary_search:
 					if (GetValidInputs(start, finish, target_key, &bottom, &top))
 						{
-							*position = BinarySearch(array, *start, *finish, *target_key, position, iter);
+							*position = BinarySearch(global_array, *start, *finish, *target_key, position, iter);
 
 							if (GetValidLimits(*position, &bottom, &top))
 								{
-									GetElement("Binary search", array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
-									printf("Tracked element at position: [%d] located with content: [%d].\n", *position, array[*position]);
+									GetElement("Binary search", global_array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
+									printf("Tracked element at position: [%d] located with content: [%d].\n", *position, global_array[*position]);
 								}
 							else
 								{
@@ -767,7 +771,7 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 									printf("Highest position achieved: [%d].\n", *position);
 								}
 
-							GetItem("Binary search", array, *start, *finish, *target_key, *position, *iter);
+							GetItem("Binary search", global_array, *start, *finish, *target_key, *position, *iter);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -777,13 +781,13 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 				case enm_opt_binary_search_delta:
 					if (GetValidInputs(start, finish, target_key, &bottom, &top))
 						{
-							*position = BinarySearchDelta(array, *start, *finish, *target_key, &delta_factor, position, iter);
+							*position = BinarySearchDelta(global_array, *start, *finish, *target_key, &delta_factor, position, iter);
 
 							if (GetValidLimits(*position, &bottom, &top))
 								{
-									GetElement("Binary search with delta", array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
+									GetElement("Binary search with delta", global_array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
 									printf("  * Delta Fx : [%d].\n", delta_factor);
-									printf("Fetched element at position: [%d] located with content: [%d].\n", *position, array[*position]);
+									printf("Fetched element at position: [%d] located with content: [%d].\n", *position, global_array[*position]);
 								}
 							else
 								{
@@ -792,7 +796,7 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 									printf("Highest position achieved: [%d].\n", *position);
 								}
 
-							GetItem("Binary search with delta", array, *start, *finish, *target_key, *position, *iter);
+							GetItem("Binary search with delta", global_array, *start, *finish, *target_key, *position, *iter);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -802,13 +806,13 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 				case enm_opt_binary_search_recursive:
 					if (GetValidInputs(start, finish, target_key, &bottom, &top))
 						{
-							*position = BinarySearchRecursive(array, *start, *finish, *target_key, position, iter, &iteratives);
+							*position = BinarySearchRecursive(global_array, *start, *finish, *target_key, position, iter, &iteratives);
 
 							if (GetValidLimits(*position, &bottom, &top))
 								{
-									GetElement("Binary search recursive", array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
+									GetElement("Binary search recursive", global_array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
 									printf("[%d] calls made to the recursive binary search function.\n", iteratives);
-									printf("Sought element at position: [%d] located with content: [%d].\n", *position, array[*position]);
+									printf("Sought element at position: [%d] located with content: [%d].\n", *position, global_array[*position]);
 								}
 							else
 								{
@@ -817,22 +821,22 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 									printf("Highest position achieved: [%d].\n", *position);
 								}
 
-							GetItem("Binary search recursive", array, *start, *finish, *target_key, *position, *iter);
+							GetItem("Binary search recursive", global_array, *start, *finish, *target_key, *position, *iter);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
-				/* We dump all elements of the array. */
+				/* We dump all elements of the global array. */
 				case enm_opt_dump_all_items:
 					if (GetValidInputs(start, finish, target_key, &bottom, &top))
 						{
-							*position = DumpAllItems(array, *start, *finish, *target_key, position, iter);
+							*position = DumpAllItems(global_array, *start, *finish, *target_key, position, iter);
 
 							if (GetValidLimits(*position, &bottom, &top))
 								{
-									GetElement("Dump all items", array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
-									printf("Looked element at position: [%d] located with content: [%d].\n", *position, array[*position]);
+									GetElement("Dump all items", global_array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
+									printf("Looked element at position: [%d] located with content: [%d].\n", *position, global_array[*position]);
 								}
 							else
 								{
@@ -841,7 +845,7 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 									printf("Highest position achieved: [%d].\n", *position);
 								}
 
-							GetItem("Dump all items", array, *start, *finish, *target_key, *position, *iter);
+							GetItem("Dump all items", global_array, *start, *finish, *target_key, *position, *iter);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -856,12 +860,12 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 				case enm_opt_fibonacci_search:
 					if (GetValidInputs(start, finish, target_key, &bottom, &top))
 						{
-							*position = FibonacciSearch(array, *start, *finish, *target_key, position, iter);
+							*position = FibonacciSearch(global_array, *start, *finish, *target_key, position, iter);
 
 							if (GetValidLimits(*position, &bottom, &top))
 								{
-									GetElement("Fibonacci search", array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
-									printf("Fenced element at position: [%d] located with content: [%d].\n", *position, array[*position]);
+									GetElement("Fibonacci search", global_array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
+									printf("Fenced element at position: [%d] located with content: [%d].\n", *position, global_array[*position]);
 								}
 							else
 								{
@@ -870,7 +874,7 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 									printf("Highest position achieved: [%d].\n", *position);
 								}
 
-							GetItem("Fibonacci search", array, *start, *finish, *target_key, *position, *iter);
+							GetItem("Fibonacci search", global_array, *start, *finish, *target_key, *position, *iter);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -880,13 +884,13 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 				case enm_opt_interpolation_search:
 					if (GetValidInputs(start, finish, target_key, &bottom, &top))
 						{
-							if (InterpolationLocate(array, *start, *finish, *target_key, &middle_bottom, &middle_top, iter))
+							if (InterpolationLocate(global_array, *start, *finish, *target_key, &middle_bottom, &middle_top, iter))
 								{
 									printf("\n** [Approximate values ​​obtained] **.\n");
 
 									if (GetValidLimits(middle_bottom, &bottom, &top))
 										{
-											GetElement("Interpolation search: {lower value obtanied}", array, *start, *finish, *target_key, bottom, top, size, middle_bottom, *calls, *iter, *iters, *random_seed);
+											GetElement("Interpolation search: {lower value obtanied}", global_array, *start, *finish, *target_key, bottom, top, size, middle_bottom, *calls, *iter, *iters, *random_seed);
 											char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 										}
 									else
@@ -896,11 +900,11 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 											printf("Highest position achieved: [%d].\n", middle_bottom);
 										}
 
-									GetItem("Interpolation search: {lower value}", array, *start, *finish, *target_key, middle_bottom, *iter);
+									GetItem("Interpolation search: {lower value}", global_array, *start, *finish, *target_key, middle_bottom, *iter);
 
 									if (GetValidLimits(middle_top, &bottom, &top))
 										{
-											GetElement("Interpolation search: {upper value obtanied}", array, *start, *finish, *target_key, bottom, top, size, middle_top, *calls, *iter, *iters, *random_seed);
+											GetElement("Interpolation search: {upper value obtanied}", global_array, *start, *finish, *target_key, bottom, top, size, middle_top, *calls, *iter, *iters, *random_seed);
 											char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 										}
 									else
@@ -910,7 +914,7 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 											printf("Highest position achieved: [%d].\n", middle_top);
 										}
 
-									GetItem("Interpolation search: {upper value}", array, *start, *finish, *target_key, middle_top, *iter);
+									GetItem("Interpolation search: {upper value}", global_array, *start, *finish, *target_key, middle_top, *iter);
 								}
 							else
 								printf("The lower bound: [%d] and upper bound: [%d] are invalid and are outside the range between: [%d] and [%d].\n", middle_bottom, middle_top, *start, *finish);
@@ -919,7 +923,7 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
-				/* We locate an entry or occurrence of the array directly by means of an index number. */
+				/* We locate an entry or occurrence of the global array directly by means of an index number. */
 				case enm_opt_locate_directly:
 					printf("\nEntry or occurrence number to be located.\n");
 					printf("Index position from: [%d] to [%d]: ", V_ZERO, size + V_MINUS_ONE);
@@ -928,7 +932,7 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 
 					if (GetValidLimits(*start, &bottom, &top))
 						{
-							/* Locate a value determined by its index within the array. */
+							/* Locate a value determined by its index within the global array. */
 							*finish = *start;
 							char_key = *((char *) GetEntry("Do you want to compare the value located at the given position with a determined value (y/n)? : ", &char_key, enm_type_entry_char, enm_type_reset_YES));
 
@@ -940,10 +944,10 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 									*target_key = *((int *) GetEntry("", target_key, enm_type_entry_int, enm_type_reset_YES));
 								}
 
-							GetElement("Locate directly", array, *start, *finish, *target_key, bottom, top, size, *start, *calls, *iter, *iters, *random_seed);
-							printf("Element found: [%d] ubicated directly on position: [%d].\n", array[*start], *start);
+							GetElement("Locate directly", global_array, *start, *finish, *target_key, bottom, top, size, *start, *calls, *iter, *iters, *random_seed);
+							printf("Element found: [%d] ubicated directly on position: [%d].\n", global_array[*start], *start);
 
-							GetItem("Locate directly", array, *start, *finish, *target_key, *start, *iter);
+							GetItem("Locate directly", global_array, *start, *finish, *target_key, *start, *iter);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -960,8 +964,8 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 
 							if (GetValidLimits(*position, &bottom, &top))
 								{
-									GetElement("Random seeking", array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
-									printf("Searched element at position: [%d] located with content: [%d].\n", *position, array[*position]);
+									GetElement("Random seeking", global_array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
+									printf("Searched element at position: [%d] located with content: [%d].\n", *position, global_array[*position]);
 								}
 							else
 								{
@@ -970,7 +974,7 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 									printf("Highest position achieved: [%d].\n", *position);
 								}
 
-							GetItem("Random seeking", array, *start, *finish, *target_key, *position, *iter);
+							GetItem("Random seeking", global_array, *start, *finish, *target_key, *position, *iter);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -980,12 +984,12 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 				case enm_opt_sequential_search:
 					if (GetValidInputs(start, finish, target_key, &bottom, &top))
 						{
-							*position = SequentialSearch(array, *start, *finish, *target_key, position, iter);
+							*position = SequentialSearch(global_array, *start, *finish, *target_key, position, iter);
 
 							if (GetValidLimits(*position, &bottom, &top))
 								{
-									GetElement("Sequential search", array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
-									printf("Searched element at position: [%d] located with content: [%d].\n", *position, array[*position]);
+									GetElement("Sequential search", global_array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
+									printf("Searched element at position: [%d] located with content: [%d].\n", *position, global_array[*position]);
 								}
 							else
 								{
@@ -994,7 +998,7 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 									printf("Highest position achieved: [%d].\n", *position);
 								}
 
-							GetItem("Sequential search", array, *start, *finish, *target_key, *position, *iter);
+							GetItem("Sequential search", global_array, *start, *finish, *target_key, *position, *iter);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -1005,12 +1009,12 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 					if (GetValidInputs(start, finish, target_key, &bottom, &top))
 						{
 							*position = *start;
-							*position = SequentialSearchRecursive(array, *start, *finish, *target_key, bottom, top, position, iter);
+							*position = SequentialSearchRecursive(global_array, *start, *finish, *target_key, bottom, top, position, iter);
 
 							if (GetValidLimits(*position, &bottom, &top))
 								{
-									GetElement("Sequential search recursive", array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
-									printf("Searched element at position: [%d] located with content: [%d].\n", *position, array[*position]);
+									GetElement("Sequential search recursive", global_array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
+									printf("Searched element at position: [%d] located with content: [%d].\n", *position, global_array[*position]);
 								}
 							else
 								{
@@ -1019,7 +1023,7 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 									printf("Highest position achieved: [%d].\n", *position);
 								}
 
-							GetItem("Sequential search recursive", array, *start, *finish, *target_key, *position, *iter);
+							GetItem("Sequential search recursive", global_array, *start, *finish, *target_key, *position, *iter);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -1029,12 +1033,12 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 				case enm_opt_view_all_items:
 					if (GetValidInputs(start, finish, target_key, &bottom, &top))
 						{
-							*position = ViewAllItems(array, *start, *finish, *target_key, position, iter, iters);
+							*position = ViewAllItems(global_array, *start, *finish, *target_key, position, iter, iters);
 
 							if (GetValidLimits(*position, &bottom, &top))
 								{
-									GetElement("View all items details", array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
-									printf("Fenced element at position: [%d] located with content: [%d].\n", *position, array[*position]);
+									GetElement("View all items details", global_array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
+									printf("Fenced element at position: [%d] located with content: [%d].\n", *position, global_array[*position]);
 								}
 							else
 								{
@@ -1043,7 +1047,7 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 									printf("Highest position achieved: [%d].\n", *position);
 								}
 
-							GetItem("View all items", array, *start, *finish, *target_key, *position, *iter);
+							GetItem("View all items", global_array, *start, *finish, *target_key, *position, *iter);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -1053,12 +1057,12 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 				case enm_opt_view_each_element:
 					if (GetValidInputs(start, finish, target_key, &bottom, &top))
 						{
-							*position = ViewEachElement(array, *start, *finish, *target_key, bottom, top, size, position, *calls, iter, iters, *random_seed);
+							*position = ViewEachElement(global_array, *start, *finish, *target_key, bottom, top, size, position, *calls, iter, iters, *random_seed);
 
 							if (GetValidLimits(*position, &bottom, &top))
 								{
-									GetElement("View each element of the arrangement", array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
-									printf("Fenced element at position: [%d] located with content: [%d].\n", *position, array[*position]);
+									GetElement("View each element of the arrangement", global_array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
+									printf("Fenced element at position: [%d] located with content: [%d].\n", *position, global_array[*position]);
 								}
 							else
 								{
@@ -1067,7 +1071,7 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 									printf("Highest position achieved: [%d].\n", *position);
 								}
 
-							GetItem("View each element of the arrangement", array, *start, *finish, *target_key, *position, *iter);
+							GetItem("View each element of the arrangement", global_array, *start, *finish, *target_key, *position, *iter);
 						}
 
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
@@ -1075,7 +1079,7 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 
 				/* View the latest generated statistics. */
 				case enm_opt_view_statistics:
-					GetElement("View Statistics", array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
+					GetElement("View Statistics", global_array, *start, *finish, *target_key, bottom, top, size, *position, *calls, *iter, *iters, *random_seed);
 					break;
 
 				/* Case of failed option. */
