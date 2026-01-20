@@ -200,7 +200,7 @@ class Point2D
 			T& getX()			{return (*this).x;}
 			T& getY()			{return (*this).y;}
 
-			const bool isitme(Point2D<T>& Point2D)	const
+			bool isitme(Point2D<T>& Point2D)	const
 				{return (this == &Point2D);}
 
 			virtual Point2D<T>& move(Point2D<T> &&Point2D)
@@ -405,7 +405,7 @@ class Point3D : public Point2D<T>
 			const T& getZ()		const	{return this->z;}
 			T& getZ()			{return (*this).z;}
 
-			const bool isitme(Point3D<T>& Point3D)	const
+			bool isitme(Point3D<T>& Point3D)	const
 				{return (this == &Point3D);}
 
 			virtual Point3D<T>& move(Point3D<T> &&Point3D)
