@@ -371,7 +371,7 @@ int main()
 
 				for (int ind = V_ZERO; ind < numbers; ind++)
 					{
-						ticket.insert((*array_Random_Number[idx]).getWithin(minimum, maximum));
+						ticket.insert(static_cast<int>((*array_Random_Number[idx]).getWithin(minimum, maximum)));
 
 						std::cout << "#: [" << (counter++) + V_ONE << "]\t:\t[" << array_Random_Number[idx]->getNumber() << "]\t=\t[" << array_Random_Number[idx]->getValue() << "]\t=\t[" << array_Random_Number[idx]->getWithin(minimum, maximum) << "]." << std::endl;
 						(*array_Random_Number[idx])();	//Activate the generator to get the next number.
