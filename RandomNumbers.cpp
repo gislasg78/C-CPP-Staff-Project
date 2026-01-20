@@ -281,7 +281,7 @@ class RandomNumber
 					return (*this).random_number;
 				}
 
-			const bool isitme(const RandomNumber<T>& object_random)
+			bool isitme(const RandomNumber<T>& object_random) const
 				{return (this == &object_random);}
 
 			virtual RandomNumber<T>& move(RandomNumber<T>&& object_random)
