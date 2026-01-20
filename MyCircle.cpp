@@ -205,7 +205,7 @@ class Circle
 			typename std::enable_if<std::is_integral<T>::value, U>::type
 			getValue()				{return this->id;}
 
-			const bool isitme(Circle<T>& circle)	const		{return (this == &circle);};
+			bool isitme(Circle<T>& circle)	const	{return (this == &circle);};
 
 			virtual Circle<T>& move(Circle<T>&& circle)
 				{(*this).counter--; this->copy(circle); circle.reset(); return *this;}
@@ -410,7 +410,7 @@ class Cylinder : public Circle<T>
 			virtual void explore()	override
 				{std::cout << *this << std::endl; std::cin >> *this; std::cout << *this << std::endl;}
 
-			const bool isitme(Cylinder<T>& cylinder)	const
+			bool isitme(Cylinder<T>& cylinder)	const
 				{return (this == &cylinder);};
 
 			virtual Cylinder<T>& move(Cylinder<T>&& cylinder)
