@@ -54,6 +54,7 @@ enum enm_CalendarOptions
 		enm_CO_get_easter_sunday,
 		enm_CO_capture_date,
 		enm_CO_capture_time,
+		enm_CO_difference_between_dates,
 		enm_CO_obtain_julian_year,
 		enm_CO_check_leap_year,
 		enm_CO_check_sum_of_days,
@@ -87,6 +88,7 @@ struct months_table
 //Prototype functions.
 int DaysInMonth(const int year, const int month);
 int DayOfWeek(const int day, int month, int year);
+int DifferenceBetweenDates(int start_first_day, int start_first_month, int start_first_year, int first_day, int first_month, int first_year, int start_second_day, int start_second_month, int start_second_year, int second_day, int second_month, int second_year);
 void EasterSunday(const int year, int *month_east, int *day_east);
 void EntryDate(int *day, int *month, int *year);
 void EntryTime(int *hour, int *minute, int *second);
@@ -138,6 +140,57 @@ int DaysInMonth(const int year, const int month)
 		if ((month == V_TWO) && (LeapYear(year))) limitdays = V_29;
 
 		return limitdays;
+	}
+
+//Function that calculates the difference between two given dates.
+int DifferenceBetweenDates(int start_first_day, int start_first_month, int start_first_year, int first_day, int first_month, int first_year, int start_second_day, int start_second_month, int start_second_year, int second_day, int second_month, int second_year)
+	{
+		/* Preliminary working variables. */
+		int difference_total_number_of_days = V_ZERO;
+		int total_number_of_days_first_date = V_ZERO, total_number_of_days_second_date = V_ZERO;
+
+		printf("Calculating the difference between two specific dates.\n");
+
+		/* First calculation date. */
+		printf("Departure date for the first date.\n");
+		EntryDate(&start_first_day, &start_first_month, &start_first_year);
+
+		printf("First departure date.\n");
+		EntryDate(&first_day, &first_month, &first_year);
+
+		/* Second calculation date. */
+		printf("Departure date for the second date.\n");
+		EntryDate(&start_second_day, &start_second_month, &start_second_year);
+
+		printf("Second departure date.\n");
+		EntryDate(&second_day, &second_month, &second_year);
+
+		/* Calculation of the number of days for each date obtained from its starting date. */
+		total_number_of_days_first_date = SumOfDays(start_first_day, start_first_month, start_first_year, first_day, first_month, first_year);
+		total_number_of_days_second_date = SumOfDays(start_second_day, start_second_month, start_second_year, second_day, second_month, second_year);
+		difference_total_number_of_days = total_number_of_days_second_date - total_number_of_days_first_date;
+
+		/* Date report output messages. */
+		printf("\n");
+		printf("+===+====+===+====+===+====+===+====+\n");
+		printf("| Difference in days between dates. |\n");
+		printf("+===+====+===+====+===+====+===+====+\n");
+		printf("|            First Date.            |\n");
+		printf("+---+----+---+----+---+----+---+----+\n");
+		printf("| Start  : [%04d/%02d/%02d].\n", start_first_year, start_first_month, start_first_day);
+		printf("| First  : [%04d/%02d/%02d].\n", first_year, first_month, first_day);
+		printf("| Days   : [%d].\n", total_number_of_days_first_date);
+		printf("+---+----+---+----+---+----+---+----+\n");
+		printf("|           Second Date.            |\n");
+		printf("+---+----+---+----+---+----+---+----+\n");
+		printf("| Start  : [%04d/%02d/%02d].\n", start_second_year, start_second_month, start_second_day);
+		printf("| Second : [%04d/%02d/%02d].\n", second_year, second_month, second_day);
+		printf("| Days   : [%d].\n", total_number_of_days_second_date);
+		printf("+---+----+---+----+---+----+---+----+\n");
+		printf("| Diff   : [%d].\n", difference_total_number_of_days);
+		printf("+===+====+===+====+===+====+===+====+\n");
+
+		return difference_total_number_of_days;
 	}
 
 //Function that obtains the Easter Sunday of a given date.
@@ -289,14 +342,15 @@ int Menu(int *start_day, int *start_month, int *start_year, int *day, int *month
 				printf("| [04]. Get easter sunday. |\n");
 				printf("| [05]. Capture a date.    |\n");
 				printf("| [06]. Capture a time.    |\n");
-				printf("| [07]. Obtain julian year.|\n");
-				printf("| [08]. Check leap year.   |\n");
-				printf("| [09]. Check sum of days. |\n");
-				printf("| [10]. Validate date.     |\n");
-				printf("| [11]. Validate time.     |\n");
-				printf("| [12]. Write date.        |\n");
-				printf("| [13]. Write time.        |\n");
-				printf("| [14]. Exit this menu.    |\n");
+				printf("| [07]. Dates Difference.  |\n");
+				printf("| [08]. Obtain julian year.|\n");
+				printf("| [09]. Check leap year.   |\n");
+				printf("| [10]. Check sum of days. |\n");
+				printf("| [11]. Validate date.     |\n");
+				printf("| [12]. Validate time.     |\n");
+				printf("| [13]. Write date.        |\n");
+				printf("| [14]. Write time.        |\n");
+				printf("| [15]. Exit this menu.    |\n");
 				printf("+===+====+===+====+===+====+\n");
 				printf("Option: ");
 
@@ -314,6 +368,12 @@ int Menu(int *start_day, int *start_month, int *start_year, int *day, int *month
 //Menu that executes the operation of a given selection.
 int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int *month, int *year, int *hour, int *minute, int *second, enum enm_CalendarOptions enm_CO_myOption, int *counter)
 	{
+		/* Preliminary working variables. */
+		int start_first_day = V_ZERO, start_first_month = V_ZERO, start_first_year = V_ZERO;
+		int first_day = V_ZERO, first_month = V_ZERO, first_year = V_ZERO;
+		int start_second_day = V_ZERO, start_second_month = V_ZERO, start_second_year = V_ZERO;
+		int second_day = V_ZERO, second_month = V_ZERO, second_year = V_ZERO;
+		int difference_between_dates = V_ZERO;
 		int day_easter = V_ZERO, month_easter = V_ZERO;
 		int day_of_week = V_ZERO, days_in_month = V_ZERO;
 		int julian_year = V_ZERO, days_rest = V_ZERO;
@@ -322,7 +382,7 @@ int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int 
 		int sum_of_days = V_ZERO;
 		int sum_year = V_ZERO, sum_month = V_ZERO, sum_day = V_ZERO;
 
-		if (enm_CO_myOption != enm_CO_exit_menu) (*counter)++;
+		if (enm_CO_myOption != enm_CO_exit_menu) (*counter)++;	//Record successful transactions.
 
 		switch(enm_CO_myOption)
 			{
@@ -385,6 +445,12 @@ int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int 
 						}
 					break;
 
+				case enm_CO_difference_between_dates:
+					difference_between_dates = DifferenceBetweenDates(start_first_day, start_first_month, start_first_year, first_day, first_month, first_year, start_second_year, start_second_month, start_second_day, second_day, second_month, second_year);
+
+					printf("\nDifference between dates: [%d].\n", difference_between_dates);
+					break;
+
 				case enm_CO_obtain_julian_year:
 					julian_year = JulianYear(*day, *month, *year, &days_rest);
 					printf("\nJulian Year Days.\n");
@@ -404,17 +470,19 @@ int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int 
 					break;
 
 				case enm_CO_check_sum_of_days:
+					printf("\nResolution of sum of days from a start date.\n");
+
 					sum_of_days = SumOfDays(*start_day, *start_month, *start_year, *day, *month, *year);
-					printf("\nSum of days.\n");
-					printf("- Begin: [%04d-%02d-%02d].\n", *start_year, *start_month, *start_day);
-					printf("- End  : [%04d-%02d-%02d].\n", *year, *month, *day);
-					printf("- Year : {%d} : [%d].\n", *start_year, sum_of_days);
+					printf("Sum of days.\n");
+					printf("- Begin : [%04d-%02d-%02d].\n", *start_year, *start_month, *start_day);
+					printf("- End   : [%04d-%02d-%02d].\n", *year, *month, *day);
+					printf("- Year  : {%d} : [%d].\n", *start_year, sum_of_days);
 
 					SolveSumOfDays(*start_day, *start_month, *start_year, sum_of_days, &sum_day, &sum_month, &sum_year);
 					printf("\nSolve sum of days.\n");
-					printf("- Begin: [%04d-%02d-%02d].\n", *start_year, *start_month, *start_day);
-					printf("- Year : {%d} : [%d].\n", *start_year, sum_of_days);
-					printf("+ End  : [%04d-%02d-%02d].\n", sum_year, sum_month, sum_day);
+					printf("- Begin : [%04d-%02d-%02d].\n", *start_year, *start_month, *start_day);
+					printf("- Year  : {%d} : [%d].\n", *start_year, sum_of_days);
+					printf("+ End   : [%04d-%02d-%02d].\n", sum_year, sum_month, sum_day);
 					break;
 
 				case enm_CO_validate_date:
@@ -501,7 +569,7 @@ void SolveSumOfDays(const int start_day, const int start_month, const int start_
 		*day += days_remaining;
 	}
 
-//Function that loops through the number of days in a year starting from 1582-01-01.
+//Function that loops through the number of days in a year starting from '1582-01-01' for instance.
 int SumOfDays(const int start_day, const int start_month, const int start_year, const int day, const int month, const int year)
 	{
 		//Preliminary working variables.
