@@ -140,7 +140,7 @@ int ValidDate(const int day, const int month, const int year);
 int ValidTime(const int hour, const int minute, const int second);
 void WriteDate(const int day, const int month, const int year);
 void WriteTime(const int hour, const int minute, const int second);
-void ZodiacSign(const int day, const int month, int *zodiac_number, char *zodiac_name, int *start_zodiac_day, int *start_zodiac_month, int *finish_zodiac_day, int *finish_zodiac_month);
+int ZodiacSign(const int day, const int month, int *zodiac_number, char *zodiac_name, int *start_zodiac_day, int *start_zodiac_month, int *finish_zodiac_day, int *finish_zodiac_month);
 
 //Main function.
 int main()
@@ -578,7 +578,9 @@ int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int 
 
 				case enm_CO_get_easter_sunday:
 					EasterSunday(*year, &month_easter, &day_easter);
-					printf("\nEaster Sunday: {%d}.\n", *year);
+					printf("\nEaster Sunday.\n");
+					printf("+ Date  : [%04d/%02d/%02d].\n", *year, *month, *day);
+					printf("- Year  : {%d}.\n", *year);
 					printf("- Month : {%d} = [%s].\n", month_easter, months_array[month_easter - V_ONE].month_nameofmonth);
 					printf("- Day   : [%d].\n", day_easter);
 					break;
@@ -706,14 +708,17 @@ int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int 
 					break;
 
 				case enm_CO_zodiac_sign:
-					ZodiacSign(*day, *month, &zodiac_number, zodiac_name, &start_zodiac_day, &start_zodiac_month, &finish_zodiac_day, &finish_zodiac_month);
-
-					printf("\nZodiac sign of the loaded date.\n");
-					printf("+ Date   : %s, %02d, %04d.\n", months_array[*month - V_ONE].month_nameofmonth, *day, *year);
-					printf("+ Number : [%02d].\n", zodiac_number);
-					printf("+ Name   : [%s].\n", zodiac_name);
-					printf("+ Starts : %s, %02d.\n",  months_array[start_zodiac_month - V_ONE].month_nameofmonth, start_zodiac_day);
-					printf("+ Ends   : %s, %02d.\n",  months_array[finish_zodiac_month - V_ONE].month_nameofmonth, finish_zodiac_day);
+					if (ZodiacSign(*day, *month, &zodiac_number, zodiac_name, &start_zodiac_day, &start_zodiac_month, &finish_zodiac_day, &finish_zodiac_month))
+						{
+							printf("\nZodiac sign of the loaded date.\n");
+							printf("+ Date   : %s, %02d, %04d.\n", months_array[*month - V_ONE].month_nameofmonth, *day, *year);
+							printf("+ Number : [%02d].\n", zodiac_number);
+							printf("+ Name   : [%s].\n", zodiac_name);
+							printf("+ Starts : %s, %02d.\n",  months_array[start_zodiac_month - V_ONE].month_nameofmonth, start_zodiac_day);
+							printf("+ Ends   : %s, %02d.\n",  months_array[finish_zodiac_month - V_ONE].month_nameofmonth, finish_zodiac_day);
+						}
+					else
+						printf("\nThe zodiac sign was not found.\n");
 					break;
 
 				case enm_CO_exit_menu:
@@ -920,9 +925,12 @@ void WriteTime(const int hour, const int minute, const int second)
 	}
 
 //Function that the zodiac sign achieves for a given month and day.
-void ZodiacSign(const int day, const int month, int *zodiac_number, char *zodiac_name, int *start_zodiac_day, int *start_zodiac_month, int *finish_zodiac_day, int *finish_zodiac_month)
+int ZodiacSign(const int day, const int month, int *zodiac_number, char *zodiac_name, int *start_zodiac_day, int *start_zodiac_month, int *finish_zodiac_day, int *finish_zodiac_month)
 	{
-		for (int idx = V_ZERO; idx < V_TWELVE; idx++)
+		/* Preliminary working variables. */
+		int idx = V_ZERO;
+
+		for (idx = V_ZERO; idx < V_TWELVE; idx++)
 			{
 				int sm = zodiac_signs_array[idx].start_zodiac_month;
 				int sd = zodiac_signs_array[idx].start_zodiac_day;
@@ -943,4 +951,6 @@ void ZodiacSign(const int day, const int month, int *zodiac_number, char *zodiac
 						break;
 					}
 			}
+
+		return (idx >= V_ZERO && idx < V_TWELVE);
 	}
