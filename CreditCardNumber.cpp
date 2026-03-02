@@ -207,8 +207,8 @@ int int_getADigit(const int& int_digit_number)
 int int_sumOfDigits(const std::string &str_CardNumber)
 	{
 		/* Preliminary declarations of variables. */
-		int int_CardNumber_Length = str_CardNumber.length();
-		int int_CardNumber_Size = str_CardNumber.size();
+		int int_CardNumber_Length = int(str_CardNumber.length());
+		int int_CardNumber_Size = (int) str_CardNumber.size();
 
 		/* Initial declaration of work variables. */
 		int int_counting_items = V_ZERO, int_counting_pos_items = V_ZERO;
