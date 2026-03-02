@@ -168,28 +168,28 @@ int main()
 		double dbl_result = V_ZERO;
 
 		/* Anonymous function to convert from Celsius degrees to Fahrenheit. */
-		std::function<double(double)> fn_celsius_to_fahrenheit = [&](const double& dbl_degrees) -> double
-			{return ((V_ONE_POINT_EIGHT * dbl_degrees) + V_THIRTY_TWO);};
+		std::function<double(double)> fn_celsius_to_fahrenheit = [&](const double& dbl_num_degrees) -> double
+			{return ((V_ONE_POINT_EIGHT * dbl_num_degrees) + V_THIRTY_TWO);};
 
 		/* Anonymous function to convert from Fahrenheit degrees to Celsius. */
-		std::function<double(double)> fn_fahrenheit_to_celsius = [&](const double& dbl_degrees) -> double
-			{return ((dbl_degrees - V_THIRTY_TWO) / V_ONE_POINT_EIGHT);};
+		std::function<double(double)> fn_fahrenheit_to_celsius = [&](const double& dbl_num_degrees) -> double
+			{return ((dbl_num_degrees - V_THIRTY_TWO) / V_ONE_POINT_EIGHT);};
 
 		/* Anonymous function to convert from Celsius degrees to Kelvin. */
-		std::function<double(double)> fn_celsius_to_kelvin = [&](const double& dbl_degrees) -> double
-			{return (dbl_degrees + V_273_15);};
+		std::function<double(double)> fn_celsius_to_kelvin = [&](const double& dbl_num_degrees) -> double
+			{return (dbl_num_degrees + V_273_15);};
 
 		/* Anonymous function to convert from Kelvin degrees to Celsius. */
-		std::function<double(double)> fn_kelvin_to_celsius = [&](const double& dbl_degrees) -> double
-			{return (dbl_degrees - V_273_15);};
+		std::function<double(double)> fn_kelvin_to_celsius = [&](const double& dbl_num_degrees) -> double
+			{return (dbl_num_degrees - V_273_15);};
 
 		/* Anonymous function to convert from Fahrenheit degrees to Kelvin. */
-		std::function<double(double)> fn_fahrenheit_to_kelvin = [&](const double& dbl_degrees) -> double
-			{return (((dbl_degrees - V_THIRTY_TWO) / V_ONE_POINT_EIGHT) + V_273_15);};
+		std::function<double(double)> fn_fahrenheit_to_kelvin = [&](const double& dbl_num_degrees) -> double
+			{return (((dbl_num_degrees - V_THIRTY_TWO) / V_ONE_POINT_EIGHT) + V_273_15);};
 
 		/* Anonymous function to convert from Kelvin degrees to Fahrenheit. */
-		std::function<double(double)> fn_kelvin_to_fahrenheit = [&](const double& dbl_degrees) -> double
-			{return ((dbl_degrees - V_273_15) * V_ONE_POINT_EIGHT) + V_THIRTY_TWO;};
+		std::function<double(double)> fn_kelvin_to_fahrenheit = [&](const double& dbl_num_degrees) -> double
+			{return ((dbl_num_degrees - V_273_15) * V_ONE_POINT_EIGHT) + V_THIRTY_TWO;};
 
 		/* Main loop that displays the conversion menu. */
 		while (cnv_myConverter != Converter::Exit_Converter)
