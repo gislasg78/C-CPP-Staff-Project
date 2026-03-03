@@ -79,6 +79,7 @@ char *gets(char **ptr_chr_String, size_t *const ptr_szt_idx_chars, const size_t 
 		/* Return both the number of characters placed and the maximum storage length of the string. */
 		if (ptr_chr_String) *ptr_chr_String = ptr_chr_String_New;
 		if (ptr_szt_idx_chars) *ptr_szt_idx_chars = szt_idx_chars;
+
 		return (ptr_chr_String_New);
 	}
 
@@ -111,7 +112,7 @@ int main()
 
 		/* Information entry window. */
 		printf("+===|====+===|====+===|====+===|====+===|\n");
-		printf("+  Generator of a character string.     +\n");
+		printf("+    Generator of a character string.   +\n");
 		printf("+===|====+===|====+===|====+===|====+===|\n");
 		printf("String length : ");
 		scanf("%zu%*c", &szt_num_chars);
@@ -143,8 +144,9 @@ int main()
 				printf("|Dump the string character by character.|\n");
 				printf("+===|====+===|====+===|====+===|====+===|\n");
 
+				/* Character-by-character dumping cycle. */
 				for (size_t szt_idx_char = V_ZERO; szt_idx_char < szt_idx_chars; szt_idx_char++)
-				printf("#:[%ld]\t:\t[%p]\t=\t[%c].\n", szt_idx_char, ptr_chr_String_New + szt_idx_char, *(ptr_chr_String_New + szt_idx_char));
+					printf("#:[%ld]\t:\t[%p]\t=\t[%c].\n", szt_idx_char, ptr_chr_String_New + szt_idx_char, *(ptr_chr_String_New + szt_idx_char));
 
 				printf("[%ld] Obtained output results.\n", szt_idx_chars);
 
