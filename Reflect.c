@@ -34,23 +34,65 @@
 				(((c)&0x40) >> 5)  | (((c)&0x80) >> 7))
 
 /*****************************************************************
- ** Function:		size_t bit_counter_on (char x).		**
+ ** Function:		size_t bit_counter_on			**
+ **				(const char char_value).	**
  ** Explanation:	Counts the bits that have a given value	**
  **			set to one.				**
- ** Input Parms:	char x.					**
+ ** Input Parms:	const char char_value.			**
  ** Output Parms:	None.					**
  ** Result:		bitcount: count 1 bits in 'x'.		**
  ****************************************************************/
-size_t bit_counter_on(char x)
+size_t bit_counter_on(const char char_value)
 	{
 		/* Preliminary working variables. */
 		size_t b = V_ZERO;
+		unsigned char x = (unsigned char) char_value;
 
 		/* Bit counting cycle. */
 		for (b = V_ZERO; x > V_ZERO; x >>= V_ONE)
 			if (x & V_OCTAL_ONE) b++;
 
+		/* Return of key value. */
 		return b;
+	}
+
+/*****************************************************************
+ ** Function:		size_t get_bits(			**
+ **				const char char_value,		**
+ **				const size_t szt_position,	**
+ **				const size_t szt_quantity_bits).**
+ ** Explanation:	Returns the value corresponding to the	**
+ **			requested 'bits' of the received value.	**
+ ** Input Parms:	const char char_value,			**
+ **			const char szt_position,		**
+ **			const char szt_quantity_bits.		**
+ ** Output Parms:	None.					**
+ ** Result:		getbits: get 'n' bits from position 'p'.**
+ ****************************************************************/
+size_t get_bits(const char char_value, const size_t szt_position, const size_t szt_quantity_bits)
+	{
+		/* Preliminary working variables. */
+		size_t mask = V_ZERO;
+		size_t shift = V_ZERO;
+		size_t x = (size_t) char_value;
+
+		/* Handle error or avoid negative shift. */
+		if (szt_quantity_bits)
+			if (szt_quantity_bits <= sizeof(char) * V_EIGHT)
+				if (szt_position + V_ONE >= szt_quantity_bits)
+					{
+						shift = szt_position + V_ONE - szt_quantity_bits;
+						mask = ((size_t) V_ONE << szt_quantity_bits) - V_ONE;
+					}
+				else
+					fprintf(stderr, "\nError! A change can occur with a negative number.\n");
+			else
+				fprintf(stderr, "\nThe number of bits manipulated is greater than the total.\n");
+		else
+			fprintf(stderr, "\nAt least one bit must be reported to be extracted.\n");
+
+		/* Return of key value. */
+		return (x >> shift) & mask;
 	}
 
 /*****************************************************************
@@ -68,6 +110,7 @@ int get_response(const char *str_Message, int *p_int_key_pressed)
 		char chr_key = V_ZERO;
 		int int_key = NULL_CHARACTER;
 
+		/* Header message. */
 		printf("%s", str_Message);
 
 		/* Validate data entry as correct. */
@@ -80,43 +123,51 @@ int get_response(const char *str_Message, int *p_int_key_pressed)
 		else
 			{
 				/* Get an incorrect character value. */
-				printf("\nThe value entered is not valid.\n");
+				fprintf(stderr, "\nThe value entered is not valid.\n");
 
 				scanf("%*[^\n]%*c");
 				while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
 			}
 
+		/* Return of key values. */
 		if (p_int_key_pressed) *p_int_key_pressed = int_key;
 		return int_key;
 	}
 
 /*****************************************************************
  ** Function:		char *to_binary				**
- **				(const char char_char,		**
- **				       char **p_to_binary).	**
+ **				(const char char_value,		**
+ **				  char **p_to_binary,		**
+ **				  size_t *p_count_to_binary).	**
  ** Explanation:	Reverses bit order of an entered	**
  **			character, such that bit 0 becomes bit 7**
  **			bit 1 becomes bit 6, bit 2 becomes bit 5**
  **			and so on.				**
- ** Input Parms:	const char char_char,			**
+ ** Input Parms:	const int char_value,			**
  **			char **p_to_binary.			**
- ** Output Parms:	char **p_to_binary.			**
+ ** Output Parms:	char **p_to_binary,			**
+ **			size_t *p_count_to_binary.		**
+ **			size_t *p_count_to_binary.		**
  ** Result:		Pointer to character with sequence of	**
  **			binary digits.				**
  ****************************************************************/
-char *to_binary(const char char_char, char **p_to_binary)
+char *to_binary(const char char_value, char **p_to_binary, size_t *p_count_to_binary)
 	{
 		/* Preliminary working variables. */
 		char *p_binary = NULL;
 		int idx = V_ZERO, ind = V_ZERO;
-		size_t size_type = (sizeof(char) * V_EIGHT) + V_ONE;
-		int up_size_type = (int) ((sizeof(char) * V_EIGHT) - V_ONE);
+
+		/* Initial declaration of work variables. */
+		int int_size_type = (int) ((sizeof(char) * V_EIGHT) - V_ONE);
+		size_t szt_size_of_type = (sizeof(char) * V_EIGHT) + V_ONE;
 
 		/* Assignment of the memory pointer and filling with the corresponding converted bits. */
-		if ((p_binary = (char *) calloc(size_type, sizeof(char))))
+		*p_count_to_binary = V_ZERO;
+
+		if ((p_binary = (char *) calloc(szt_size_of_type, sizeof(char))))
 			{
-				for (idx = up_size_type, ind = V_ZERO; idx >= V_ZERO && ind <= up_size_type; idx--, ind++)
-					*(p_binary + ind) = (char_char & (V_ONE << idx)) ? V_CHAR_ONE : V_CHAR_ZERO;
+				for (idx = int_size_type, ind = V_ZERO; idx >= V_ZERO && ind <= int_size_type; idx--, ind++, (*p_count_to_binary)++)
+					*(p_binary + ind) = (char_value & (V_ONE << idx)) ? V_CHAR_ONE : V_CHAR_ZERO;
 
 				p_binary[ind] = NULL_CHARACTER;
 			}
@@ -130,35 +181,43 @@ char *to_binary(const char char_char, char **p_to_binary)
 
 /*****************************************************************
  ** Function:		void view_outcomes			**
- **				(const char char_char,		**
+ **				(const char *str_Message,	**
+ **				 const char char_value,		**
  **				 const char *p_to_binary,	**
- **				 const size_t bit_counter).	**
- ** Explanation:	Display on screen the ascii, hexadecimal**
- **			octal and binary values of a given	**
- **			character.				**
- ** Input Parms:	const char char_char,			**
+ **				 const size_t count_to_binary,	**
+ **				 const size_t bit_counter,	**
+ **				 const size_t count_bits).	**
+ ** Explanation:	Display on screen the ascii,		**
+ **			hexadecimal, octal and binary values	**
+ **			of a given character.			**
+ ** Input Parms:	const char *str_Message,		**
+ **			const char char_value,			**
  **			const char *p_to_binary,		**
- **			const size_t bit_counter.		**
+ **			const size_t count_to_binary,		**
+ **			const size_t bit_counter,		**
+ **			const size_t count_bits.		**
  ** Output Parms:	None.					**
  ** Result:		View an informative chain on the screen.**
 *****************************************************************/
-void view_outcomes(const char char_char, const char *p_to_binary, const size_t bit_counter)
+void view_outcomes(const char *str_Message, const char char_value, const char *p_to_binary, const size_t count_to_binary, const size_t bit_counter, const size_t count_bits)
 	{
-		printf("\n");
+		printf("\n%s\n", str_Message);
 		printf("+===|====+===|====+===|====+===|====+\n");
 		printf("+     Information data segments.    +\n");
 		printf("+===|====+===|====+===|====+===|====+\n");
 		printf("| > Pointer:\t[%p].\n", (void *) (p_to_binary));
 		printf("| > Value:\t[%c].\n", *p_to_binary);
 		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("| + Char:\t[%c].\n", char_char);
+		printf("| + Char:\t[%c].\n", char_value);
 		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("| - Ascii:\t[%u].\n", char_char);
-		printf("| - Decimal:\t[%d].\n", char_char);
-		printf("| - Hexa:\t[%x].\n", char_char);
-		printf("| - Octal:\t[%o].\n", char_char);
+		printf("| - Ascii:\t[%u].\n", char_value);
+		printf("| - Decimal:\t[%d].\n", char_value);
+		printf("| - Hexa:\t[%x].\n", char_value);
+		printf("| - Octal:\t[%o].\n", char_value);
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("| * Binary:\t{%s}.\n", p_to_binary);
+		printf("| * Length:\t[%ld].\n", count_to_binary);
+		printf("| * Count:\t[%ld].\n", count_bits);
 		printf("| * Bits on:\t[%ld].\n", bit_counter);
 		printf("+===|====+===|====+===|====+===|====+\n");
 	}
@@ -186,18 +245,22 @@ void view_outcomes(const char char_char, const char *p_to_binary, const size_t b
 *****************************************************************/
 int main()
 	{
-		/* Initial declaration of work variables. */
-		char char_char = NULL_CHARACTER;
-		char char_reflected = NULL_CHARACTER;
-
 		/* Preliminary working variables. */
-		char *p_to_binary_char = NULL;
-		char *p_to_binary_char_reflected = NULL;
+		char char_value = NULL_CHARACTER;
+		char char_value_reflected = NULL_CHARACTER;
 
 		/* Calculation incidence pointers. */
+		char *p_to_binary_value = NULL;
+		char *p_to_binary_value_reflected = NULL;
+
+		/* Initial declaration of work variables. */
 		int int_key = V_ZERO;
-		size_t bit_counter_char = V_ZERO;
-		size_t bit_counter_char_reflected = V_ZERO;
+		size_t bit_counter_value = V_ZERO;
+		size_t bit_counter_value_reflected = V_ZERO;
+		size_t count_bits_value = V_ZERO;
+		size_t count_bits_value_reflected = V_ZERO;
+		size_t count_to_binary_value = V_ZERO;
+		size_t count_to_binary_value_reflected = V_ZERO;
 
 		/*------------------------------------------------
 		 * Mirror a given character by inverting its	--
@@ -207,46 +270,40 @@ int main()
 		printf("+ Mirror a given character by inverting. +\n");
 		printf("+===|====+===|====+===|====+===|====+====+\n");
 		printf("Enter a unique valid character: ");
-		scanf("%c%*c", &char_char);
+		scanf("%c%*c", &char_value);
 
 		/* View conversion results. */
-		if ((p_to_binary_char = to_binary(char_char, &p_to_binary_char)))
+		if ((p_to_binary_value = to_binary(char_value, &p_to_binary_value, &count_to_binary_value)))
 			{
 				/* Obtaining the binary information of a pressed character. */
-				printf("\n");
-				printf("+---|----+---|----+---|----+---|----+----+\n");
-				printf("| Regular Binary Value of [%c] is [%d].\n", char_char, char_char);
-				printf("+---|----+---|----+---|----+---|----+----+\n");
+				bit_counter_value = bit_counter_on(char_value);
+				count_bits_value = get_bits(char_value, V_SEVEN, V_EIGHT);
+				view_outcomes("Regular Binary Value.", char_value, p_to_binary_value, count_to_binary_value, bit_counter_value, count_bits_value);
 
 				/* View results and free up memory. */
-				bit_counter_char = bit_counter_on(char_char);
-				view_outcomes(char_char, p_to_binary_char, bit_counter_char);
-
 				int_key = get_response("Press ENTER key to continue...", &int_key);
-				free(p_to_binary_char);
+				free(p_to_binary_value);
 			}
 		else
-			fprintf(stderr, "Insufficient memory space to hold the binary string of characters.");
+			fprintf(stderr, "\nInsufficient memory space to hold the binary string of characters.\n");
 
 		/* View conversion results with reversed character. */
-		char_reflected = (char) THROWBACKCHAR((int) char_char);
-		if ((p_to_binary_char_reflected = to_binary(char_reflected, &p_to_binary_char_reflected)))
+		char_value_reflected = (char) THROWBACKCHAR(char_value);
+		int_key = V_ZERO;
+
+		if ((p_to_binary_value_reflected = to_binary(char_value_reflected, &p_to_binary_value_reflected, &count_to_binary_value_reflected)))
 			{
 				/* Obtaining the binary information of a pressed character. */
-				printf("\n");
-				printf("+---|----+---|----+---|----+---|----+----+\n");
-				printf("| Turned around binary outcome of [%c] is [%d].\n", char_reflected, char_reflected);
-				printf("+---|----+---|----+---|----+---|----+----+\n");
+				bit_counter_value_reflected = bit_counter_on(char_value_reflected);
+				count_bits_value_reflected = get_bits(char_value_reflected, V_SEVEN, V_EIGHT);
+				view_outcomes("Turned around binary outcome.", char_value_reflected, p_to_binary_value_reflected, count_to_binary_value_reflected, bit_counter_value_reflected, count_bits_value_reflected);
 
 				/* View results and free up memory. */
-				bit_counter_char_reflected = bit_counter_on(char_reflected);
-				view_outcomes(char_reflected, p_to_binary_char_reflected, bit_counter_char_reflected);
-
 				int_key = get_response("Press ENTER key to continue...", &int_key);
-				free(p_to_binary_char_reflected);
+				free(p_to_binary_value_reflected);
 			}
 		else
-			fprintf(stderr, "Insufficient memory space to hold the binary string of characters.");
+			fprintf(stderr, "\nInsufficient memory space to hold the binary string of characters.\n");
 
 		return V_ZERO;
 	}
