@@ -1,7 +1,7 @@
 /**************** Generator of a character string. ***************
  ** Source Code:	Gets.c					**
  ** Author:		Gustavo Islas Gálvez.			**
- ** Creation Date:	Saturday, December 30, 2023.		**
+ ** Creation Date:	Wednesday, December 31, 2025.		**
  ** Purpose:		This program attempts to replace the	**
  **			old C function 'gets' with a custom	**
  **			prototype that takes as arguments the	**
@@ -57,20 +57,23 @@
  ****************************************************************/
 char *gets(size_t *const ptr_szt_idx_chars, const size_t szt_num_chars, const char chr_exit_char)
 	{
+		/* Preliminary working variables. */
 		char chr_OneCharGetty = NULL_CHARACTER;
 		char *ptr_chr_String_New = NULL;
 		size_t szt_idx_chars = V_ZERO;
 
-		if (ptr_chr_String_New = (char *) malloc((szt_num_chars + V_ONE) * sizeof(char)))
+		/* Validation cycle to assign captured characters to the allocated memory space. */
+		if ((ptr_chr_String_New = (char *) malloc((szt_num_chars + V_ONE) * sizeof(char))))
 			{
-				while ( ((chr_OneCharGetty = getchar()) != chr_exit_char) && (szt_idx_chars < szt_num_chars) )
+				while (((chr_OneCharGetty = (char) getchar()) != chr_exit_char && (chr_OneCharGetty != EOF)) && (szt_idx_chars < szt_num_chars))
 					ptr_chr_String_New[szt_idx_chars++] = chr_OneCharGetty;
 
 				*(ptr_chr_String_New + szt_idx_chars) = NULL_CHARACTER;
 			}
 		else
-			printf("Insufficient memory space to accommodate the character pointer...\n");
+			fprintf(stderr, "Insufficient memory space to accommodate the character pointer...\n");
 
+		/* Return both the number of characters placed and the maximum storage length of the string. */
 		if (ptr_szt_idx_chars) *ptr_szt_idx_chars = szt_idx_chars;
 		return (ptr_chr_String_New);
 	}
@@ -107,7 +110,7 @@ int main()
 		printf("+  Generator of a character string.     +\n");
 		printf("+===|====+===|====+===|====+===|====+===|\n");
 		printf("String length : ");
-		scanf("%ld%*c", &szt_num_chars);
+		scanf("%zu%*c", &szt_num_chars);
 
 		/* The character string is captured, character by character, into a dynamic buffer. */
 		printf("Text string   : ");
@@ -120,21 +123,24 @@ int main()
 		printf("+===|====+===|====+===|====+===|====+===|\n");
 		printf("|       Target output variables.        |\n");
 		printf("+---|----+---|----+---|----+---|----+---|\n");
-		printf("| Lenght  : [%p] = [%ld].\n", &szt_idx_chars, szt_idx_chars);
-		printf("| Maximum : [%p] = [%ld].\n", &szt_num_chars, szt_num_chars);
+		printf("| Length  : [%p] = [%ld].\n", (void *) (&szt_idx_chars), szt_idx_chars);
+		printf("| Maximum : [%p] = [%ld].\n", (void *) (&szt_num_chars), szt_num_chars);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("|     Target mapping string pointer.    |\n");
 		printf("+---|----+---|----+---|----+---|----+---|\n");
-		printf("| Address : [%p].\n", &ptr_chr_String_New);
+		printf("| Address : [%p].\n", (void *) (&ptr_chr_String_New));
 		printf("| Pointer : [%p].\n", ptr_chr_String_New);
 		printf("| Content : [%s].\n", ptr_chr_String_New);
-		printf("+---|----+---|----+---|----+---|----+---|\n");
-		printf("+Dump the string character by character.+\n");
-		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("+===|====+===|====+===|====+===|====+===|\n");
 
 		/* Character-by-character dump of the created character string. */
+		printf("\n");
+		printf("+===|====+===|====+===|====+===|====+===|\n");
+		printf("|Dump the string character by character.|\n");
+		printf("+===|====+===|====+===|====+===|====+===|\n");
+
 		for (size_t szt_idx_char = V_ZERO; szt_idx_char < szt_idx_chars; szt_idx_char++)
-			printf("#[%ld]\t:\t[%p]\t=\t[%c].\n", szt_idx_char, ptr_chr_String_New + szt_idx_char, *(ptr_chr_String_New + szt_idx_char));
+			printf("#:[%ld]\t:\t[%p]\t=\t[%c].\n", szt_idx_char, ptr_chr_String_New + szt_idx_char, *(ptr_chr_String_New + szt_idx_char));
 
 		printf("[%ld] Obtained output results.\n", szt_idx_chars);
 
