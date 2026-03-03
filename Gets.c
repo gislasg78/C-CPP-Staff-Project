@@ -23,7 +23,8 @@
 #define NULL_CHARACTER		'\0'
 
 /*****************************************************************
- ** Function:		char *gets (size_t *const		**
+ ** Function:		char *gets (char **ptr_chr_String,	**
+ **				size_t *const			**
  **					ptr_szt_idx_chars,	**
  **				const size_t szt_num_chars,	**
  **				const char chr_exit_char).	**
@@ -44,10 +45,12 @@
  **			At the end of the character string,	**
  **			at position 'szt_num_chars' a null	**
  **			character is placed or added.		**
- ** Input Parms:	size_t *const ptr_szt_idx_chars,	**
+ ** Input Parms:	char **ptr_chr_String,			**
+ **			size_t *const ptr_szt_idx_chars,	**
  **			const size_t szt_num_chars,		**
  **			const char chr_exit_char.		**
- ** Output Parms:	size_t *const ptr_szt_idx_chars.	**
+ ** Output Parms:	char **ptr_chr_String,			**
+ **			size_t *const ptr_szt_idx_chars.	**
  ** Result:		Function 'gets' that returns a string of**
  **			characters, whose characters are in a	**
  **			contiguous region of memory defined by	**
@@ -55,7 +58,7 @@
  **			They occupy or use local scope work	**
  **			variables within the function.		**
  ****************************************************************/
-char *gets(size_t *const ptr_szt_idx_chars, const size_t szt_num_chars, const char chr_exit_char)
+char *gets(char **ptr_chr_String, size_t *const ptr_szt_idx_chars, const size_t szt_num_chars, const char chr_exit_char)
 	{
 		/* Preliminary working variables. */
 		char chr_OneCharGetty = NULL_CHARACTER;
@@ -71,9 +74,10 @@ char *gets(size_t *const ptr_szt_idx_chars, const size_t szt_num_chars, const ch
 				*(ptr_chr_String_New + szt_idx_chars) = NULL_CHARACTER;
 			}
 		else
-			fprintf(stderr, "Insufficient memory space to accommodate the character pointer...\n");
+			perror("Insufficient memory space to accommodate the character pointer...");
 
 		/* Return both the number of characters placed and the maximum storage length of the string. */
+		if (ptr_chr_String) *ptr_chr_String = ptr_chr_String_New;
 		if (ptr_szt_idx_chars) *ptr_szt_idx_chars = szt_idx_chars;
 		return (ptr_chr_String_New);
 	}
@@ -114,38 +118,41 @@ int main()
 
 		/* The character string is captured, character by character, into a dynamic buffer. */
 		printf("Text string   : ");
-		ptr_chr_String_New = gets(&szt_idx_chars, szt_num_chars, CARRIAGE_RETURN);
+		if ((ptr_chr_String_New = gets(&ptr_chr_String_New, &szt_idx_chars, szt_num_chars, CARRIAGE_RETURN)))
+			{
+				/* Obtaining the exact number of characters with which the string will be created. */
+				printf("\n");
+				printf("+===|====+===|====+===|====+===|====+===|\n");
+				printf("| General information about the string. |\n");
+				printf("+===|====+===|====+===|====+===|====+===|\n");
+				printf("|       Target output variables.        |\n");
+				printf("+---|----+---|----+---|----+---|----+---|\n");
+				printf("| Length  : [%p] = [%ld].\n", (void *) (&szt_idx_chars), szt_idx_chars);
+				printf("| Maximum : [%p] = [%ld].\n", (void *) (&szt_num_chars), szt_num_chars);
+				printf("+---|----+---|----+---|----+---|----+---|\n");
+				printf("|     Target mapping string pointer.    |\n");
+				printf("+---|----+---|----+---|----+---|----+---|\n");
+				printf("| Address : [%p].\n", (void *) (&ptr_chr_String_New));
+				printf("| Pointer : [%p].\n", ptr_chr_String_New);
+				printf("| Content : [%s].\n", ptr_chr_String_New);
+				printf("+===|====+===|====+===|====+===|====+===|\n");
 
-		/* Obtaining the exact number of characters with which the string will be created. */
-		printf("\n");
-		printf("+===|====+===|====+===|====+===|====+===|\n");
-		printf("| General information about the string. |\n");
-		printf("+===|====+===|====+===|====+===|====+===|\n");
-		printf("|       Target output variables.        |\n");
-		printf("+---|----+---|----+---|----+---|----+---|\n");
-		printf("| Length  : [%p] = [%ld].\n", (void *) (&szt_idx_chars), szt_idx_chars);
-		printf("| Maximum : [%p] = [%ld].\n", (void *) (&szt_num_chars), szt_num_chars);
-		printf("+---|----+---|----+---|----+---|----+---|\n");
-		printf("|     Target mapping string pointer.    |\n");
-		printf("+---|----+---|----+---|----+---|----+---|\n");
-		printf("| Address : [%p].\n", (void *) (&ptr_chr_String_New));
-		printf("| Pointer : [%p].\n", ptr_chr_String_New);
-		printf("| Content : [%s].\n", ptr_chr_String_New);
-		printf("+===|====+===|====+===|====+===|====+===|\n");
+				/* Character-by-character dump of the created character string. */
+				printf("\n");
+				printf("+===|====+===|====+===|====+===|====+===|\n");
+				printf("|Dump the string character by character.|\n");
+				printf("+===|====+===|====+===|====+===|====+===|\n");
 
-		/* Character-by-character dump of the created character string. */
-		printf("\n");
-		printf("+===|====+===|====+===|====+===|====+===|\n");
-		printf("|Dump the string character by character.|\n");
-		printf("+===|====+===|====+===|====+===|====+===|\n");
+				for (size_t szt_idx_char = V_ZERO; szt_idx_char < szt_idx_chars; szt_idx_char++)
+				printf("#:[%ld]\t:\t[%p]\t=\t[%c].\n", szt_idx_char, ptr_chr_String_New + szt_idx_char, *(ptr_chr_String_New + szt_idx_char));
 
-		for (size_t szt_idx_char = V_ZERO; szt_idx_char < szt_idx_chars; szt_idx_char++)
-			printf("#:[%ld]\t:\t[%p]\t=\t[%c].\n", szt_idx_char, ptr_chr_String_New + szt_idx_char, *(ptr_chr_String_New + szt_idx_char));
+				printf("[%ld] Obtained output results.\n", szt_idx_chars);
 
-		printf("[%ld] Obtained output results.\n", szt_idx_chars);
-
-		/* Free memory area that stores the pointer to the created character string. */
-		free(ptr_chr_String_New);
+				/* Free memory area that stores the pointer to the created character string. */
+				free(ptr_chr_String_New);
+			}
+		else
+			fprintf(stderr, "Insufficient memory space to accommodate the character pointer...\n");
 
 		return (V_ZERO);
 	}
