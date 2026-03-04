@@ -1,13 +1,13 @@
-/********************** Reflect a character **********************
- ** Source Code:	ReflectChar.c				**
+/*********************** Reflect a integer. **********************
+ ** Source Code:	ReflectInt.c				**
  ** Author:		Gustavo Islas Gálvez.			**
  ** Creation Date:	Thursday, December 31, 2026.		**
- ** Purpose:		Display an entered character and	**
+ ** Purpose:		Display an entered integer and		**
  **			reflects it in such a way that it	**
  **			reverses the order of the bits		**
- **			(bit #0 becomes bit #7, bit #1 becomes	**
- **			bit #6, bit #2 becomes bit #5) and	**
- **			so on, successively.			**
+ **			(bit # 0 becomes bit # 31, bit # 1	**
+ **			becomes	bit # 30, bit # 2 becomes	**
+ **			bit # 29) and so on, successively.	**
 *****************************************************************/
 /* C Standard Libraries. */
 #include <limits.h>
@@ -19,7 +19,7 @@
 #define V_CHAR_ONE	'\x31'
 #define	V_OCTAL_ONE	01
 
-#define	V_EIGHT		8
+/* Work Numeric Symbolic Constants. */
 #define V_ONE		1
 #define V_SEVEN		7
 #define V_ZERO		0
@@ -28,26 +28,58 @@
 #define	CARRIAGE_RETURN	'\n'
 #define NULL_CHARACTER	'\0'
 
-/* Macro 'ThrowBackChar' reverses a character with bit offset. */
-#define	THROWBACKCHAR(c)	((((c)&0x01) << 7) | (((c)&0x02) << 5)	| \
-				(((c)&0x04) << 3)  | (((c)&0x08) << 1)	| \
-				(((c)&0x10) >> 1)  | (((c)&0x20) >> 3)	| \
-				(((c)&0x40) >> 5)  | (((c)&0x80) >> 7))
+/* Macro 'THROWBACKINT' reverses a 32-bit signed int */
+#define THROWBACKINT(i)	( \
+	(int)( \
+	((((size_t)(i)) & 0x00000001u) << 31) | \
+	((((size_t)(i)) & 0x00000002u) << 29) | \
+	((((size_t)(i)) & 0x00000004u) << 27) | \
+	((((size_t)(i)) & 0x00000008u) << 25) | \
+	((((size_t)(i)) & 0x00000010u) << 23) | \
+	((((size_t)(i)) & 0x00000020u) << 21) | \
+	((((size_t)(i)) & 0x00000040u) << 19) | \
+	((((size_t)(i)) & 0x00000080u) << 17) | \
+	((((size_t)(i)) & 0x00000100u) << 15) | \
+	((((size_t)(i)) & 0x00000200u) << 13) | \
+	((((size_t)(i)) & 0x00000400u) << 11) | \
+	((((size_t)(i)) & 0x00000800u) << 9)  | \
+	((((size_t)(i)) & 0x00001000u) << 7)  | \
+	((((size_t)(i)) & 0x00002000u) << 5)  | \
+	((((size_t)(i)) & 0x00004000u) << 3)  | \
+	((((size_t)(i)) & 0x00008000u) << 1)  | \
+	((((size_t)(i)) & 0x00010000u) >> 1)  | \
+	((((size_t)(i)) & 0x00020000u) >> 3)  | \
+	((((size_t)(i)) & 0x00040000u) >> 5)  | \
+	((((size_t)(i)) & 0x00080000u) >> 7)  | \
+	((((size_t)(i)) & 0x00100000u) >> 9)  | \
+	((((size_t)(i)) & 0x00200000u) >> 11) | \
+	((((size_t)(i)) & 0x00400000u) >> 13) | \
+	((((size_t)(i)) & 0x00800000u) >> 15) | \
+	((((size_t)(i)) & 0x01000000u) >> 17) | \
+	((((size_t)(i)) & 0x02000000u) >> 19) | \
+	((((size_t)(i)) & 0x04000000u) >> 21) | \
+	((((size_t)(i)) & 0x08000000u) >> 23) | \
+	((((size_t)(i)) & 0x10000000u) >> 25) | \
+	((((size_t)(i)) & 0x20000000u) >> 27) | \
+	((((size_t)(i)) & 0x40000000u) >> 29) | \
+	((((size_t)(i)) & 0x80000000u) >> 31)   \
+	) \
+)
 
 /*****************************************************************
  ** Function:		size_t bit_counter_on			**
- **				(const char char_value).	**
+ **				(const int int_value).		**
  ** Explanation:	Counts the bits that have a given value	**
  **			set to one.				**
- ** Input Parms:	const char char_value.			**
+ ** Input Parms:	const int int_value.			**
  ** Output Parms:	None.					**
  ** Result:		bitcount: count 1 bits in 'x'.		**
  ****************************************************************/
-size_t bit_counter_on(const char char_value)
+size_t bit_counter_on(const int int_value)
 	{
 		/* Preliminary working variables. */
 		size_t b = V_ZERO;
-		unsigned char x = (unsigned char) char_value;
+		unsigned int x = (unsigned int) int_value;
 
 		/* Bit counting cycle. */
 		for (b = V_ZERO; x > V_ZERO; x >>= V_ONE)
@@ -59,28 +91,28 @@ size_t bit_counter_on(const char char_value)
 
 /*****************************************************************
  ** Function:		size_t get_bits(			**
- **				const char char_value,		**
+ **				const int int_value,		**
  **				const size_t szt_position,	**
  **				const size_t szt_quantity_bits).**
  ** Explanation:	Returns the value corresponding to the	**
  **			requested 'bits' of the received value.	**
- ** Input Parms:	const char char_value,			**
+ ** Input Parms:	const int int_value,			**
  **			const char szt_position,		**
  **			const char szt_quantity_bits.		**
  ** Output Parms:	None.					**
  ** Result:		getbits: get 'n' bits from position 'p'.**
  ****************************************************************/
-size_t get_bits(const char char_value, const size_t szt_position, const size_t szt_quantity_bits)
+size_t get_bits(const int int_value, const size_t szt_position, const size_t szt_quantity_bits)
 	{
 		/* Preliminary working variables. */
 		size_t mask = V_ZERO;
 		size_t shift = V_ZERO;
-		size_t x = (size_t) char_value;
+		size_t x = (size_t) int_value;
 
 		/* Handle error or avoid negative shift. */
 		if (szt_quantity_bits)
-			if (szt_quantity_bits <= sizeof(char) * V_EIGHT)
-				if (szt_position + V_ONE >= szt_quantity_bits)
+			if (szt_quantity_bits <= sizeof(int) * CHAR_BIT)
+				if ((szt_position + V_ONE) >= szt_quantity_bits)
 					{
 						shift = szt_position + V_ONE - szt_quantity_bits;
 						mask = ((size_t) V_ONE << szt_quantity_bits) - V_ONE;
@@ -137,38 +169,38 @@ int get_response(const char *str_Message, int *p_int_key_pressed)
 
 /*****************************************************************
  ** Function:		char *to_binary				**
- **				(const char char_value,		**
+ **				(const int int_value,		**
  **				  char **p_to_binary,		**
- **				  size_t *p_count_to_binary).	**
+ **				  size_t *p_count_to_p_binary).	**
  ** Explanation:	Reverses bit order of an entered	**
- **			character, such that bit 0 becomes bit 7**
+ **			integer, such that bit 0 becomes bit 7	**
  **			bit 1 becomes bit 6, bit 2 becomes bit 5**
  **			and so on.				**
- ** Input Parms:	const int char_value,			**
+ ** Input Parms:	const int int_value,			**
  **			char **p_to_binary.			**
  ** Output Parms:	char **p_to_binary,			**
- **			size_t *p_count_to_binary.		**
- **			size_t *p_count_to_binary.		**
+ **			size_t *p_count_to_p_binary.		**
  ** Result:		Pointer to character with sequence of	**
  **			binary digits.				**
  ****************************************************************/
-char *to_binary(const char char_value, char **p_to_binary, size_t *p_count_to_binary)
+char *to_binary(const int int_value, char **p_to_binary, size_t *p_count_to_p_binary)
 	{
 		/* Preliminary working variables. */
 		char *p_binary = NULL;
 		int idx = V_ZERO, ind = V_ZERO;
 
 		/* Initial declaration of work variables. */
-		int int_size_type = (int) ((sizeof(char) * V_EIGHT) - V_ONE);
-		size_t szt_size_of_type = (sizeof(char) * V_EIGHT) + V_ONE;
+		int int_size_type = (int) ((sizeof(int) * CHAR_BIT) - V_ONE);
+		size_t szt_size_of_type = (sizeof(int) * CHAR_BIT) + V_ONE;
 
 		/* Assignment of the memory pointer and filling with the corresponding converted bits. */
-		*p_count_to_binary = V_ZERO;
+		*p_count_to_p_binary = V_ZERO;
 
+		/* First, verify if the dynamic character pointer can be created with the binary number. */
 		if ((p_binary = (char *) calloc(szt_size_of_type, sizeof(char))))
 			{
-				for (idx = int_size_type, ind = V_ZERO; idx >= V_ZERO && ind <= int_size_type; idx--, ind++, (*p_count_to_binary)++)
-					*(p_binary + ind) = ((size_t) char_value & ((size_t) V_ONE << idx)) ? V_CHAR_ONE : V_CHAR_ZERO;
+				for (idx = int_size_type, ind = V_ZERO; idx >= V_ZERO && ind <= int_size_type; idx--, ind++, (*p_count_to_p_binary)++)
+					*(p_binary + ind) = ((size_t) int_value & ((size_t) V_ONE << idx)) ? V_CHAR_ONE : V_CHAR_ZERO;
 
 				p_binary[ind] = NULL_CHARACTER;
 			}
@@ -181,26 +213,26 @@ char *to_binary(const char char_value, char **p_to_binary, size_t *p_count_to_bi
 	}
 
 /*****************************************************************
- ** Function:		void view_outcomes			**
- **				(const char *str_Message,	**
- **				 const char char_value,		**
- **				 const char *p_to_binary,	**
- **				 const size_t count_to_binary,	**
- **				 const size_t bit_counter,	**
- **				 const size_t count_bits).	**
+ ** Function:		void view_outcomes(			**
+ **				const char *str_Message,	**
+ **				const int int_value,		**
+ **				const char *p_to_binary,	**
+ **				const size_t count_to_p_binary,	**
+ **				const size_t bit_counter,	**
+ **				const size_t count_bits).	**
  ** Explanation:	Display on screen the ascii,		**
  **			hexadecimal, octal and binary values	**
  **			of a given character.			**
  ** Input Parms:	const char *str_Message,		**
- **			const char char_value,			**
+ **			const int int_value,			**
  **			const char *p_to_binary,		**
- **			const size_t count_to_binary,		**
+ **			const size_t count_to_p_binary,		**
  **			const size_t bit_counter,		**
  **			const size_t count_bits.		**
  ** Output Parms:	None.					**
  ** Result:		View an informative chain on the screen.**
 *****************************************************************/
-void view_outcomes(const char *str_Message, const char char_value, const char *p_to_binary, const size_t count_to_binary, const size_t bit_counter, const size_t count_bits)
+void view_outcomes(const char *str_Message, const int int_value, const char *p_to_binary, const size_t count_to_p_binary, const size_t bit_counter, const size_t count_bits)
 	{
 		printf("\n%s\n", str_Message);
 		printf("+===|====+===|====+===|====+===|====+\n");
@@ -209,18 +241,16 @@ void view_outcomes(const char *str_Message, const char char_value, const char *p
 		printf("| > Pointer:\t[%p].\n", (void *) (p_to_binary));
 		printf("| > Value:\t[%c].\n", *p_to_binary);
 		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("| + Char:\t[%c].\n", char_value);
+		printf("| + Decimal:\t[%d].\n", int_value);
+		printf("| + Hexa:\t[%x].\n", int_value);
+		printf("| + Octal:\t[%o].\n", int_value);
 		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("| + Decimal:\t[%d].\n", char_value);
-		printf("| + Hexa:\t[%x].\n", char_value);
-		printf("| + Octal:\t[%o].\n", char_value);
-		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("| - Inversed:\t[%d].\n", !char_value);
-		printf("| - Reversed:\t[%d].\n", ~char_value);
-		printf("| - Unsigned:\t[%u].\n", char_value);
+		printf("| - Inversed:\t[%d].\n", !int_value);
+		printf("| - Reversed:\t[%d].\n", ~int_value);
+		printf("| - Unsigned:\t[%u].\n", int_value);
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("| * Binary:\t{%s}.\n", p_to_binary);
-		printf("| * Length:\t[%ld].\n", count_to_binary);
+		printf("| * Length:\t[%ld].\n", count_to_p_binary);
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("| < Bits on:\t[%ld].\n", bit_counter);
 		printf("| < Bits cnt:\t[%ld].\n", count_bits);
@@ -251,39 +281,39 @@ void view_outcomes(const char *str_Message, const char char_value, const char *p
 int main()
 	{
 		/* Preliminary working variables. */
-		char char_value = NULL_CHARACTER;
-		char char_value_reflected = NULL_CHARACTER;
-
-		/* Calculation incidence pointers. */
 		char *p_to_binary_value = NULL;
 		char *p_to_binary_value_reflected = NULL;
 
-		/* Initial declaration of work variables. */
+		/* Calculation incidence pointers. */
 		int int_key = V_ZERO;
+		int int_value = NULL_CHARACTER;
+		int int_value_reflected = NULL_CHARACTER;
+
+		/* Initial declaration of work variables. */
 		size_t bit_counter_value = V_ZERO;
 		size_t bit_counter_value_reflected = V_ZERO;
 		size_t count_bits_value = V_ZERO;
 		size_t count_bits_value_reflected = V_ZERO;
-		size_t count_to_binary_value = V_ZERO;
-		size_t count_to_binary_value_reflected = V_ZERO;
+		size_t count_to_p_binary_value = V_ZERO;
+		size_t count_to_p_binary_value_reflected = V_ZERO;
 
 		/*------------------------------------------------
 		 * Mirror a given character by inverting its	--
 		 * extreme half-bits.				--
 		 *----------------------------------------------*/
 		printf("+===|====+===|====+===|====+===|====+====+\n");
-		printf("+ Mirror a given character by inverting. +\n");
+		printf("+  Mirror a given integer by inverting.  +\n");
 		printf("+===|====+===|====+===|====+===|====+====+\n");
-		printf("Enter a unique valid character: ");
-		scanf("%c%*c", &char_value);
+		printf("Enter a unique valid integer: ");
+		scanf("%d%*c", &int_value);
 
 		/* View conversion results. */
-		if ((p_to_binary_value = to_binary(char_value, &p_to_binary_value, &count_to_binary_value)))
+		if ((p_to_binary_value = to_binary(int_value, &p_to_binary_value, &count_to_p_binary_value)))
 			{
 				/* Obtaining the binary information of a pressed character. */
-				bit_counter_value = bit_counter_on(char_value);
-				count_bits_value = get_bits(char_value, (sizeof(char) * CHAR_BIT) - V_ONE, sizeof(char) * CHAR_BIT);
-				view_outcomes("Regular Binary Value.", char_value, p_to_binary_value, count_to_binary_value, bit_counter_value, count_bits_value);
+				bit_counter_value = bit_counter_on(int_value);
+				count_bits_value = get_bits(int_value, (sizeof(int) * CHAR_BIT) - V_ONE, sizeof(int) * CHAR_BIT);
+				view_outcomes("Regular Binary Value.", int_value, p_to_binary_value, count_to_p_binary_value, bit_counter_value, count_bits_value);
 
 				/* View results and free up memory. */
 				int_key = get_response("Press ENTER key to continue...", &int_key);
@@ -293,15 +323,15 @@ int main()
 			fprintf(stderr, "\nInsufficient memory space to hold the binary string of characters.\n");
 
 		/* View conversion results with reversed character. */
-		char_value_reflected = (char) THROWBACKCHAR(char_value);
 		int_key = V_ZERO;
+		int_value_reflected = THROWBACKINT(int_value);
 
-		if ((p_to_binary_value_reflected = to_binary(char_value_reflected, &p_to_binary_value_reflected, &count_to_binary_value_reflected)))
+		if ((p_to_binary_value_reflected = to_binary(int_value_reflected, &p_to_binary_value_reflected, &count_to_p_binary_value_reflected)))
 			{
 				/* Obtaining the binary information of a pressed character. */
-				bit_counter_value_reflected = bit_counter_on(char_value_reflected);
-				count_bits_value_reflected = get_bits(char_value_reflected, (sizeof(char) * CHAR_BIT) - V_ONE, sizeof(char) * CHAR_BIT);
-				view_outcomes("Turned around binary outcome.", char_value_reflected, p_to_binary_value_reflected, count_to_binary_value_reflected, bit_counter_value_reflected, count_bits_value_reflected);
+				bit_counter_value_reflected = bit_counter_on(int_value_reflected);
+				count_bits_value_reflected = get_bits(int_value_reflected, (sizeof(int) * CHAR_BIT) - V_ONE, sizeof(int) * CHAR_BIT);
+				view_outcomes("Turned around binary outcome.", int_value_reflected, p_to_binary_value_reflected, count_to_p_binary_value_reflected, bit_counter_value_reflected, count_bits_value_reflected);
 
 				/* View results and free up memory. */
 				int_key = get_response("Press ENTER key to continue...", &int_key);
