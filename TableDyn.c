@@ -32,9 +32,9 @@ int main()
 		printf("\nMemory assigning spaces...\n");
 
 		/* The initial space is first allocated for the number of two-dimensional arrays to be stored. */
-		matrix = (int ***) malloc (n_matrix * sizeof(int **));		//Space is generated for the first dimension of a three-dimensional array.
-		matrix_rxc = (int **) malloc (n_matrix * sizeof(int *));	//Space is generated for the first dimension of a two-dimensional array.
-		matrix_r = (int *) malloc (n_matrix * sizeof(int));		//Space is generated for the only dimension of a one-dimensional array.
+		matrix = (int ***) malloc ((size_t)n_matrix * sizeof(int **));		//Space is generated for the first dimension of a three-dimensional array.
+		matrix_rxc = (int **) malloc ((size_t)n_matrix * sizeof(int *));	//Space is generated for the first dimension of a two-dimensional array.
+		matrix_r = (int *) malloc ((size_t)n_matrix * sizeof(int));		//Space is generated for the only dimension of a one-dimensional array.
 
 		/* General loading cycles of dynamic pointer pointers. */
 		printf("\nCapturing values...\n");
@@ -47,8 +47,8 @@ int main()
 				scanf("%d", &matrix_r[m]);	//Number of matrices to store.
 
 				/* Dynamic memory is allocated for each matrix to know the number of rows it will have. */
-				matrix[m] = (int **) malloc (matrix_r[m] * sizeof(int *));	//Number of rows for each matrix.
-				matrix_rxc[m] = (int *) malloc (matrix_r[m] * sizeof(int));
+				matrix[m] = (int **) malloc ((size_t)matrix_r[m] * sizeof(int *));	//Number of rows for each matrix.
+				matrix_rxc[m] = (int *) malloc ((size_t)matrix_r[m] * sizeof(int));
 
 				for (int r = V_ZERO; r < matrix_r[m]; r++)	//Cycle through each row of each matrix.
 					{
@@ -57,7 +57,7 @@ int main()
 						scanf("%d", &matrix_rxc[m][r]);	//Number of rows for each matrix created.
 
 						/* Dynamic memory is allocated for each row of the matrix in concurrent turn to know the number of columns it will have. */
-						matrix[m][r] = (int *) malloc (matrix_rxc[m][r] * sizeof(int));	//Number of columns per row of each matrix.
+						matrix[m][r] = (int *) malloc ((size_t)matrix_rxc[m][r] * sizeof(int));	//Number of columns per row of each matrix.
 
 						for (int c = V_ZERO; c < matrix_rxc[m][r]; c++)	//Cycle through each column of each row of each matrix.
 							{
