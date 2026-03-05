@@ -31,9 +31,9 @@ int main()
 		std::cout << std::endl << "Memory assigning spaces..." << std::endl;
 
 		/* The initial space is first allocated for the number of two-dimensional arrays to be stored. */
-		matrix = new int** [n_matrix];		//Space is generated for the first dimension of a three-dimensional array.
-		matrix_rxc = new int* [n_matrix];	//Space is generated for the first dimension of a two-dimensional array.
-		matrix_r = new int [n_matrix];		//Space is generated for the only dimension of a one-dimensional array.
+		matrix = new int** [n_matrix]();	//Space is generated for the first dimension of a three-dimensional array.
+		matrix_rxc = new int* [n_matrix]();	//Space is generated for the first dimension of a two-dimensional array.
+		matrix_r = new int [n_matrix]();	//Space is generated for the only dimension of a one-dimensional array.
 
 		/* General loading cycles of dynamic pointer pointers. */
 		std::cout << std::endl << "Capturing values..." << std::endl;
@@ -46,8 +46,8 @@ int main()
 				std::cin >> matrix_r[m];	//Number of matrices to store.
 
 				/* Dynamic memory is allocated for each matrix to know the number of rows it will have. */
-				matrix[m] = new int* [matrix_r[m]];	//Number of rows for each matrix.
-				matrix_rxc[m] = new int [matrix_r[m]];
+				matrix[m] = new int* [matrix_r[m]]();	//Number of rows for each matrix.
+				matrix_rxc[m] = new int [matrix_r[m]]();
 
 				for (int r = V_ZERO; r < matrix_r[m]; r++)	//Cycle through each row of each matrix.
 					{
@@ -56,7 +56,7 @@ int main()
 						std::cin >> matrix_rxc[m][r];	//Number of rows for each matrix created.
 
 						/* Dynamic memory is allocated for each row of the matrix in concurrent turn to know the number of columns it will have. */
-						matrix[m][r] = new int [matrix_rxc[m][r]];	//Number of columns per row of each matrix.
+						matrix[m][r] = new int [matrix_rxc[m][r]]();	//Number of columns per row of each matrix.
 
 						for (int c = V_ZERO; c < matrix_rxc[m][r]; c++)	//Cycle through each column of each row of each matrix.
 							{
