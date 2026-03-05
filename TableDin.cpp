@@ -14,8 +14,8 @@ int main()
 
 		std::cout << std::endl << "Memory assigning spaces..." << std::endl;
 
-		matrix = new int* [static_cast<size_t>(rows)];
-		matrix_r = new int [static_cast<std::size_t>(rows)];
+		matrix = new int* [static_cast<size_t>(rows)]();
+		matrix_r = new int [static_cast<std::size_t>(rows)]();
 
 		std::cout << std::endl << "Capturing values..." << std::endl;
 		for (int row = V_ZERO; row < rows; row++)
@@ -24,7 +24,7 @@ int main()
 				std::cout << "How many columns will it generate for it and its respective row? : ";
 				std::cin >> matrix_r[row];
 
-				matrix[row] = new int[matrix_r[row]];
+				matrix[row] = new int[matrix_r[row]]();
 
 				for (int col = V_ZERO; col < matrix_r[row]; col++)
 					{
