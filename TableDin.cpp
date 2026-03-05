@@ -14,8 +14,8 @@ int main()
 
 		std::cout << std::endl << "Memory assigning spaces..." << std::endl;
 
-		matrix = new int* [rows];
-		matrix_r = new int [rows];
+		matrix = new int* [static_cast<size_t>(rows)];
+		matrix_r = new int [static_cast<std::size_t>(rows)];
 
 		std::cout << std::endl << "Capturing values..." << std::endl;
 		for (int row = V_ZERO; row < rows; row++)
@@ -35,8 +35,9 @@ int main()
 			}
 		std::cout << "[" << items << "] Captured input values." << std::endl;
 
+		items = V_ZERO;
 		std::cout << std::endl << "Displaying captured values..." << std::endl;
-		for (int row = V_ZERO, items = V_ZERO; row < rows; row++)
+		for (int row = V_ZERO; row < rows; row++)
 			{
 				std::cout << "Row: [" << row + V_ONE << "] of [" << rows << "]." << std::endl;
 
@@ -52,10 +53,10 @@ int main()
 
 		std::cout << std::endl << "Deleting values..." << std::endl;
 		for (int row = V_ZERO; row < rows; row++)
-			delete matrix[row];
+			delete[] matrix[row];
 
-		delete matrix_r;
-		delete matrix;
+		delete[] matrix_r;
+		delete[] matrix;
 
 		std::cout << std::endl << "[End of assignment!]." << std::endl;
 
