@@ -113,11 +113,11 @@ int main()
 					{
 						std::cout << "\tDeallocating memory for its row #: [" << r + V_ONE << "] of [" << matrix_r[m] << "]." << std::endl;
 
-						delete matrix[m][r];	//Deallocate each row of each matrix.
+						delete [] matrix[m][r];	//Deallocate each row of each matrix.
 					}
 
-				delete matrix[m];	//Deallocate each array.
-				delete matrix_rxc[m];
+				delete [] matrix[m];	//Deallocate each array.
+				delete [] matrix_rxc[m];
 
 				std::cout << std::endl;
 			}
