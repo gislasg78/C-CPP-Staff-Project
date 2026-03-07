@@ -20,9 +20,10 @@ class InfiniteCounter
 
 		public:
 			InfiniteCounter()		{this->counter++; this->capture();}
-			InfiniteCounter(const int &start, const int &step, const int &stop) : start(start), step(step), stop(stop) {}
+			InfiniteCounter(const int &start, const int &step, const int &stop) : start(start), step(step), stop(stop) {(*this).counter++;}
 			InfiniteCounter(InfiniteCounter &ic_object)
 				{
+					this->counter++;
 					this->start = ic_object.getStart();
 					this->step = ic_object.getStep();
 					this->stop = ic_object.getStop();
