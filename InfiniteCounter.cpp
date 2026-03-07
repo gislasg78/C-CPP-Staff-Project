@@ -21,11 +21,12 @@ class InfiniteCounter
 		public:
 			InfiniteCounter()		{this->counter++; this->capture();}
 			InfiniteCounter(int &start, int &step, int &stop) : start(start), step(step), stop(stop) {}
-			InfiniteCounter(InfiniteCounter &infinitecounterobject)
+			InfiniteCounter(InfiniteCounter &ic_object)
 				{
-					this->start = infinitecounterobject.getStart();
-					this->step = infinitecounterobject.getStep();
-					this->stop = infinitecounterobject.getStop();
+					this->start = ic_object.getStart();
+					this->step = ic_object.getStep();
+					this->stop = ic_object.getStop();
+					this->value = ic_object.getValue();
 				}
 
 			virtual void capture()
@@ -53,7 +54,19 @@ class InfiniteCounter
 			int& getValue()			{return (*this).value;}
 
 			int operator()()
-				{return (this->value >= this->start && this->value < this->stop) ? this->value += this->step : (*this).value = (*this).start + V_ONE;}
+				{
+					int value = this->value;
+
+					if (this->value >= this->start && this->value <= this->stop)
+						this->value += this->step;
+					else
+						{
+							value = this->value = this->start;
+							this->value += this->step;
+						}
+
+					return value;
+				}
 
 			virtual void print()
 				{
