@@ -13,14 +13,14 @@ class InfiniteCounter
 			int start = V_ZERO;
 			int step = V_ZERO;
 			int stop = V_ZERO;
-			int value = start;
+			int value = V_ZERO;
 
 		protected:
 			static int counter;
 
 		public:
 			InfiniteCounter()		{this->counter++; this->capture();}
-			InfiniteCounter(int &start, int &step, int &stop) : start(start), step(step), stop(stop) {}
+			InfiniteCounter(const int &start, const int &step, const int &stop) : start(start), step(step), stop(stop) {}
 			InfiniteCounter(InfiniteCounter &ic_object)
 				{
 					this->start = ic_object.getStart();
@@ -51,7 +51,6 @@ class InfiniteCounter
 			int& getStop()			{return this->stop;}
 
 			const int& getValue()	const	{return (*this).value;}
-			int& getValue()			{return (*this).value;}
 
 			int operator()()
 				{
