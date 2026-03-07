@@ -37,7 +37,7 @@ class TenInt
 					else
 						std::cout << std::endl << "Error! The index to be queried is outside the range between: [" << V_ZERO << "] and: [" << V_TEN << "]." << std::endl;
 
-					return (values[index]);
+					return ((index >= V_ZERO && index < V_TEN) ? values[index] : values[V_ZERO]);
 				}
 	};
 
