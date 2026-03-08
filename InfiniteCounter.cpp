@@ -174,5 +174,10 @@ int main()
 		my_counter.print();
 		my_counter.enter_a_pause("Press the ENTER key to continue...");
 
+		/* Notices of termination of this program. */
+		std::cout << std::endl;
+		std::cout << "Done!" << '\n';
+		std::cout << "This program has ended.\n";
+
 		return V_ZERO;
 	}
