@@ -66,7 +66,7 @@ int main()
 				ten[idx] = response;
 			}
 		std::cout << std::endl << "[" << counter << "] Output results generated." << std::endl;
-		ten.enter_a_pause("Press ENTER key to continue...");
+		ten.enter_a_pause("Press the ENTER key to continue...");
 
 		/* Loop that displays each value loaded into the class in its internal array. */
 		counter = V_ZERO;
@@ -75,14 +75,14 @@ int main()
 				int outcome = ten[idx];
 
 				std::cout << "Content captured from the index: [" << counter++ + V_ONE << "] of: [" << V_TEN << "] is: [" << outcome << "]." << std::endl;
-				ten.enter_a_pause("Press ENTER key to continue...");
+				ten.enter_a_pause("Press the ENTER key to continue...");
 			}
 		std::cout << std::endl << "[" << counter << "] Output results generated." << std::endl;
-		TenInt::enter_a_pause("Press ENTER key to continue...");
+		TenInt::enter_a_pause("Press the ENTER key to continue...");
 
 		/* Notices of termination of this program. */
 		std::cout << std::endl;
-		std::cout << "Done!." << '\n';
+		std::cout << "Done!" << '\n';
 		std::cout << "This program has ended.\n";
 
 		return V_ZERO;
