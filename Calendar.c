@@ -1,19 +1,20 @@
 /* This program aims to provide general processing
    with various implemented date and time functions. */
 
-//Standard work libraries.
+/* Standard work libraries. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
-//Macro definition to encapsulate time.
+/* Macro definition to encapsulate time. */
 #define SECONDS(hour, minute, second)	(((hour) * V_3600) + ((minute) * V_60) + (second))
 
-//Symbolic work constants.
+/* Symbolic work constants. */
 #define	CARRIAGE_RETURN	'\n'
 #define	NULL_CHARACTER	'\0'
 
-//Numerical symbolic constants
+/* Numerical symbolic constants. */
 #define	V_8		8
 #define	V_11		11
 #define	V_15		15
@@ -35,7 +36,7 @@
 #define	V_451		451
 #define	V_3600		3600
 
-//Numerical constants of ordinary work.
+/* Numerical constants of ordinary work. */
 #define	V_FIVE		5
 #define	V_FOUR		4
 #define	V_ONE		1
@@ -46,7 +47,7 @@
 #define	V_TWO		2
 #define	V_ZERO		0
 
-//List of types with the options to try for this Calendar program.
+/* List of types with the options to try for this Calendar program. */
 enum enm_CalendarOptions
 	{
 		enm_CO_set_start_date = V_ONE,
@@ -54,6 +55,7 @@ enum enm_CalendarOptions
 		enm_CO_maximum_month_days,
 		enm_CO_day_of_week,
 		enm_CO_get_easter_sunday,
+		enm_CO_get_system_datetime_now,
 		enm_CO_capture_date,
 		enm_CO_capture_time,
 		enm_CO_difference_between_dates,
@@ -70,12 +72,12 @@ enum enm_CalendarOptions
 		enm_CO_exit_menu
 	};
 
-//Global table of the names of the days of the week.
+/* Global table of the names of the days of the week. */
 static char day_name[V_SEVEN][V_TEN] = {"Saturday", "Sunday", "Monday",
 					"Tuesday", "Wednesday", "Thursday",
 					"Friday"};
 
-//Global table of the names of the months of the year.
+/* Global table of the names of the months of the year. */
 struct months_table
 	{
 		int month_numberofmonth;
@@ -90,7 +92,7 @@ struct months_table
 		 {10, "October", 31}, {11, "November", 30}, {12, "December", 31}
 		};
 
-//Structure of the zodiac signs.
+/* Structure of the zodiac signs. */
 struct zodiac_signs
 	{
 		int zodiac_number;
@@ -117,7 +119,7 @@ struct zodiac_signs
 		};
 
 
-//Prototype functions.
+/* Prototype functions. */
 int DaysInMonth(const int year, const int month);
 int DayOfWeek(const int day, int month, int year);
 int DifferenceBetweenDates(int start_first_day, int start_first_month, int start_first_year, int first_day, int first_month, int first_year, int start_second_day, int start_second_month, int start_second_year, int second_day, int second_month, int second_year);
@@ -141,6 +143,7 @@ int ValidTime(const int hour, const int minute, const int second);
 void WriteDate(const int day, const int month, const int year);
 void WriteTime(const int hour, const int minute, const int second);
 int ZodiacSign(const int day, const int month, int *zodiac_number, char *zodiac_name, int *start_zodiac_day, int *start_zodiac_month, int *finish_zodiac_day, int *finish_zodiac_month);
+
 
 //Main function.
 int main()
@@ -469,20 +472,21 @@ int Menu(int *start_day, int *start_month, int *start_year, int *day, int *month
 				printf("| [03]. Get max month days.|\n");
 				printf("| [04]. Get day of week.   |\n");
 				printf("| [05]. Get easter sunday. |\n");
-				printf("| [06]. Capture a date.    |\n");
-				printf("| [07]. Capture a time.    |\n");
-				printf("| [08]. Dates Difference.  |\n");
-				printf("| [09]. Times Difference.  |\n");
-				printf("| [10]. Obtain julian year.|\n");
-				printf("| [11]. Check leap year.   |\n");
-				printf("| [12]. Check sum of days. |\n");
-				printf("| [13]. Check sum of secs. |\n");
-				printf("| [14]. Validate date.     |\n");
-				printf("| [15]. Validate time.     |\n");
-				printf("| [16]. Write date.        |\n");
-				printf("| [17]. Write time.        |\n");
-				printf("| [18]. Zodiac sign.       |\n");
-				printf("| [19]. Exit this menu.    |\n");
+				printf("| [06]. Get system date.   |\n");
+				printf("| [07]. Capture a date.    |\n");
+				printf("| [08]. Capture a time.    |\n");
+				printf("| [09]. Dates Difference.  |\n");
+				printf("| [10]. Times Difference.  |\n");
+				printf("| [11]. Obtain julian year.|\n");
+				printf("| [12]. Check leap year.   |\n");
+				printf("| [13]. Check sum of days. |\n");
+				printf("| [14]. Check sum of secs. |\n");
+				printf("| [15]. Validate date.     |\n");
+				printf("| [16]. Validate time.     |\n");
+				printf("| [17]. Write date.        |\n");
+				printf("| [18]. Write time.        |\n");
+				printf("| [19]. Zodiac sign.       |\n");
+				printf("| [20]. Exit this menu.    |\n");
 				printf("+===+====+===+====+===+====+\n");
 				printf("Option: ");
 
@@ -501,6 +505,9 @@ int Menu(int *start_day, int *start_month, int *start_year, int *day, int *month
 int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int *month, int *year, int *start_hour, int *start_minute, int *start_second, int *hour, int *minute, int *second, enum enm_CalendarOptions enm_CO_myOption, int *counter, char *zodiac_name)
 	{
 		/* Preliminary working variables. */
+		clock_t clock_ticks_latency = V_ZERO;
+		time_t t = V_ZERO;
+
 		int start_first_day = V_ZERO, start_first_month = V_ZERO, start_first_year = V_ZERO;
 		int first_day = V_ZERO, first_month = V_ZERO, first_year = V_ZERO;
 		int start_second_day = V_ZERO, start_second_month = V_ZERO, start_second_year = V_ZERO;
@@ -530,6 +537,7 @@ int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int 
 		int finish_zodiac_day = V_ZERO;
 		int finish_zodiac_month = V_ZERO;
 
+		/* Count the number of transactions performed. */
 		if (enm_CO_myOption != enm_CO_exit_menu) (*counter)++;	//Record successful transactions.
 
 		/* Case selection as a bifurcative validation structure. */
@@ -537,6 +545,7 @@ int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int 
 			{
 				case enm_CO_set_start_date:
 					EntryDate(start_day, start_month, start_year);
+
 					if (ValidDate(*start_day, *start_month, *start_year))
 						{
 							printf("\nValid date: [%04d-%02d-%02d]. OK!\n", *start_year, *start_month, *start_day);
@@ -550,6 +559,7 @@ int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int 
 
 				case enm_CO_set_start_time:
 					EntryTime(start_hour, start_minute, start_second);
+
 					if (ValidTime(*start_hour, *start_minute, *start_second))
 						{
 							printf("\nValid time: [%02d:%02d:%02d]. OK!\n", *start_hour, *start_minute, *start_second);
@@ -563,6 +573,7 @@ int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int 
 
 				case enm_CO_maximum_month_days:
 					days_in_month = DaysInMonth(*year, *month);
+
 					printf("\nTotal Days in Month.\n");
 					printf("+ Year  : [%04d].\n", *year);
 					printf("+ Month : {%02d} = [%s].\n", *month, months_array[*month - V_ONE].month_nameofmonth);
@@ -574,15 +585,30 @@ int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int 
 
 					printf("\nWeek Day Name of the captured date.\n");
 					printf("[%s], [%04d-%02d-%02d].\n", day_name[day_of_week], *year, *month, *day);
+					printf("%s, %s %02d, %04d.\n", day_name[day_of_week], months_array[*month - V_ONE].month_nameofmonth, *day, *year);
 					break;
 
 				case enm_CO_get_easter_sunday:
 					EasterSunday(*year, &month_easter, &day_easter);
+
 					printf("\nEaster Sunday.\n");
 					printf("+ Date  : [%04d/%02d/%02d].\n", *year, *month, *day);
 					printf("- Year  : {%d}.\n", *year);
 					printf("- Month : {%d} = [%s].\n", month_easter, months_array[month_easter - V_ONE].month_nameofmonth);
 					printf("- Day   : [%d].\n", day_easter);
+					break;
+
+				case enm_CO_get_system_datetime_now:
+					clock_ticks_latency = clock();
+					t = time(&t);
+
+					printf("\nCurrent system date and time.\n");
+					printf("+ Date: [%s].\n", __DATE__);
+					printf("+ Time: [%s].\n", __TIME__);
+					printf("\n* January 1th, 1970. *\n");
+					printf("+ Seconds since: [%ld].\n", t);
+					printf("+ Ticks Latency: [%ld].\n", clock_ticks_latency);
+					printf("\n%s", ctime(&t));
 					break;
 
 				case enm_CO_capture_date:
@@ -613,13 +639,11 @@ int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int 
 
 				case enm_CO_difference_between_dates:
 					difference_between_dates = DifferenceBetweenDates(start_first_day, start_first_month, start_first_year, first_day, first_month, first_year, start_second_year, start_second_month, start_second_day, second_day, second_month, second_year);
-
 					printf("\nDifference between dates: [%d].\n", difference_between_dates);
 					break;
 
 				case enm_CO_difference_between_times:
 					difference_between_times = DifferenceBetweenTimes(start_first_hour, start_first_minute, start_first_second, first_hour, first_minute, first_second, start_second_hour, start_second_minute, start_second_second, second_hour, second_minute, second_second);
-
 					printf("\nDifference between times: [%d].\n", difference_between_times);
 					break;
 
@@ -896,12 +920,14 @@ int ValidTime(const int hour, const int minute, const int second)
 //Function that writes a correctly validated date.
 void WriteDate(const int day, const int month, const int year)
 	{
-		int d = V_ZERO;
+		int d = V_ZERO, quarter = V_ZERO;
 
 		d = DayOfWeek(day, month, year);
+		quarter = (month + V_TWO) / V_THREE;
 
 		printf("\nFormatted date.\n");
 		printf("[%04d/%02d/%02d].\n", year, month, day);
+		printf("Quarter: [%d].\n", quarter);
 		printf("%s, %s %02d, %04d.\n", day_name[d], months_array[month - V_ONE].month_nameofmonth, day, year);
 	}
 
@@ -932,14 +958,14 @@ int ZodiacSign(const int day, const int month, int *zodiac_number, char *zodiac_
 
 		for (idx = V_ZERO; idx < V_TWELVE; idx++)
 			{
-				int sm = zodiac_signs_array[idx].start_zodiac_month;
-				int sd = zodiac_signs_array[idx].start_zodiac_day;
-				int fm = zodiac_signs_array[idx].finish_zodiac_month;
-				int fd = zodiac_signs_array[idx].finish_zodiac_day;
+				int start_month = zodiac_signs_array[idx].start_zodiac_month;
+				int start_day = zodiac_signs_array[idx].start_zodiac_day;
+				int finish_month = zodiac_signs_array[idx].finish_zodiac_month;
+				int finish_day = zodiac_signs_array[idx].finish_zodiac_day;
 
-				if ((month == sm && day >= sd) ||
-				    (month == fm && day <= fd) ||
-				    (month > sm && month < fm))
+				if ((month == start_month && day >= start_day) ||
+				    (month == finish_month && day <= finish_day) ||
+				    (month > start_month && month < finish_month))
 					{
 						*zodiac_number = zodiac_signs_array[idx].zodiac_number;
 						zodiac_name = strcpy(zodiac_name, zodiac_signs_array[idx].zodiac_name);
