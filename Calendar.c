@@ -603,11 +603,12 @@ int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int 
 					t = time(&t);
 
 					printf("\nCurrent system date and time.\n");
-					printf("+ Date: [%s].\n", __DATE__);
-					printf("+ Time: [%s].\n", __TIME__);
+					printf("+ Date:\t[%s].\n", __DATE__);
+					printf("+ Time:\t[%s].\n", __TIME__);
 					printf("\n* January 1th, 1970. *\n");
-					printf("+ Seconds since: [%ld].\n", t);
-					printf("+ Ticks Latency: [%ld].\n", clock_ticks_latency);
+					printf("+ Seconds since:\t[%ld].\n", t);
+					printf("+ Ticks Latency:\t[%ld].\n", clock_ticks_latency);
+					printf("+ Clocks per tick:\t[%ld].\n", CLOCKS_PER_SEC);
 					printf("\n%s", ctime(&t));
 					break;
 
