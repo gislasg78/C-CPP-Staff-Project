@@ -1,7 +1,7 @@
 /************* Generate a random number every second. ************
  ** Source Code:	Timer.c					**
  ** Author:		Gustavo Islas Gálvez.			**
- ** Creation Date:	Saturday, December 30, 2023.		**
+ ** Creation Date:	Wednesday, December 31, 2025.		**
  ** Purpose:		The primary function of this program is	**
  **			to exploit different functions from the	**
  **			C library 'time.h' to simulate a timer	**
@@ -66,7 +66,7 @@ int main()
 
 		/* The 'time' function returns the number of seconds since zero hours on January 1, 1970. */
 		time_t t_tm_seconds = V_ZERO;
-		time(&t_tm_seconds);
+		t_tm_seconds = time(&t_tm_seconds);
 
 		/* ------------------------------------------------------------------------------------	--
 		 * The 'localtime' function converts the number d" seconds elapsed since 0 hours on	--
@@ -88,7 +88,7 @@ int main()
 		printf("|          PC Clock Cycles Program.          |\n");
 		printf("+---|----+---|----+---|----+---|----+---|----+\n");
 		printf("Values between [%d] and [%d]: ", V_LOWER_LIMIT_SECS, V_UPPER_LIMIT_SECS);
-		scanf("%ld", &szt_values_number);
+		scanf("%zu", &szt_values_number);
 
 		/* ------------------------------------------------------------------------------------	--
 		 * The 'ctime' function converts a time stored as a value of type 'time_t' into a	--
@@ -105,8 +105,8 @@ int main()
 		 * number is always the same for each execution						--
 		 * (corresponds to an argument of value 1).						--
 		 * ------------------------------------------------------------------------------------ */
-		szt_random_seed = (unsigned) (t_tm_seconds % V_RESIDUAL_MODULUS);
-		srand(szt_random_seed);
+		szt_random_seed = (unsigned int) (t_tm_seconds % V_RESIDUAL_MODULUS);
+		srand((unsigned int) szt_random_seed);
 
 		/* Verification that the value is in a given range. */
 		if (szt_values_number >= V_LOWER_LIMIT_SECS && szt_values_number <= V_UPPER_LIMIT_SECS)
@@ -120,7 +120,7 @@ int main()
 				printf("|       Seconds since January 1, 1970.       |\n");
 				printf("+---|----+---|----+---|----+---|----+---|----+\n");
 				printf("| Value:\t[%ld].\n", t_tm_seconds);
-				printf("| Address:\t[%p].\n", &t_tm_seconds);
+				printf("| Address:\t[%p].\n", (void *) &t_tm_seconds);
 				printf("+--------------------------------------------+\n");
 				printf("| Latency:\t[%ld].\n", clck_clock_ticks_latency);
 				printf("| Tickness:\t[%ld].\n", CLOCKS_PER_SEC);
@@ -155,7 +155,7 @@ int main()
 						/* Waiting time in clock cycles equal to one second. */
 						do
 							clck_clock_ticks_latency = clock() / CLOCKS_PER_SEC;
-						while (clck_clock_ticks_latency < szt_iter);
+						while (clck_clock_ticks_latency < (long int)(szt_iter));
 
 						/* A value is generated every second. */
 						printf ("# [%ld]:\t[%d].\n", szt_iter, rand());
