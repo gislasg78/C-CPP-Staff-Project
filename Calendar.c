@@ -11,41 +11,43 @@
 #define SECONDS(hour, minute, second)	(((hour) * V_3600) + ((minute) * V_60) + (second))
 
 /* Symbolic work constants. */
-#define	CARRIAGE_RETURN	'\n'
-#define	NULL_CHARACTER	'\0'
+#define	CARRIAGE_RETURN		'\n'
+#define	NULL_CHARACTER		'\0'
 
 /* Numerical symbolic constants. */
-#define	V_8		8
-#define	V_11		11
-#define	V_15		15
-#define	V_19		19
-#define V_22		22
-#define	V_23		23
-#define V_25		25
-#define	V_29		29
-#define	V_30		30
-#define V_31		31
-#define V_32		32
-#define	V_59		59
-#define	V_60		60
-#define	V_100		100
-#define	V_114		114
-#define	V_365		365
-#define	V_366		366
-#define V_400		400
-#define	V_451		451
-#define	V_3600		3600
+#define	V_8			8
+#define	V_11			11
+#define	V_15			15
+#define	V_19			19
+#define V_22			22
+#define	V_23			23
+#define V_25			25
+#define	V_29			29
+#define	V_30			30
+#define V_31			31
+#define V_32			32
+#define	V_59			59
+#define	V_60			60
+#define	V_100			100
+#define	V_114			114
+#define	V_365			365
+#define	V_366			366
+#define V_400			400
+#define	V_451			451
+#define	V_3600			3600
 
 /* Numerical constants of ordinary work. */
-#define	V_FIVE		5
-#define	V_FOUR		4
-#define	V_ONE		1
-#define	V_SEVEN		7
-#define	V_TEN		10
-#define	V_THREE		3
-#define V_TWELVE	12
-#define	V_TWO		2
-#define	V_ZERO		0
+#define	V_FIVE			5
+#define	V_FOUR			4
+#define	V_ONE			1
+#define	V_SEVEN			7
+#define	V_TEN			10
+#define	V_THREE			3
+#define V_TWELVE		12
+#define	V_TWO			2
+#define	V_ZERO			0
+
+#define	V_REFERENCE_YEAR	1900
 
 /* List of types with the options to try for this Calendar program. */
 enum enm_CalendarOptions
@@ -72,10 +74,14 @@ enum enm_CalendarOptions
 		enm_CO_exit_menu
 	};
 
-/* Global table of the names of the days of the week. */
+/* Global tables of the names of the days of the week. */
 static char day_name[V_SEVEN][V_TEN] = {"Saturday", "Sunday", "Monday",
 					"Tuesday", "Wednesday", "Thursday",
 					"Friday"};
+
+static char day_week[V_SEVEN][V_TEN] = {"Sunday", "Monday", "Tuesday",
+					"Wednesday", "Thursday", "Friday",
+					"Saturday"};
 
 /* Global table of the names of the months of the year. */
 struct months_table
@@ -124,6 +130,7 @@ int DaysInMonth(const int year, const int month);
 int DayOfWeek(const int day, int month, int year);
 int DifferenceBetweenDates(int start_first_day, int start_first_month, int start_first_year, int first_day, int first_month, int first_year, int start_second_day, int start_second_month, int start_second_year, int second_day, int second_month, int second_year);
 int DifferenceBetweenTimes(int start_first_hour, int start_first_minute, int start_first_second, int first_hour, int first_minute, int first_second, int start_second_hour, int start_second_minute, int start_second_second, int second_hour, int second_minute, int second_second);
+void GetCurrentDateTimeInfo();
 void EasterSunday(const int year, int *month_east, int *day_east);
 void EntryDate(int *day, int *month, int *year);
 void EntryTime(int *hour, int *minute, int *second);
@@ -378,6 +385,47 @@ void EntryTime(int *hour, int *minute, int *second)
 		*second = GetEntry(second);
 	}
 
+//Get Current Date and Time Information.
+void GetCurrentDateTimeInfo()
+	{
+		/* Preliminary working variables. */
+		clock_t clock_ticks_latency = clock();
+		time_t t_tm_seconds = time(&t_tm_seconds);
+		struct tm *strct_tm_dt = localtime(&t_tm_seconds);
+
+		printf("\n%s", ctime(&t_tm_seconds));
+
+		/* Display of date and time information. */
+		printf("+===|====+===|====+===|====+===|====+\n");
+		printf("|    Date and time information.     |\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
+		printf("| + File:\t[%s].\n", __FILE__);
+		printf("| + Date:\t[%s].\n", __DATE__);
+		printf("| + Time:\t[%s].\n", __TIME__);
+		printf("| + Line:\t[%d].\n", __LINE__);
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("|  Seconds since January 1th, 1970. |\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("| + Value:\t[%ld].\n", t_tm_seconds);
+		printf("| + Address:\t[%p].\n", (void *) &t_tm_seconds);
+		printf("+-----------------------------------+\n");
+		printf("| * Latency:\t[%ld].\n", clock_ticks_latency);
+		printf("| * Tickness:\t[%ld].\n", CLOCKS_PER_SEC);
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("|    PC date and time structure.    |\n");
+		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("| - DayYear:\t[%03d].\n", strct_tm_dt->tm_yday);
+		printf("| - DayWeek:\t[%d].\n", strct_tm_dt->tm_wday);
+		printf("+-----------------------------------+\n");
+		printf("| > %02d/%02d/%04d.\n", strct_tm_dt->tm_mday, strct_tm_dt->tm_mon + V_ONE, strct_tm_dt->tm_year + V_REFERENCE_YEAR);
+		printf("| > %04d/%02d/%02d.\n", strct_tm_dt->tm_year + V_REFERENCE_YEAR, strct_tm_dt->tm_mon + V_ONE, strct_tm_dt->tm_mday);
+		printf("| < %s, %s %02d, %04d.\n", day_week[strct_tm_dt->tm_wday], months_array[strct_tm_dt->tm_mon].month_nameofmonth, strct_tm_dt->tm_mday, strct_tm_dt->tm_year + V_REFERENCE_YEAR);
+		printf("| > %02d:%02d:%02d.\n", strct_tm_dt->tm_hour, strct_tm_dt->tm_min, strct_tm_dt->tm_sec);
+		printf("+===|====+===|====+===|====+===|====+\n\n");
+
+		GetResponse("Press ENTER key to continue...");
+	}
+
 //Validate a correct input from the keyboard.
 int GetEntry(int *data_value)
 	{
@@ -505,9 +553,6 @@ int Menu(int *start_day, int *start_month, int *start_year, int *day, int *month
 int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int *month, int *year, int *start_hour, int *start_minute, int *start_second, int *hour, int *minute, int *second, enum enm_CalendarOptions enm_CO_myOption, int *counter, char *zodiac_name)
 	{
 		/* Preliminary working variables. */
-		clock_t clock_ticks_latency = V_ZERO;
-		time_t t = V_ZERO;
-
 		int start_first_day = V_ZERO, start_first_month = V_ZERO, start_first_year = V_ZERO;
 		int first_day = V_ZERO, first_month = V_ZERO, first_year = V_ZERO;
 		int start_second_day = V_ZERO, start_second_month = V_ZERO, start_second_year = V_ZERO;
@@ -599,17 +644,7 @@ int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int 
 					break;
 
 				case enm_CO_get_system_datetime_now:
-					clock_ticks_latency = clock();
-					t = time(&t);
-
-					printf("\nCurrent system date and time.\n");
-					printf("+ Date:\t[%s].\n", __DATE__);
-					printf("+ Time:\t[%s].\n", __TIME__);
-					printf("\n* January 1th, 1970. *\n");
-					printf("+ Seconds since:\t[%ld].\n", t);
-					printf("+ Ticks Latency:\t[%ld].\n", clock_ticks_latency);
-					printf("+ Clocks per tick:\t[%ld].\n", CLOCKS_PER_SEC);
-					printf("\n%s", ctime(&t));
+					GetCurrentDateTimeInfo();
 					break;
 
 				case enm_CO_capture_date:
@@ -735,8 +770,10 @@ int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int 
 				case enm_CO_zodiac_sign:
 					if (ZodiacSign(*day, *month, &zodiac_number, zodiac_name, &start_zodiac_day, &start_zodiac_month, &finish_zodiac_day, &finish_zodiac_month))
 						{
+							day_of_week = DayOfWeek(*day, *month, *year);
+
 							printf("\nZodiac sign of the loaded date.\n");
-							printf("+ Date   : %s, %02d, %04d.\n", months_array[*month - V_ONE].month_nameofmonth, *day, *year);
+							printf("+ Date   : %s, %s %02d, %04d.\n", day_name[day_of_week], months_array[*month - V_ONE].month_nameofmonth, *day, *year);
 							printf("+ Number : [%02d].\n", zodiac_number);
 							printf("+ Name   : [%s].\n", zodiac_name);
 							printf("+ Starts : %s, %02d.\n",  months_array[start_zodiac_month - V_ONE].month_nameofmonth, start_zodiac_day);
