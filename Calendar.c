@@ -133,7 +133,7 @@ int DifferenceBetweenTimes(int start_first_hour, int start_first_minute, int sta
 void EasterSunday(const int year, int *month_east, int *day_east);
 void EntryDate(int *day, int *month, int *year);
 void EntryTime(int *hour, int *minute, int *second);
-long int GetCurrentDateTimeInfo(int *day, int *month, int *year, int *hour, int *minute, int *second);
+long int GetCurrentDateTimeInfo(int *julianyeardays, int *dayoftheweek, int *day, int *month, int *year, int *hour, int *minute, int *second);
 int GetEntry(int *data_value);
 int GetResponse(const char *str_Message);
 int JulianYear(const int day, const int month, const int year, int *days_rest);
@@ -386,7 +386,7 @@ void EntryTime(int *hour, int *minute, int *second)
 	}
 
 //Get Current Date and Time Information.
-long int GetCurrentDateTimeInfo(int *day, int *month, int *year, int *hour, int *minute, int *second)
+long int GetCurrentDateTimeInfo(int *julianyeardays, int *dayoftheweek, int *day, int *month, int *year, int *hour, int *minute, int *second)
 	{
 		/* Preliminary working variables. */
 		clock_t clock_ticks_latency = clock();
@@ -424,12 +424,15 @@ long int GetCurrentDateTimeInfo(int *day, int *month, int *year, int *hour, int 
 		printf("+===|====+===|====+===|====+===|====+\n");
 
 		/* The date and time values ​​are returned in the formal parameters of this function. */
-		*day = strct_tm_dt->tm_mday;
-		*month = strct_tm_dt->tm_mon + V_ONE;
-		*year = strct_tm_dt->tm_year + V_REFERENCE_YEAR;
-		*hour = strct_tm_dt->tm_hour;
-		*minute = strct_tm_dt->tm_min;
-		*second = strct_tm_dt->tm_sec;
+		if (julianyeardays) *julianyeardays = strct_tm_dt->tm_yday;
+		if (dayoftheweek) *dayoftheweek = strct_tm_dt->tm_wday;
+
+		if (day) *day = strct_tm_dt->tm_mday;
+		if (month) *month = strct_tm_dt->tm_mon + V_ONE;
+		if (year) *year = strct_tm_dt->tm_year + V_REFERENCE_YEAR;
+		if (hour) *hour = strct_tm_dt->tm_hour;
+		if (minute) *minute = strct_tm_dt->tm_min;
+		if (second) *second = strct_tm_dt->tm_sec;
 
 		GetResponse("Press ENTER key to continue...");
 
@@ -654,7 +657,7 @@ int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int 
 					break;
 
 				case enm_CO_get_system_datetime_now:
-					GetCurrentDateTimeInfo(day, month, year, hour, minute, second);
+					GetCurrentDateTimeInfo(&julian_year, &day_of_week, day, month, year, hour, minute, second);
 					break;
 
 				case enm_CO_capture_date:
