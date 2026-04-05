@@ -4,6 +4,7 @@
 #include <array>
 #include <deque>
 #include <iostream>
+#include <limits>
 #include <list>
 #include <map>
 #include <queue>
@@ -14,17 +15,29 @@
 #include <vector>
 
 /* Symbolic work constants. */
-#define	V_EIGHT	8
-#define	V_FIVE	5
-#define	V_FOUR	4
-#define	V_NINE	9
-#define V_ONE   1
-#define	V_SEVEN	7
-#define	V_SIX	6
-#define	V_TEN	10
-#define	V_THREE	3
-#define	V_TWO	2
-#define V_ZERO  0
+#define	CARRIAGE_RETURN	'\n'
+
+#define	V_EIGHT		8
+#define	V_FIVE		5
+#define	V_FOUR		4
+#define	V_NINE		9
+#define V_ONE		1
+#define	V_SEVEN		7
+#define	V_SIX		6
+#define	V_TEN		10
+#define	V_THREE		3
+#define	V_TWO		2
+#define V_ZERO		0
+
+/* Function that generates an automatic pause with a text message. */
+void getpause(const std::string& str_Message)
+	{
+		std::cout << str_Message;
+		std::cin.clear();
+		std::cin.get();
+		std::cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+	}
 
 //Main function.
 int main()
@@ -38,15 +51,15 @@ int main()
 		std::vector<int> myVector = {};
 		std::list<int> myList {};
 		std::deque<int> myDeq {};
-		std::stack<int> myS;
-		std::queue<int> myQ;
+		std::stack<int> myS {};
+		std::queue<int> myQ {};
 		std::priority_queue<int> myPQL = {};
 		std::priority_queue<int, std::vector<int>, std::greater<int>> myPQG {};
 		std::priority_queue<int, std::vector<int>, decltype(fn_cmp)> myPQ(fn_cmp);
-		std::set<int> myASet; std::set<int, std::greater<int>> myDSet;
-		std::unordered_set<int> myUSet;
-		std::map<int, int> myAMap; std::map<int, int, std::greater<int>> myDMap;
-		std::unordered_map<int, int> myUMap;
+		std::set<int> myASet; std::set<int, std::greater<int>> myDSet {};
+		std::unordered_set<int> myUSet {};
+		std::map<int, int> myAMap; std::map<int, int, std::greater<int>> myDMap {};
+		std::unordered_map<int, int> myUMap {};
 
 		/* Main header message. */
 		std::cout << "C++ STL library containers." << std::endl;
@@ -57,6 +70,7 @@ int main()
 		for (const int& item : myArray)
 			std::cout << "#: [" << counter++ << "]\t=\t{" << item << "}." << std::endl;
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		counter = V_ZERO;
 		std::cout << std::endl << "Array." << std::endl;
@@ -80,6 +94,7 @@ int main()
 				myUMap.insert(std::pair<int, int>(counter, *itc_myArray));
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		/* Display the vector. */
 		counter = V_ZERO;
@@ -87,6 +102,7 @@ int main()
 		for (const int& item : myVector)
 			std::cout << "#: [" << counter++ << "]\t=\t{" << item << "}." << std::endl;
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		counter = V_ZERO;
 		std::cout << std::endl << "Vector." << std::endl;
@@ -95,6 +111,7 @@ int main()
 				std::cout << "#: [" << counter++ << "]\t=\t{" << *itc_myVec << "}." << std::endl;
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		/* Display the list. */
 		counter = V_ZERO;
@@ -102,6 +119,7 @@ int main()
 		for (const int& item : myList)
 			std::cout << "#: [" << counter++ << "]\t=\t{" << item << "}." << std::endl;
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		counter = V_ZERO;
 		std::cout << std::endl << "List." << std::endl;
@@ -110,6 +128,7 @@ int main()
 				std::cout << "#: [" << counter++ << "]\t=\t{" << *itc_myList << "}." << std::endl;
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		/* Display the deque. */
 		counter = V_ZERO;
@@ -117,6 +136,7 @@ int main()
 		for (const int& item : myDeq)
 			std::cout << "#: [" << counter++ << "]\t=\t{" << item << "}." << std::endl;
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		counter = V_ZERO;
 		std::cout << std::endl << "Deque." << std::endl;
@@ -125,6 +145,7 @@ int main()
 				std::cout << "#: [" << counter++ << "]\t=\t{" << *itc_myDeq << "}." << std::endl;
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		/* Display the stack. */
 		counter = V_ZERO;
@@ -135,6 +156,7 @@ int main()
 				myS.pop();
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		/* Display the queue. */
 		counter = V_ZERO;
@@ -145,6 +167,7 @@ int main()
 				myQ.pop();
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		/* Display the first Priority Queue (from highest to lowest order). */
 		counter = V_ZERO;
@@ -155,6 +178,7 @@ int main()
 				myPQL.pop();
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		/* Display the second Priority Queue (from lowest to highest order). */
 		counter = V_ZERO;
@@ -165,6 +189,7 @@ int main()
 				myPQG.pop();
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		/* Display the third Priority Queue (from owner lambda function). */
 		counter = V_ZERO;
@@ -175,6 +200,7 @@ int main()
 				myPQ.pop();
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		/* Display the Set (Ascending). */
 		counter = V_ZERO;
@@ -182,6 +208,7 @@ int main()
 		for (const int& item : myASet)
 			std::cout << "#: [" << counter++ << "]\t=\t{" << item << "}." << std::endl;
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		counter = V_ZERO;
 		std::cout << std::endl << "Set (Ascending)." << std::endl;
@@ -190,6 +217,7 @@ int main()
 				std::cout << "#: [" << counter++ << "]\t=\t{" << *itc_myASet << "}." << std::endl;
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		/* Display the Set (Descending). */
 		counter = V_ZERO;
@@ -197,6 +225,7 @@ int main()
 		for (const int& item : myDSet)
 			std::cout << "#: [" << counter++ << "]\t=\t{" << item << "}." << std::endl;
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		counter = V_ZERO;
 		std::cout << std::endl << "Set (Descending)." << std::endl;
@@ -205,6 +234,7 @@ int main()
 				std::cout << "#: [" << counter++ << "]\t=\t{" << *itc_myDSet << "}." << std::endl;
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		/* Display the Unordered Set. */
 		counter = V_ZERO;
@@ -212,6 +242,7 @@ int main()
 		for (const int& item : myUSet)
 			std::cout << "#: [" << counter++ << "]\t=\t{" << item << "}." << std::endl;
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		counter = V_ZERO;
 		std::cout << std::endl << "Unordered Set." << std::endl;
@@ -220,6 +251,7 @@ int main()
 				std::cout << "#: [" << counter++ << "]\t=\t{" << *itc_myUSet << "}." << std::endl;
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		/* Display the Map (Ascending). */
 		counter = V_ZERO;
@@ -229,6 +261,7 @@ int main()
 				std::cout << "#: [" << counter++ << "]\t=\t{" << item.first << "} = [" << item.second << "]." << std::endl;
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		counter = V_ZERO;
 		std::cout << std::endl << "Map (Ascending)." << std::endl;
@@ -237,6 +270,7 @@ int main()
 				std::cout << "#: [" << counter++ << "]\t=\t{" << itc_myAMap->first << "} = [" << itc_myAMap->second << "]." << std::endl;
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		/* Display the Map (Descending). */
 		counter = V_ZERO;
@@ -246,6 +280,7 @@ int main()
 				std::cout << "#: [" << counter++ << "]\t=\t{" << item.first << "} = [" << item.second << "]." << std::endl;
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		counter = V_ZERO;
 		std::cout << std::endl << "Map (Descending)." << std::endl;
@@ -254,6 +289,7 @@ int main()
 				std::cout << "#: [" << counter++ << "]\t=\t{" << itc_myDMap->first << "} = [" << itc_myDMap->second << "]." << std::endl;
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		/* Display the Unordered Map. */
 		counter = V_ZERO;
@@ -263,6 +299,7 @@ int main()
 				std::cout << "#: [" << counter++ << "]\t=\t{" << item.first << "} = [" << item.second << "]." << std::endl;
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		counter = V_ZERO;
 		std::cout << std::endl << "Unordered Map." << std::endl;
@@ -271,6 +308,7 @@ int main()
 				std::cout << "#: [" << counter++ << "]\t=\t{" << itc_myUMap->first << "} = [" << itc_myUMap->second << "]." << std::endl;
 			}
 		std::cout << "[" << counter << "] Output generated results." << std::endl;
+		getpause("Press the ENTER key to continue...");
 
 		return V_ZERO;
 	}
