@@ -140,7 +140,7 @@ int main()
 
 		counter = V_ZERO;
 		std::cout << std::endl << "Deque." << std::endl;
-		for (std::deque<int>::const_iterator itc_myDeq = myDeq.cbegin(); itc_myDeq != myDeq.end(); itc_myDeq++)
+		for (std::deque<int>::const_iterator itc_myDeq = myDeq.cbegin(); itc_myDeq != myDeq.cend(); itc_myDeq++)
 			{
 				std::cout << "#: [" << counter++ << "]\t=\t{" << *itc_myDeq << "}." << std::endl;
 			}
