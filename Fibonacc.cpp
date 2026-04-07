@@ -70,6 +70,19 @@ struct My_Allocator
 				std::cout << '\n' << "- Releasing: [" << num_buckets << "] elements. -" << '\n';
 				::operator delete(ptr);
 			}
+
+		// Explicit construct: the analyzer understands that the object is initialized.
+		template <typename U, typename... Args>
+		void construct(U* ptr, Args&&... arguments)
+			{
+				::new ((void*)ptr) U(std::forward<Args>(arguments)...);
+			}
+
+		template <typename U>
+		void destroy(U* ptr)
+			{
+				ptr->~U();
+			}
 	};
 
 /* Function to take breaks when strictly necessary. */
@@ -559,7 +572,7 @@ int main()
 		std::cout << "+     Fibonacci Number Generator.   +" << std::endl;
 		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
 		std::cout << "Numbers of Fibonacci to generate from [" << V_LOWER_LIMIT_FIBO << "] to [" << V_UPPER_LIMIT_MAX << "]: ";
-		std::cin >> szt_Quantity;
+		szt_Quantity = enter_a_value<std::size_t>(&szt_Quantity);
 
 		/* Verification of the generation intervals of the Fibonacci series. */
 		if (szt_Quantity >= V_LOWER_LIMIT_FIBO && szt_Quantity <= V_UPPER_LIMIT_MAX)
