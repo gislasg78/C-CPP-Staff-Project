@@ -1,7 +1,7 @@
 /********* Arabic numerals to Roman numerals converter. **********
- ** Source Code:        RomainNm.c				**
- ** Author:             Gustavo Islas Gálvez.                   **
- ** Creation Date:      Wednesday, December 31, 2025.            **
+ ** Source Code:        RomainNumbers.c				**
+ ** Author:             Gustavo Islas Gálvez.			**
+ ** Creation Date:      Wednesday, December 31, 2025.		**
  ** Purpose:		The primary purpose of this program is	**
  **			to convert an Arabic numeral to a Roman	**
  **			numeral, understanding that Roman	**
@@ -58,7 +58,7 @@ const char str_Labels[V_FOUR][V_TEN][V_EIGHT] = {
  **			concatenated until the representation	**
  **			of an Arabic numeral to a Roman numeral	**
  **			is obtained.				**
- ** Input Parms:	const int int_value,			**
+ ** Input Parms:	int int_value,				**
  **			char buffer[].				**
  ** Output Parms:	char buffer[].				**
  ** Result:		In the name of the function itself, it	**
@@ -147,7 +147,7 @@ int int_toRomainNumber(int int_value, char buffer[])
 int main()
 	{
 		/* Initial declaration of work variables. */
-		static char buffer[V_LENGTH_BUFFER];
+		static char buffer[V_LENGTH_BUFFER] = {};
 		int int_counting_chars = V_ZERO;
 		int int_data = V_ZERO;
 
