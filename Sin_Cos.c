@@ -1,7 +1,7 @@
 /********** Trigonometric functions of sine and cosine. **********
  ** Source Code:	Sin_Cos.c	               		**
  ** Author:		Gustavo Islas Gálvez.			**
- ** Creation Date:	Saturday, November 30, 2024.		**
+ ** Creation Date:	Wednesday, December 31, 2025.		**
  ** Purpose:		Calculates through the Taylor series	**
  **			the trigonometric functions of sine and	**
  **			cosine according to a determined value	**
@@ -30,8 +30,8 @@
 #include <stdio.h>
 
 //Working Macros.
-#define EVEN_AND_ODD(value, addneutr)	(V_TWO * (value) + (addneutr))
-#define RADIANS(angle)			((angle) * V_PI / V_HALF_CIRC)
+#define EVEN_AND_ODD(value, addneutr)	((V_TWO) * (value) + (addneutr))
+#define RADIANS(angle)			((angle) * (V_PI) / (V_HALF_CIRC))
 
 //Numeric Symbolic Constants.
 #define V_HALF_CIRC			180.0
@@ -58,41 +58,41 @@ enum enm_fn_sin_cos
 
 /*****************************************************************
  ** Function:		double dbl_factorial			**
- **				(const size_t szt_num).		**
+ **				(const double dbl_num).		**
  ** Explanation:	Gets the value of the factorial of any	**
  **			integer by recursively multiplying it by**
  **			its descendant surrogate numbers.	**
- ** Input Parms:	const size_t szt_num.			**
+ ** Input Parms:	const double dbl_num.			**
  ** Output Parms:	None.					**
  ** Result:		Factorial from 'i' to 'n'.		**
 *****************************************************************/
-double dbl_factorial(const size_t szt_num)
+double dbl_factorial(const double dbl_num)
 	{
-		return (szt_num < V_ONE) ? V_ONE : (double) szt_num * dbl_factorial(szt_num + V_MINUS_ONE);
+		return (dbl_num < V_ONE) ? V_ONE : dbl_num * dbl_factorial(dbl_num + V_MINUS_ONE);
 	}
 
 /*****************************************************************
  ** Function:		double dbl_potency			**
  **				(const double dbl_base,		**
- **				 const size_t szt_exp).		**
+ **				 const double dbl_exp).		**
  ** Explanation:	Returns a base coefficient raised to the**
  **			specified power recursively by means of	**
  **			successive multiplications or divisions.**
  **								**
  **			This function can also be programmed	**
  **			recursively in the form:		**
- **				(int_exp > V_ZERO) ? 		**
+ **				(dbl_exp > V_ZERO) ? 		**
  **					dbl_potency(dbl_base,	**
- **					int_exp + V_MINUS_ONE)	**
+ **					dbl_exp + V_MINUS_ONE)	**
  **					* dbl_base :		**
- **				(int_exp == V_ZERO) ? V_ONE :	**
- **				(int_exp < V_ZERO) ?		**
+ **				(dbl_exp == V_ZERO) ? V_ONE :	**
+ **				(dbl_exp < V_ZERO) ?		**
  **					dbl_potency(dbl_base,	**
- **					int_exp + V_ONE)	**
+ **					dbl_exp + V_ONE)	**
  **					/ dbl_base :		**
  **					V_ONE;			**
  ** Input Parms:	const double dbl_base,			**
- **			const size_t szt_exp.			**
+ **			const double dbl_exp.			**
  ** Output Parms:	None.					**
  ** Result:		The base raised to a positive power	**
  **			results in a series of products in	**
@@ -101,9 +101,9 @@ double dbl_factorial(const size_t szt_num)
  **			series of quotients in sequence from 1	**
  **			to '-n' .				**
 *****************************************************************/
-double dbl_potency(const double dbl_base, const size_t szt_exp)
+double dbl_potency(const double dbl_base, const double dbl_exp)
 	{
-		return	(szt_exp < V_ONE) ? V_ONE : dbl_potency(dbl_base, szt_exp + V_MINUS_ONE) * dbl_base;
+		return (dbl_exp < V_ONE) ? V_ONE : dbl_potency(dbl_base, dbl_exp + V_MINUS_ONE) * dbl_base;
 	}
 
 /*****************************************************************
@@ -151,9 +151,9 @@ double sinus_cosinus(const double dbl_angle, const size_t szt_num_terms, const e
 		double dbl_outcome = V_ZERO;
 
 		for (size_t szt_idx = V_ZERO; szt_idx < szt_num_terms; szt_idx++)
-			dbl_outcome += dbl_potency(V_MINUS_ONE, szt_idx)
-			* dbl_potency(dbl_angle, EVEN_AND_ODD(szt_idx, enm_fn_addneutr))
-			/ dbl_factorial(EVEN_AND_ODD(szt_idx, enm_fn_addneutr));
+			dbl_outcome += dbl_potency((double)V_MINUS_ONE, (double)szt_idx)
+			* dbl_potency(dbl_angle, EVEN_AND_ODD((double)szt_idx, enm_fn_addneutr))
+			/ dbl_factorial(EVEN_AND_ODD((double)szt_idx, enm_fn_addneutr));
 
 		return dbl_outcome;
 	}
@@ -221,6 +221,7 @@ int main()
 		double dbl_tangent = V_ZERO;
 		double dbl_value = V_ZERO;
 
+		/* Initial header messages. */
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("+   Taylor Series Sine & Cosine.    +\n");
 		printf("+---|----+---|----+---|----+---|----+\n");
@@ -242,10 +243,10 @@ int main()
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("| PI Value\t: [%lf].\n", V_PI);
 		printf("| Terms\t\t: [%d].\n", V_NUM_TERMS);
-		printf("+--------+--------+--------+--------+\n");
+		printf("+---|----+---|----+---|----+---|----|\n");
 		printf("| Sine\t\t: [%lf].\n", dbl_sine);
 		printf("| Cosine\t: [%lf].\n", dbl_cosine);
-		printf("+---|----+---|----+---|----+---|----|\n");
+		printf("+---+----+---+----+---+----+---+----+\n");
 		printf("| Tangent\t: [%lf].\n", dbl_tangent);
 		printf("+===|====+===|====+===|====+===|====+\n");
 		printf("\n");
