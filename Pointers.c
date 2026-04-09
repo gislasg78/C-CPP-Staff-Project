@@ -1,7 +1,7 @@
 /****************** Use of pointers of pointers. *****************
  ** Source Code:	Pointers.c				**
  ** Author:		Gustavo Islas Gálvez.			**
- ** Creation Date:	Saturdar, December 30, 2023.          	**
+ ** Creation Date:	Wednesday, December 31, 2025.          	**
  ** Purpose:		This program makes examples of pointers	**
  **			pointing to other pointers with the	**
  **			address of a static integer variable	**
@@ -52,7 +52,7 @@ int main()
 		printf("+      Examples of use of pointers.     +\n");
 		printf("+===|====+===|====+===|====+===|====+===|\n");
 		printf("Enter an integer value:\n");
-		printf("Value [x] : ");
+		printf("+ Value [x] : ");
 		scanf("%d", &int_value);
 
 		/* ------------------------------------------------------------ **
@@ -66,18 +66,18 @@ int main()
 		printf("+===|====+===|====+===|====+===|====+===|\n");
 		printf("|         Source input variable.        |\n");
 		printf("+---|----+---|----+---|----+---|----+---|\n");
-		printf("| Value [x] : [%p] = [%d].\n", &int_value, int_value);
+		printf("| Value: [x] : [%p] = [%d].\n", (void *) &int_value, int_value);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("|        Source mapping pointer.        |\n");
 		printf("+---|----+---|----+---|----+---|----+---|\n");
-		printf("| Value [x] : [%p].\n", &ptr_int_value);
-		printf("| Value [x] : [%p] = [%d].\n", ptr_int_value, *ptr_int_value);
+		printf("| Value: [x] : [%p].\n", (void *) &ptr_int_value);
+		printf("| Value: [x] : [%p] = [%d].\n", (void *) ptr_int_value, *ptr_int_value);
 		printf("|---+----+---+----+---+----+---+----+---|\n");
 		printf("|    Source mapping double pointer.     |\n");
 		printf("+---|----+---|----+---|----+---|----+---|\n");
-		printf("| Value [x] : [%p].\n", &ptr_ptr_int_value);
-		printf("| Value [x] : [%p].\n", ptr_ptr_int_value);
-		printf("| Value [x] : [%p] = [%d].\n", *ptr_ptr_int_value, **ptr_ptr_int_value);
+		printf("| Value: [x] : [%p].\n", (void *) &ptr_ptr_int_value);
+		printf("| Value: [x] : [%p].\n", (void *) ptr_ptr_int_value);
+		printf("| Value: [x] : [%p] = [%d].\n", (void *) *ptr_ptr_int_value, **ptr_ptr_int_value);
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 
 		return V_ZERO;
