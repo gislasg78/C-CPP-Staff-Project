@@ -1,7 +1,7 @@
 /********* Arabic numerals to Roman numerals converter. **********
  ** Source Code:        RomainNm.c				**
  ** Author:             Gustavo Islas Gálvez.                   **
- ** Creation Date:      Saturday, December 30, 2023.            **
+ ** Creation Date:      Wednesday, December 31, 2025.            **
  ** Purpose:		The primary purpose of this program is	**
  **			to convert an Arabic numeral to a Roman	**
  **			numeral, understanding that Roman	**
@@ -14,27 +14,27 @@
  **			corresponding literal.			**
  ** +---!----+---!----+---!----++---!----+---!----+---!----+---	**
  **			Test Values:				**
- **				1767, 2024, 4617, 8678, 9999.	**
+ **				1767, 2026, 4617, 8678, 9999.	**
 *****************************************************************/
-//C Standard Libraries.
+/* C Standard Libraries. */
 #include <stdio.h>
 
-//C Standard Constants.
+/* C Standard Constants. */
 #define	V_EIGHT			8
 #define V_FOUR			4
 #define	V_TEN			10
 #define	V_ZERO			0
 
-//Storage character buffer length.
+/* Storage character buffer length. */
 #define	V_LENGTH_BUFFER		15
 
-//Working limit constants.
+/* Working limit constants. */
 #define	V_LOWER_LIMIT_QTY	0
 #define V_LOWER_LIMIT_RMNB	0
 #define	V_UPPER_LIMIT_QTY	9999
 #define V_UPPER_LIMIT_RMNB	3
 
-//Constant character literals with the value information in Romans.
+/* Constant character literals with the value information in Romans. */
 const char str_Labels[V_FOUR][V_TEN][V_EIGHT] = {
 	{"\0", "I\0", "II\0", "III\0", "IV\0", "V\0", "VI\0", "VII\0", "VIII\0", "IX\0"},
 	{"\0", "X\0", "XX\0", "XXX\0", "XL\0", "L\0", "LX\0", "LXX\0", "LXXX\0", "XC\0"},
@@ -58,7 +58,7 @@ const char str_Labels[V_FOUR][V_TEN][V_EIGHT] = {
  **			concatenated until the representation	**
  **			of an Arabic numeral to a Roman numeral	**
  **			is obtained.				**
- ** Input Parms:	int int_value,				**
+ ** Input Parms:	const int int_value,			**
  **			char buffer[].				**
  ** Output Parms:	char buffer[].				**
  ** Result:		In the name of the function itself, it	**
@@ -91,7 +91,7 @@ int int_toRomainNumber(int int_value, char buffer[])
 
 				/* Validate that a given digit is not zero. */
 				if (int_t_place_value_chart[int_idx])
-					printf("| Row: [%d], Column: [%d] = Value: [%s].\n", int_idx, int_t_place_value_chart[int_idx], str_Labels[int_idx][int_t_place_value_chart[int_idx]]);
+					printf("| (Row: [%d], Column: [%d]) = Value: [%s].\n", int_idx, int_t_place_value_chart[int_idx], str_Labels[int_idx][int_t_place_value_chart[int_idx]]);
 			}
 
 		/* Intermediation message. */
@@ -107,7 +107,7 @@ int int_toRomainNumber(int int_value, char buffer[])
 
 				/* Validate that a given digit is not zero. */
 				if (int_t_place_value_chart[int_ind])
-					printf("| Row: [%d], Column: [%d] = Value: [%s].\n", int_ind, int_t_place_value_chart[int_ind], str_Labels[int_ind][int_t_place_value_chart[int_ind]]);
+					printf("| (Row: [%d], Column: [%d]) = Value: [%s].\n", int_ind, int_t_place_value_chart[int_ind], str_Labels[int_ind][int_t_place_value_chart[int_ind]]);
 			}
 
 		/* Final closing information. */
@@ -118,6 +118,7 @@ int int_toRomainNumber(int int_value, char buffer[])
 		printf("| Romain:\t[%s].\n", buffer);
 		printf("| Value :\t[%d].\n", int_data);
 		printf("+===|====+===|====+===|====+===|====+\n");
+		printf("[%d] Output characters generated.\n", int_pos_buffer);
 
 		return int_pos_buffer;
 	}
@@ -159,7 +160,10 @@ int main()
 
 		/* Validation of allowed intervals. */
 		if (int_data >= V_LOWER_LIMIT_QTY && int_data <= V_UPPER_LIMIT_QTY)
-			int_counting_chars = int_toRomainNumber(int_data, buffer);
+			{
+				int_counting_chars = int_toRomainNumber(int_data, buffer);
+				printf("\n[%d] Output results generated.\n", int_counting_chars);
+			}
 		else
 			printf("Mistake! The value: [%d] is not in the range of [%d] and [%d].\n", int_data, V_LOWER_LIMIT_QTY, V_UPPER_LIMIT_QTY);
 
