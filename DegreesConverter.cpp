@@ -6,9 +6,11 @@
 #include <algorithm>
 #include <functional>
 #include <iostream>
+#include <limits>
 #include <sstream>
 
 /* Unique character constants. */
+#define	CARRIAGE_RETURN		'\n'
 #define V_DECIMAL_POINT		'\x2e'
 #define V_PLUS_SIGN		'\x2b'
 #define V_MINUS_SIGN		'\x2d'
@@ -32,9 +34,19 @@ enum class Converter : int
 		Exit_Converter
 	} cnv_myConverter;
 
+/* Function to take breaks when strictly necessary. */
+void enter_a_pause(const std::string& str_Message)
+	{
+		std::cout << str_Message;
+		std::cin.clear();
+		std::cin.get();
+		std::cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+	}
+
 /* Function to display the values ​​obtained from the calculations. */
 template <typename T>
-auto getCalculations(const Converter& cnv_Conv, const std::function<T(T)> fn_MyFunction, const T *const t_degrees, T *const t_result)
+auto& getCalculations(const Converter& cnv_Conv, const std::function<T(T)> fn_MyFunction, const T *const t_degrees, T *const t_result)
 	{
 		/* Valid memory addresses. */
 		if (t_degrees && t_result)
@@ -95,12 +107,16 @@ auto getCalculations(const Converter& cnv_Conv, const std::function<T(T)> fn_MyF
 		else
 			std::cerr << std::endl << "A valid memory address was not provided: [" << t_degrees << "] : [" << t_result << "]." << std::endl;
 
+		/* A pause is performed once the desired result is calculated and displayed. */
+		enter_a_pause("Press the ENTER key to continue...");
+		std::cout << std::endl;
+
 		return *t_result;
 	}
 
 /* Function to obtain a valid numeric value according to the type. */
 template <typename T>
-auto getData(const std::string& str_Message, T *const ptr_value)
+auto& getData(const std::string& str_Message, T *const ptr_value)
 	{
 		std::cout << str_Message;
 
