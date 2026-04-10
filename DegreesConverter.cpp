@@ -17,9 +17,11 @@
 
 /* Working symbolic variables. */
 #define	V_273_15		273.15
+#define	V_ELEVEN		11
 #define V_THIRTY_TWO		32.0
 #define	V_ONE			1
 #define	V_ONE_POINT_EIGHT	1.8
+#define	V_TWO			2
 #define V_ZERO  		0
 
 /* Determine the type of conversion to be performed. */
@@ -33,6 +35,21 @@ enum class Converter : int
 		Kelvin_to_Fahrenheit,
 		Exit_Converter
 	} cnv_myConverter;
+
+/* Inner structure with conversion display message pairs. */
+const struct strct_conversion_messages_pairs
+	{
+		char message_conversion[V_TWO][V_ELEVEN];
+	}
+	s_conversion_messages_pairs[] =
+	{
+		{"Celsius", "Fahrenheit"},
+		{"Fahrenheit", "Celsius"},
+		{"Celsius", "Kelvin"},
+		{"Kelvin", "Celsius"},
+		{"Fahrenheit", "Kelvin"},
+		{"Kelvin", "Fahrenheit"}
+	};
 
 /* Function to take breaks when strictly necessary. */
 void enter_a_pause(const std::string& str_Message)
@@ -51,66 +68,37 @@ auto& getCalculations(const Converter& cnv_Conv, const std::function<T(T)> fn_My
 		/* Valid memory addresses. */
 		if (t_degrees && t_result)
 			{
-				/* The function that has been sent as an argument for the calculation is executed. */
-				std::cout << std::endl;
-				std::cout << "+===+====+===+====+===+====+===+" << std::endl;
-				std::cout << "| Calculation results' degrees.|" << std::endl;
-				std::cout << "+===+====+===+====+===+====+===+" << std::endl;
-
 				/* Execute the function passed as an argument. */
+				const int index = static_cast<int>(cnv_Conv);
 				*t_result = fn_MyFunction(*t_degrees);
 
-				/* Determine the type of conversion to be performed. */
-				switch(cnv_Conv)
+				/* Output of conversion message pairs. */
+				if (cnv_Conv >= Converter::Celsius_to_Fahrenheit && cnv_Conv <= Converter::Kelvin_to_Fahrenheit)
 					{
-						case Converter::Celsius_to_Fahrenheit:
-							std::cout << "| + Celsius:\t[" << *t_degrees << "]." << std::endl;
-							std::cout << "| * Fahrenheit:\t[" << *t_result << "]." << std::endl;
-							break;
-
-						case Converter::Fahrenheit_to_Celsius:
-							std::cout << "| + Fahrenheit:\t[" << *t_degrees << "]." << std::endl;
-							std::cout << "| * Celsius:\t[" << *t_result << "]." << std::endl;
-							break;
-
-						case Converter::Celsius_to_Kelvin:
-							std::cout << "| + Celsius:\t[" << *t_degrees << "]." << std::endl;
-							std::cout << "| * Kelvin:\t[" << *t_result << "]." << std::endl;
-							break;
-
-						case Converter::Kelvin_to_Celsius:
-							std::cout << "| + Kelvin:\t[" << *t_degrees << "]." << std::endl;
-							std::cout << "| * Celsius:\t[" << *t_result << "]." << std::endl;
-							break;
-
-						case Converter::Fahrenheit_to_Kelvin:
-							std::cout << "| + Fahrenheit:\t[" << *t_degrees << "]." << std::endl;
-							std::cout << "| * Kelvin:\t[" << *t_result << "]." << std::endl;
-							break;
-
-						case Converter::Kelvin_to_Fahrenheit:
-							std::cout << "| + Kelvin:\t[" << *t_degrees << "]." << std::endl;
-							std::cout << "| * Fahrenheit:\t[" << *t_result << "]." << std::endl;
-							break;
-
-						case Converter::Exit_Converter:
-							std::cout << std::endl << "Quitting this program..." << std::endl;
-							break;
-
-						default:
-							std::cout << "Invalid conversion." << std::endl;
-							break;
+						/* The function that has been sent as an argument for the calculation is executed. */
+						std::cout << std::endl;
+						std::cout << "+===+====+===+====+===+====+===+" << std::endl;
+						std::cout << "| Calculation results' degrees.|" << std::endl;
+						std::cout << "+===+====+===+====+===+====+===+" << std::endl;
+						std::cout << "| + " << s_conversion_messages_pairs[index].message_conversion[V_ZERO] << ":\t[" << *t_degrees << "]." << std::endl;
+						std::cout << "| * " << s_conversion_messages_pairs[index].message_conversion[V_ONE] << ":\t[" << *t_result << "]." << std::endl;
+						std::cout << "+---+----+---+----+---+----+---+" << std::endl;
+						std::cout << "| > Option:\t[" << index + V_ONE << "]." << std::endl;
+						std::cout << "+===+====+===+====+===+====+===+" << std::endl;
 					}
-
-				std::cout << "+===+====+===+====+===+====+===+" << std::endl << std::endl;
+				else if (cnv_Conv == Converter::Exit_Converter)
+					std::cout << std::endl << "Quitting this program..." << std::endl;
+				else
+					std::cerr << "Invalid conversion parameter option!" << std::endl;
 			}
 		else
-			std::cerr << std::endl << "A valid memory address was not provided: [" << t_degrees << "] : [" << t_result << "]." << std::endl;
+			std::cerr << std::endl << "A valid memory address was not provided: [" << t_degrees << "] and [" << t_result << "]." << std::endl;
 
 		/* A pause is performed once the desired result is calculated and displayed. */
 		enter_a_pause("Press the ENTER key to continue...");
 		std::cout << std::endl;
 
+		/* Determine the type of conversion to be performed. */
 		return *t_result;
 	}
 
@@ -129,6 +117,7 @@ auto& getData(const std::string& str_Message, T *const ptr_value)
 
 						int plus_sign_count = V_ZERO, minus_sign_count = V_ZERO, decimal_point_count = V_ZERO;
 
+						/* STL function that iterates through all elements of an array and returns a boolean value if all elements meet a condition. */
 						return std::all_of(str_value.begin(), str_value.end(), [&](const unsigned char& c)
 							{
 								switch (c)
@@ -167,6 +156,7 @@ auto& getData(const std::string& str_Message, T *const ptr_value)
 				/* Convert the string to a valid and workable value. */
 				std::stringstream(str_value) >> *ptr_value;
 
+				/* Displays the value obtained at the end of the conversion. */
 				std::cout << "Value entered:\t[" << *ptr_value << "]. OK!" << std::endl;
 			}
 		else
