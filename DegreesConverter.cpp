@@ -2,7 +2,7 @@
    to degrees Fahrenheit and Kelvin and vice versa
    combinations. */
 
-/* Standard work libraries. */
+/* C++ Standard work libraries. */
 #include <algorithm>
 #include <functional>
 #include <iostream>
@@ -21,6 +21,7 @@
 #define V_THIRTY_TWO		32.0
 #define	V_ONE			1
 #define	V_ONE_POINT_EIGHT	1.8
+#define	V_SIX			6
 #define	V_TWO			2
 #define V_ZERO  		0
 
@@ -39,16 +40,17 @@ enum class Converter : int
 /* Inner structure with conversion display message pairs. */
 const struct strct_conversion_messages_pairs
 	{
-		char message_conversion[V_TWO][V_ELEVEN];
+		char symbol_message_conversion;
+		char message_conversion_message[V_ELEVEN];
 	}
-	s_conversion_messages_pairs[] =
+	str_conversion_mesagges_pairs[V_SIX][V_TWO] =
 	{
-		{"Celsius", "Fahrenheit"},
-		{"Fahrenheit", "Celsius"},
-		{"Celsius", "Kelvin"},
-		{"Kelvin", "Celsius"},
-		{"Fahrenheit", "Kelvin"},
-		{"Kelvin", "Fahrenheit"}
+		{{'\x2b', "Celsius"}, {'\x2a', "Fahrenheit"}},
+		{{'\x2b', "Fahrenheit"}, {'\x2a', "Celsius"}},
+		{{'\x2b', "Celsius"}, {'\x2a', "Kelvin"}},
+		{{'\x2b', "Kelvin"}, {'\x2a', "Celsius"}},
+		{{'\x2b', "Fahrenheit"}, {'\x2a', "Kelvin"}},
+		{{'\x2b', "Kelvin"}, {'\x2a', "Fahrenheit"}}
 	};
 
 /* Function to take breaks when strictly necessary. */
@@ -80,8 +82,8 @@ auto& getCalculations(const Converter& cnv_Conv, const std::function<T(T)> fn_My
 						std::cout << "+===+====+===+====+===+====+===+" << std::endl;
 						std::cout << "| Calculation results' degrees.|" << std::endl;
 						std::cout << "+===+====+===+====+===+====+===+" << std::endl;
-						std::cout << "| + " << s_conversion_messages_pairs[index].message_conversion[V_ZERO] << ":\t[" << *t_degrees << "]." << std::endl;
-						std::cout << "| * " << s_conversion_messages_pairs[index].message_conversion[V_ONE] << ":\t[" << *t_result << "]." << std::endl;
+						std::cout << "| " << str_conversion_mesagges_pairs[index][V_ZERO].symbol_message_conversion << " " << str_conversion_mesagges_pairs[index][V_ZERO].message_conversion_message << ":\t[" << *t_degrees << "]." << std::endl;
+						std::cout << "| " << str_conversion_mesagges_pairs[index][V_ONE].symbol_message_conversion << " " << str_conversion_mesagges_pairs[index][V_ONE].message_conversion_message << ":\t[" << *t_result << "]." << std::endl;
 						std::cout << "+---+----+---+----+---+----+---+" << std::endl;
 						std::cout << "| > Option:\t[" << index + V_ONE << "]." << std::endl;
 						std::cout << "+===+====+===+====+===+====+===+" << std::endl;
