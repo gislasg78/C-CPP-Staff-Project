@@ -21,7 +21,7 @@ void BubbleSort(int array[], const int pos, const int size)
 	{
 		/* Traditional bubble-meter sorting method. */
 		for (int i = pos; i < size - V_ONE; i++)
-			for (int j = pos; j < size - i - 1; j++)
+			for (int j = pos; j < size - i - V_ONE; j++)
 				if (array[j] > array[j + V_ONE])
 					swap(array + j, array + j + V_ONE);
 	}
