@@ -60,9 +60,12 @@ T displayRatings(const std::string& strHeaderMsgList, const std::list<T>& player
 
 /* Fill a given list with specific values. */
 template <typename T>
-T fillRatings(std::list<T>& playersRatings, const T& lower_bound, const T& upper_bound)
+T fillRatings(std::list<T>& playersRatings, const T& minimum, const T& maximum)
 	{
-		T count = V_ZERO;
+		T count = V_ZERO, lower_bound = V_ZERO, upper_bound = V_ZERO;
+
+		lower_bound = std::min(minimum, maximum);
+		upper_bound = std::max(minimum, maximum);
 
 		std::random_device myRandomDevice;
 		std::mt19937 myGenerator(myRandomDevice());
@@ -99,8 +102,8 @@ T obtainValue(const std::string& str_Message, T* data_value)
 			{
 				if (str_value.empty()) return false;
 
-				return std::all_of(std::begin(str_value), std::end(str_value), [&](const unsigned char& ch)
-					{return std::isdigit(ch);});
+				return std::all_of(std::begin(str_value), std::end(str_value), [&](const unsigned char& c)
+					{return std::isdigit(c);});
 			};
 
 		std::cout << str_Message;
@@ -113,29 +116,30 @@ T obtainValue(const std::string& str_Message, T* data_value)
 
 		std::stringstream(str_data_value) >> t_data_value;
 
-		*data_value = t_data_value;
+		if (data_value) *data_value = t_data_value;
 		return t_data_value;
 	}
 
 /* Separate the elements of a given list into two separate lists. */
 template <typename T>
-T separateRatings(const std::list<T>& allPlayers, std::list<T> &beginners, std::list<T> &pros, const T& lower_limit_beginners, const T& upper_limit_beginners, const T& lower_limit_pros, const T& upper_limit_pros)
+std::list<T> separateRatings(const std::list<T>& allPlayers, std::list<T> &playersRating, const T& minimum, const T& maximum)
 	{
-		T count = V_ZERO;
+		T count = V_ZERO, lower_bound = V_ZERO, upper_bound = V_ZERO;
+
+		lower_bound = std::min(minimum, maximum);
+		upper_bound = std::max(minimum, maximum);
 
 		std::cout << std::endl << "Separating the list elements." << std::endl;
-		std::copy(std::begin(allPlayers), std::end(allPlayers), std::ostream_iterator<T>(std::cout, "\t"));
-		std::cout << std::endl;
+		std::cout << "Range between: [" << lower_bound << "] and: [" << upper_bound << "]." << std::endl;
 
-		std::copy_if(allPlayers.cbegin(), allPlayers.cend(), std::back_inserter(beginners),
-			[&count, &lower_limit_beginners, &upper_limit_beginners](const T& value)
-			{count++; return (value >= lower_limit_beginners && value <= upper_limit_beginners);});
+		std::copy_if(allPlayers.cbegin(), allPlayers.cend(), std::back_inserter(playersRating),
+			[&count, &lower_bound, &upper_bound](const T& value)
+			{return (value >= lower_bound && value <= upper_bound) ? ++count : V_ZERO;});
 
-		std::copy_if(allPlayers.cbegin(), allPlayers.cend(), std::back_inserter(pros),
-			[&count, &lower_limit_pros, &upper_limit_pros](const T& value)
-			{count++; return (value >= lower_limit_pros && value <= upper_limit_pros);});
+		std::copy(std::begin(playersRating), std::end(playersRating), std::ostream_iterator<T>(std::cout, "\t"));
+		std::cout << std::endl << "[" << count << "] Output results generated." << std::endl;
 
-		return count;
+		return playersRating;
 	}
 
 //Main function.
@@ -154,7 +158,10 @@ int main()
 		int_count = fillRatings<int>(allPlayers, V_ONE, V_TEN);
 		getPause("Press the ENTER key to continue...");
 
-		int_count = separateRatings<int>(allPlayers, beginners, pros, V_ONE, V_FIVE, V_SIX, V_TEN);
+		beginners = separateRatings<int>(allPlayers, beginners, V_ONE, V_FIVE);
+		getPause("Press the ENTER key to continue...");
+
+		pros = separateRatings<int>(allPlayers, pros, V_SIX, V_TEN);
 		getPause("Press the ENTER key to continue...");
 
 		int_count = displayRatings<int>("All Players", allPlayers);
