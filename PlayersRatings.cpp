@@ -14,12 +14,10 @@
 
 /* Symbolic work constants. */
 #define	CARRIAGE_RETURN	'\n'
-
-#define	V_FIVE		5
-#define	V_ONE		1
-#define	V_SIX		6
-#define	V_TEN		10
 #define	V_ZERO		0
+
+/* Declaration of function prototypes. */
+template <typename T> void swap(T* left_hand_side, T* right_hand_side);
 
 /* Iterator to sum the elements obtained from the list. */
 template <typename Iter>
@@ -60,23 +58,25 @@ T displayRatings(const std::string& strHeaderMsgList, const std::list<T>& player
 
 /* Fill a given list with specific values. */
 template <typename T>
-T fillRatings(std::list<T>& playersRatings, const T& minimum, const T& maximum)
+T fillRatings(std::list<T>& playersRatings, T& minimum, T& maximum)
 	{
-		T count = V_ZERO, lower_bound = V_ZERO, upper_bound = V_ZERO;
+		T count = V_ZERO;
 
-		lower_bound = std::min(minimum, maximum);
-		upper_bound = std::max(minimum, maximum);
+		/* Swap the minimum and maximum values ​​if they are reversed. */
+		if ((minimum > maximum) || (maximum < minimum))
+			{swap(&minimum, &maximum);}
 
 		std::random_device myRandomDevice;
 		std::mt19937 myGenerator(myRandomDevice());
-		std::uniform_int_distribution<> myDistribution(lower_bound, upper_bound);
+		std::uniform_int_distribution<> myDistribution(minimum, maximum);
 
-		std::generate(playersRatings.begin(), playersRatings.end(), [&]()
-			{return myDistribution(myGenerator);});
+		std::generate(playersRatings.begin(), playersRatings.end(), [&](){return myDistribution(myGenerator);});
+
+		count = static_cast<T>(std::count_if(std::begin(playersRatings), std::end(playersRatings), [&](const T& value){return value;}));
 
 		std::cout << std::endl << "Filling the list elements." << std::endl;
 		std::copy(playersRatings.cbegin(), playersRatings.cend(), std::ostream_iterator<T>(std::cout, "\t"));
-		std::cout << std::endl;
+		std::cout << std::endl << "[" << count << "] Output results generated." << std::endl;
 
 		return count;
 	}
@@ -122,19 +122,20 @@ T obtainValue(const std::string& str_Message, T* data_value)
 
 /* Separate the elements of a given list into two separate lists. */
 template <typename T>
-std::list<T> separateRatings(const std::list<T>& allPlayers, std::list<T> &playersRating, const T& minimum, const T& maximum)
+std::list<T> separateRatings(const std::list<T>& allPlayers, std::list<T> &playersRating, T& minimum, T& maximum)
 	{
-		T count = V_ZERO, lower_bound = V_ZERO, upper_bound = V_ZERO;
+		T count = V_ZERO;
 
-		lower_bound = std::min(minimum, maximum);
-		upper_bound = std::max(minimum, maximum);
+		/* Swap the minimum and maximum values ​​if they are reversed. */
+		if ((minimum > maximum) || (maximum < minimum))
+			{swap(&minimum, &maximum);}
 
 		std::cout << std::endl << "Separating the list elements." << std::endl;
-		std::cout << "Range between: [" << lower_bound << "] and: [" << upper_bound << "]." << std::endl;
+		std::cout << "Range between: [" << minimum << "] and: [" << maximum << "]." << std::endl;
 
 		std::copy_if(allPlayers.cbegin(), allPlayers.cend(), std::back_inserter(playersRating),
-			[&count, &lower_bound, &upper_bound](const T& value)
-			{return (value >= lower_bound && value <= upper_bound) ? ++count : V_ZERO;});
+			[&count, &minimum, &maximum](const T& value)
+			{return (value >= minimum && value <= maximum) ? ++count : V_ZERO;});
 
 		std::copy(std::begin(playersRating), std::end(playersRating), std::ostream_iterator<T>(std::cout, "\t"));
 		std::cout << std::endl << "[" << count << "] Output results generated." << std::endl;
@@ -142,26 +143,50 @@ std::list<T> separateRatings(const std::list<T>& allPlayers, std::list<T> &playe
 		return playersRating;
 	}
 
+/* Function that is responsible for swapping two variables with each other. */
+template <typename T>
+void swap(T* left_hand_side, T* right_hand_side)
+	{
+		T temp = *left_hand_side;
+		*left_hand_side = *right_hand_side;
+		*right_hand_side = temp;
+	}
+
 //Main function.
 int main()
 	{
 		int int_count {V_ZERO};
+		int int_minimum {}, int_maximum {};
+		int int_beginners_minimum{}, int_beginners_maximum{};
+		int int_pros_minimum{}, int_pros_maximum{};
 
-		std::list<int> beginners{};	//ratings 01-05.
-		std::list<int> pros{};		//ratings 06-10.
+		std::list<int> beginners{};
+		std::list<int> pros{};
 
 		std::cout << "Players ratings." << std::endl;
 		int_count = obtainValue<int>("Enter the data number: ", &int_count);
 
+		std::cout << std::endl << "Value Range for Generative Numbers." << std::endl;
+		int_minimum = obtainValue<int>("+ Generative minimum value: ", &int_minimum);
+		int_maximum = obtainValue<int>("+ Generative maximum value: ", &int_maximum);
+
 		std::list<int> allPlayers(int_count);
 
-		int_count = fillRatings<int>(allPlayers, V_ONE, V_TEN);
+		int_count = fillRatings<int>(allPlayers, int_minimum, int_maximum);
 		getPause("Press the ENTER key to continue...");
 
-		beginners = separateRatings<int>(allPlayers, beginners, V_ONE, V_FIVE);
+		std::cout << std::endl << "Value Range for Beginners." << std::endl;
+		int_beginners_minimum = obtainValue<int>("+ Beginners minimum value: ", &int_beginners_minimum);
+		int_beginners_maximum = obtainValue<int>("+ Beginners maximum value: ", &int_beginners_maximum);
+
+		beginners = separateRatings<int>(allPlayers, beginners, int_beginners_minimum, int_beginners_maximum);
 		getPause("Press the ENTER key to continue...");
 
-		pros = separateRatings<int>(allPlayers, pros, V_SIX, V_TEN);
+		std::cout << std::endl << "Value Range for Pros." << std::endl;
+		int_pros_minimum = obtainValue<int>("+ Pros minimum value: ", &int_pros_minimum);
+		int_pros_maximum = obtainValue<int>("+ Pros maximum value: ", &int_pros_maximum);
+
+		pros = separateRatings<int>(allPlayers, pros, int_pros_minimum, int_pros_maximum);
 		getPause("Press the ENTER key to continue...");
 
 		int_count = displayRatings<int>("All Players", allPlayers);
