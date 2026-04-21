@@ -11,20 +11,22 @@ constexpr char CARRIAGE_RETURN{'\n'};
 constexpr int V_ZERO{};
 
 /* Parent Class. */
-template <class T>
+template <typename TX, typename TY>
 class Point2D
 {
 	private:
-		T x{};
-		T y{};
+		TX x{};
+		TY y{};
 
 	protected:
 		static size_t count;
 
 	public:
 		Point2D()						{this->count++;}
-		Point2D(const T &_x) : Point2D(_x, V_ZERO)		{(*this).count++;}
-		Point2D(const T& _x, const T &_y) : x(_x), y(_y)	{this->count++;}
+		Point2D(const TX& _x) : Point2D(_x, V_ZERO)
+		{(*this).count++;}
+		Point2D(const TX& _x, const TY& _y) : x(_x), y(_y)
+		{this->count++;}
 
 		static void enter_a_pause (const std::string& str_Message)
 		{
@@ -47,25 +49,25 @@ class Point2D
 };
 
 /* Initialize 'A' class static global variable. */
-template <class T>
-size_t Point2D<T>::count {V_ZERO};
+template <typename TX, typename TY>
+size_t Point2D<TX, TY>::count {V_ZERO};
 
 /* Daughter Class. */
-template <class T>
-class Point3D : public Point2D<T>
+template <typename TX, typename TY, typename TZ>
+class Point3D : public Point2D<TX, TY>
 {
 	private:
-		T z{};
+		TZ z{};
 
 	public:
 		Point3D() = default;
-		Point3D(const T& _z) : Point2D<T>(), z(_z)					{}
-		Point3D(const T& _x, const T& _y) : Point3D<T>(_x, _y)				{}
-		Point3D(const T& _x, const T& _y, const T& _z) : Point2D<T>(_x, _y), z(_z)	{}
+		Point3D(const TZ& _z) : Point2D<TX, TY>(), z(_z)					{}
+		Point3D(const TX& _x, const TY& _y) : Point2D<TX, TY>(_x, _y)				{}
+		Point3D(const TX& _x, const TY& _y, const TZ& _z) : Point2D<TX, TY>(_x, _y), z(_z)	{}
 
 		virtual void print() const override
 		{
-			Point2D<T>::print();
+			Point2D<TX, TY>::print();
 			std::cout << "(z = [" << z << "])." << std::endl;
 		}
 
@@ -89,11 +91,11 @@ int main()
 	std::cin >> x;
 	std::cout << "+ Y Coord: ";
 	std::cin >> y;
-	Point2D<int>::enter_a_pause("Press the ENTER key to continue...");
+	Point2D<int, int>::enter_a_pause("Press the ENTER key to continue...");
 
 	/* Display the captured coordinates for the 2D point. */
 	std::cout << std::endl << "2D Point." << std::endl;
-	Point2D<int> *point2D = new Point2D<int>{x, y};
+	Point2D<int, int> *point2D = new Point2D<int, int>{x, y};
 	point2D->print();
 	point2D->enter_a_pause("Press the ENTER key to continue...");
 
@@ -105,11 +107,11 @@ int main()
 	std::cin >> y;
 	std::cout << "+ Z Coord: ";
 	std::cin >> z;
-	Point2D<int>::enter_a_pause("Press the ENTER key to continue...");
+	Point2D<int, int>::enter_a_pause("Press the ENTER key to continue...");
 
 	/* Display the captured coordinates for the 3D point. */
 	std::cout << std::endl << "3D Point." << std::endl;
-	Point3D<int> *point3D = new Point3D<int>{x, y, z};
+	Point3D<int, int, int> *point3D = new Point3D<int, int, int>{x, y, z};
 	point3D->print();
 	point3D->enter_a_pause("Press the ENTER key to continue...");
 
@@ -120,14 +122,14 @@ int main()
 	std::cout << std::endl << "2D Point." << std::endl;
 	point2D->reset();
 	point2D->print();
-	Point2D<int>::enter_a_pause("Press the ENTER key to continue...");
+	Point2D<int, int>::enter_a_pause("Press the ENTER key to continue...");
 	delete point2D;
 
 	/* Reset the 3D point coordinates. */
 	std::cout << std::endl << "3D Point." << std::endl;
 	point3D->reset();
 	point3D->print();
-	Point2D<int>::enter_a_pause("Press the ENTER key to continue...");
+	Point2D<int, int>::enter_a_pause("Press the ENTER key to continue...");
 	delete point3D;
 
 	return V_ZERO;
