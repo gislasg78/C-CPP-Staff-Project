@@ -31,6 +31,8 @@ class Point2D
 			static int counter;
 
 		public:
+			using value_type = T;
+
 			Point2D() : id(V_ZERO), x(V_ZERO), y(V_ZERO)
 				{this->counter++; this->capture();}
 			Point2D(const int &id) : id(id), x(V_ZERO), y(V_ZERO)
@@ -453,7 +455,7 @@ int main()
 	{
 		/* Preliminary working variables. */
 		int quantity = V_ZERO;
-		int x = V_ZERO, y = V_ZERO, z = V_ZERO;
+		Point2D<int>::value_type x = V_ZERO, y = V_ZERO, z = V_ZERO;
 
 		/* Initial header messages. */
 		std::cout << "Creating 'Point2D' objects on an array." << std::endl;
