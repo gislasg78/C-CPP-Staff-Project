@@ -36,6 +36,8 @@ class Circle
 			static int counter;
 
 		public:
+			using value_type = T;
+
 			Circle() : id(V_ZERO), radius(V_ZERO)
 				{(*this).counter++; this->capture();}
 			Circle(const T &radius) : id(V_ZERO), radius(radius)
@@ -468,7 +470,7 @@ int main ()
 	{
 		/* Preliminary working variables. */
 		int quantity = V_ZERO;
-		double height = V_ZERO, radius = V_ZERO;
+		Circle<double>::value_type height = V_ZERO, radius = V_ZERO;
 
 		/* Initial header messages. */
 		std::cout << "Creating 'Circle' objects on an array." << std::endl;
