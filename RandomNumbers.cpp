@@ -41,6 +41,8 @@ class RandomNumber
 			static int counter;
 
 		public:
+			using value_type = T;
+
 			RandomNumber() : random_counter(V_ZERO), random_seed(V_ZERO), random_number(V_ZERO)
 				{this->counter++; this->capture();}
 			RandomNumber(const T& random_seed) : random_counter(V_ZERO), random_seed(random_seed), random_number(random_seed)
@@ -328,8 +330,8 @@ int RandomNumber<T>::counter = V_ZERO;
 int main()
 	{
 		/* Preliminary working variables. */
-		double minimum = V_ZERO, maximum = V_ZERO;
-		double random_seed = V_ZERO;
+		RandomNumber<double>::value_type minimum = V_ZERO, maximum = V_ZERO;
+		RandomNumber<double>::value_type random_seed = V_ZERO;
 		int counter = V_ZERO, numbers = V_ZERO, quantity = V_ZERO;
 		std::vector<std::set<int>> lottery;	//Vector that stores ordered sets of integers.
 
