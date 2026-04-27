@@ -18,8 +18,8 @@ template <typename T>
 class Point2D
 	{
 		private:
-			const int id = V_ZERO;
-			T x = V_ZERO, y = V_ZERO;
+			const int id {V_ZERO};
+			T x {V_ZERO}, y {V_ZERO};
 
 			friend std::istream &operator>> (std::istream& in, Point2D<T> &point2D)
 				{point2D.capture(); return in;}
@@ -266,8 +266,8 @@ template <typename T>
 class Point3D : public Point2D<T>
 	{
 		private:
-			Point2D<T> base;
-			T z = V_ZERO;
+			Point2D<T> base {};
+			T z {V_ZERO};
 
 			friend std::istream &operator>> (std::istream& in, Point3D<T> &point3D)
 				{point3D.capture(); return in;}
@@ -453,7 +453,7 @@ class Point3D : public Point2D<T>
 int main()
 	{
 		/* Preliminary working variables. */
-		int quantity = V_ZERO;
+		int quantity {V_ZERO};
 		Point2D<int>::value_type x = V_ZERO, y = V_ZERO, z = V_ZERO;
 
 		/* Initial header messages. */
