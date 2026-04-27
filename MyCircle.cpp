@@ -9,13 +9,13 @@
 #include <sstream>
 
 /* Character constants. */
-#define	CARRIAGE_RETURN	'\n'
+constexpr char		CARRIAGE_RETURN	{'\n'};
 
 /* Symbolic work constants. */
-#define	V_ONE		1
-#define	V_PI		3.14159265
-#define	V_TWO		2
-#define	V_ZERO		0
+constexpr int		V_ONE		{1};
+constexpr double	V_PI		{3.14159265};
+constexpr int		V_TWO		{2};
+constexpr int		V_ZERO		{};
 
 
 /* Circle Class. Base Class.*/
@@ -23,9 +23,9 @@ template <class T>
 class Circle
 	{
 		private:
-			const int id = V_ZERO;
-			const double PI = V_PI;
-			T radius = V_ZERO;
+			const int id {V_ZERO};
+			const double PI {V_PI};
+			T radius {V_ZERO};
 
 			friend std::istream &operator>> (std::istream& in, Circle<T> &circle)
 				{circle.capture(); return in;}
@@ -36,13 +36,11 @@ class Circle
 			static int counter;
 
 		public:
-			using value_type = T;
-
 			Circle() : id(V_ZERO), radius(V_ZERO)
 				{(*this).counter++; this->capture();}
-			Circle(const T &radius) : id(V_ZERO), radius(radius)
+			Circle(const T &_radius) : id(V_ZERO), radius(_radius)
 				{this->counter++;}
-			Circle(const int& id, const T& radius) : id(id), radius(radius)
+			Circle(const int& _id, const T& _radius) : id(_id), radius(_radius)
 				{this->counter++;}
 
 			Circle(const Circle<T>& circle) : id(circle.getId()), radius(circle.getRadius())
@@ -50,8 +48,8 @@ class Circle
 			Circle(Circle<T>&& circle) : id(circle.getId()), radius(circle.getRadius())
 				{this->counter--; circle.reset();}
 
-			Circle<T>& operator=(const T& radius)
-				{this->radius = radius; return *this;}
+			Circle<T>& operator=(const T& _radius)
+				{this->radius = _radius; return *this;}
 			Circle<T>& operator=(const Circle<T>& circle)
 				{this->copy(circle); return *this;}
 			Circle<T>& operator=(Circle<T>&& circle)
@@ -71,8 +69,8 @@ class Circle
 				}
 			Circle<T>& operator+=(const Circle<T>& circle)
 				{(*this).radius += circle.getRadius(); return *this;}
-			Circle<T>& operator+=(const T& radius)
-				{this->radius += radius; return *this;}
+			Circle<T>& operator+=(const T& _radius)
+				{this->radius += _radius; return *this;}
 
 			Circle<T>& operator++()			{++this->radius; return *this;}
 			Circle<T>& operator++(int)		{(*this).radius++; return *this;}
@@ -87,8 +85,8 @@ class Circle
 				}
 			Circle<T>& operator-=(const Circle<T>& circle)
 				{(*this).radius -= circle.getRadius(); return *this;}
-			Circle<T>& operator-=(const T& radius)
-				{this->radius -= radius; return *this;}
+			Circle<T>& operator-=(const T& _radius)
+				{this->radius -= _radius; return *this;}
 
 			const T operator!=(const Circle<T>& circle) const
 				{return ((this->id != circle.getId()) || (this->PI != circle.getPI()) || (this->radius != circle.getRadius()));}
@@ -105,18 +103,18 @@ class Circle
 
 			const T operator>>(Circle<T>& circle)
 				{circle.setRadius(this->radius); return this->radius;}
-			const T operator>>(const T& radius)
+			const T operator>>(const T& _radius)
 				{return this->radius;}
 			Circle<T>& operator<<(const Circle<T>& circle)
 				{(*this).setRadius(circle.getRadius()); return *this;}
-			Circle<T>& operator<<(const T& radius)
-				{(*this).setRadius(radius); return *this;}
+			Circle<T>& operator<<(const T& _radius)
+				{(*this).setRadius(_radius); return *this;}
 
 			operator int()			const	{return this->id;}
 			operator double()		const	{return this->PI;}
 
-			const T area()			const	{return PI * this->radius * (*this).radius;}
-			const T perimeter()		const	{return V_TWO * PI * (*this).radius;}
+			const T area()			const	{return (PI * this->radius * (*this).radius);}
+			const T perimeter()		const	{return (V_TWO * PI * (*this).radius);}
 
 			virtual void capture()
 				{
@@ -192,7 +190,7 @@ class Circle
 			virtual void explore()
 				{std::cout << *this << std::endl; std::cin >> *this; std::cout << *this << std::endl;}
 
-			const T	getDiameter()		const	{return this->radius * V_TWO;}
+			const T	getDiameter()		const	{return (this->radius * V_TWO);}
 			const int &getId()		const	{return this->id;}
 			const double& getPI()		const	{return this->PI;}
 			const T& getRadius()		const	{return this->radius;}
@@ -221,7 +219,7 @@ class Circle
 			virtual void reset()					{this->radius = V_ZERO;}
 
 			void setDiameter(const T& diameter = V_ZERO)		{this->radius = diameter / V_TWO;}
-			void setRadius(const T &radius = V_ZERO)		{this->radius = radius;}
+			void setRadius(const T &_radius = V_ZERO)		{this->radius = _radius;}
 
 			virtual void see()		const
 				{
@@ -265,7 +263,9 @@ class Circle
 					std::cout << "Perimeter = [" << this->perimeter() << "])." << std::endl << std::endl;
 				}
 
-			virtual ~Circle() = default;
+			using value_type = T;
+
+			virtual ~Circle()	{this->counter--;};
 	};
 
 template <class T>
@@ -278,7 +278,7 @@ class Cylinder : public Circle<T>
 	{
 		private:
 			Circle<T> base;
-			T height = V_ZERO;
+			T height {V_ZERO};
 
 			friend std::istream &operator>> (std::istream& in, Cylinder<T> &cylinder)
 				{cylinder.capture(); return in;}
@@ -288,11 +288,11 @@ class Cylinder : public Circle<T>
 		public:
 			Cylinder() : Circle<T>(V_ZERO, V_ZERO), height(V_ZERO)
 				{(*this).counter++; this->capture();}
-			Cylinder(const T &height) : Circle<T>(V_ZERO, V_ZERO), height(height)
+			Cylinder(const T &_height) : Circle<T>(V_ZERO, V_ZERO), height(_height)
 				{this->counter++;}
-			Cylinder(const T &height, const T &radius) : Circle<T>(radius), height(height)
+			Cylinder(const T &_height, const T &_radius) : Circle<T>(_radius), height(_height)
 				{(*this).counter++;}
-			Cylinder(const int &id, const T &height, const T &radius) : Circle<T>(id, radius), height(height)
+			Cylinder(const int &_id, const T &_height, const T &_radius) : Circle<T>(_id, _radius), height(_height)
 				{this->counter++;}
 
 			Cylinder(const Cylinder<T>& cylinder) : Circle<T>(cylinder.getId(), cylinder.getRadius()), height(cylinder.getHeight())
@@ -300,8 +300,8 @@ class Cylinder : public Circle<T>
 			Cylinder(Cylinder<T>&& cylinder) : Circle<T>(cylinder.getId(), cylinder.getRadius()), height(cylinder.getHeight())
 				{this->counter--; cylinder.reset();}
 
-			Cylinder<T>& operator=(const T& height)
-				{(*this).height = height; return *this;}
+			Cylinder<T>& operator=(const T& _height)
+				{(*this).height = _height; return *this;}
 			Cylinder<T>& operator=(const Cylinder<T>& cylinder)
 				{this->copy(cylinder); return *this;}
 			Cylinder<T>& operator=(Cylinder<T>&& cylinder)
@@ -322,13 +322,13 @@ class Cylinder : public Circle<T>
 				}
 			Cylinder<T>& operator+=(const Cylinder<T>& cylinder)
 				{this->height += cylinder.getHeight(); (*this).getRadius() += cylinder.getRadius(); return *this;}
-			Cylinder<T>& operator+=(const T& height)
-				{this->height += height; return *this;}
+			Cylinder<T>& operator+=(const T& value)
+				{this->getRadius() += value; this->height += value; return *this;}
 
-			Cylinder<T>& operator++()		{++this->height; return *this;}
-			Cylinder<T>& operator++(int)		{(*this).height++; return *this;}
-			Cylinder<T>& operator--()		{--(*this).height; return *this;}
-			Cylinder<T>& operator--(int)		{this->height--; return *this;}
+			Cylinder<T>& operator++()		{++this->getRadius(); ++this->height; return *this;}
+			Cylinder<T>& operator++(int)		{(*this).getRadius()++; (*this).height++; return *this;}
+			Cylinder<T>& operator--()		{--(*this).getRadius(); --(*this).height; return *this;}
+			Cylinder<T>& operator--(int)		{this->getRadius()++; this->height--; return *this;}
 
 			Cylinder<T> operator-(const Cylinder<T>& cylinder)
 				{
@@ -339,8 +339,8 @@ class Cylinder : public Circle<T>
 				}
 			Cylinder<T>& operator-=(const Cylinder<T>& cylinder)
 				{this->height -= cylinder.getHeight(); (*this).getRadius() -= cylinder.getRadius(); return *this;}
-			Cylinder<T>& operator-=(const T& height)
-				{this->height -= height; return *this;}
+			Cylinder<T>& operator-=(const T& value)
+				{(*this).getRadius() -= value; this->height -= value; return *this;}
 
 			const T operator!=(const Cylinder<T>& cylinder) const
 				{return ((this->getId() != cylinder.getId()) || (this->getPI() != cylinder.getPI()) || (this->getRadius() != cylinder.getRadius()) || (this->height != cylinder.getHeight()));}
@@ -357,12 +357,12 @@ class Cylinder : public Circle<T>
 
 			const T operator>>(Cylinder<T>& cylinder)
 				{cylinder.setHeight(this->height); cylinder.setRadius((*this).getRadius()); return this->height;}
-			const T operator>>(const T& height)
+			const T operator>>(const T& value)
 				{return this->height;}
 			Cylinder<T>& operator<<(const Cylinder<T>& cylinder)
 				{(*this).setHeight(cylinder.getHeight()); (*this).setRadius(cylinder.getRadius()); return *this;}
-			Circle<T>& operator<<(const T& height)
-				{(*this).setHeight(height); return *this;}
+			Circle<T>& operator<<(const T& _height)
+				{(*this).setHeight(_height); return *this;}
 
 			operator int()			const	{return Circle<T>::getId();}
 			operator double()		const	{return Circle<T>::getPI();}
@@ -428,7 +428,7 @@ class Cylinder : public Circle<T>
 				}
 
 			virtual void reset()		override
-				{(*this).height = V_ZERO; this->getRadius() = V_ZERO;}
+				{(*this).height = this->getRadius() = V_ZERO;}
 
 			virtual void see()		const override
 				{
@@ -438,7 +438,7 @@ class Cylinder : public Circle<T>
 					Circle<T>::see();
 				}
 
-			void setHeight(const T& height = V_ZERO)	{this->height = height;}
+			void setHeight(const T& _height = V_ZERO)	{this->height = _height;}
 
 			virtual void swap()		override
 				{T temp = this->height; this->getHeight() = this->getRadius(); this->setRadius(temp);}
@@ -452,7 +452,7 @@ class Cylinder : public Circle<T>
 					Circle<T>::view();
 				}
 
-			const T volume()		const		{return this->area() * this->height;}
+			const T volume()		const		{return (this->area() * this->height);}
 
 			virtual void watch()		const override
 				{
@@ -469,7 +469,7 @@ class Cylinder : public Circle<T>
 int main ()
 	{
 		/* Preliminary working variables. */
-		int quantity = V_ZERO;
+		int quantity {V_ZERO};
 		Circle<double>::value_type height = V_ZERO, radius = V_ZERO;
 
 		/* Initial header messages. */
@@ -623,6 +623,9 @@ int main ()
                 std::cout << "Deleting the array of pointers of type 'Circle'..." << std::endl;
 		delete [] array_Circle;
 		Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
+
+		std::cout << CARRIAGE_RETURN << "Done!" << CARRIAGE_RETURN;
+		std::cout << "This program has ended." << CARRIAGE_RETURN;
 
 		return V_ZERO;
 	}
