@@ -11,7 +11,7 @@
 constexpr char	CARRIAGE_RETURN	{'\n'};
 constexpr char	TABULATOR	{'\t'};
 constexpr int	V_ONE		{1};
-constexpr int	V_ZERO 		{0};
+constexpr int	V_ZERO 		{};
 
 /* Base or parent class of the 'Point2D' type. */
 template <typename T>
@@ -57,6 +57,8 @@ class Point2D
 					this->see(); this->view(); this->watch(); return *this;
 				}
 
+			Point2D<T> operator+()
+				{return Point2D<T>(this->x, this->y);}
 			Point2D<T> operator+(const Point2D<T>& point2D)
 				{
 					Point2D<T> object_point2D(point2D.getX(), point2D.getY());
@@ -74,6 +76,8 @@ class Point2D
 			Point2D<T>& operator--()	{--(*this).x; --(*this).y; return *this;}
 			Point2D<T>& operator--(int)	{this->x--; this->y--; return *this;}
 
+			Point2D<T> operator-()
+				{return Point2D<T>(-this->x, -this->y);}
 			Point2D<T> operator-(const Point2D<T>& point2D)
 				{
 					Point2D<T> object_point2D(point2D.getX(), point2D.getY());
@@ -146,7 +150,10 @@ class Point2D
 								std::cerr << "Error! The input does not have a valid value." << std::endl;
 							}
 					else
-						std::cerr << "A valid memory address was not provided." << std::endl;
+						{
+							std::cerr << "A valid memory address was not provided." << std::endl;
+							throw std::invalid_argument("The memory location must be valid and not a null pointer.");
+						}
 
 					std::cin.clear();
 					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
@@ -175,7 +182,10 @@ class Point2D
 							std::cout << "Value entered:\t[" << *ptr_value << "]. OK!" << std::endl;
 						}
 					else
-						std::cerr << std::endl << "A valid memory address was not provided." << std::endl;
+						{
+							std::cerr << std::endl << "A valid memory address was not provided." << std::endl;
+							throw std::invalid_argument("The memory location must be valid and not a null pointer.");
+						}
 
 					return *ptr_value;
 				}
@@ -304,6 +314,8 @@ class Point3D : public Point2D<T>
 					this->see(); this->view(); this->watch(); return *this;
 				}
 
+			Point3D<T> operator+()
+				{return Point3D<T>((*this).getX(), (*this).getY(), (*this).z);}
 			Point3D<T> operator+(const Point3D<T>& point3D)
 				{
 					Point3D<T> object_point3D(point3D.getX(), point3D.getY(), point3D.getZ());
@@ -322,6 +334,8 @@ class Point3D : public Point2D<T>
 			Point3D<T>& operator--()	{--this->getX(); --this->getY(); --(*this).z; return *this;}
 			Point3D<T>& operator--(int)	{this->getX()--; this->getY()--; this->z--; return *this;}
 
+			Point3D<T> operator-()
+				{return Point3D<T>(-(*this).getX(), -(*this).getY(), -(*this).z);}
 			Point3D<T> operator-(const Point3D<T>& point3D)
 				{
 					Point3D<T> object_point3D(point3D.getX(), point3D.getY(), point3D.getZ());
@@ -422,6 +436,8 @@ class Point3D : public Point2D<T>
 
 			virtual void reset()		{Point2D<T>::reset(); this->z = V_ZERO;}
 
+			void setXYZ(const T& _x = V_ZERO, const T& _y = V_ZERO, const T& _z = V_ZERO)
+				{this->setX(_x); this->setY(_y); this->z = _z;}
 			void setZ(const T &_z = V_ZERO)	{(*this).z = _z;}
 
 			virtual void see()	const
