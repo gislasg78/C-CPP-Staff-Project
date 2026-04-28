@@ -18,7 +18,7 @@ class Hire
 				length = _length;
 				data = new char[length]();
 
-				for (size_t i{}; i < length; i++)
+				for (size_t i{}; i < length && data; i++)
 					data[i] = _data[i];
 			}
 			else
@@ -55,13 +55,16 @@ std::ostream& operator<< (std::ostream& os, const Hire& hire)
 
 Hire& Hire::operator= (const Hire& hire)
 {
-	Hire::~Hire();
+	if (this != &hire)
+	{
+		Hire::~Hire();
 
-	length = hire.length;
-	data = new char[length]();
+		length = hire.length;
+		data = new char[length]();
 
-	for (size_t i{}; i < length; i++)
-		data[i] = hire.data[i];
+		for (size_t i{}; i < length && data; i++)
+			data[i] = hire.data[i];
+	}
 
 	return *this;
 };
@@ -81,6 +84,18 @@ int main()
 
 	std::cout << std::endl << "Employee = Alexander." << std::endl;
 	employee = alex;
+	std::cout << employee;
+
+	std::cout << std::endl << "Alexander = Employee." << std::endl;
+	alex = employee;
+	std::cout << alex;
+
+	std::cout << std::endl << "Alexander = Alexander." << std::endl;
+	alex = alex;
+	std::cout << alex;
+
+	std::cout << std::endl << "Employee = Employee." << std::endl;
+	employee = employee;
 	std::cout << employee;
 
 	return V_ZERO;
