@@ -1,5 +1,6 @@
 #include <cstring>
 #include <iostream>
+#include <new>
 
 constexpr size_t	V_NINE	{9};
 constexpr size_t	V_ONE	{1};
@@ -17,17 +18,31 @@ class Hire
 			if (_data && _length)
 			{
 				length = _length;
-				data = new char[length + V_ONE]();
 
-				for (size_t i{}, j{}; data && i < length && j < std::strlen(_data); i++, j++)
-					data[i] = _data[j];
+				if ((data = new (std::nothrow) char[length + V_ONE]()))
+				{
+					for (size_t i{}, j{}; data && i < length && j < std::strlen(_data); i++, j++)
+						data[i] = _data[j];
 
-				data[length] = V_ZERO;
+					data[length] = V_ZERO;
+				}
+				else
+				{
+					std::cerr << std::endl << "It is not possible to allocate new memory blocks." << std::endl;
+					throw std::invalid_argument("The memory allocation has failed.");
+				}
+
 			}
 			else
 			{
 				length = V_ONE;
-				data = new char[length]();
+
+				if ((data = new char[length]()));
+				else
+					{
+						std::cerr << std::endl << "It is not possible to allocate new memory blocks." << std::endl;
+						throw std::bad_alloc();
+					}
 			}
 		}
 
@@ -63,12 +78,19 @@ Hire& Hire::operator= (const Hire& hire)
 		Hire::~Hire();
 
 		length = hire.length;
-		data = new char[length + V_ONE]();
 
-		for (size_t i{}, j{}; data && i < length && j < std::strlen(hire.data); i++, j++)
-			data[i] = hire.data[j];
+		if ((data = new (std::nothrow) char[length + V_ONE]()))
+		{
+			for (size_t i{}, j{}; data && i < length && j < std::strlen(hire.data); i++, j++)
+				data[i] = hire.data[j];
 
-		data[length] = V_ZERO;
+			data[length] = V_ZERO;
+		}
+		else
+		{
+			std::cerr << std::endl << "It is not possible to allocate new memory blocks." << std::endl;
+			throw std::runtime_error("The memory allocation has failed.");
+		}
 	}
 
 	return *this;
