@@ -61,6 +61,8 @@ class Circle
 					this->see(); this->view(); this->watch(); return *this;
 				}
 
+			Circle<T> operator+()	const
+				{return Circle<T>((*this).radius);}
 			Circle<T> operator+(const Circle<T>& circle)
 				{
 					Circle<T> object_circle(circle.getRadius());
@@ -77,6 +79,8 @@ class Circle
 			Circle<T>& operator--()			{--(*this).radius; return *this;}
 			Circle<T>& operator--(int)		{this->radius--; return *this;}
 
+			Circle<T> operator-()	const
+				{return Circle<T>(-this->radius);}
 			Circle<T> operator-(const Circle<T>& circle)
 				{
 					Circle<T> object_circle(circle.getRadius());
@@ -113,8 +117,8 @@ class Circle
 			operator int()			const	{return this->id;}
 			operator double()		const	{return this->PI;}
 
-			const T area()			const	{return (PI * this->radius * (*this).radius);}
-			const T perimeter()		const	{return (V_TWO * PI * (*this).radius);}
+			const T area()			const	{return static_cast<T>(PI * this->radius * (*this).radius);}
+			const T perimeter()		const	{return static_cast<T>(V_TWO * PI * (*this).radius);}
 
 			virtual void capture()
 				{
@@ -153,7 +157,10 @@ class Circle
 								std::cerr << "Error! The input does not have a valid value." << std::endl;
 							}
 					else
-						std::cerr << "A valid memory address was not provided." << std::endl;
+						{
+							std::cerr << "A valid memory address was not provided." << std::endl;
+							throw std::invalid_argument("The memory location must be valid and not a null pointer.");
+						}
 
 					std::cin.clear();
 					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
@@ -182,7 +189,10 @@ class Circle
 							std::cout << "Value entered:\t[" << *ptr_value << "]. OK!" << std::endl;
 						}
 					else
-						std::cerr << std::endl << "A valid memory address was not provided." << std::endl;
+						{
+							std::cerr << std::endl << "A valid memory address was not provided." << std::endl;
+							throw std::invalid_argument("The memory location must be valid and not a null pointer.");
+						}
 
 					return *ptr_value;
 			}
@@ -313,6 +323,8 @@ class Cylinder : public Circle<T>
 					this->see(); this->view(); this->watch(); return *this;
 				}
 
+			Cylinder<T> operator+()	const
+				{return Cylinder<T>(this->height, this->getRadius());}
 			Cylinder<T> operator+(const Cylinder<T>& cylinder)
 				{
 					Cylinder<T> object_cylinder(cylinder.getHeight(), cylinder.getRadius());
@@ -330,6 +342,8 @@ class Cylinder : public Circle<T>
 			Cylinder<T>& operator--()		{--(*this).getRadius(); --(*this).height; return *this;}
 			Cylinder<T>& operator--(int)		{this->getRadius()++; this->height--; return *this;}
 
+			Cylinder<T> operator-()	const
+				{return Cylinder<T>(-(*this).height, -(*this).getRadius());}
 			Cylinder<T> operator-(const Cylinder<T>& cylinder)
 				{
 					Cylinder<T> object_cylinder(cylinder.getHeight(), cylinder.getRadius());
@@ -452,7 +466,7 @@ class Cylinder : public Circle<T>
 					Circle<T>::view();
 				}
 
-			const T volume()		const		{return (this->area() * this->height);}
+			const T volume()		const		{return static_cast<T>(this->area() * this->height);}
 
 			virtual void watch()		const override
 				{
