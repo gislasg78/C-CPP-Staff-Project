@@ -1,8 +1,9 @@
+#include <cstring>
 #include <iostream>
 
-constexpr size_t V_ZERO {};
-constexpr size_t V_ONE	{1};
-constexpr size_t V_TEN  {10};
+constexpr size_t	V_NINE	{9};
+constexpr size_t	V_ONE	{1};
+constexpr size_t	V_ZERO	{};
 
 class Hire
 {
@@ -16,10 +17,12 @@ class Hire
 			if (_data && _length)
 			{
 				length = _length;
-				data = new char[length]();
+				data = new char[length + V_ONE]();
 
-				for (size_t i{}; i < length && data; i++)
-					data[i] = _data[i];
+				for (size_t i{}, j{}; data && i < length && j < std::strlen(_data); i++, j++)
+					data[i] = _data[j];
+
+				data[length] = V_ZERO;
 			}
 			else
 			{
@@ -32,9 +35,9 @@ class Hire
 		{
 			if (data && length)
 			{
+				length = V_ZERO;
 				delete[] data;
 				data = nullptr;
-				length = V_ZERO;
 			}
 		}
 
@@ -60,10 +63,12 @@ Hire& Hire::operator= (const Hire& hire)
 		Hire::~Hire();
 
 		length = hire.length;
-		data = new char[length]();
+		data = new char[length + V_ONE]();
 
-		for (size_t i{}; i < length && data; i++)
-			data[i] = hire.data[i];
+		for (size_t i{}, j{}; data && i < length && j < std::strlen(hire.data); i++, j++)
+			data[i] = hire.data[j];
+
+		data[length] = V_ZERO;
 	}
 
 	return *this;
@@ -73,7 +78,7 @@ int main()
 {
 	std::cout << "Creation of objects of the type 'Hire'." << std::endl;
 
-	Hire alex("Alexander", V_TEN);
+	Hire alex("Alexander", V_NINE);
 	Hire employee;
 
 	std::cout << std::endl << "Alexander." << std::endl;
