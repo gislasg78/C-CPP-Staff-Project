@@ -1,12 +1,21 @@
 #include <iostream>
 
+constexpr int V_FIVE {5};
+constexpr int V_TEN  {10};
 constexpr int V_ZERO {};
 
 class Base
 {
 	public:
+		int num{};
+
+		Base(int _num = V_ZERO) : num(_num) {};
+
 		virtual void f()
-		{std::cout << "+ Base.\n";}
+		{
+			std::cout << "+ Base." << std::endl;
+			std::cout << "\t* Value: [" << num << "]." << std::endl;
+		}
 
 		virtual ~Base() = default;
 };
@@ -14,8 +23,15 @@ class Base
 class Derived : public Base
 {
 	public:
+		int num{};
+
+		Derived(int _num = V_ZERO) : num(_num) {};
+
 		void f()
-		{std::cout << "- Derived.\n";}
+		{
+			std::cout << "- Derived." << std::endl;
+			std::cout << "\t* Value: [" << num << "]." << std::endl;
+		}
 
 		virtual ~Derived() = default;
 };
@@ -27,14 +43,15 @@ int main()
 
 	/* Normal assignement. */
 	std::cout << std::endl << "Normal assignment." << std::endl;
-	Base *b = new Base;
+	Base *b = new Base{V_FIVE};
 	b->f();
-	Derived *d = new Derived;
+
+	Derived *d = new Derived{V_TEN};
 	d->f();
 
 	/* Polymorfism. */
 	std::cout << std::endl << "Polymorfism." << std::endl;
-	Base *bd = new Derived;
+	Base *bd = new Derived{V_TEN};
 	bd->f();
 	bd->Base::f();
 
