@@ -14,7 +14,7 @@ class Base
 		virtual void f()
 		{
 			std::cout << "+ Base." << std::endl;
-			std::cout << "\t* Value: [" << num << "]." << std::endl;
+			std::cout << '\t' << "* Value: [" << num << "]." << std::endl;
 		}
 
 		virtual ~Base() = default;
@@ -27,10 +27,10 @@ class Derived : public Base
 
 		Derived(int _num = V_ZERO) : num(_num) {};
 
-		void f()
+		void f() override
 		{
 			std::cout << "- Derived." << std::endl;
-			std::cout << "\t* Value: [" << num << "]." << std::endl;
+			std::cout << '\t' << "* Value: [" << num << "]." << std::endl;
 		}
 
 		virtual ~Derived() = default;
@@ -90,6 +90,7 @@ int main()
 	Derived *bbdd = static_cast<Derived*>(d);
 	bbdd->f();
 
+	/* Deleting assigned pointers. */
 	delete b;
 	delete d;
 	delete bd;
