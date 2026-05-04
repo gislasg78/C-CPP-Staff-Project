@@ -25,7 +25,7 @@ class Derived : public Base
 	public:
 		int num{};
 
-		Derived(int _num = V_ZERO) : num(_num) {};
+		Derived(int _num = V_ZERO) : Base(_num), num(_num) {};
 
 		void f() override
 		{
