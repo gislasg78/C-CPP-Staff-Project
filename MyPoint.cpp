@@ -574,7 +574,7 @@ class Point3D : public Point2D<T>
 			operator T()	const
 				{
 					return (std::is_integral<T>::value) ? (*this).z : (std::is_floating_point<T>::value)
-					? ((*this).getX()) ? static_cast<T>((*this).getX()) / static_cast<T>((*this).getY()) : V_ZERO : V_ZERO;
+					? ((*this).getY()) ? static_cast<T>((*this).getX()) / static_cast<T>((*this).getY()) : V_ZERO : V_ZERO;
 				}
 
 			virtual void capture()
