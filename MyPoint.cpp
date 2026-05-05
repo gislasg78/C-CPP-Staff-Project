@@ -203,8 +203,16 @@ class Point2D
 			virtual void capture()
 				{
 					std::cout << "Capture the coordinates of a 'Point2D' object." << std::endl;
-					std::cout << "+ X Coord = "; (*this).x = (*this).enter_a_data(&this->x);
-					std::cout << "+ Y Coord = "; this->y = this->enter_a_data(&(*this).y);
+
+					std::cout << "+ X Coord = ";
+					try {(*this).x = (*this).enter_a_data(&this->x);}
+					catch (const std::exception& e)
+					{std::cout << "Exception: [" << e.what() << "]." << std::endl;}
+
+					std::cout << "+ Y Coord = ";
+					try {this->y = this->enter_a_data(&(*this).y);}
+					catch (const std::exception& e)
+					{std::cout << "Exception: [" << e.what() << "]." << std::endl;}
 				}
 
 			template <typename C = T>
@@ -241,12 +249,13 @@ class Point2D
 									*ptr_data = V_ZERO;
 									std::cerr << "Error! The input does not have a valid value." << std::endl;
 									std::cerr << "Default value assigned to the variable: [" << *ptr_data << "]." << std::endl;
+									throw std::invalid_argument("Invalid captured value!");
 								}
 						}
 					else
 						{
 							std::cerr << "A valid memory address was not provided." << std::endl;
-							throw std::invalid_argument("The memory location must be valid and not a null pointer.");
+							throw std::runtime_error("The memory location must be valid and not a null pointer.");
 						}
 
 					std::cin.clear();
@@ -278,7 +287,7 @@ class Point2D
 					else
 						{
 							std::cerr << std::endl << "A valid memory address was not provided." << std::endl;
-							throw std::invalid_argument("The memory location must be valid and not a null pointer.");
+							throw std::runtime_error("The memory location must be valid and not a null pointer.");
 						}
 
 					return (ptr_value) ? *ptr_value : V_ZERO;
@@ -580,7 +589,12 @@ class Point3D : public Point2D<T>
 			virtual void capture()
 				{
 					std::cout << "Capture the coordinates of a 'Point3D' object." << std::endl;
-					std::cout << "+ Z Coord = "; this->z = this->enter_a_data(&this->z);
+
+					std::cout << "+ Z Coord = ";
+					try {this->z = this->enter_a_data(&this->z);}
+					catch (const std::exception& e)
+					{std::cout << "Exception: [" << e.what() << "]." << std::endl;}
+
 					Point2D<T>::capture();
 				}
 
@@ -678,7 +692,9 @@ int main()
 		/* Initial header messages. */
 		std::cout << "Creating 'Point2D' objects on an array." << std::endl;
 		std::cout << "How many 'Point2D' do you want to create? : ";
-		quantity = Point2D<int>::enter_a_value(&quantity);
+		try {quantity = Point2D<int>::enter_a_data(&quantity);}
+		catch (const std::exception& e)
+		{std::cout << "Exception: [" << e.what() << "]." << std::endl;}
 
 		/* The dynamic array of pointers to objects of type 'Point2D' is created. */
 		Point2D<int> **array_Point2D = new Point2D<int>* [quantity];
@@ -687,13 +703,18 @@ int main()
 		for (int idx = V_ZERO; idx < quantity; idx++)
 			{
 				std::cout << std::endl << "'Point2D' #: [" << idx + V_ONE << "] of: [" << quantity << "]." << std::endl;
-				std::cout << "+ x = "; x = Point2D<int>::enter_a_value(&x);
-				std::cout << "+ y = "; y = Point2D<int>::enter_a_value(&y);
-				std::cout << "+ z = "; z = Point2D<int>::enter_a_value(&z);
+				std::cout << "+ x = ";
+				try {x = Point2D<int>::enter_a_value(&x);} catch (const std::exception& e) {std::cout << "Exception: [" << e.what() << "]." << std::endl;}
+
+				std::cout << "+ y = ";
+				try {y = Point2D<int>::enter_a_value(&y);} catch (const std::exception& e) {std::cout << "Exception: [" << e.what() << "]." << std::endl;}
+
+				std::cout << "+ z = ";
+				try {z = Point2D<int>::enter_a_value(&z);} catch (const std::exception& e) {std::cout << "Exception: [" << e.what() << "]." << std::endl;}
 
 				array_Point2D[idx] = new Point3D<int>(idx + V_ONE, x, y, z);
 
-				std::cout << std::endl << "Object created and assigned." << std::endl;
+				std::cout << std::endl << "'Point3D' object created and assigned of 'Point2D' type." << std::endl;
 				std::cout << "+ ID Value:\t[" << static_cast<int>(*array_Point2D[idx]) << "]." << std::endl;
 				std::cout << "+ Values:\tId: [" << array_Point2D[idx]->getId() << "].\t(x = [" << (*array_Point2D[idx]).getX() << "], y = [" << (*array_Point2D[idx]).getY() << "])." << std::endl;
 				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
