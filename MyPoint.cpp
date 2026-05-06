@@ -249,6 +249,10 @@ class Point2D
 									*ptr_data = V_ZERO;
 									std::cerr << "Error! The input does not have a valid value." << std::endl;
 									std::cerr << "Default value assigned to the variable: [" << *ptr_data << "]." << std::endl;
+
+									std::cin.clear();
+									std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+
 									throw std::invalid_argument("Invalid captured value!");
 								}
 						}
@@ -257,9 +261,6 @@ class Point2D
 							std::cerr << "A valid memory address was not provided." << std::endl;
 							throw std::runtime_error("The memory location must be valid and not a null pointer.");
 						}
-
-					std::cin.clear();
-					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
 
 					return (ptr_data) ? *ptr_data : V_ZERO;
 				};
