@@ -27,7 +27,7 @@ class Point2D
 				{point2D.print(); return out;}
 
 		protected:
-			static int counter;
+			static size_t counter;
 
 		public:
 			Point2D() : id(V_ZERO), x(V_ZERO), y(V_ZERO)
@@ -297,7 +297,7 @@ class Point2D
 			virtual void explore()
 				{std::cout << *this << std::endl; std::cin >> *this; std::cout << *this << std::endl;}
 
-			const int& getCounter()	const	{return (*this).counter;}
+			const size_t& getCounter()	const	{return (*this).counter;}
 			const int& getId()	const	{return this->id;}
 
 			template <typename U = T>
@@ -374,7 +374,7 @@ class Point2D
 
 /* Initialization of the static accounting variable of the 'Point2D' class. */
 template <typename T>
-int Point2D<T>::counter = V_ZERO;
+size_t Point2D<T>::counter = V_ZERO;
 
 /* Derived class of the 'Point2D' type thru 'Point3D' class. */
 template <typename T>
