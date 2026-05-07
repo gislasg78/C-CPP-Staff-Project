@@ -546,16 +546,16 @@ class Point3D : public Point2D<T>
 				}
 			Point3D<T>& operator%=(const Point3D<T>& point3D)
 				{
-					(*this).getX() = (point3D.getX()) ? static_cast<int>(this->getX()) / static_cast<int>(point3D.getX()) : V_ZERO;
-					(*this).getY() = (point3D.getY()) ? static_cast<int>(this->getY()) / static_cast<int>(point3D.getY()) : V_ZERO;
-					this->z = (point3D.getZ()) ? static_cast<int>(this->z) / static_cast<int>(point3D.getZ()) : V_ZERO;
+					(*this).getX() = (point3D.getX()) ? static_cast<int>(this->getX()) % static_cast<int>(point3D.getX()) : V_ZERO;
+					(*this).getY() = (point3D.getY()) ? static_cast<int>(this->getY()) % static_cast<int>(point3D.getY()) : V_ZERO;
+					this->z = (point3D.getZ()) ? static_cast<int>(this->z) % static_cast<int>(point3D.getZ()) : V_ZERO;
 					return *this;
 				}
 			Point3D<T>& operator%=(const T& value)
 				{
-					this->getX() = (value) ? static_cast<int>((*this).getX()) / static_cast<int>(value) : V_ZERO;
-					this->getY() = (value) ? static_cast<int>((*this).getY()) / static_cast<int>(value) : V_ZERO;
-					this->z = (value) ? static_cast<int>((*this).z) / static_cast<int>(value) : V_ZERO;
+					this->getX() = (value) ? static_cast<int>((*this).getX()) % static_cast<int>(value) : V_ZERO;
+					this->getY() = (value) ? static_cast<int>((*this).getY()) % static_cast<int>(value) : V_ZERO;
+					this->z = (value) ? static_cast<int>((*this).z) % static_cast<int>(value) : V_ZERO;
 					return *this;
 				}
 
@@ -629,7 +629,7 @@ class Point3D : public Point2D<T>
 
 			template <typename U = T>
 			typename std::enable_if<std::is_floating_point<T>::value, U>::type
-			getValue()	const		{return (this->getY()) ? static_cast<U>(this->getX() / this->getY()) : V_ZERO;}
+			getValue()	const		{return (this->getY()) ? static_cast<U>(this->getX()) / static_cast<U>(this->getY()) : V_ZERO;}
 
 			template <typename U = T>
 			typename std::enable_if<std::is_integral<T>::value, U>::type
