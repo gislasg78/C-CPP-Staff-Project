@@ -157,11 +157,12 @@ int main()
 		/* Initial header messages. */
 		Complex<double, double> *p_complex {new Complex<double, double>{}};
 		std::cout << "Program that tests with exceptions." << std::endl;
-		std::cout << "Enter a complex number of the exact form: 'a+bi': ";
 
 		/* Verify if it is feasible to allocate memory to object number 'Complex'. */
 		if ((p_complex))
 			{
+				std::cout << "Enter a complex number of the exact form: 'a+bi': ";
+
 				/* Testing and obtaining the complex number of the form: 'a+bi'. */
 				try
 					{
