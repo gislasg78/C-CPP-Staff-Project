@@ -42,27 +42,58 @@ class Complex
 
 		protected:
 			/* Static variable for counting class instances. */
-			static size_t counter;
+			static int counter;
 
 		public:
 			/* Default constructor. */
 			Complex() : real(V_ZERO), imaginary(V_ZERO)				{(*this).counter++;}
 
 			/* Constructor with mandatory parameters. */
-			Complex(TX _real, TY _imaginary) : real(_real), imaginary(_imaginary)	{this->counter++;}
+			Complex(TX _real, TY _imaginary = V_ZERO) : real(_real), imaginary(_imaginary)
+				{this->counter++;}
+
+			/* Copy Builder. */
+			Complex(const Complex<TX, TY>& complex) : real(complex.real), imaginary(complex.imaginary)
+				{this->counter++;}
+
+			/* Motion Builder. */
+			Complex(Complex<TX, TY>&& complex) : real(complex.real), imaginary(complex.imaginary)
+				{(*this).counter--; complex.reset();}
+
+			/* Overloaded copy assignment operator. */
+			Complex<TX, TY>& operator= (const Complex<TX, TY>& complex)
+				{this->copy(complex); return *this;}
+
+			/* Overloaded movement assignment operator. */
+			Complex<TX, TY>& operator= (Complex<TX, TY>&& complex)
+				{this->counter--; (*this).copy(complex); complex.reset(); return *this;}
+
+			/* Member function to copy objects. */
+			virtual Complex<TX, TY>& copy (const Complex<TX, TY>& complex)
+				{this->real = complex.getReal(); this->imaginary = complex.getImaginary(); return *this;}
 
 			/* Functions that access the member variables of the 'Complex' class. */
-			const size_t& getCounter()	const		{return (*this).counter;}
+			const int& getCounter()		const			{return (*this).counter;}
 
-			const TX& getReal()		const		{return this->real;}
-			TX& getReal()					{return (*this).real;}
+			const TX& getReal()		const			{return this->real;}
+			TX& getReal()						{return (*this).real;}
 
-			const TY& getImaginary()	const		{return this->imaginary;}
-			TY& getImaginary()				{return (*this).imaginary;}
+			const TY& getImaginary()	const			{return this->imaginary;}
+			TY& getImaginary()					{return (*this).imaginary;}
+
+			/* Member function to move objects. */
+			virtual Complex<TX, TY>& move (Complex<TX, TY>&& complex)
+				{(*this).counter--; this->copy(complex); complex.reset(); return *this;}
+
+			/* Member function to reset the member variables of the number class 'Complex'. */
+			void reset()						{(*this).real = (*this).imaginary = V_ZERO;}
 
 			/* Modifying functions to the member variables of the 'Complex' class. */
-			void setReal (const TX& _real)			{this->real = _real;}
-			void setImaginary (const TY& _imaginary)	{this->imaginary = _imaginary;}
+			void setBoth (const TX& _real = V_ZERO, const TY& _imaginary = V_ZERO)
+				{(*this).real = _real; (*this).imaginary = _imaginary;}
+
+			void setReal (const TX& _real = V_ZERO)			{this->real = _real;}
+			void setImaginary (const TY& _imaginary = V_ZERO)	{this->imaginary = _imaginary;}
 
 			/* Virtual destructor for polymorphism and inheritance. */
 			virtual ~Complex() = default;
@@ -118,7 +149,7 @@ std::ostream& operator<< (std::ostream& out, const Complex<T, U>& complex)
 
 /* Initialization of the static variable for counting class instances. */
 template <typename T, typename U>
-size_t Complex<T, U>::counter {V_ZERO};
+int Complex<T, U>::counter {V_ZERO};
 
 //Main function.
 int main()
@@ -128,36 +159,43 @@ int main()
 		std::cout << "Program that tests with exceptions." << std::endl;
 		std::cout << "Enter a complex number of the exact form: 'a+bi': ";
 
-		/* Testing and obtaining the complex number of the form: 'a+bi'. */
-		try
+		/* Verify if it is feasible to allocate memory to object number 'Complex'. */
+		if ((p_complex))
 			{
+				/* Testing and obtaining the complex number of the form: 'a+bi'. */
 				try
 					{
-						std::cin >> *p_complex;
+						try
+							{
+								std::cin >> *p_complex;
+							}
+						catch (const std::exception& e)
+							{
+								std::cerr << "Exception thrown: " << '\x5b' << e.what() << '\x5d' << '\x2e' << std::endl;
+								throw e;
+							}
 					}
 				catch (const std::exception& e)
 					{
 						std::cerr << "Exception thrown: " << '\x5b' << e.what() << '\x5d' << '\x2e' << std::endl;
-						throw e;
 					}
-			}
-		catch (const std::exception& e)
-			{
-				std::cerr << "Exception thrown: " << '\x5b' << e.what() << '\x5d' << '\x2e' << std::endl;
-			}
 
-		//Sets flag on input as invalid complex number format.
-		if (std::cin.fail())
-			{
-				std::cerr << std::endl << "Mistake! Incorrect input complex number format." << std::endl;
+				/* Sets flag on input as invalid complex number format. */
+				if (std::cin.fail())
+					{
+						std::cerr << std::endl << "Mistake! Incorrect input complex number format." << std::endl;
+					}
+				else
+					{
+						std::cout << *p_complex;
+						std::cout << std::endl << "Complex number entered: " << '\x5b' << (*p_complex).getReal() << '\x5d' << " + " << '\x5b' << (*p_complex).getImaginary() << '\x5d' << "i" << '\x2e' << std::endl;
+					}
+
+				/* Delete the pointer that was successfully created. */
+				delete p_complex;
 			}
 		else
-			{
-				std::cout << *p_complex;
-				std::cout << std::endl << "Complex number entered: " << '\x5b' << (*p_complex).getReal() << '\x5d' << " + " << '\x5b' << (*p_complex).getImaginary() << '\x5d' << "i" << '\x2e' << std::endl;
-			}
-
-		delete p_complex;
+			std::cerr << std::endl << "There is not enough dynamic memory to allocate to the pointer for the number 'Complex'." << std::endl;
 
 		return V_ZERO;
 	}
