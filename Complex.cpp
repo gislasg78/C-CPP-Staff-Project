@@ -68,6 +68,14 @@ class Complex
 			Complex<TX, TY>& operator= (Complex<TX, TY>&& complex)
 				{this->counter--; (*this).copy(complex); complex.reset(); return *this;}
 
+			/* Overloading the addition operator. */
+			Complex<TX, TY> operator+ (Complex<TX, TY>& complex)
+				{return Complex<TX, TY>{this->real + complex.getReal(), this->imaginary + complex.getImaginary()};}
+
+			/* Overloading the subtraction operator. */
+			Complex<TX, TY> operator- (Complex<TX, TY>& complex)
+				{return Complex<TX, TY>{(*this).real - complex.getReal(), (*this).imaginary - complex.getImaginary()};}
+
 			/* Member function to copy objects. */
 			virtual Complex<TX, TY>& copy (const Complex<TX, TY>& complex)
 				{this->real = complex.getReal(); this->imaginary = complex.getImaginary(); return *this;}
@@ -156,11 +164,12 @@ int main()
 	{
 		/* Initial header messages. */
 		Complex<double, double> *p_complex {new Complex<double, double>{}};
-		std::cout << "Program that tests with exceptions." << std::endl;
 
 		/* Verify if it is feasible to allocate memory to object number 'Complex'. */
 		if ((p_complex))
 			{
+				std::cout << "Program that tests with exceptions." << std::endl;
+				std::cout << *p_complex << std::endl;
 				std::cout << "Enter a complex number of the exact form: 'a+bi': ";
 
 				/* Testing and obtaining the complex number of the form: 'a+bi'. */
