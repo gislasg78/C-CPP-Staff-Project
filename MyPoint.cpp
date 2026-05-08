@@ -389,7 +389,7 @@ class Point3D : public Point2D<T>
 				{(*this).counter--; point3D.reset();}
 
 			Point3D<T>& operator=(const T& value)
-				{(*this).z = value; return *this;}
+				{(*this).getX() = (*this).getY() = (*this).z = value; return *this;}
 			Point3D<T>& operator=(const Point3D<T> &point3D)
 				{this->copy(point3D); return *this;}
 			Point3D<T>& operator=(Point3D<T> &&point3D)
