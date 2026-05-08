@@ -72,8 +72,14 @@ class Complex
 			Complex<TX, TY> operator+ (Complex<TX, TY>& complex)
 				{return Complex<TX, TY>{this->real + complex.getReal(), this->imaginary + complex.getImaginary()};}
 
+			Complex<TX, TY> operator+ (Complex<TX, TY>&& complex)
+				{return Complex<TX, TY>{this->real + complex.getReal(), this->imaginary + complex.getImaginary()};}
+
 			/* Overloading the subtraction operator. */
 			Complex<TX, TY> operator- (Complex<TX, TY>& complex)
+				{return Complex<TX, TY>{(*this).real - complex.getReal(), (*this).imaginary - complex.getImaginary()};}
+
+			Complex<TX, TY> operator- (Complex<TX, TY>&& complex)
 				{return Complex<TX, TY>{(*this).real - complex.getReal(), (*this).imaginary - complex.getImaginary()};}
 
 			/* Member function to copy objects. */
