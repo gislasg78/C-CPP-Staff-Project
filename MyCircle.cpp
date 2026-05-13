@@ -61,6 +61,11 @@ class Circle
 					this->see(); this->view(); this->watch(); return *this;
 				}
 
+			const T operator[](const T& index) const
+				{
+					return (index) ? this->id : this->radius;
+				}
+
 			Circle<T> operator+() const
 				{return *this;}
 			Circle<T> operator+(const Circle<T>& circle) const
@@ -246,6 +251,7 @@ class Circle
 							str_value.erase(std::remove_if(str_value.begin(), str_value.end(), ::isspace), str_value.end());
 							std::stringstream(str_value) >> *ptr_value;
 
+							std::cout << "Characters:\t[" << std::cin.gcount() << "]." << std::endl;
 							std::cout << "Value entered:\t[" << *ptr_value << "]. OK!" << std::endl;
 						}
 					else
@@ -391,6 +397,11 @@ class Cylinder : public Circle<T>
 				{
 					std::cout << "Show the current values ​​of a 'Cylinder' object." << std::endl;
 					this->see(); this->view(); this->watch(); return *this;
+				}
+
+			const T operator[](const T& index) const
+				{
+					return (index) ? (*this).height : Circle<T>::getRadius();
 				}
 
 			Cylinder<T> operator+()	const
