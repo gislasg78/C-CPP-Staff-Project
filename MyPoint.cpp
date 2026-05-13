@@ -58,6 +58,11 @@ class Point2D
 					this->see(); this->view(); this->watch(); return *this;
 				}
 
+			const T operator[](const T& index) const
+				{
+					return (index) ? (*this).y : (*this).x;
+				}
+
 			Point2D<T> operator+() const
 				{return *this;}
 			Point2D<T> operator+(const Point2D<T>& point2D) const
@@ -259,6 +264,7 @@ class Point2D
 							str_value.erase(std::remove_if(str_value.begin(), str_value.end(), ::isspace), str_value.end());
 							std::stringstream(str_value) >> *ptr_value;
 
+							std::cout << "Characters:\t[" << std::cin.gcount() << "]." << std::endl;
 							std::cout << "Value entered:\t[" << *ptr_value << "]. OK!" << std::endl;
 						}
 					else
@@ -402,6 +408,11 @@ class Point3D : public Point2D<T>
 				{
 					std::cout << "Show the current values ​​of a 'Point3D' object." << std::endl;
 					this->see(); this->view(); this->watch(); return *this;
+				}
+
+			const T operator[](const T& index) const
+				{
+					return (index) ? (*this).getId() : (*this).getZ();
 				}
 
 			Point3D<T> operator+() const
