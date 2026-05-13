@@ -97,13 +97,19 @@ int main()
 	std::cout << std::endl << "* Laura's Info." << std::endl;
 	std::cout << "\t+ Counter:\t[" << laura.use_count() << "]." << std::endl;
 	std::cout << "\t+ Name:\t\t[" << laura->getName() << "]." << std::endl;
-	std::cout << "\t+ Partner:\t[" << laura->getPartner()->getName() << "]." << std::endl;
+
+	if (laura->getPartner())
+		std::cout << "\t+ Partner:\t[" << laura->getPartner()->getName() << "]." << std::endl;
+
 	enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "* Richard's Info." << std::endl;
 	std::cout << "\t+ Counter:\t[" << richard.use_count() << "]." << std::endl;
 	std::cout << "\t+ Name:\t\t[" << richard->getName() << "]." << std::endl;
-	std::cout << "\t+ Partner:\t[" << richard->getPartner()->getName() << "]." << std::endl;
+
+	if (richard->getPartner())
+		std::cout << "\t+ Partner:\t[" << richard->getPartner()->getName() << "]." << std::endl;
+
 	enter_a_pause("Press the ENTER key to continue...");
 
 	laura->printInfo();
@@ -119,13 +125,19 @@ int main()
 	std::cout << std::endl << "* Laura's Info." << std::endl;
 	std::cout << "\t+ Counter:\t[" << laura.use_count() << "]." << std::endl;
 	std::cout << "\t+ Name:\t\t[" << laura->getName() << "]." << std::endl;
-	std::cout << "\t+ Partner:\t[" << laura->getPartner()->getName() << "]." << std::endl;
+
+	if (laura->getPartner())
+		std::cout << "\t+ Partner:\t[" << laura->getPartner()->getName() << "]." << std::endl;
+
 	enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "* Richard's Info." << std::endl;
 	std::cout << "\t+ Counter:\t[" << richard.use_count() << "]." << std::endl;
 	std::cout << "\t+ Name:\t\t[" << richard->getName() << "]." << std::endl;
-	std::cout << "\t+ Partner:\t[" << richard->getPartner()->getName() << "]." << std::endl;
+
+	if (richard->getPartner())
+		std::cout << "\t+ Partner:\t[" << richard->getPartner()->getName() << "]." << std::endl;
+
 	enter_a_pause("Press the ENTER key to continue...");
 
 	laura->printInfo();
