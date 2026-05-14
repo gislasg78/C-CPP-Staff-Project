@@ -63,7 +63,7 @@ class Circle
 
 			const T operator[](const T& index) const
 				{
-					return (index) ? this->id : this->radius;
+					return (index) ? this->radius : static_cast<T>(this->id);
 				}
 
 			Circle<T> operator+() const
@@ -229,6 +229,9 @@ class Circle
 							std::cerr << "A valid memory address was not provided." << std::endl;
 							throw std::runtime_error("The memory location must be valid and not a null pointer.");
 						}
+
+					std::cin.clear();
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
 
 					return (ptr_data) ? *ptr_data : ZERO;
 				}
@@ -401,7 +404,7 @@ class Cylinder : public Circle<T>
 
 			const T operator[](const T& index) const
 				{
-					return (index) ? (*this).height : Circle<T>::getRadius();
+					return (index) ? Circle<T>::getRadius() : (*this).height;
 				}
 
 			Cylinder<T> operator+()	const
