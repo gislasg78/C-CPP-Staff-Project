@@ -243,6 +243,9 @@ class Point2D
 							throw std::runtime_error("The memory location must be valid and not a null pointer.");
 						}
 
+					std::cin.clear();
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+
 					return (ptr_data) ? *ptr_data : ZERO;
 				};
 
@@ -412,7 +415,7 @@ class Point3D : public Point2D<T>
 
 			const T operator[](const T& index) const
 				{
-					return (index) ? (*this).getId() : (*this).getZ();
+					return (index) ? (*this).getZ() : static_cast<int>((*this).getId());
 				}
 
 			Point3D<T> operator+() const
