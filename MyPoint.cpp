@@ -223,6 +223,7 @@ class Point2D
 						{
 							if (std::cin >> *ptr_data)
 								{
+									std::cout << "Characters:\t[" << std::cin.gcount() << "]." << std::endl;
 									std::cout << "Value entered:\t[" << *ptr_data << "]. OK!" << std::endl;
 								}
 							else
@@ -231,8 +232,11 @@ class Point2D
 									std::cerr << "Error! The input does not have a valid value." << std::endl;
 									std::cerr << "Default value assigned to the variable: [" << *ptr_data << "]." << std::endl;
 
-									std::cin.clear();
-									std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+									if (std::cin.fail())
+										{
+											std::cin.clear();
+											std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+										}
 
 									throw std::invalid_argument("Invalid captured value!");
 								}
