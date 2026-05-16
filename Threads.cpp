@@ -7,50 +7,44 @@
 #include <thread>
 
 /* Symbolic work constants. */
-#define	V_ONE_HUNDRED	100
-#define	V_TWO_HUNDRED	200
-#define V_ZERO 		0
+constexpr char	CARRIAGE_RETURN	{'\n'};
 
-/* Function to be executed in the first thread. */
-const int int_function_one(const int& int_loops, const int& int_delay)
+constexpr int	V_ONE_HUNDRED	{100};
+constexpr int	V_TWO_HUNDRED	{200};
+constexpr int	V_ONE		{1};
+constexpr int	V_TWO		{2};
+constexpr int	V_ZERO		{};
+
+/* Function to be executed in the thread. */
+const int int_function_count(const int& int_id, const int& int_loops, const int& int_delay, const char& chr_left, const char& chr_right)
 	{
-		int counter = V_ZERO;
+		int int_counter {V_ZERO};
 
-		for (int int_idx = V_ZERO; int_idx < int_loops; int_idx++)
+		for (int int_idx {V_ZERO}; int_idx < int_loops; int_idx++)
 			{
-				std::cout << "#1:\t(" << counter++ << ")." << std::endl;
-				std::this_thread::sleep_for(std::chrono::milliseconds(int_delay));	//Two hundred millisecond wait.
+				std::cout << "#" << int_id << ":\t" << chr_left << int_counter++ << chr_right << '\x2e' << std::endl;
+				std::this_thread::sleep_for(std::chrono::milliseconds(int_delay));
 			}
 
-		return counter;
-	}
-
-/* Function to be executed in the second thread. */
-const int int_function_two(const int& int_loops, const int& int_delay)
-	{
-		int counter = V_ZERO;
-
-		for (int int_idx = V_ZERO; int_idx < int_loops; int_idx++)
-			{
-				std::cout << "#2:\t[" << counter++ << "]." << std::endl;
-				std::this_thread::sleep_for(std::chrono::milliseconds(int_delay));	//One hundred millisecond wait.
-			}
-
-		return counter;
+		return int_counter;
 	}
 
 //Main function.
 int main()
 	{
+		/* Initial header message. */
 		std::cout << "Multithreaded testing system in C++." << std::endl;
 
 		/* Create three threads and assign them functions to execute. */
-		std::thread thread_one(int_function_one, V_ONE_HUNDRED, V_TWO_HUNDRED);
-		std::thread thread_two(int_function_two, V_TWO_HUNDRED, V_ONE_HUNDRED);
+		std::thread thread_one(int_function_count, V_ONE, V_ONE_HUNDRED, V_TWO_HUNDRED, '\x28', '\x29');
+		std::thread thread_two(int_function_count, V_TWO, V_TWO_HUNDRED, V_ONE_HUNDRED, '\x5b', '\x5d');
 
 		/* Wait for both created threads to finish their execution. */
 		thread_one.join();
 		thread_two.join();
+
+		std::cout << CARRIAGE_RETURN << "Done!" << CARRIAGE_RETURN;
+		std::cout << "This program has ended." << CARRIAGE_RETURN;
 
 		return V_ZERO;
 	}
