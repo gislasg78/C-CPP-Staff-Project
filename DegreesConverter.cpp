@@ -8,6 +8,7 @@
 #include <iostream>
 #include <limits>
 #include <sstream>
+#include <string_view>
 
 /* Unique character constants. */
 #define	CARRIAGE_RETURN		'\n'
@@ -54,7 +55,7 @@ const struct strct_conversion_messages_pairs
 	};
 
 /* Function to take breaks when strictly necessary. */
-void enter_a_pause(const std::string& str_Message)
+void enter_a_pause(std::string_view str_Message)
 	{
 		std::cout << str_Message;
 		std::cin.clear();
@@ -72,7 +73,10 @@ auto& getCalculations(const Converter& cnv_Conv, const std::function<T(T)> fn_My
 			{
 				/* Execute the function passed as an argument. */
 				const int index = static_cast<int>(cnv_Conv);
+
+				/* Results of the vision. */
 				*t_result = fn_MyFunction(*t_degrees);
+				const T t_outcomes[V_TWO] = {*t_degrees, *t_result};
 
 				/* Output of conversion message pairs. */
 				if (cnv_Conv >= Converter::Celsius_to_Fahrenheit && cnv_Conv <= Converter::Kelvin_to_Fahrenheit)
@@ -82,8 +86,11 @@ auto& getCalculations(const Converter& cnv_Conv, const std::function<T(T)> fn_My
 						std::cout << "+===+====+===+====+===+====+===+" << std::endl;
 						std::cout << "| Calculation results' degrees.|" << std::endl;
 						std::cout << "+===+====+===+====+===+====+===+" << std::endl;
-						std::cout << "| " << str_conversion_mesagges_pairs[index][V_ZERO].symbol_message_conversion << " " << str_conversion_mesagges_pairs[index][V_ZERO].message_conversion_message << ":\t[" << *t_degrees << "]." << std::endl;
-						std::cout << "| " << str_conversion_mesagges_pairs[index][V_ONE].symbol_message_conversion << " " << str_conversion_mesagges_pairs[index][V_ONE].message_conversion_message << ":\t[" << *t_result << "]." << std::endl;
+
+						/* Go through the two subscripts corresponding to the type of degrees to be converted. */
+						for (int idx {V_ZERO}; idx < V_TWO; idx++)
+							std::cout << "| " << str_conversion_mesagges_pairs[index][idx].symbol_message_conversion << " " << str_conversion_mesagges_pairs[index][idx].message_conversion_message << ":\t[" << t_outcomes[idx] << "]." << std::endl;
+
 						std::cout << "+---+----+---+----+---+----+---+" << std::endl;
 						std::cout << "| > Option:\t[" << index + V_ONE << "]." << std::endl;
 						std::cout << "+===+====+===+====+===+====+===+" << std::endl;
@@ -159,6 +166,7 @@ auto& getData(const std::string& str_Message, T *const ptr_value)
 				std::stringstream(str_value) >> *ptr_value;
 
 				/* Displays the value obtained at the end of the conversion. */
+				std::cout << "Characters:\t[" << std::cin.gcount() << "]." << std::endl;
 				std::cout << "Value entered:\t[" << *ptr_value << "]. OK!" << std::endl;
 			}
 		else
@@ -171,9 +179,9 @@ auto& getData(const std::string& str_Message, T *const ptr_value)
 int main()
 	{
 		/* Preliminary working variables. */
-		int int_option = V_ZERO;
-		double dbl_degrees = V_ZERO;
-		double dbl_result = V_ZERO;
+		int int_option {V_ZERO};
+		double dbl_degrees {V_ZERO};
+		double dbl_result {V_ZERO};
 
 		/* Anonymous function to convert from Celsius degrees to Fahrenheit. */
 		std::function<double(double)> fn_celsius_to_fahrenheit = [&](const double& dbl_num_degrees) -> double
@@ -217,7 +225,7 @@ int main()
 
 				/* Converts an enumerated class to a primitive integer type. */
 				int_option = getData<int>("Option: ", &int_option);
-				cnv_myConverter = static_cast<Converter>(--int_option);
+				cnv_myConverter = static_cast<Converter>(int_option - V_ONE);
 
 				/* Case selection based on the chosen option. */
 				switch (cnv_myConverter)
@@ -280,6 +288,10 @@ int main()
 
 					}
 			}
+
+		/* Program termination messages. */
+		std::cout << CARRIAGE_RETURN << "Done!" << CARRIAGE_RETURN;
+		std::cout << "This program has ended." << CARRIAGE_RETURN;
 
 		return V_ZERO;
 	}
