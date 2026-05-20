@@ -6,6 +6,7 @@
 #include <iostream>
 #include <limits>
 #include <sstream>
+#include <string_view>
 
 /* Symbolic work constants. */
 constexpr char	CARRIAGE_RETURN	{'\n'};
@@ -253,7 +254,7 @@ class Point2D
 					return (ptr_data) ? *ptr_data : ZERO;
 				};
 
-			static void enter_a_pause(const std::string& str_Message)
+			static void enter_a_pause(std::string_view str_Message)
 				{
 					std::cout << str_Message;
 					std::cin.clear();
