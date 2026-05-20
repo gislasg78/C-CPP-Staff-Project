@@ -7,13 +7,17 @@
 #include <iostream>
 #include <limits>
 #include <sstream>
+#include <string_view>
 
 /* Character constants. */
 constexpr char		CARRIAGE_RETURN	{'\n'};
 
+/* Template constants. */
+template <typename T>
+constexpr T		V_PI		{T(3.14159265359)};
+
 /* Symbolic work constants. */
 constexpr int		V_ONE		{1};
-constexpr double	V_PI		{3.14159265};
 constexpr int		V_TWO		{2};
 constexpr int		V_ZERO		{};
 
@@ -23,7 +27,7 @@ class Circle
 	{
 		private:
 			const int id {V_ZERO};
-			const double PI {V_PI};
+			const double PI {V_PI<double>};
 			T radius {V_ZERO};
 
 			friend std::istream &operator>> (std::istream& in, Circle<T> &circle)
@@ -240,7 +244,7 @@ class Circle
 					return (ptr_data) ? *ptr_data : ZERO;
 				}
 
-			static void enter_a_pause(const std::string& str_Message)
+			static void enter_a_pause(std::string_view str_Message)
 				{
 					std::cout << str_Message;
 					std::cin.clear();
