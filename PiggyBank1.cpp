@@ -22,7 +22,7 @@ class PiggyBank
 	public:
 		PiggyBank() = default;
 		PiggyBank(const T& _coins) : ptr_coins(new T{_coins}) {}
-		PiggyBank(const PiggyBank& _piggybank)
+		PiggyBank(const PiggyBank& _piggybank) : ptr_coins{nullptr}
 		{
 			if (_piggybank.ptr_coins)
 			{
@@ -56,7 +56,7 @@ class PiggyBank
 			{
 				release();
 
-				if (ptr_coins == nullptr)
+				if (ptr_coins == nullptr && _piggybank.ptr_coins)
 				{
 					ptr_coins = _piggybank.ptr_coins;
 					_piggybank.ptr_coins = nullptr;
@@ -185,7 +185,14 @@ int main()
 	enter_a_pause("Press the ENTER key to continue...");
 
 	my_money_box.release();
+	my_money_box.print();
+	enter_a_pause("Press the ENTER key to continue...");
+
 	my_money_box.reassignment();
+	my_money_box.print();
+	enter_a_pause("Press the ENTER key to continue...");
+
+	my_money_box.addCoins(1000).addCoins(2000).addCoins(5000).subtractCoins(500);
 	my_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
