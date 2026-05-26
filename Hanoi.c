@@ -1,7 +1,7 @@
 /**************** Hanoi Towers recursive generator. **************
  ** Source Code:	Hanoi.c					**
  ** Author:		Gustavo Islas Gálvez.			**
- ** Creation Date:	Tuesday, December 31, 2024.		**
+ ** Creation Date:	Wednesday, December 31, 2025.		**
  ** Purpose:		The purpose of this program is, through	**
  **			recursive calls, to solve the enigma of **
  **			the Towers of Hanoi, which basically	**
@@ -37,13 +37,12 @@
 
 //Minimum and maximum number of dishes on the pillars of the Towers of Hanoi.
 #define	V_LOWER_LIMIT_DISHES	1
-#define	V_UPPER_LIMIT_DISHES	29
-
+#define	V_UPPER_LIMIT_DISHES	28
 
 /*****************************************************************
- ** Function:           size_t szt_potency			**
- **				(const size_t size_x,		**
- **				 const size_t size_y).		**
+ ** Function:           int int_potency				**
+ **				(const int int_x,		**
+ **				 const int int_y).		**
  ** Explanation:        Returns a base coefficient raised to the**
  **                     specified power recursively by means of **
  **                     successive multiplications or divisions.**
@@ -52,18 +51,18 @@
  **                     recursively in the form:                **
  **								**
  **                             (int_exp > V_ZERO) ?            **
- **                                     dbl_potency(dbl_base,   **
+ **                                     int_potency(int_base,   **
  **                                     int_exp + V_MINUS_ONE)  **
- **                                     * dbl_base :            **
+ **                                     * int_base :            **
  **                             (int_exp == V_ZERO) ? V_ONE :   **
  **                             (int_exp < V_ZERO) ?            **
- **                                     dbl_potency(dbl_base,   **
+ **                                     int_potency(int_base,   **
  **                                     int_exp + V_ONE)        **
- **                                     / dbl_base :            **
+ **                                     / int_base :            **
  **                                     V_ONE;                  **
  **								**
- ** Input Parms:        const size_t szt_x.			**
- **			const size_t szt_y.			**
+ ** Input Parms:        const int int_x.			**
+ **			const int int_y.			**
  ** Output Parms:       None.                                   **
  ** Result:             The base raised to a positive power     **
  **                     results in a series of products in      **
@@ -72,19 +71,21 @@
  **                     series of quotients in sequence from 1  **
  **                     to '-n' .                               **
 *****************************************************************/
-size_t szt_potency(const size_t szt_x, const size_t szt_y)
+int int_potency(const int int_x, const int int_y)
 	{
-		return (szt_y < V_ONE) ? V_ONE : szt_x * szt_potency(szt_x, szt_y + V_MINUS_ONE);
+		return	(int_y > V_ZERO) ? int_potency(int_x, int_y + V_MINUS_ONE) * int_x :
+			(int_y == V_ZERO) ? V_ONE :
+			(int_y < V_ZERO) ? int_potency(int_x, int_y + V_ONE) / int_x : V_ONE;
 	}
 
 /*****************************************************************
- ** Function:		size_t szt_HanoiTowers			**
- **				(const size_t szt_num_dishes,	**
+ ** Function:		int int_HanoiTowers			**
+ **				(const int int_num_dishes,	**
  **				 const char chr_first_tower,	**
  **				 const char chr_second_tower,	**
  **				 const char chr_third_tower,	**
- **				 const size_t 			**
- **					szt_num_maximum_cycles).**
+ **				 const int 			**
+ **					int_num_maximum_cycles).**
  ** Explanation:	In this function, the recursive		**
  **			iterations necessary to solve the	**
  **			enigma of the Towers of Hanoi are	**
@@ -100,67 +101,66 @@ size_t szt_potency(const size_t szt_x, const size_t szt_y)
  **			moved, a smaller one cannot be below a	**
  **			larger one, so the three pillars or	**
  **			poles must validate these conditions.	**
- ** Input Parms:	const size_t szt_num_dishes,		**
+ ** Input Parms:	const int int_num_dishes,		**
  **			const char chr_first_tower,		**
  **			const char chr_second_tower,		**
  **			const char chr_third_tower,		**
- **			const size_t szt_num_maximum_cycles.	**
+ **			const int int_num_maximum_cycles.	**
  ** Output Parms:	None.					**
- ** Result:		Function 'szt_HanoiTowers' to perform	**
+ ** Result:		Function 'int_HanoiTowers' to perform	**
  **			and account for iterations of the disks	**
  **			between the towers.			**
  ****************************************************************/
-size_t szt_HanoiTowers(const size_t szt_num_dishes, const char chr_first_tower, const char chr_second_tower, const char chr_third_tower, const size_t szt_num_maximum_cycles)
+int szt_HanoiTowers(const int int_num_dishes, const char chr_first_tower, const char chr_second_tower, const char chr_third_tower, const int int_num_maximum_cycles)
 	{
 		/* ----------------------------------------------------	--
 		 * The movement of the rings begins with three rooks,	--
 		 * numbered from the first (1st) to the third (3rd) and	--
 		 * their cycles are counted.				--
 		 * ----------------------------------------------------	*/
-		static size_t szt_num_loops_HanoiTowers = V_ZERO;
-		double dbl_perc_advantage = V_ZERO;
+		static int int_num_loops_HanoiTowers = V_ZERO;
+		double dbl_perc_advantage = ((double)int_num_loops_HanoiTowers / (double)(int_num_maximum_cycles + V_MINUS_ONE)) * (double) V_ONE_HUNDRED;
 
 		/* ----------------------------------------------------	--
 		 * Count the number of cycles and their percentage that	--
 		 * they are taken from the calculations of the Towers	--
 		 * of Hanoi.						--
 		 * ---------------------------------------------------- */
-		szt_num_loops_HanoiTowers++;
-		dbl_perc_advantage = ( (double) szt_num_loops_HanoiTowers / (double) (szt_num_maximum_cycles + V_MINUS_ONE) ) * V_ONE_HUNDRED;
+		int_num_loops_HanoiTowers++;
 
 		/* ----------------------------------------------------	--
 		 * It is validated for recursions if the number of	--
 		 * disks is always greater than unity and less than to	--
 		 * the maximum calculated cycles.			--
 		 * ----------------------------------------------------	*/
-		if (szt_num_dishes > V_ONE && szt_num_loops_HanoiTowers < szt_num_maximum_cycles)
+		if (int_num_dishes > V_ONE && int_num_loops_HanoiTowers < int_num_maximum_cycles)
 			{
 				/* ------------------------------------------------------------	--
 				 * The antlers from which they are going to be extracted are	--
 				 * inverted the rings, now it is the 1st, the 3rd and the 2nd.	--
 				 * ------------------------------------------------------------	*/
-				szt_HanoiTowers(szt_num_dishes + V_MINUS_ONE, chr_first_tower, chr_third_tower, chr_second_tower, szt_num_maximum_cycles);
+				szt_HanoiTowers(int_num_dishes + V_MINUS_ONE, chr_first_tower, chr_third_tower, chr_second_tower, int_num_maximum_cycles);
 
 				/* ------------------------------------------------------------	--
 				 * This message prints while there are rings on it of the	--
 				 * current flagpole to be mobilized.				--
 				 * ------------------------------------------------------------	*/
-				printf("Motion: [%10.ld].\t[%5.2lf]%% advanced.\tRing # [%2.ld].\tFrom antler: [%c] to [%c].\t\r", szt_num_loops_HanoiTowers, dbl_perc_advantage, szt_num_dishes, chr_first_tower, chr_third_tower);
+				printf("Motion: [%10.d].\t[%5.2lf]%% advanced.\tRing #: [%2.d].\tFrom antler: [%c] to [%c].\t\r", int_num_loops_HanoiTowers, dbl_perc_advantage, int_num_dishes, chr_first_tower, chr_third_tower);
 
 				/* ------------------------------------------------------------	--
 				 * The antlers from which they are going to be extracted are	--
 				 * inverted the rings, now it is the 2nd, the 1st and the 3rd.	--
 				 * ------------------------------------------------------------	*/
-				szt_HanoiTowers(szt_num_dishes + V_MINUS_ONE, chr_second_tower, chr_first_tower, chr_third_tower, szt_num_maximum_cycles);
+				szt_HanoiTowers(int_num_dishes + V_MINUS_ONE, chr_second_tower, chr_first_tower, chr_third_tower, int_num_maximum_cycles);
 			}
 
 		/* ------------------------------------------------------------	--
 		 * This message is printed if the last ring of the block that	--
 		 * you want to move from a specific pole.			--
 		 * ------------------------------------------------------------	*/
-		printf("Motion: [%10.ld].\t[%5.2lf]%% advanced. \tRing # [%2.ld].\tFrom antler: [%c] to [%c]. \r", szt_num_loops_HanoiTowers, dbl_perc_advantage, szt_num_dishes, chr_first_tower, chr_third_tower);
+		printf("Motion: [%10.d].\t[%5.2lf]%% advanced.\x20\tRing #: [%2.d].\tFrom antler: [%c] to [%c]. \r", int_num_loops_HanoiTowers, dbl_perc_advantage, int_num_dishes, chr_first_tower, chr_third_tower);
 
-		return (szt_num_loops_HanoiTowers);
+		return int_num_loops_HanoiTowers;
 	}
 
 
@@ -184,28 +184,28 @@ size_t szt_HanoiTowers(const size_t szt_num_dishes, const char chr_first_tower, 
 int main()
 	{
 		/* Declaration of numerical work variables. */
-		size_t szt_num_dishes = V_ZERO;
-		size_t szt_num_loops_HanoiTowers = V_ZERO;
-		size_t szt_num_maximum_cycles_HanoiTowers = V_ZERO;
+		int int_num_dishes = V_ZERO;
+		int int_num_loops_HanoiTowers = V_ZERO;
+		int int_num_maximum_cycles_HanoiTowers = V_ZERO;
 
 		/* Initial presentation headers. */
    		printf("+===|====+===|====+===|====+===|====+\n");
 		printf("+     Towers of Hanoi Algorithm.    +\n");
    		printf("+===|====+===|====+===|====+===|====+\n");
 		printf("Rings to move between [%2.d] and [%2.d]: ", V_LOWER_LIMIT_DISHES, V_UPPER_LIMIT_DISHES);
-   		scanf("%ld", &szt_num_dishes);
+   		scanf("%d", &int_num_dishes);
 
 		/* ------------------------------------------------------------	--
 		 * It is validated that the number of disks is in a range	--
 		 * allowable and tolerable by the processor.			--
 		 * ------------------------------------------------------------	*/
-		if (szt_num_dishes >= V_LOWER_LIMIT_DISHES && szt_num_dishes <= V_UPPER_LIMIT_DISHES)
+		if (int_num_dishes >= V_LOWER_LIMIT_DISHES && int_num_dishes <= V_UPPER_LIMIT_DISHES)
 			{
 				/* ------------------------------------------------------------	--
 				 * The maximum number of processor cycles is determined to 	--
 				 * solve the Towers of Hanoi with 'n' discs.			--
 				 * ------------------------------------------------------------	*/
-				szt_num_maximum_cycles_HanoiTowers = szt_potency(V_TWO, szt_num_dishes); //(2^N)
+				int_num_maximum_cycles_HanoiTowers = int_potency(V_TWO, int_num_dishes);	//(2^N)
 
 				/* ------------------------------------------------------------	--
 				 * The number of movements that have been made is displayed on	--
@@ -215,14 +215,14 @@ int main()
 				printf("+===|====+===|====+===|====+===|====+\n");
 				printf("+  Hanoi Towers Algorithm Results.  +\n");
 				printf("+===|====+===|====+===|====+===|====+\n");
-				printf("| [%10.ld] Movements with [%2.ld] discs.\n", szt_num_maximum_cycles_HanoiTowers + V_MINUS_ONE, szt_num_dishes);
+				printf("| [%10.d] Movements with [%2.d] discs.\n", int_num_maximum_cycles_HanoiTowers + V_MINUS_ONE, int_num_dishes);
 				printf("+===|====+===|====+===|====+===|====+\n");
 
 				/* ------------------------------------------------------------	--
 				 * The 'HanoiTowers' function is called and returns as a result	--
 				 * the number of cycles to solve them.				--
 				 * ------------------------------------------------------------	*/
-				szt_num_loops_HanoiTowers = szt_HanoiTowers(szt_num_dishes, FIRST_TOWER, SECOND_TOWER, THIRD_TOWER, szt_num_maximum_cycles_HanoiTowers);
+				int_num_loops_HanoiTowers = szt_HanoiTowers(int_num_dishes, FIRST_TOWER, SECOND_TOWER, THIRD_TOWER, int_num_maximum_cycles_HanoiTowers);
 
 				/* ------------------------------------------------------------	--
 				 * The screen displays how many effective movements were made	--
@@ -232,7 +232,7 @@ int main()
 				printf("+===|====+===|====+===|====+===|====+\n");
 				printf("+  Hanoi Towers Algorithm Outcome.  +\n");
 				printf("+===|====+===|====+===|====+===|====+\n");
-				printf("| [%10.ld] Movements with [%2.ld] displaced discs.\n", szt_num_loops_HanoiTowers, szt_num_dishes);
+				printf("| [%10.d] Movements with [%2.d] displaced discs.\n", int_num_loops_HanoiTowers, int_num_dishes);
 				printf("+===|====+===|====+===|====+===|====+\n");
 			}
 		else
@@ -241,7 +241,10 @@ int main()
 			 * The more disks, the greater the probability that the		--
 			 * algorithm process never ends.				--
 			 * ------------------------------------------------------------	*/
-			printf("Mistake! Value: [%2.ld] is not in the range of [%2.d] and [%2.d].\n", szt_num_dishes, V_LOWER_LIMIT_DISHES, V_UPPER_LIMIT_DISHES);
+			printf("Mistake! Value: [%2.d] is not in the range of [%2.d] and [%2.d].\n", int_num_dishes, V_LOWER_LIMIT_DISHES, V_UPPER_LIMIT_DISHES);
+
+		printf("\nDone!\n");
+		printf("This program has ended.\n");
 
 		return V_ZERO;
 	}
