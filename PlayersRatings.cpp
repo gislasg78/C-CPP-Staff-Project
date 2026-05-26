@@ -13,8 +13,10 @@
 #include <sstream>
 
 /* Symbolic work constants. */
-#define	CARRIAGE_RETURN	'\n'
-#define	V_ZERO		0
+template <typename T>
+constexpr T CARRIAGE_RETURN	{T('\n')};
+template <typename T>
+constexpr T V_ZERO		{T(0)};
 
 /* Declaration of function prototypes. */
 template <typename T> void swap(T* left_hand_side, T* right_hand_side);
@@ -38,7 +40,7 @@ template <typename T>
 T displayRatings(const std::string& strHeaderMsgList, const std::list<T>& playersRatings)
 	{
 		/* Preliminary working variables. */
-		T count = V_ZERO, sum = V_ZERO;
+		T count = V_ZERO<T>, sum = V_ZERO<T>;
 
 		std::cout << std::endl << "Displaying the list elements." << std::endl;
 
@@ -49,7 +51,7 @@ T displayRatings(const std::string& strHeaderMsgList, const std::list<T>& player
 		std::for_each(playersRatings.cbegin(), playersRatings.cend(), fnDisplayItem);
 
 		/* Algorithms prepared to accumulate the container values. */
-		sum = std::accumulate(playersRatings.cbegin(), playersRatings.cend(), V_ZERO);
+		sum = std::accumulate(playersRatings.cbegin(), playersRatings.cend(), V_ZERO<T>);
 
 		std::cout << std::endl << "+ Accumulate:\t[" << sum << "]." << std::endl;
 		std::cout << "+ Sum:\t\t[" << addRatings(playersRatings.cbegin(), playersRatings.cend()) << "]." << std::endl;
@@ -62,7 +64,7 @@ T displayRatings(const std::string& strHeaderMsgList, const std::list<T>& player
 template <typename T>
 std::list<T> fillRatings(std::list<T>& playersRatings, T& minimum, T& maximum)
 	{
-		T count = V_ZERO;
+		T count = V_ZERO<T>;
 
 		/* Swap the minimum and maximum values ​​if they are reversed. */
 		if ((minimum > maximum) || (maximum < minimum))
@@ -92,7 +94,7 @@ void getPause(const std::string& str_Message)
 		std::cin.clear();
 		std::cin.get();
 		std::cin.clear();
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN<char>);
 	}
 
 /* Capture the number of values ​​to generate. */
@@ -100,7 +102,7 @@ template <typename T>
 T obtainValue(const std::string& str_Message, T* data_value)
 	{
 		/* Preliminary working variables. */
-		T t_data_value = V_ZERO;
+		T t_data_value = V_ZERO<T>;
 		std::string str_data_value = std::string();
 
 		/* Function to validate a string of characters as numeric. */
@@ -131,7 +133,7 @@ T obtainValue(const std::string& str_Message, T* data_value)
 template <typename T>
 std::list<T> separateRatings(const std::list<T>& allPlayers, std::list<T> &playersRatings, T& minimum, T& maximum)
 	{
-		T count = V_ZERO;
+		T count = V_ZERO<T>;
 
 		/* Swap the minimum and maximum values ​​if they are reversed. */
 		if ((minimum > maximum) || (maximum < minimum))
@@ -142,7 +144,7 @@ std::list<T> separateRatings(const std::list<T>& allPlayers, std::list<T> &playe
 
 		std::copy_if(allPlayers.cbegin(), allPlayers.cend(), std::back_inserter(playersRatings),
 			[&count, &minimum, &maximum](const T& value)
-			{return (value >= minimum && value <= maximum) ? ++count : V_ZERO;});
+			{return (value >= minimum && value <= maximum) ? ++count : V_ZERO<T>;});
 
 		playersRatings.sort();
 
@@ -165,7 +167,7 @@ void swap(T* left_hand_side, T* right_hand_side)
 int main()
 	{
 		/* Preliminary working variables. */
-		int int_count {V_ZERO};
+		int int_count {V_ZERO<int>};
 		int int_minimum {}, int_maximum {};
 		int int_beginners_minimum{}, int_beginners_maximum{};
 		int int_pros_minimum{}, int_pros_maximum{};
@@ -215,5 +217,5 @@ int main()
 		std::cout << std::endl << "Done!" << std::endl;
 		std::cout << "This program has ended." << std::endl;
 
-		return V_ZERO;
+		return EXIT_SUCCESS;
 	}
