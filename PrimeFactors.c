@@ -28,7 +28,7 @@ size_t GetEntry(const char *str_Message, size_t *data_value)
 			{
 				/* Get a correct int value. */
 				printf("\nInput value: [%ld] = [%lu]. OK!\n", value_data, value_data);
-				*data_value = value_data;
+				if (data_value) *data_value = value_data;
 			}
 		else
 			{
@@ -84,8 +84,8 @@ size_t *GetPrimeFactors(const size_t number, size_t *quantity, size_t **factors)
 			perror("It is not possible to calculate the prime factors of zero or such a gigantic number.");
 
 		/* Return the results generated in the pointers. */
-		*quantity = counter;
-		*factors = list_factors;
+		if (quantity) *quantity = counter;
+		if (factors) *factors = list_factors;
 
 		return list_factors;
 	}
@@ -126,6 +126,7 @@ int main()
 
 						printf("+---|----+---|----+---|----+\n");
 						printf("[%ld] Output generated results.\n", counter);
+
 						free(list_factors);
 					}
 				else
@@ -133,6 +134,9 @@ int main()
 			}
 		else
 			fprintf(stderr, "\nIt is not possible to calculate the prime factors of zero or such a gigantic number.\n");
+
+		printf("\nDone!\n");
+		printf("This program has ended.\n");
 
 		return V_ZERO;
 	}
