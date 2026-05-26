@@ -21,7 +21,6 @@ class PiggyBank
 
 	public:
 		PiggyBank() = default;
-		PiggyBank(T* const _ptr_coins) : ptr_coins(_ptr_coins)	{}
 		PiggyBank(const T& _coins) : ptr_coins(new T{_coins})	{}
 		PiggyBank(const PiggyBank& _piggybank) : ptr_coins{nullptr}
 		{
@@ -135,7 +134,7 @@ int main()
 {
 	std::cout << "Replacing Class Pointers." << std::endl;
 
-	PiggyBank<int> my_money_box{100}, your_money_box{200}, her_money_box{500}, his_money_box{new int(1000)}, temp_money_box{std::move(her_money_box)};
+	PiggyBank<int> my_money_box{100}, your_money_box{200}, her_money_box{500}, his_money_box{her_money_box}, temp_money_box{std::move(her_money_box)};
 	PiggyBank<int> *ptr_my_money_box {&my_money_box}, *ptr_your_money_box {&your_money_box}, *ptr_her_money_box{&her_money_box}, *ptr_his_money_box{&his_money_box}, *ptr_temp_money_box{&temp_money_box};
 
 	ptr_my_money_box->print();
@@ -181,23 +180,30 @@ int main()
 	her_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
-	her_money_box = my_money_box;
+	her_money_box = his_money_box;
 	her_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
-	my_money_box.print();
+	his_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
-	my_money_box.release();
-	my_money_box.print();
+	his_money_box.release();
+	his_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
-	my_money_box.reassignment();
-	my_money_box.print();
+	his_money_box.reassignment();
+	his_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
-	my_money_box.addCoins(1000).addCoins(2000).addCoins(5000).subtractCoins(500);
-	my_money_box.print();
+	his_money_box.addCoins(1000).addCoins(2000).addCoins(5000).subtractCoins(500);
+	his_money_box.print();
+	enter_a_pause("Press the ENTER key to continue...");
+
+	her_money_box = std::move(his_money_box);
+	his_money_box.print();
+	enter_a_pause("Press the ENTER key to continue...");
+
+	her_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << CARRIAGE_RETURN<char> << "Done!" << CARRIAGE_RETURN<char>;
