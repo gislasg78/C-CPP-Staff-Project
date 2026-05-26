@@ -17,7 +17,7 @@ class Auto_ptr
 		Auto_ptr(T *_ptr = nullptr) : ptr(_ptr)
 		{}
 
-		Auto_ptr(const Auto_ptr& auto_ptr)
+		Auto_ptr(const Auto_ptr& auto_ptr) : ptr{nullptr}
 		{
 			if (auto_ptr.ptr)
 			{
@@ -56,7 +56,7 @@ class Auto_ptr
 				{
 					release();
 
-					if ((*this).ptr == nullptr)
+					if ((*this).ptr == nullptr && auto_ptr.ptr)
 					{
 						(*this).ptr = auto_ptr.ptr;
 						auto_ptr.ptr = nullptr;
@@ -77,6 +77,16 @@ class Auto_ptr
 			std::cout << std::endl << "Contents of the Auto Pointer." << std::endl;
 			std::cout << "+ Storage Address:\t(" << &(*this).ptr << ")." << std::endl;
 			std::cout << "+ Address Contained:\t[" << this->ptr << "]." << std::endl << std::endl;
+		}
+
+		void reassignement()
+		{
+			if ((*this).ptr)
+			{
+				this->release();
+			}
+
+			(*this).ptr = new T{};
 		}
 
 		void release()
