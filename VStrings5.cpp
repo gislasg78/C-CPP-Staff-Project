@@ -1,8 +1,11 @@
 #include <iostream>
 #include <limits>
 
-constexpr char CARRIAGE_RETURN	{'\n'};
-constexpr int V_ZERO		{};
+template <typename T>
+constexpr T CARRIAGE_RETURN	{T('\n')};
+
+template <typename T>
+constexpr T V_ZERO		{T(0)};
 
 template <typename T>
 class Auto_ptr
@@ -35,7 +38,7 @@ class Auto_ptr
 				{
 					release();
 
-					if ((*this).ptr == nullptr)
+					if ((*this).ptr == nullptr && auto_ptr.ptr)
 					{
 						(*this).ptr = new T{*auto_ptr.ptr};
 					}
@@ -107,7 +110,7 @@ void enter_a_pause(const std::string& str_Message)
 	std::cin.clear();
 	std::cin.get();
 	std::cin.clear();
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN<char>);
 }
 
 int main()
@@ -161,5 +164,5 @@ int main()
 
 	enter_a_pause("Press the ENTER key to continue...");
 
-	return V_ZERO;
+	return V_ZERO<int>;
 }
