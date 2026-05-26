@@ -111,7 +111,7 @@ int int_potency(const int int_x, const int int_y)
  **			and account for iterations of the disks	**
  **			between the towers.			**
  ****************************************************************/
-int szt_HanoiTowers(const int int_num_dishes, const char chr_first_tower, const char chr_second_tower, const char chr_third_tower, const int int_num_maximum_cycles)
+int int_HanoiTowers(const int int_num_dishes, const char chr_first_tower, const char chr_second_tower, const char chr_third_tower, const int int_num_maximum_cycles)
 	{
 		/* ----------------------------------------------------	--
 		 * The movement of the rings begins with three rooks,	--
@@ -139,7 +139,7 @@ int szt_HanoiTowers(const int int_num_dishes, const char chr_first_tower, const 
 				 * The antlers from which they are going to be extracted are	--
 				 * inverted the rings, now it is the 1st, the 3rd and the 2nd.	--
 				 * ------------------------------------------------------------	*/
-				szt_HanoiTowers(int_num_dishes + V_MINUS_ONE, chr_first_tower, chr_third_tower, chr_second_tower, int_num_maximum_cycles);
+				int_HanoiTowers(int_num_dishes + V_MINUS_ONE, chr_first_tower, chr_third_tower, chr_second_tower, int_num_maximum_cycles);
 
 				/* ------------------------------------------------------------	--
 				 * This message prints while there are rings on it of the	--
@@ -151,7 +151,7 @@ int szt_HanoiTowers(const int int_num_dishes, const char chr_first_tower, const 
 				 * The antlers from which they are going to be extracted are	--
 				 * inverted the rings, now it is the 2nd, the 1st and the 3rd.	--
 				 * ------------------------------------------------------------	*/
-				szt_HanoiTowers(int_num_dishes + V_MINUS_ONE, chr_second_tower, chr_first_tower, chr_third_tower, int_num_maximum_cycles);
+				int_HanoiTowers(int_num_dishes + V_MINUS_ONE, chr_second_tower, chr_first_tower, chr_third_tower, int_num_maximum_cycles);
 			}
 
 		/* ------------------------------------------------------------	--
@@ -222,7 +222,7 @@ int main()
 				 * The 'HanoiTowers' function is called and returns as a result	--
 				 * the number of cycles to solve them.				--
 				 * ------------------------------------------------------------	*/
-				int_num_loops_HanoiTowers = szt_HanoiTowers(int_num_dishes, FIRST_TOWER, SECOND_TOWER, THIRD_TOWER, int_num_maximum_cycles_HanoiTowers);
+				int_num_loops_HanoiTowers = int_HanoiTowers(int_num_dishes, FIRST_TOWER, SECOND_TOWER, THIRD_TOWER, int_num_maximum_cycles_HanoiTowers);
 
 				/* ------------------------------------------------------------	--
 				 * The screen displays how many effective movements were made	--
