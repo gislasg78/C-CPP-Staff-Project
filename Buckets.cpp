@@ -243,7 +243,10 @@ int main()
 						if ((chr_answer == V_CHAR_LOWER_Y<char>) || (chr_answer == V_CHAR_UPPER_Y<char>))
 							{
 								std::cout << "> Address released:\t[" << static_cast<void*>(char_ptr) << "]." << std::endl << std::endl;
+
 								counter--;
+								char_count--;
+
 								delete char_ptr;
 								char_ptr = nullptr;
 							}
