@@ -12,6 +12,8 @@
 
 /* Symbolic work constants. */
 template <typename T>
+constexpr T ACCENT_MARK			{T(0x7e)};
+template <typename T>
 constexpr T CARRIAGE_RETURN		{T('\n')};
 template <typename T>
 constexpr T NORMAL_SPACE		{T('\x20')};
@@ -26,7 +28,7 @@ constexpr T V_CHAR_UPPER_Y		{T('\x59')};
 template <typename T>
 constexpr T MAX_NUMBER_OF_BUCKETS	{T{32}};
 template <typename T>
-constexpr T MAX_SIZE_OF_BUCKET		{T(4096)};
+constexpr T MAX_SIZE_OF_BUCKET		{T(16)};
 template <typename T>
 constexpr T V_ONE			{T(1)};
 template <typename T>
@@ -160,9 +162,9 @@ void operator delete(void* ptr, size_t num_bytes)
 int main()
 	{
 		/* Preliminary working variables. */
-		char char_count {NORMAL_SPACE<char>}, *char_ptr {nullptr}, chr_response {NULL_CHARACTER<char>};
+		char char_count {NORMAL_SPACE<char>}, *char_ptr {nullptr}, chr_answer {}, chr_response {NULL_CHARACTER<char>};
 		int first_value = V_ZERO<int>, second_value = {V_ZERO<int>}, third_value = V_ZERO<int>;
-		size_t counter = {V_ZERO<size_t>};
+		size_t attemps {V_ZERO<size_t>}, counter = {V_ZERO<size_t>};
 
 		/* Capture of values ​​to be assigned to integer type pointers. */
 		std::cout << "Overloading of the 'new' and 'delete' operators." << std::endl;
@@ -223,14 +225,30 @@ int main()
 				/* A loop that assigns character by character to the 'Bucket' class until it is exhausted. */
 				while ((chr_response == V_CHAR_LOWER_Y<char> || chr_response == V_CHAR_UPPER_Y<char>) && counter <= Bucket::number_of_buckets)
 					{
+						/* Check and validate that they are printable ASCII characters. */
+						attemps++;
+						char_count = (char_count >= NORMAL_SPACE<char> && char_count <= ACCENT_MARK<char>) ? char_count : NORMAL_SPACE<char>;
 						char_ptr = new char{char_count++};	//Use the available memory of the 'Bucket' but do not save it.
 
 						std::cout << "Char Assignment #: [" << std::dec << counter++ + V_ONE<size_t> << "] of: [" << Bucket::number_of_buckets << "]." << std::endl;
 						std::cout << "* Base Address:\t\t(" << &char_ptr << ")." << std::endl;
 						std::cout << "* Assigned Address:\t[" << static_cast<void *>(char_ptr) << "]." << std::endl;
-						std::cout << "* Value Assigned:\t{" << *char_ptr << "}." << std::endl;
-						std::cout << "Do you wish to continue the allocation operation? (y/n) : ";
+						std::cout << "* Value Assigned:\t{" << static_cast<int>(*char_ptr) << "} = <" << *char_ptr << ">." << std::endl << std::endl;
 
+						std::cout << "Would you like to release the previously assigned value? (y/n) : ";
+						try {chr_answer = capture_a_value<char>(&chr_answer);}
+						catch (const std::exception& e)
+						{std::cout << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+
+						if ((chr_answer == V_CHAR_LOWER_Y<char>) || (chr_answer == V_CHAR_UPPER_Y<char>))
+							{
+								std::cout << "> Address released:\t[" << static_cast<void*>(char_ptr) << "]." << std::endl << std::endl;
+								counter--;
+								delete char_ptr;
+								char_ptr = nullptr;
+							}
+
+						std::cout << "Do you wish to continue the allocation operation? (y/n) : ";
 						try {chr_response = capture_a_value<char>(&chr_response);}
 						catch (const std::exception& e)
 						{std::cout << "Exception ocurred: [" << e.what() << "]." << std::endl;}
@@ -240,6 +258,8 @@ int main()
 			{
 				std::cout << "Exception ocurred: [" << e.what() << "]." << std::endl;
 			}
+
+		std::cout << std::endl << "[" << attemps << "] Output results generated." << std::endl;
 
 		std::cout << CARRIAGE_RETURN<char> << "Done!" << CARRIAGE_RETURN<char>;
 		std::cout << "This program has ended." << CARRIAGE_RETURN<char>;
