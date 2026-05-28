@@ -28,7 +28,7 @@ constexpr T V_CHAR_UPPER_Y		{T('\x59')};
 template <typename T>
 constexpr T MAX_NUMBER_OF_BUCKETS	{T{32}};
 template <typename T>
-constexpr T MAX_SIZE_OF_BUCKET		{T(16)};
+constexpr T MAX_SIZE_OF_BUCKET		{T(4096)};
 template <typename T>
 constexpr T V_ONE			{T(1)};
 template <typename T>
@@ -59,15 +59,15 @@ struct Bucket
 		/* Static member function to house the required memory. */
 		static void *allocate_memory(Bucket& bucket, std::size_t num_bytes)
 			{
-				if (num_bytes <= size_of_bucket)
+				if (num_bytes > size_of_bucket)
+					throw std::bad_alloc();
+
+				for (std::size_t idx{}; idx < number_of_buckets; idx++)
 					{
-						for (std::size_t idx{}; idx < number_of_buckets; idx++)
+						if (!bucket.bucket_used[idx])
 							{
-								if (!bucket.bucket_used[idx])
-									{
-										bucket.bucket_used[idx] = true;
-										return bucket.matrix_buckets[idx];
-									}
+								bucket.bucket_used[idx] = true;
+								return bucket.matrix_buckets[idx];
 							}
 					}
 
@@ -75,22 +75,20 @@ struct Bucket
 			}
 
 		/* Static member function to deallocate (free up) the required memory. */
-		void static deallocate_memory(Bucket& bucket, void *ptr, size_t num_bytes)
+		void static deallocate_memory(Bucket& bucket, void *bucket_ptr, size_t num_bytes)
 			{
 				for (std::size_t idx{}; idx < number_of_buckets; idx++)
 					{
-						if (bucket.matrix_buckets[idx] == ptr)
+						if (static_cast<void*>(bucket.matrix_buckets[idx]) == bucket_ptr)
 							{
-								if (num_bytes <= size_of_bucket)
-									{
-										for (std::size_t ind{}; ind < size_of_bucket && ind <= num_bytes; ind++)
-											bucket.matrix_buckets[idx][ind] = static_cast<std::byte>(NULL_CHARACTER<char>);
-									}
-								else
-									throw std::bad_alloc();
+								if (num_bytes > size_of_bucket)
+									throw std::overflow_error("Requested freed size exceeds bucket size.");
+
+								for (std::size_t ind{}; ind < size_of_bucket && ind < num_bytes; ind++)
+									bucket.matrix_buckets[idx][ind] = static_cast<std::byte>(NULL_CHARACTER<char>);
 
 								bucket.bucket_used[idx] = false;
-								return;
+								break;
 							}
 					}
 			}
@@ -117,23 +115,27 @@ const T& capture_a_value(T* const ptr_value)
 					}
 				else
 					{
+						std::cerr << std::endl << std::endl << "Incorrect input information." << std::endl;
+
 						if (std::cin.eof())
-							std::cout << std::endl << "* EOF detected! *" << std::endl;
+							std::cerr << "* EOF detected! *" << std::endl;
 
 						if (std::cin.fail())
-							std::cout << std::endl << "* Keyboard error detected! *" << std::endl;
+							std::cerr << "* Keyboard error detected! *" << std::endl;
 
 						char c{};
 						while (std::cin.get(c)) {}
 
 						std::cin.clear();
 						std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN<char>);
-						throw std::overflow_error("The flow has been overwhelmed.");
+
+						std::cerr << "> Throwing overflow exception..." << std::endl << std::endl;
+						throw std::overflow_error("The information coming from the keyboard input is overloaded.");
 					}
 			}
 		else
 			{
-				std::cerr << std::endl << "A valid memory address was not provided." << std::endl;
+				std::cerr << std::endl << "A valid memory address was not provided." << std::endl << std::endl;
 				throw std::runtime_error("The memory location must be valid and not a null pointer.");
 			}
 
@@ -147,15 +149,15 @@ void* operator new(size_t num_bytes)
 	}
 
 /* Overloading the 'delete' operator whose argument is a 'void' pointer to be evicted. */
-void operator delete(void* ptr)
+void operator delete(void* bucket_ptr)
 	{
-		return Bucket::deallocate_memory(bucket, ptr, bucket.size_of_bucket);
+		return Bucket::deallocate_memory(bucket, bucket_ptr, bucket.size_of_bucket);
 	}
 
 /* Overloading the 'delete' operator whose argument is a 'void' pointer to be evicted and quantity of bytes to free. */
-void operator delete(void* ptr, size_t num_bytes)
+void operator delete(void* bucket_ptr, size_t num_bytes)
 	{
-		return Bucket::deallocate_memory(bucket, ptr, num_bytes);
+		return Bucket::deallocate_memory(bucket, bucket_ptr, num_bytes);
 	}
 
 //Main function.
@@ -163,26 +165,34 @@ int main()
 	{
 		/* Preliminary working variables. */
 		char char_count {NORMAL_SPACE<char>}, *char_ptr {nullptr}, chr_answer {}, chr_response {NULL_CHARACTER<char>};
+		int *first_tray {nullptr}, *second_tray {nullptr}, *third_tray {nullptr};
 		int first_value = V_ZERO<int>, second_value = {V_ZERO<int>}, third_value = V_ZERO<int>;
 		size_t attemps {V_ZERO<size_t>}, counter = {V_ZERO<size_t>};
 
 		/* Capture of values ​​to be assigned to integer type pointers. */
 		std::cout << "Overloading of the 'new' and 'delete' operators." << std::endl;
 
+		/* Testing code with null pointer capture. */
+		std::cout << std::endl << "Test code to test an input with a null pointer." << std::endl;
+		try {first_value = capture_a_value<int>(nullptr);}
+		catch (const std::exception& e)
+		{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl << std::endl;}
+
+		/* Capturing data. */
 		std::cout << "> First  value: ";
 		try {first_value = capture_a_value<int>(&first_value);}
 		catch (const std::exception& e)
-		{std::cout << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+		{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
 
 		std::cout << "> Second value: ";
 		try {second_value = capture_a_value<int>(&second_value);}
 		catch (const std::exception& e)
-		{std::cout << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+		{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
 
 		std::cout << "> Third  value: ";
 		try {third_value = capture_a_value<int>(&third_value);}
 		catch (const std::exception& e)
-		{std::cout << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+		{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
 
 		/* Information about the assigned 'Bucket'. */
 		std::cout << std::endl << "Bucket Information." << std::endl;
@@ -192,22 +202,30 @@ int main()
 		/* Assignment of independent dynamic objects of integer type. */
 		std::cout << "Generating three new dynamic objects..." << std::endl;
 
-		int *first_tray = new int {first_value};
-		int *second_tray = new int {second_value};
-		int *third_tray = new int {third_value};
+		try {first_tray = new int {first_value};}
+		catch (const std::exception& e)
+		{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+
+		try {second_tray = new int {second_value};}
+		catch (const std::exception& e)
+		{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+
+		try {third_tray = new int {third_value};}
+		catch (const std::exception& e)
+		{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
 
 		/* Dumping information from assigned integer pointers. */
 		std::cout << std::endl << "Traying Information." << std::endl;
-		std::cout << "- First  Tray:\t(" << std::hex << first_tray << ")\t=\t[" << std::dec << *first_tray << "]." << std::endl;
-		std::cout << "- Second Tray:\t(" << std::hex << second_tray << ")\t=\t[" << std::dec << *second_tray << "]." << std::endl;
-		std::cout << "- Third  Tray:\t(" << std::hex << third_tray << ")\t=\t[" << std::dec << *third_tray << "]." << std::endl;
+		std::cout << "- First  Tray:\t(" << &first_tray << ")\t:\t[" << std::hex << first_tray << "]\t=\t{" << std::dec << *first_tray << "}." << std::endl;
+		std::cout << "- Second Tray:\t(" << &second_tray << ")\t:\t[" << std::hex << second_tray << "]\t=\t{" << std::dec << *second_tray << "}." << std::endl;
+		std::cout << "- Third  Tray:\t(" << &third_tray << ")\t:\t[" << std::hex << third_tray << "]\t=\t{" << std::dec << *third_tray << "}." << std::endl;
 
 		/* Destruction of assigned integer pointers. */
 		std::cout << std::endl << "Deleting created dynamic objects..." << std::endl;
 
-		delete third_tray;
-		delete second_tray;
-		delete first_tray;
+		if (first_tray) {delete first_tray; first_tray = nullptr;}
+		if (second_tray) {delete second_tray; second_tray = nullptr;}
+		if (third_tray) {delete third_tray; third_tray = nullptr;}
 
 		/* One-by-one generation of a dynamic object of type 'character' until the maximum number of buckets. */
 		std::cout << std::endl << "Generating new elements infinitely with overloaded 'new' and 'delete' operators..." << std::endl;
@@ -220,7 +238,7 @@ int main()
 
 				try {chr_response = capture_a_value<char>(&chr_response);}
 				catch (const std::exception& e)
-				{std::cout << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+				{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
 
 				/* A loop that assigns character by character to the 'Bucket' class until it is exhausted. */
 				while ((chr_response == V_CHAR_LOWER_Y<char> || chr_response == V_CHAR_UPPER_Y<char>) && counter <= Bucket::number_of_buckets)
@@ -228,38 +246,45 @@ int main()
 						/* Check and validate that they are printable ASCII characters. */
 						attemps++;
 						char_count = (char_count >= NORMAL_SPACE<char> && char_count <= ACCENT_MARK<char>) ? char_count : NORMAL_SPACE<char>;
-						char_ptr = new char{char_count++};	//Use the available memory of the 'Bucket' but do not save it.
 
-						std::cout << "Char Assignment #: [" << std::dec << counter++ + V_ONE<size_t> << "] of: [" << Bucket::number_of_buckets << "]." << std::endl;
-						std::cout << "* Base Address:\t\t(" << &char_ptr << ")." << std::endl;
-						std::cout << "* Assigned Address:\t[" << static_cast<void *>(char_ptr) << "]." << std::endl;
-						std::cout << "* Value Assigned:\t{" << static_cast<int>(*char_ptr) << "} = <" << *char_ptr << ">." << std::endl << std::endl;
-
-						std::cout << "Would you like to release the previously assigned value? (y/n) : ";
-						try {chr_answer = capture_a_value<char>(&chr_answer);}
-						catch (const std::exception& e)
-						{std::cout << "Exception ocurred: [" << e.what() << "]." << std::endl;}
-
-						if ((chr_answer == V_CHAR_LOWER_Y<char>) || (chr_answer == V_CHAR_UPPER_Y<char>))
+						try
 							{
-								std::cout << "> Address released:\t[" << static_cast<void*>(char_ptr) << "]." << std::endl << std::endl;
+								if ((char_ptr = new char{char_count++}))	//Use the available memory of the 'Bucket' but do not save it.
+									{
+										std::cout << "Char Assignment #: [" << std::dec << counter++ + V_ONE<size_t> << "] of: [" << Bucket::number_of_buckets << "]." << std::endl;
+										std::cout << "* Base Address:\t\t(" << &char_ptr << ")." << std::endl;
+										std::cout << "* Assigned Address:\t[" << static_cast<void *>(char_ptr) << "]." << std::endl;
+										std::cout << "* Value Assigned:\t{" << static_cast<int>(*char_ptr) << "} = <" << *char_ptr << ">." << std::endl << std::endl;
 
-								counter--;
-								char_count--;
+										std::cout << "Would you like to release the previously assigned value? (y/n) : ";
+										try {chr_answer = capture_a_value<char>(&chr_answer);}
+										catch (const std::exception& e)
+										{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
 
-								delete char_ptr;
-								char_ptr = nullptr;
+										if ((chr_answer == V_CHAR_LOWER_Y<char>) || (chr_answer == V_CHAR_UPPER_Y<char>))
+											{
+												std::cout << "> Address released:\t[" << static_cast<void*>(char_ptr) << "]." << std::endl << std::endl;
+
+												counter--;
+												char_count--;
+
+												delete char_ptr;
+												char_ptr = nullptr;
+											}
+									}
 							}
+						catch (const std::exception& e)
+						{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
 
 						std::cout << "Do you wish to continue the allocation operation? (y/n) : ";
 						try {chr_response = capture_a_value<char>(&chr_response);}
 						catch (const std::exception& e)
-						{std::cout << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+						{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
 					}
 			}
 		catch (const std::exception& e)
 			{
-				std::cout << "Exception ocurred: [" << e.what() << "]." << std::endl;
+				std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;
 			}
 
 		std::cout << std::endl << "[" << attemps << "] Output results generated." << std::endl;

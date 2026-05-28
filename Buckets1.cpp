@@ -60,7 +60,7 @@ struct Bucket
 		static void *allocate_memory(Bucket& bucket, std::size_t num_bytes)
 			{
 				if (num_bytes > size_of_bucket)
-					throw MemorySegmentAllocationException();
+					throw std::bad_alloc();
 
 				for (std::size_t idx{}; idx < number_of_buckets; idx++)
 					{
@@ -71,7 +71,7 @@ struct Bucket
 							}
 					}
 
-				throw std::bad_alloc();
+				throw MemorySegmentAllocationException();
 			}
 
 		/* Static member function to deallocate (free up) the required memory. */
@@ -279,12 +279,12 @@ int main()
 												*(array_ptr_char + idx_array_ptr_char) = nullptr;
 											}
 									}
-
-								std::cout << "Do you wish to continue the allocation operation? (y/n) : ";
-								try {chr_response = capture_a_value<char>(&chr_response);}
-								catch (const std::exception& e)
-								{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
 							}
+						catch (const std::exception& e)
+						{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+
+						std::cout << "Do you wish to continue the allocation operation? (y/n) : ";
+						try {chr_response = capture_a_value<char>(&chr_response);}
 						catch (const std::exception& e)
 						{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
 					}
