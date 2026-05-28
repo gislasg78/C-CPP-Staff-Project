@@ -177,23 +177,23 @@ int main()
 		std::cout << std::endl << "Test code to test an input with a null pointer." << std::endl;
 		try {first_value = capture_a_value<int>(nullptr);}
 		catch (const std::exception& e)
-		{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl << std::endl;}
+		{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl << std::endl;}
 
 		/* Capturing data. */
 		std::cout << "> First  value: ";
 		try {first_value = capture_a_value<int>(&first_value);}
 		catch (const std::exception& e)
-		{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+		{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
 		std::cout << "> Second value: ";
 		try {second_value = capture_a_value<int>(&second_value);}
 		catch (const std::exception& e)
-		{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+		{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
 		std::cout << "> Third  value: ";
 		try {third_value = capture_a_value<int>(&third_value);}
 		catch (const std::exception& e)
-		{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+		{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
 		/* Information about the assigned 'Bucket'. */
 		std::cout << std::endl << "Bucket Information." << std::endl;
@@ -205,15 +205,15 @@ int main()
 
 		try {first_tray = new int {first_value};}
 		catch (const std::exception& e)
-		{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+		{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
 		try {second_tray = new int {second_value};}
 		catch (const std::exception& e)
-		{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+		{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
 		try {third_tray = new int {third_value};}
 		catch (const std::exception& e)
-		{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+		{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
 		/* Dumping information from assigned integer pointers. */
 		std::cout << std::endl << "Traying Information." << std::endl;
@@ -239,7 +239,7 @@ int main()
 
 				try {chr_response = capture_a_value<char>(&chr_response);}
 				catch (const std::exception& e)
-				{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+				{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
 				/* A loop that assigns character by character to the 'Bucket' class until it is exhausted. */
 				while ((chr_response == V_CHAR_LOWER_Y<char> || chr_response == V_CHAR_UPPER_Y<char>) && (counter < MAX_NUMBER_OF_BUCKETS<size_t> && idx_array_ptr_char < MAX_NUMBER_OF_BUCKETS<size_t>))
@@ -264,7 +264,7 @@ int main()
 										std::cout << "Would you like to release the previously assigned value? (y/n) : ";
 										try {chr_answer = capture_a_value<char>(&chr_answer);}
 										catch (const std::exception& e)
-										{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+										{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
 										/* Release if the overloaded dynamic pointer has been assigned. */
 										if ((chr_answer == V_CHAR_LOWER_Y<char>) || (chr_answer == V_CHAR_UPPER_Y<char>))
@@ -281,17 +281,17 @@ int main()
 									}
 							}
 						catch (const std::exception& e)
-						{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+						{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
 						std::cout << "Do you wish to continue the allocation operation? (y/n) : ";
 						try {chr_response = capture_a_value<char>(&chr_response);}
 						catch (const std::exception& e)
-						{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+						{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 					}
 			}
 		catch (const std::exception& e)
 			{
-				std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;
+				std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;
 			}
 
 		/* Release the assigned pointers. */

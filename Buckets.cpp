@@ -176,23 +176,23 @@ int main()
 		std::cout << std::endl << "Test code to test an input with a null pointer." << std::endl;
 		try {first_value = capture_a_value<int>(nullptr);}
 		catch (const std::exception& e)
-		{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl << std::endl;}
+		{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl << std::endl;}
 
 		/* Capturing data. */
 		std::cout << "> First  value: ";
 		try {first_value = capture_a_value<int>(&first_value);}
 		catch (const std::exception& e)
-		{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+		{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
 		std::cout << "> Second value: ";
 		try {second_value = capture_a_value<int>(&second_value);}
 		catch (const std::exception& e)
-		{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+		{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
 		std::cout << "> Third  value: ";
 		try {third_value = capture_a_value<int>(&third_value);}
 		catch (const std::exception& e)
-		{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+		{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
 		/* Information about the assigned 'Bucket'. */
 		std::cout << std::endl << "Bucket Information." << std::endl;
@@ -204,15 +204,15 @@ int main()
 
 		try {first_tray = new int {first_value};}
 		catch (const std::exception& e)
-		{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+		{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
 		try {second_tray = new int {second_value};}
 		catch (const std::exception& e)
-		{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+		{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
 		try {third_tray = new int {third_value};}
 		catch (const std::exception& e)
-		{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+		{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
 		/* Dumping information from assigned integer pointers. */
 		std::cout << std::endl << "Traying Information." << std::endl;
@@ -238,10 +238,10 @@ int main()
 
 				try {chr_response = capture_a_value<char>(&chr_response);}
 				catch (const std::exception& e)
-				{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+				{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
 				/* A loop that assigns character by character to the 'Bucket' class until it is exhausted. */
-				while ((chr_response == V_CHAR_LOWER_Y<char> || chr_response == V_CHAR_UPPER_Y<char>) && counter <= Bucket::number_of_buckets)
+				while ((chr_response == V_CHAR_LOWER_Y<char> || chr_response == V_CHAR_UPPER_Y<char>) && counter < MAX_NUMBER_OF_BUCKETS<size_t>)
 					{
 						/* Check and validate that they are printable ASCII characters. */
 						attemps++;
@@ -251,7 +251,7 @@ int main()
 							{
 								if ((char_ptr = new char{char_count++}))	//Use the available memory of the 'Bucket' but do not save it.
 									{
-										std::cout << "Char Assignment #: [" << std::dec << counter++ + V_ONE<size_t> << "] of: [" << Bucket::number_of_buckets << "]." << std::endl;
+										std::cout << "Char Assignment #: [" << std::dec << counter+ + V_ONE<size_t> << "] of: [" << Bucket::number_of_buckets << "]." << std::endl;
 										std::cout << "* Base Address:\t\t(" << &char_ptr << ")." << std::endl;
 										std::cout << "* Assigned Address:\t[" << static_cast<void *>(char_ptr) << "]." << std::endl;
 										std::cout << "* Value Assigned:\t{" << static_cast<int>(*char_ptr) << "} = <" << *char_ptr << ">." << std::endl << std::endl;
@@ -259,7 +259,7 @@ int main()
 										std::cout << "Would you like to release the previously assigned value? (y/n) : ";
 										try {chr_answer = capture_a_value<char>(&chr_answer);}
 										catch (const std::exception& e)
-										{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+										{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
 										if ((chr_answer == V_CHAR_LOWER_Y<char>) || (chr_answer == V_CHAR_UPPER_Y<char>))
 											{
@@ -272,19 +272,21 @@ int main()
 												char_ptr = nullptr;
 											}
 									}
+
+								counter++;
 							}
 						catch (const std::exception& e)
-						{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+						{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
 						std::cout << "Do you wish to continue the allocation operation? (y/n) : ";
 						try {chr_response = capture_a_value<char>(&chr_response);}
 						catch (const std::exception& e)
-						{std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;}
+						{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 					}
 			}
 		catch (const std::exception& e)
 			{
-				std::cerr << "Exception ocurred: [" << e.what() << "]." << std::endl;
+				std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;
 			}
 
 		std::cout << std::endl << "[" << attemps << "] Output results generated." << std::endl;
