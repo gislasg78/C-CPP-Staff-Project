@@ -6,7 +6,7 @@ template <typename T>
 constexpr T V_ZERO	{T(0)};
 
 template<typename TX, typename TY>
-const auto sum(TX& x, TY& y)
+const auto sum(const TX& x, const TY& y)
 {return x + y;}
 
 template<typename TX, typename TY, typename TZ>
