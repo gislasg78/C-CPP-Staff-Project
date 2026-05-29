@@ -4,14 +4,31 @@
    with very precise memory release and allocation controls.
 */
 
+/* Libraries Standards of Work. */
 #include <iostream>
 #include <limits>
 
+/* Work template variables. */
 template <typename T>
-constexpr T CARRIAGE_RETURN {T('\n')};
+constexpr T V_50		{T(50)};
+template <typename T>
+constexpr T V_100		{T(100)};
+template <typename T>
+constexpr T V_200		{T(200)};
+template <typename T>
+constexpr T V_500		{T(500)};
+template <typename T>
+constexpr T V_1000		{T(1000)};
+template <typename T>
+constexpr T V_2000		{T(2000)};
+template <typename T>
+constexpr T V_5000		{T(5000)};
 
+/* Predefined variables. */
 template <typename T>
-constexpr T V_ZERO {T(0)};
+constexpr T CARRIAGE_RETURN	{T('\n')};
+template <typename T>
+constexpr T V_ZERO		{T(0)};
 
 template <typename T>
 class PiggyBank
@@ -41,7 +58,7 @@ class PiggyBank
 			{
 				release();
 
-				if (ptr_coins == nullptr && _piggybank.ptr_coins)
+				if (!ptr_coins && _piggybank.ptr_coins)
 				{
 					ptr_coins = new T{*_piggybank.ptr_coins};
 				}
@@ -56,7 +73,7 @@ class PiggyBank
 			{
 				release();
 
-				if (ptr_coins == nullptr && _piggybank.ptr_coins)
+				if (!ptr_coins && _piggybank.ptr_coins)
 				{
 					ptr_coins = _piggybank.ptr_coins;
 					_piggybank.ptr_coins = nullptr;
@@ -74,7 +91,7 @@ class PiggyBank
 			return *this;
 		}
 
-		const T& getCoins() const {if (ptr_coins) return *ptr_coins; else return V_ZERO<T>;}
+		const T& getCoins() const {return (ptr_coins) ? *ptr_coins : V_ZERO<T>;}
 		const T* const& getPtrCoins() const {return ptr_coins;}
 
 		void print() const
@@ -82,17 +99,16 @@ class PiggyBank
 			std::cout << std::endl << "PiggyBank info." << std::endl;
 			std::cout << "* Address:\t(" << ptr_coins << ")." << std::endl;
 
-			if (ptr_coins) std::cout << "+ Coins:\t[" << *ptr_coins << "]." << std::endl;
+			if (ptr_coins)
+				std::cout << "+ Coins:\t[" << *ptr_coins << "]." << std::endl;
 		}
 
 		void reassignment()
 		{
-			if (ptr_coins)
-			{
-				release();
-			}
+			release();
 
-			ptr_coins = new T{};
+			if (!ptr_coins)
+				ptr_coins = new T{};
 		}
 
 		void release()
@@ -134,8 +150,11 @@ int main()
 {
 	std::cout << "Replacing Class Pointers." << std::endl;
 
-	PiggyBank<int> my_money_box{100}, your_money_box{200}, her_money_box{500}, his_money_box{her_money_box}, temp_money_box{std::move(her_money_box)};
-	PiggyBank<int> *ptr_my_money_box {&my_money_box}, *ptr_your_money_box {&your_money_box}, *ptr_her_money_box{&her_money_box}, *ptr_his_money_box{&his_money_box}, *ptr_temp_money_box{&temp_money_box};
+	PiggyBank<int> my_money_box {V_100<int>}, your_money_box {V_200<int>}, her_money_box {V_500<int>};
+	PiggyBank<int> his_money_box {her_money_box}, temp_money_box {std::move(her_money_box)};
+	PiggyBank<int> *ptr_my_money_box {&my_money_box}, *ptr_your_money_box {&your_money_box};
+	PiggyBank<int> *ptr_her_money_box {&her_money_box}, *ptr_his_money_box {&his_money_box};
+	PiggyBank<int> *ptr_temp_money_box {&temp_money_box};
 
 	ptr_my_money_box->print();
 	enter_a_pause("Press the ENTER key to continue...");
@@ -160,16 +179,16 @@ int main()
 	ptr_your_money_box->print();
 	enter_a_pause("Press the ENTER key to continue...");
 
-	my_money_box.addCoins(100).addCoins(200).addCoins(500).subtractCoins(50);
+	my_money_box.addCoins(V_100<int>).addCoins(V_200<int>).addCoins(V_500<int>).subtractCoins(V_50<int>);
 	my_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
-	your_money_box.setCoins(1000);
+	your_money_box.setCoins(V_5000<int>);
 	your_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
 	her_money_box.reassignment();
-	her_money_box.addCoins(1000).addCoins(2000).addCoins(5000).subtractCoins(500);
+	her_money_box.addCoins(V_1000<int>).addCoins(V_2000<int>).addCoins(V_5000<int>).subtractCoins(V_500<int>);
 	her_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
@@ -195,7 +214,7 @@ int main()
 	his_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
-	his_money_box.addCoins(1000).addCoins(2000).addCoins(5000).subtractCoins(500);
+	his_money_box.addCoins(V_1000<int>).addCoins(V_2000<int>).addCoins(V_5000<int>).subtractCoins(V_500<int>);
 	his_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
@@ -203,6 +222,14 @@ int main()
 	his_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
+	her_money_box.print();
+	enter_a_pause("Press the ENTER key to continue...");
+
+	her_money_box.reassignment();
+	her_money_box.print();
+	enter_a_pause("Press the ENTER key to continue...");
+
+	her_money_box.release();
 	her_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
