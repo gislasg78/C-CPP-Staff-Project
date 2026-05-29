@@ -6,7 +6,7 @@ template <typename T>
 constexpr T V_ZERO	{T(0)};
 
 template<typename TX, typename TY>
-auto sum(TX& x, TY& y)
+const auto sum(TX& x, TY& y)
 {return x + y;}
 
 template<typename TX, typename TY, typename TZ>
@@ -15,7 +15,7 @@ void print(const TX& x, const TY& y, const TZ& sum)
 
 int main()
 {
-	int x{}, y{};
+	int x{}, y{}, *p_x{&x}, *p_y{&y};
 	std::string str_value {std::string()};
 	std::cout << "L-Values & R-Values." << std::endl;
 
@@ -38,6 +38,9 @@ int main()
 	int& refX {x}, &refY {y};
 	int refSum {sum<int, int>(x, y)};
 	print(refX, refY, refSum);
+
+	int& p_refX {*p_x}, & p_refY {*p_y};
+	print(p_refX, p_refY, sum<int, int>(*p_x, *p_y));
 
 	const int& refCX {x}, &refCY {y};
 	const int& refCSum {sum<int, int>(x, y)};
