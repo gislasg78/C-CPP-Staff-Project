@@ -44,17 +44,20 @@ class MyArray
 		{
 			if (this != &my_array)
 			{
-				release();
-
-				if (!m_array && !m_array_size)
+				if (my_array.m_array && my_array.m_array_size)
 				{
-					m_array_size = my_array.m_array_size;
+					release();
 
-					if ((m_array = new T[m_array_size]{}))
+					if (!m_array && !m_array_size)
 					{
-						for (std::size_t idx{}; idx < my_array.m_array_size; idx++)
+						m_array_size = my_array.m_array_size;
+
+						if ((m_array = new T[m_array_size]{}))
 						{
-							m_array[idx] = my_array.m_array[idx];
+							for (std::size_t idx{}; idx < my_array.m_array_size; idx++)
+							{
+								m_array[idx] = my_array.m_array[idx];
+							}
 						}
 					}
 				}
@@ -67,15 +70,18 @@ class MyArray
 		{
 			if (this != &my_array)
 			{
-				release();
-
-				if (!m_array && !m_array_size)
+				if (my_array.m_array && my_array.m_array_size)
 				{
-					m_array_size = my_array.m_array_size;
-					m_array = my_array.m_array;
+					release();
 
-					my_array.m_array = nullptr;
-					my_array.m_array_size = V_ZERO<size_t>;
+					if (!m_array && !m_array_size)
+					{
+						m_array_size = my_array.m_array_size;
+						m_array = my_array.m_array;
+
+						my_array.m_array = nullptr;
+						my_array.m_array_size = V_ZERO<size_t>;
+					}
 				}
 			}
 
