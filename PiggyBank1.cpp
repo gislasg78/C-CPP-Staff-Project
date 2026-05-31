@@ -96,11 +96,14 @@ class PiggyBank
 
 		void print() const
 		{
-			std::cout << std::endl << "PiggyBank info." << std::endl;
-			std::cout << "* Address:\t(" << ptr_coins << ")." << std::endl;
+			std::cout << std::endl << "Dynamic pointer information." << std::endl;
+			std::cout << "+ Address pointer:\t(" << &ptr_coins << ")." << std::endl;
+			std::cout << "+ Content address:\t[" << ptr_coins << "]." << std::endl;
 
 			if (ptr_coins)
-				std::cout << "+ Coins:\t[" << *ptr_coins << "]." << std::endl;
+				std::cout << "> Coins content:\t{" << *ptr_coins << "}." << std::endl;
+
+			std::cout << std::endl;
 		}
 
 		void reassignment()
@@ -148,90 +151,87 @@ void enter_a_pause(const std::string& str_Message)
 
 int main()
 {
-	std::cout << "Replacing Class Pointers." << std::endl;
+	std::cout << "Test Class Pointer Value." << std::endl;
 
-	PiggyBank<int> my_money_box {V_100<int>}, your_money_box {V_200<int>}, her_money_box {V_500<int>};
-	PiggyBank<int> his_money_box {her_money_box}, temp_money_box {std::move(her_money_box)};
-	PiggyBank<int> *ptr_my_money_box {&my_money_box}, *ptr_your_money_box {&your_money_box};
-	PiggyBank<int> *ptr_her_money_box {&her_money_box}, *ptr_his_money_box {&his_money_box};
-	PiggyBank<int> *ptr_temp_money_box {&temp_money_box};
-
-	ptr_my_money_box->print();
-	enter_a_pause("Press the ENTER key to continue...");
-
-	ptr_your_money_box->print();
-	enter_a_pause("Press the ENTER key to continue...");
-
-	ptr_her_money_box->print();
-	enter_a_pause("Press the ENTER key to continue...");
-
-	ptr_his_money_box->print();
-	enter_a_pause("Press the ENTER key to continue...");
-
-	ptr_temp_money_box->print();
-	enter_a_pause("Press the ENTER key to continue...");
-
-	std::swap(ptr_my_money_box, ptr_your_money_box);
-
-	ptr_my_money_box->print();
-	enter_a_pause("Press the ENTER key to continue...");
-
-	ptr_your_money_box->print();
-	enter_a_pause("Press the ENTER key to continue...");
-
-	my_money_box.addCoins(V_100<int>).addCoins(V_200<int>).addCoins(V_500<int>).subtractCoins(V_50<int>);
+	std::cout << std::endl << "Builder with size information." << std::endl;
+	PiggyBank<int> my_money_box {V_100<int>};
 	my_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
-	your_money_box.setCoins(V_5000<int>);
+	std::cout << std::endl << "Copy constructor." << std::endl;
+	PiggyBank<int> your_money_box {my_money_box};
+	my_money_box.print();
+	enter_a_pause("Press the ENTER key to continue...");
 	your_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
-	her_money_box.reassignment();
-	her_money_box.addCoins(V_1000<int>).addCoins(V_2000<int>).addCoins(V_5000<int>).subtractCoins(V_500<int>);
+	std::cout << std::endl << "Copy assignment." << std::endl;
+	PiggyBank<int> her_money_box;
+	her_money_box = my_money_box;
+	my_money_box.print();
+	enter_a_pause("Press the ENTER key to continue...");
 	her_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
-	temp_money_box = std::move(her_money_box);
-	temp_money_box.print();
+	std::cout << std::endl << "Move constructor." << std::endl;
+	PiggyBank<int> his_money_box {std::move(your_money_box)};
+	your_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
-
-	her_money_box.print();
-	enter_a_pause("Press the ENTER key to continue...");
-
-	her_money_box = his_money_box;
-	her_money_box.print();
-	enter_a_pause("Press the ENTER key to continue...");
-
 	his_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
-	his_money_box.release();
-	his_money_box.print();
+	std::cout << std::endl << "Move assignment." << std::endl;
+	PiggyBank<int> our_money_box;
+	our_money_box = std::move(my_money_box);
+	my_money_box.print();
+	enter_a_pause("Press the ENTER key to continue...");
+	our_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
-	his_money_box.reassignment();
-	his_money_box.print();
+	std::cout << std::endl << "Adding & Subtracting values..." << std::endl;
+	PiggyBank<int> their_money_box{V_ZERO<int>};
+	their_money_box.addCoins(V_100<int>).addCoins(V_200<int>).addCoins(V_500<int>).subtractCoins(V_50<int>);
+	their_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
-	his_money_box.addCoins(V_1000<int>).addCoins(V_2000<int>).addCoins(V_5000<int>).subtractCoins(V_500<int>);
-	his_money_box.print();
+	std::cout << std::endl << "Setting values..." << std::endl;
+	their_money_box.setCoins(V_5000<int>);
+	their_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
-	her_money_box = std::move(his_money_box);
-	his_money_box.print();
+	std::cout << std::endl << "Reassignment..." << std::endl;
+	their_money_box.reassignment();
+	their_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
-	her_money_box.print();
+	std::cout << std::endl << "Adding & Subtracting values..." << std::endl;
+	their_money_box.addCoins(V_1000<int>).addCoins(V_2000<int>).addCoins(V_5000<int>).subtractCoins(V_500<int>);
+	their_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
-	her_money_box.reassignment();
-	her_money_box.print();
+	std::cout << std::endl << "Releasing..." << std::endl;
+	their_money_box.release();
+	their_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
-	her_money_box.release();
-	her_money_box.print();
+	std::cout << std::endl << "Reassignment..." << std::endl;
+	their_money_box.reassignment();
+	their_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
+
+	std::cout << std::endl << "Setting values..." << std::endl;
+	their_money_box.setCoins(V_500<int>);
+	their_money_box.print();
+	enter_a_pause("Press the ENTER key to continue...");
+
+	std::cout << std::endl << "Adding & Subtracting values..." << std::endl;
+	their_money_box.addCoins(V_100<int>).addCoins(V_200<int>).addCoins(V_500<int>).subtractCoins(V_50<int>);
+	their_money_box.print();
+	enter_a_pause("Press the ENTER key to continue...");
+
+	std::cout << std::endl << "Address & Size." << std::endl;
+	std::cout << "> (" << their_money_box.getPtrCoins() << ")." << std::endl;
+	std::cout << "> [" << their_money_box.getCoins() << "]." << std::endl;
 
 	std::cout << CARRIAGE_RETURN<char> << "Done!" << CARRIAGE_RETURN<char>;
 	std::cout << "This program has ended." << CARRIAGE_RETURN<char>;
