@@ -114,11 +114,10 @@ class MyArray
 			std::cout << "+ Address pointer:\t(" << &m_array << ")." << std::endl;
 			std::cout << "+ Content address:\t[" << m_array << "]." << std::endl;
 
-			if (m_array)
-				std::cout << "> First element:\t{" << *m_array << "}." << std::endl;
-
 			if (m_array && m_array_size)
 				{
+					std::cout << "> First element:\t{" << *m_array << "}." << std::endl;
+
 					std::cout << std::endl << "* List of items. *" << std::endl;
 
 					for (std::size_t idx{}; idx < m_array_size; idx++)
