@@ -79,9 +79,9 @@ class Point2D
 				{(*this).x += value; (*this).y += value; return *this;}
 
 			Point2D<T>& operator++()	{++this->x; ++this->y; return *this;}
-			Point2D<T>& operator++(int)	{(*this).x++; (*this).y++; return *this;}
+			Point2D<T> operator++(int)	{Point2D<T> point2D {*this}; (*this).x++; (*this).y++; return point2D;}
 			Point2D<T>& operator--()	{--(*this).x; --(*this).y; return *this;}
-			Point2D<T>& operator--(int)	{this->x--; this->y--; return *this;}
+			Point2D<T> operator--(int)	{Point2D<T> point2D {*this}; this->x--; this->y--; return point2D;}
 
 			Point2D<T> operator-() const
 				{return Point2D<T>(-this->x, -this->y);}
@@ -458,9 +458,9 @@ class Point3D : public Point2D<T>
 				{this->getX() += value; this->getY() += value; this->z += value; return *this;}
 
 			Point3D<T>& operator++()	{++this->getX(); ++this->getY(); ++this->z; return *this;}
-			Point3D<T>& operator++(int)	{this->getX()++; this->getY()++; (*this).z++; return *this;}
+			Point3D<T> operator++(int)	{Point3D<T> point3D {*this}; this->getX()++; this->getY()++; (*this).z++; return point3D;}
 			Point3D<T>& operator--()	{--this->getX(); --this->getY(); --(*this).z; return *this;}
-			Point3D<T>& operator--(int)	{this->getX()--; this->getY()--; this->z--; return *this;}
+			Point3D<T> operator--(int)	{Point3D<T> point3D {*this}; this->getX()--; this->getY()--; this->z--; return point3D;}
 
 			Point3D<T> operator-() const
 				{return Point3D<T>(-(*this).getX(), -(*this).getY(), -(*this).z);}
