@@ -6,6 +6,7 @@ class BaseMixin
 	public:
 		void getName()
 		{
+			std::cout << "*(BaseMixin)::(getName())*" << std::endl;
 			(static_cast<Derivative*>(this))->implicative();
 		}
 };
@@ -43,12 +44,14 @@ int main()
 	std::cout << std::endl << "Derivative1." << std::endl;
 	Derivative1 derivative1;
 	derivative1.getName();
+	derivative1.implicative();
 
 	std::cout << std::endl << "Derivative2." << std::endl;
 	Derivative2 derivative2;
 	derivative2.getName();
+	derivative2.implicative();
 
-	std::cout << std::endl << "Done." << std::endl;
+	std::cout << std::endl << "Done!" << std::endl;
 	std::cout << "This program has ended." << std::endl;
 
 	return EXIT_SUCCESS;
