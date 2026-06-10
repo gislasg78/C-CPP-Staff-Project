@@ -16,7 +16,7 @@ class Base
 
 		virtual ~Base()
 		{
-			std::cout << "Destroying 'Base' Class." << std::endl;
+			std::cout << "Destroying 'Base' Class Object." << std::endl;
 		}
 };
 
@@ -36,7 +36,7 @@ class Derivative : public Base
 
 		virtual ~Derivative()
 		{
-			std::cout << "Destroying 'Derivative' Class." << std::endl;
+			std::cout << "Destroying 'Derivative' Class Object." << std::endl;
 		}
 };
 
