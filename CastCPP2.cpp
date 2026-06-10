@@ -9,9 +9,14 @@ class Base
 			return this;
 		}
 
-		virtual void printType()
+		void printType() const
 		{
 			std::cout << "Returning a 'Base' Class." << std::endl;
+		}
+
+		virtual ~Base()
+		{
+			std::cout << "Destroying 'Base' Class." << std::endl;
 		}
 };
 
@@ -24,9 +29,14 @@ class Derivative : public Base
 			return this;
 		}
 
-		void printType()
+		void printType() const
 		{
 			std::cout << "Returning a 'Derivative' Class." << std::endl;
+		}
+
+		virtual ~Derivative()
+		{
+			std::cout << "Destroying 'Derivative' Class." << std::endl;
 		}
 };
 
@@ -55,7 +65,7 @@ int main()
 	ptr_base_derivative_dynamic->getThis()->printType();
 
 	std::cout << std::endl << "Done!" << std::endl;
-	std::cout << "This program has ended." << std::endl;
+	std::cout << "This program has ended." << std::endl << std::endl;
 
 	return EXIT_SUCCESS;
 }
