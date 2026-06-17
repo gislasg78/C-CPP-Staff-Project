@@ -17,14 +17,19 @@ class MyArray
 		std::size_t m_array_size {};
 		T* m_array {nullptr};
 
+	protected:
+		static int s_counter;
+
 	public:
 		MyArray() = default;
 
 		MyArray(const std::size_t& array_size) : m_array_size(array_size), m_array(new T[array_size]())
-		{}
+		{s_counter++;}
 
 		MyArray(const MyArray<T>& my_array) : m_array_size {my_array.m_array_size}, m_array {nullptr}
 		{
+			s_counter++;
+
 			if (my_array.m_array && my_array.m_array_size)
 			{
 				if ((m_array = new T[m_array_size]{}))
@@ -39,14 +44,21 @@ class MyArray
 
 		MyArray(MyArray<T>&& my_array) : m_array_size {my_array.m_array_size}, m_array {my_array.m_array}
 		{
+			s_counter--;
+
 			my_array.m_array = nullptr;
 			my_array.m_array_size = V_ZERO<size_t>;
 		}
+
+		const T& operator[](const std::size_t index) const
+		{return (checkLimits(index)) ? m_array[index] : V_ZERO<T>;}
 
 		MyArray<T>& operator=(const MyArray<T>& my_array)
 		{
 			if (this != &my_array)
 			{
+				s_counter++;
+
 				if (my_array.m_array && my_array.m_array_size)
 				{
 					release();
@@ -73,6 +85,8 @@ class MyArray
 		{
 			if (this != &my_array)
 			{
+				s_counter--;
+
 				if (my_array.m_array && my_array.m_array_size)
 				{
 					release();
@@ -108,6 +122,7 @@ class MyArray
 			int counter{};
 
 			std::cout << std::endl << "Dynamic array information." << std::endl;
+			std::cout << "< Counter:\t\t<" << s_counter << ">." << std::endl;
 			std::cout << "- Address size:\t\t(" << &m_array_size << ")." << std::endl;
 			std::cout << "> Content size:\t\t{" << m_array_size << "}." << std::endl << std::endl;
 
@@ -116,9 +131,8 @@ class MyArray
 
 			if (m_array && m_array_size)
 				{
-					std::cout << "> First element:\t{" << *m_array << "}." << std::endl;
-
-					std::cout << std::endl << "* List of items. *" << std::endl;
+					std::cout << std::endl << "> First element:\t{" << *m_array << "}." << std::endl;
+					std::cout << "* List of items. *" << std::endl;
 
 					for (std::size_t idx{}; idx < m_array_size; idx++)
 					{
@@ -169,6 +183,9 @@ class MyArray
 		{release();}
 };
 
+template <typename T>
+int MyArray<T>::s_counter {V_ZERO<int>};
+
 void enter_a_pause(const std::string& str_Message)
 {
 	std::cout << str_Message;
@@ -183,6 +200,8 @@ int main()
 	std::cout << "Test Class Array Values." << std::endl;
 
 	MyArray<int> my_array {V_ELEVEN<size_t>};
+
+	std::cout << std::endl << "Loading data..." << std::endl;
 	for (size_t idx{}; idx < my_array.getSize(); idx++)
 	{
 		my_array.setValue(idx, static_cast<int>(idx));
@@ -190,7 +209,14 @@ int main()
 	}
 	enter_a_pause("Press the ENTER key to continue...");
 
-	std::cout << std::endl << "Copy constructor. " << std::endl;
+	std::cout << std::endl << "Unloading data..." << std::endl;
+	for (size_t idx{}; idx < my_array.getSize(); idx++)
+	{
+		std::cout << "#: [" << idx << "] = [" << my_array[idx] << "]." << std::endl;
+	}
+	enter_a_pause("Press the ENTER key to continue...");
+
+	std::cout << std::endl << "Copy constructor." << std::endl;
 	MyArray<int> your_array {my_array};
 	my_array.print();
 	enter_a_pause("Press the ENTER key to continue...");
