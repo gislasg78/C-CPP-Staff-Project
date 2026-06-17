@@ -36,11 +36,18 @@ class PiggyBank
 	private:
 		T *ptr_coins{nullptr};
 
+	protected:
+		static int s_counter;
+
 	public:
 		PiggyBank() = default;
-		PiggyBank(const T& _coins) : ptr_coins(new T{_coins})	{}
+		PiggyBank(const T& _coins) : ptr_coins(new T{_coins})
+		{s_counter++;}
+
 		PiggyBank(const PiggyBank& _piggybank) : ptr_coins{nullptr}
 		{
+			s_counter++;
+
 			if (_piggybank.ptr_coins)
 			{
 				ptr_coins = new T{*_piggybank.ptr_coins};
@@ -49,13 +56,20 @@ class PiggyBank
 
 		PiggyBank(PiggyBank&& _piggybank) : ptr_coins(_piggybank.ptr_coins)
 		{
+			s_counter--;
+
 			_piggybank.ptr_coins = nullptr;
 		}
+
+		const T& operator()() const
+		{return *ptr_coins;}
 
 		PiggyBank& operator=(const PiggyBank& _piggybank)
 		{
 			if (this != &_piggybank)
 			{
+				s_counter++;
+
 				release();
 
 				if (!ptr_coins && _piggybank.ptr_coins)
@@ -71,6 +85,8 @@ class PiggyBank
 		{
 			if (this != &_piggybank)
 			{
+				s_counter--;
+
 				release();
 
 				if (!ptr_coins && _piggybank.ptr_coins)
@@ -97,6 +113,7 @@ class PiggyBank
 		void print() const
 		{
 			std::cout << std::endl << "Dynamic pointer information." << std::endl;
+			std::cout << "< Counter:\t\t<" << s_counter << ">." << std::endl;
 			std::cout << "+ Address pointer:\t(" << &ptr_coins << ")." << std::endl;
 			std::cout << "+ Content address:\t[" << ptr_coins << "]." << std::endl;
 
@@ -140,6 +157,9 @@ class PiggyBank
 		~PiggyBank()	{release();}
 };
 
+template <typename T>
+int PiggyBank<T>::s_counter {V_ZERO<int>};
+
 void enter_a_pause(const std::string& str_Message)
 {
 	std::cout << str_Message;
@@ -155,6 +175,9 @@ int main()
 
 	std::cout << std::endl << "Builder with size information." << std::endl;
 	PiggyBank<int> my_money_box {V_100<int>};
+	std::cout << "Coins value: [" << my_money_box() << "]." << std::endl;
+	enter_a_pause("Press the ENTER key to continue...");
+
 	my_money_box.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
