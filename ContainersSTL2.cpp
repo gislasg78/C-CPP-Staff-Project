@@ -48,7 +48,7 @@ template <typename T, typename U>
 struct MyStudentHashFunction
 	{
 		std::size_t operator()(const Student<T, U>& student) const
-			{return (std::hash<int>{}(student.m_id) | std::hash<std::string>{}(student.m_name) | std::hash<int>{}(student.m_age));}
+			{return (std::hash<T>{}(student.m_id) | std::hash<std::string>{}(student.m_name) | std::hash<U>{}(student.m_age));}
 	};
 
 //Main function.
