@@ -8,24 +8,10 @@ constexpr T CARRIAGE_RETURN	{T('\n')};
 template <typename T>
 constexpr T V_ZERO		{T(0)};
 
-/* Greater than 'x', 'y' and 'z' values. */
-/*
-	if (x > y)
-		if (x > z)
-			major = x;
-		else
-			major = y;
-	else
-		if (y > z)
-			major = y;
-		else
-			major = z;
-*/
 template <typename T, typename U, typename V>
-auto greater(T x, U y, V z)
+auto greater(const T& x, const U& y, const V& z)
 	{
 		using Common_Type = std::common_type_t<T, U, V>;
-
 		Common_Type major = static_cast<Common_Type>(x);
 
 		if (static_cast<Common_Type>(y) > major)
@@ -37,9 +23,29 @@ auto greater(T x, U y, V z)
 		return major;
 	}
 
+template <typename T, typename U, typename V>
+auto larger(const T& x, const U& y, const V& z) -> decltype(x + y + z)
+	{
+		using Common_Type = std::common_type_t<T, U, V>;
+		Common_Type major = static_cast<Common_Type>(x);
+
+		if (static_cast<Common_Type>(x) > static_cast<Common_Type>(y))
+			if (static_cast<Common_Type>(x) > static_cast<Common_Type>(z))
+				major = static_cast<Common_Type>(x);
+			else
+				major = static_cast<Common_Type>(y);
+		else
+			if (static_cast<Common_Type>(y) > static_cast<Common_Type>(z))
+				major = static_cast<Common_Type>(y);
+			else
+				major = static_cast<Common_Type>(z);
+
+		return major;
+	}
+
 /* Improvised 'Template' type function to capture a given string of characters. */
 template <typename T>
-const T& capture_a_value(T* const ptr_value)
+const T& capture_a_value(T* const &ptr_value)
 	{
 		if (ptr_value)
 			{
@@ -87,7 +93,7 @@ int main()
 	{
 		/* Preliminary working variables. */
 		int x {V_ZERO<int>};
-		float y {V_ZERO<float>};
+		float y (V_ZERO<float>);
 		double z = V_ZERO<double>;
 
 		std::cout << "Choosing the largest number from three values." << std::endl;
@@ -108,9 +114,12 @@ int main()
 		catch (const std::exception& e)
 		{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
-		std::cout << std::endl << "Values ​​entered." << std::endl;
-		std::cout << "(x = [" << x << "], y = [" << y << "], z = [" << z << "])." << std::endl;
-		std::cout << "The largest value is: [" << greater(x, y, z) << "]." << std::endl;
+		std::cout << std::endl << "Values ​​entered for comparison." << std::endl;
+		std::cout << "(x = [" << x << "], y = [" << y << "], z = [" << z << "])." << std::endl << std::endl;
+
+		std::cout << "Products Results." << std::endl;
+		std::cout << "+ Greatest value is:\t[" << greater(x, y, z) << "]." << std::endl;
+		std::cout << "+ Largest  value is:\t[" << larger(x, y, z) << "]." << std::endl;
 
 		return EXIT_SUCCESS;
 	}
