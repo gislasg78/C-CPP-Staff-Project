@@ -22,9 +22,9 @@ constexpr T V_ZERO		{T(0)};
 template <typename T, typename U>
 struct Student
 	{
-		T m_id {V_ZERO<int>};
+		T m_id {V_ZERO<T>};
 		std::string m_name {};
-		U m_age {V_ZERO<int>};
+		U m_age {V_ZERO<U>};
 
 		Student(const T& id, const std::string& name, const U& age) : m_id(id), m_name(name), m_age(age) {};
 
