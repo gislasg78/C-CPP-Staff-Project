@@ -211,7 +211,7 @@ class Circle
 			virtual Circle<T>& copy(const Circle<T>& circle)
 				{(*this).radius = circle.getRadius(); return *this;}
 
-			static const T &enter_a_data(T *const ptr_data)
+			static const T &enter_a_data(T *const& ptr_data)
 				{
 					if (ptr_data)
 						{
@@ -256,7 +256,7 @@ class Circle
 					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN<char>);
 				}
 
-			static const T& enter_a_value(T *const ptr_value)
+			static const T& enter_a_value(T *const &ptr_value)
 				{
 					if (ptr_value)
 						{
