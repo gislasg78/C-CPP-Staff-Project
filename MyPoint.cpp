@@ -221,7 +221,7 @@ class Point2D
 			virtual Point2D<T>& copy(const Point2D<T> &point2D)
 				{this->x = point2D.getX(); this->y = point2D.getY(); return *this;}
 
-			static const T &enter_a_data(T *const ptr_data)
+			static const T &enter_a_data(T *const& ptr_data)
 				{
 					if (ptr_data)
 						{
@@ -266,7 +266,7 @@ class Point2D
 					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN<char>);
 				}
 
-			static const T& enter_a_value(T *const ptr_value)
+			static const T& enter_a_value(T *const &ptr_value)
 				{
 					if (ptr_value)
 						{
