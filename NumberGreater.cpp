@@ -27,7 +27,7 @@ template <typename T, typename U, typename V>
 auto larger(const T& x, const U& y, const V& z) -> decltype(x + y + z)
 	{
 		using Common_Type = std::common_type_t<T, U, V>;
-		Common_Type major = static_cast<Common_Type>(x);
+		Common_Type major = V_ZERO<Common_Type>;
 
 		if (static_cast<Common_Type>(x) > static_cast<Common_Type>(y))
 			if (static_cast<Common_Type>(x) > static_cast<Common_Type>(z))
