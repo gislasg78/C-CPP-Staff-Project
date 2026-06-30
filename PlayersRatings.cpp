@@ -132,16 +132,51 @@ T obtainValue(const std::string& str_Message, T* data_value)
 					{return std::isdigit(c);});
 			};
 
-		std::cout << str_Message;
-		std::getline(std::cin >> std::ws, str_data_value);
+		/* Verify that the variable has a valid memory address. */
+		if (data_value)
+			{
+				/* Capture the requested value and store it in the passed memory address. */
+				std::cout << str_Message;
 
-		/* A string of characters is validated as numeric. */
-		if (IsNumeric(str_data_value))
-			std::cout << "The value entered is numeric." << std::endl;
+				if (std::getline(std::cin >> std::ws, str_data_value))
+					{
+						str_data_value.erase(std::remove_if(std::begin(str_data_value), std::end(str_data_value), ::isspace), str_data_value.end());
+						std::stringstream(str_data_value) >> t_data_value;
+
+						std::cout << "+ Characters:\t\t[" << std::cin.gcount() << "]." << std::endl;
+						std::cout << "+ Value entered:\t[" << t_data_value << "]. OK!" << std::endl << std::endl;
+
+						/* A string of characters is validated as numeric. */
+						if (IsNumeric(str_data_value))
+							std::cout << "The value entered is numeric." << std::endl;
+						else
+							std::cout << "The value entered is not numeric." << std::endl;
+					}
+				else
+					{
+						std::cerr << std::endl << std::endl << "Incorrect input information." << std::endl;
+
+						if (std::cin.eof())
+							std::cerr << "* EOF detected! *" << std::endl;
+
+						if (std::cin.fail())
+							std::cerr << "* Keyboard error detected! *" << std::endl;
+
+						char c{};
+						while (std::cin.get(c)) {}
+
+						std::cin.clear();
+						std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN<char>);
+
+						std::cerr << "> Throwing overflow exception..." << std::endl << std::endl;
+						throw std::overflow_error("The information coming from the keyboard input is overloaded.");
+					}
+			}
 		else
-			std::cout << "The value entered is not numeric." << std::endl;
-
-		std::stringstream(str_data_value) >> t_data_value;
+			{
+				std::cerr << std::endl << "A valid memory address was not provided." << std::endl << std::endl;
+				throw std::runtime_error("The memory location must be valid and not a null pointer.");
+			}
 
 		return (data_value) ? *data_value = t_data_value : V_ZERO<T>;
 	}
@@ -193,12 +228,21 @@ int main()
 
 		/* The container is generated with the specified range of random values. */
 		std::cout << "Players ratings." << std::endl;
-		int_count = obtainValue<int>("Enter the data number: ", &int_count);
+
+		try {int_count = obtainValue<int>("Enter the number of data to fill the main list: ", &int_count);}
+		catch (const std::exception& e)
+		{std::cerr << std::endl << "Exception occurred: [" << e.what() << "]." << std::endl;};
 
 		/* Capture minimum and maximum values ​​to populate the main 'All Players' list. */
 		std::cout << std::endl << "Value Range for Generative Numbers." << std::endl;
-		int_minimum = obtainValue<int>("+ Generative minimum value: ", &int_minimum);
-		int_maximum = obtainValue<int>("+ Generative maximum value: ", &int_maximum);
+
+		try {int_minimum = obtainValue<int>("+ Generative minimum value: ", &int_minimum);}
+		catch (const std::exception& e)
+		{std::cerr << std::endl << "Exception occurred: [" << e.what() << "]." << std::endl;};
+
+		try {int_maximum = obtainValue<int>("+ Generative maximum value: ", &int_maximum);}
+		catch (const std::exception& e)
+		{std::cerr << std::endl << "Exception occurred: [" << e.what() << "]." << std::endl;};
 
 		/* Filling the main list 'All Players' with random values ​​within a given range. */
 		std::list<int> allPlayers(int_count);
@@ -207,7 +251,11 @@ int main()
 
 		/* This block asks how many split lists you want to generate. */
 		std::cout << std::endl << "Generation of segmentation lists." << std::endl;
-		int_quantity = obtainValue<int>("Enter the split lists you want: ", &int_quantity);
+
+		try {int_quantity = obtainValue<int>("Enter the split lists you want: ", &int_quantity);}
+		catch (const std::exception& e)
+		{std::cerr << std::endl << "Exception occurred: [" << e.what() << "]." << std::endl;};
+
 		std::list<std::list<int>> segmented_lists {};
 
 		/* Capturing and separating the range of values ​​for each unique list. */
@@ -219,9 +267,15 @@ int main()
 				std::cout << std::endl << "Value Range for segmented list #: [" << int_counter++ + V_ONE<int> << "] of: [" << int_quantity << "]." << std::endl;
 
 				/* Detect the minimum and maximum values ​​of each split list. */
-				int_minimum = obtainValue<int>("+ Minimum value: ", &int_minimum);
-				int_maximum = obtainValue<int>("+ Maximum value: ", &int_maximum);
+				try {int_minimum = obtainValue<int>("+ Minimum value: ", &int_minimum);}
+				catch (const std::exception& e)
+				{std::cerr << std::endl << "Exception occurred: [" << e.what() << "]." << std::endl;};
 
+				try {int_maximum = obtainValue<int>("+ Maximum value: ", &int_maximum);}
+				catch (const std::exception& e)
+				{std::cerr << std::endl << "Exception occurred: [" << e.what() << "]." << std::endl;};
+
+				/* Separate and segment the main list into sublists. */
 				unique_list = separateRatings<int>(allPlayers, unique_list, int_minimum, int_maximum);
 				segmented_lists.push_back(unique_list);
 
