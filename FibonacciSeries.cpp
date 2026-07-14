@@ -93,6 +93,14 @@ struct Fibonacci_Record
 		T first_number {V_ZERO<T>};		//First game number of the series.
 		T second_number {V_ZERO<T>};		//Second starting number of the series.
 		T addition {V_ZERO<T>};			//Sum of both previous numbers.
+
+		/* Structure Builder. */
+		Fibonacci_Record()
+			{std::cout << std::endl << "<Building Fibonacci sequence...>" << std::endl;}
+
+		/* Destroyer of the Structure. */
+		~Fibonacci_Record()
+			{std::cout << std::endl << ">Destroying Fibonacci sequence...<" << std::endl;}
 	};
 
 /* Custom memory host for the 'std::vector' class. */
@@ -394,7 +402,6 @@ const T& enter_a_value(T *const &ptr_value)
 		return (ptr_value) ? *ptr_value : ZERO;
 	}
 
-/* */
 /*****************************************************************
  ** Function:		template <typename T>			**
  **			T getFib (const T& number);		**
@@ -406,8 +413,7 @@ const T& enter_a_value(T *const &ptr_value)
  **			quantity number.			**
  ** Input Parms:	const T& number.			**
  ** Output Parms:	None.					**
- ** Result:							**
- **			Fibonacci number calculation function.	**
+ ** Result:		Fibonacci number calculation function.	**
  **			======================================	**
  **			Returns the last number of the Fibonacci**
  **			series given a series of given terms.	**
@@ -436,6 +442,55 @@ T getFib(const T& number)
 				std::cout << "> Calling Fib: (" << number - V_TWO<T> <<") and Fib: (" << number - V_ONE<T> << ")." << std::endl;
 				return getFib(number - V_TWO<T>) + getFib(number - V_ONE<T>);
 			}
+	}
+
+/*****************************************************************
+ ** Function:		template <typename T>			**
+ **			T get_Fib				**
+ **				(T number,			**
+ **				 T first_number = V_ZERO<T>,	**
+ **				 T second_number = V_ONE<T>);	**
+ ** Explanation:	This function aims to calculate		**
+ **			Fibonacci numbers up to a given		**
+ **			position, taking as a base the initial	**
+ **			values ​​of zero and one up to the number	**
+ **			of iterations indicated as the final	**
+ **			quantity number.			**
+ ** Input Parms:	T number.				**
+ **			T first_number = V_ZERO<T>.		**
+ **			T second_number = V_ONE<T>.		**
+ ** Output Parms:	None.					**
+ ** Result:							**
+ **			Fibonacci number calculation function.	**
+ **			======================================	**
+ **			Returns the last number of the Fibonacci**
+ **			series given a series of given terms.	**
+ **								**
+ **			The calculation procedure is as follows:**
+ **			x=0, y=1; sum from '0' to 'n':		**
+ **				{z=x+y; x=y; y=z}.		**
+ **								**
+ **			This recursive function obeys the	**
+ **			next condition:				**
+ **			Fibo(n) = (n <= 1) ?			**
+ **				n : Fibo(n - 1) + Fibo (n -2).	**
+ *****************************************************************/
+template <typename T>
+T get_Fib(T number, T first_number = V_ZERO<T>, T second_number = V_ONE<T>)
+	{
+		T addition {first_number + second_number};
+
+		if (number < V_THREE<T>)
+			return V_ONE<T>;
+
+		for (number -= V_THREE<T>; number != V_ZERO<T>; number--)
+			{
+				second_number = first_number;
+				first_number = addition;
+				addition = first_number + second_number;
+			}
+
+		return addition;
 	}
 
 /*****************************************************************
@@ -770,6 +825,18 @@ int main()
 						/* Shows the general information of the Fibonacci series. */
 						viewInfoFibo<size_t>(quantity, first_number, second_number, vec_st_rec_Fibo, getFibonacci(quantity, first_number, second_number));
 
+						/* Displays the base Fibonacci value with default values ​​of one and one. */
+						recursive_Fibo = get_Fib<size_t>(quantity, V_ONE<size_t>, V_ONE<size_t>);
+
+						std::cout << std::endl;
+						std::cout << "+---|----+---|----+---|----+" << std::endl;
+						std::cout << "| Fibonacci with one & one.|" << std::endl;
+						std::cout << "+---|----+---|----+---|----+" << std::endl;
+						std::cout << "| + Iters:\t[" << quantity << "]." << std::endl;
+						std::cout << "| + Result:\t{" << recursive_Fibo << "}." << std::endl;
+						std::cout << "+---|----+---|----+---|----+" << std::endl;
+						enter_a_pause("Press the ENTER key to continue...");
+
 						/* Displays the regular and normal fibonacci series with intermediate messages. */
 						std::cout << std::endl << "Calculate the common Fibonacci function" << std::endl;
 						std::cout << "but showing intermediate calculation messages." << std::endl;
@@ -814,7 +881,7 @@ int main()
 
 								std::cout << std::endl;
 								std::cout << "+---|----+---|----+---|----+" << std::endl;
-								std::cout << "| Function with zero & one.|" << std::endl;
+								std::cout << "|Fibonacci with zero & one.|" << std::endl;
 								std::cout << "+---|----+---|----+---|----+" << std::endl;
 								std::cout << "| + Cycles:\t[" << quantity << "]." << std::endl;
 								std::cout << "| - Result:\t{" << recursive_Fibo << "}." << std::endl;
@@ -839,6 +906,9 @@ int main()
 			}
 		else
 			std::cerr << "The number: [" << quantity << "] is out of range from: [" << V_LOWER_LIMIT_FIBO<size_t> << "] to: [" << V_UPPER_LIMIT_MAX<size_t> << "]." << std::endl;
+
+		std::cout << CARRIAGE_RETURN<char> << "Done!" << CARRIAGE_RETURN<char>;
+		std::cout << "This program has ended." << CARRIAGE_RETURN<char>;
 
 		return EXIT_SUCCESS;
 	}
