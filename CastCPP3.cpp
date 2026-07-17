@@ -9,22 +9,22 @@ class Base
 		public:
 			Base() = default;
 
-		virtual void f() const
-			{
-				std::cout << "+ <<Base>>::[f()]." << std::endl;
-			}
+			virtual void f() const
+				{
+					std::cout << "+ <<Base>>::[f()]." << std::endl;
+				}
 
-		void g() const
-			{
-				std::cout << "+ <<Base>>::[g()]." << std::endl;
-			}
+			void g() const
+				{
+					std::cout << "+ <<Base>>::[g()]." << std::endl;
+				}
 
-		void k() const
-			{
-				std::cout << "+ <<Base>>::[k()]." << std::endl;
-			}
+			void k() const
+				{
+					std::cout << "+ <<Base>>::[k()]." << std::endl;
+				}
 
-		virtual ~Base() = default;
+			virtual ~Base() = default;
 	};
 
 class Derived : public Base
@@ -32,22 +32,22 @@ class Derived : public Base
 		public:
 			Derived() = default;
 
-		void f() const override
-			{
-				std::cout << "- >>Derived<<::{f()}." << std::endl;
-			}
+			void f() const override
+				{
+					std::cout << "- >>Derived<<::{f()}." << std::endl;
+				}
 
-		void g() const
-			{
-				std::cout << "- >>Derived<<::{g()}." << std::endl;
-			}
+			void g() const
+				{
+					std::cout << "- >>Derived<<::{g()}." << std::endl;
+				}
 
-		void h() const
-			{
-				std::cout << "- >>Derived<<::{h()}." << std::endl;
-			}
+			void h() const
+				{
+					std::cout << "- >>Derived<<::{h()}." << std::endl;
+				}
 
-		~Derived() = default;
+			~Derived() = default;
 	};
 
 void enter_a_pause(const std::string& str_Message)
@@ -102,6 +102,15 @@ int main()
 
 		std::cout << std::endl << "'Base' Pointer <dynamic cast> to 'Base' Pointer with a 'Base' object pointer." << std::endl;
 		if (Base* p_base_clone = dynamic_cast<Base*>(p_base))
+			{
+				p_base_clone->f();
+				p_base_clone->g();
+				p_base_clone->k();
+			}
+		enter_a_pause("Press the ENTER key to continue...");
+
+		std::cout << std::endl << "'Base' Pointer <dynamic cast> to 'Derivative' Pointer with a 'Base' object pointer." << std::endl;
+		if (Base* p_base_clone = dynamic_cast<Derived*>(p_base))
 			{
 				p_base_clone->f();
 				p_base_clone->g();
