@@ -41,11 +41,7 @@ constexpr T NULL_CHARACTER	{T('\0')};
 
 /* Numerical symbolic constants. */
 template <typename T>
-constexpr T V_MINUS_ONE		{T(-1)};
-template <typename T>
 constexpr T V_ONE		{T(1)};
-template <typename T>
-constexpr T V_THREE		{T(3)};
 template <typename T>
 constexpr T V_TWO		{T(2)};
 template <typename T>
@@ -54,7 +50,7 @@ constexpr T V_ZERO		{T(0)};
 /* Global overload of the 'new' operator. */
 void* operator new (std::size_t size_of_bucket)
 	{
-		std::cout << std::endl << "> Assigning: (" << size_of_bucket << ") bytes..." << std::endl;
+		std::cout << std::endl << "+ Allocating: (" << size_of_bucket << ") bytes... +" << std::endl;
 
 		void* ptr_bucket {std::malloc(size_of_bucket)};
 
@@ -69,15 +65,15 @@ void* operator new (std::size_t size_of_bucket)
 /* Global overload of the 'delete' operator. */
 void operator delete (void* ptr_bucket) noexcept
 	{
-		std::cout << std::endl << "Releasing allocated memory..." << std::endl;
-		std::free(ptr_bucket);
+		std::cout << std::endl << "- Deallocating memory... -" << std::endl;
+		std::free(ptr_bucket);	//Releasing the manually generated pointer.
 	}
 
 /* Global overload of the 'delete' operator with pointer and size of bucket. */
 void operator delete (void* ptr_bucket, std::size_t size_of_bucket) noexcept
 	{
-		std::cout << std::endl << "< Releasing: (" << size_of_bucket << ") bytes..." << std::endl;
-		std::free(ptr_bucket);
+		std::cout << std::endl << "- Deallocating: (" << size_of_bucket << ") bytes... -" << std::endl;
+		std::free(ptr_bucket);	//Releasing the manually generated pointer.
 	}
 
 /*--------------------------------------------------------------**
@@ -96,36 +92,36 @@ struct Fibonacci_Record
 
 		/* Structure Builder. */
 		Fibonacci_Record()
-			{std::cout << std::endl << "<Building Fibonacci sequence...>" << std::endl;}
+			{std::cout << std::endl << "+ Building Fibonacci record... +" << std::endl;}
 
 		/* Destroyer of the Structure. */
 		~Fibonacci_Record()
-			{std::cout << std::endl << ">Destroying Fibonacci sequence...<" << std::endl;}
+			{std::cout << std::endl << "- Destroying Fibonacci record... -" << std::endl;}
 	};
 
 /* Custom memory host for the 'std::vector' class. */
 template <typename T>
-struct My_Allocator
+struct Fibonacci_Allocator
 	{
 		using value_type = T;
 
-		My_Allocator() = default;
+		Fibonacci_Allocator() = default;
 
 		/* Custom Host Constructor for the Vector class. */
 		template <typename U>
-		My_Allocator(const My_Allocator<U>&)	{}
+		Fibonacci_Allocator(const Fibonacci_Allocator<U>&)	{}
 
 		/* Memory holder for the Locator. */
 		T* allocate(std::size_t num_buckets)
 			{
-				std::cout << CARRIAGE_RETURN<char> << "+ Assigning: [" << num_buckets << "] elements. +" << CARRIAGE_RETURN<char>;
+				std::cout << std::endl << "+ Assigning: [" << num_buckets << "] elements. +" << std::endl;
 				return static_cast<T*>(::operator new(num_buckets * sizeof(T)));
 			}
 
 		/* Memory unholder for the Locator. */
 		void deallocate(T* ptr_bucket, std::size_t num_buckets)
 			{
-				std::cout << CARRIAGE_RETURN<char> << "- Releasing: [" << num_buckets << "] elements. -" << CARRIAGE_RETURN<char>;
+				std::cout << std::endl << "- Releasing: [" << num_buckets << "] elements. -" << std::endl;
 				::operator delete(ptr_bucket);
 			}
 
@@ -142,6 +138,8 @@ struct My_Allocator
 			{
 				ptr_bucket->~U();
 			}
+
+		~Fibonacci_Allocator() = default;
 	};
 
 /* Prototype functions. */
@@ -183,18 +181,18 @@ template <typename T>
 T *breakdown_Fibonacci(const T& quantity, T first_number, T second_number, T **list_Fibonacci)
 	{
 		/* Initial declaration of work variables. */
-		T *vector_Fibonacci {nullptr};
+		T *ptr_Fibonacci {nullptr};
 		T addition {V_ZERO<T>};
 		T counting_items {V_ZERO<T>};
 
 		/* Creation of a simple one-dimensional vector or array. */
-		if ((vector_Fibonacci = new T[quantity]()))
+		if ((ptr_Fibonacci = new T[quantity]()))
 			{
 				/* Filling the vector or array with the values of the Fibonacci series. */
 				for (T idx {V_ZERO<T>}; idx < quantity; idx++)
 					{
 						addition = first_number + second_number;
-						vector_Fibonacci[idx] = addition;
+						ptr_Fibonacci[idx] = addition;
 						counting_items++;
 
 						first_number = second_number;
@@ -204,7 +202,7 @@ T *breakdown_Fibonacci(const T& quantity, T first_number, T second_number, T **l
 				/* Display of each value. */
 				std::cout << std::endl;
 				for (T idx {V_ZERO<T>}; idx < quantity; idx++)
-					std::cout << "[" << *(vector_Fibonacci + idx) << "].\t";
+					std::cout << "[" << *(ptr_Fibonacci + idx) << "].\t";
 				std::cout << std::endl;
 
 				/* Expected results. */
@@ -215,13 +213,13 @@ T *breakdown_Fibonacci(const T& quantity, T first_number, T second_number, T **l
 			std::cerr << std::endl << "An error occurred while allocating memory to the Fibonacci number pointer." << std::endl;
 
 		/* Assignment of the new memory address that contains the created elements. */
-		return (list_Fibonacci && vector_Fibonacci) ? *list_Fibonacci = vector_Fibonacci : nullptr;
+		return (list_Fibonacci && ptr_Fibonacci) ? *list_Fibonacci = ptr_Fibonacci : nullptr;
 	}
 
 /*****************************************************************
  ** Function:		template <typename T>			**
  **			Fibonacci_Record			**
- **				*dump_record_Fibonacci		**
+ **				*breakdown_record_Fibonacci	**
  **				(const T& quantity,		**
  **				 const T& first_number,		**
  **				 const T& second_number,	**
@@ -252,7 +250,7 @@ T *breakdown_Fibonacci(const T& quantity, T first_number, T second_number, T **l
  **				{z=x+y; x=y; y=z}.		**
  ****************************************************************/
 template <typename T>
-Fibonacci_Record<T> *dump_record_Fibonacci(const T& quantity, const T& first_number, const T& second_number, Fibonacci_Record<T>** p_st_rec_Fibo)
+Fibonacci_Record<T> *breakdown_record_Fibonacci(const T& quantity, const T& first_number, const T& second_number, Fibonacci_Record<T>** p_st_rec_Fibo)
 	{
 		/* Initial declaration of work variables. */
 		T counting_items {V_ZERO<T>};
@@ -265,7 +263,7 @@ Fibonacci_Record<T> *dump_record_Fibonacci(const T& quantity, const T& first_num
 		/* Routine information window. */
 		std::cout << std::endl;
 		std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
-		std::cout << "+Fibonnaci Number Dumping Breakdown.+" << std::endl;
+		std::cout << "+Fibonnaci Record Dumping Breakdown.+" << std::endl;
 		std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
 		std::cout << "| Generating the Fibonacci Series..." << std::endl;
 
@@ -295,6 +293,7 @@ Fibonacci_Record<T> *dump_record_Fibonacci(const T& quantity, const T& first_num
 						/* Saving the structure in the vector or created pointer. */
 						*(ptr_st_rec_Fibo + idx) = st_rec_Fibo;
 
+						/* Dumping the addresses of each member variable of the created structure. */
 						std::cout << "|\t[" << ptr_st_rec_Fibo[idx].idx
 							<< "] = [" << (ptr_st_rec_Fibo + idx)->idx
 							<< "]\t\t:\t[" <<  &ptr_st_rec_Fibo[idx].idx
@@ -326,7 +325,7 @@ Fibonacci_Record<T> *dump_record_Fibonacci(const T& quantity, const T& first_num
 
 					/* Show the pointer of the structure of the generated series. */
 					std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
-					std::cout << "| Fibonacci series consecutive sum. |" << std::endl;
+					std::cout << "| Fibonacci Record Consecutive Sum. |" << std::endl;
 					std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
 
 					for (T idx {V_ZERO<T>}; idx < quantity; idx++)
@@ -342,7 +341,7 @@ Fibonacci_Record<T> *dump_record_Fibonacci(const T& quantity, const T& first_num
 		enter_a_pause("Press the ENTER key to continue...");
 
 		/* Dynamic memory allocations with the list of created items. */
-		return (p_st_rec_Fibo && ptr_st_rec_Fibo) ? *p_st_rec_Fibo = ptr_st_rec_Fibo : NULL;
+		return (p_st_rec_Fibo && ptr_st_rec_Fibo) ? *p_st_rec_Fibo = ptr_st_rec_Fibo : nullptr;
 	}
 
 /* Function to take breaks when strictly necessary. */
@@ -404,14 +403,14 @@ const T& enter_a_value(T *const &ptr_value)
 
 /*****************************************************************
  ** Function:		template <typename T>			**
- **			T getFib (const T& number);		**
+ **			T getFib (const T& quantity);		**
  ** Explanation:	This function aims to calculate		**
  **			Fibonacci numbers up to a given		**
  **			position, taking as a base the initial	**
  **			values ​​of zero and one up to the number	**
  **			of iterations indicated as the final	**
  **			quantity number.			**
- ** Input Parms:	const T& number.			**
+ ** Input Parms:	const T& quantity.			**
  ** Output Parms:	None.					**
  ** Result:		Fibonacci number calculation function.	**
  **			======================================	**
@@ -428,74 +427,26 @@ const T& enter_a_value(T *const &ptr_value)
  **				n : Fibo(n - 1) + Fibo (n -2).	**
  *****************************************************************/
 template <typename T>
-T getFib(const T& number)
+T getFib(const T& quantity)
 	{
-		std::cout << std::endl << "Processing Fib: (" << number << ")..." << std::endl;
+		T addition {V_ONE<T>};
 
-		if (number < V_THREE<T>)
+		std::cout << std::endl << "* Processing Fib: (" << quantity << ")... *" << std::endl;
+
+		if (quantity > V_ONE<T>)
 			{
-				std::cout << "> Giving back: (" << V_ONE<T> << ")." << std::endl;
-				return V_ONE<T>;
+				std::cout << "> Calling Fib: (" << quantity - V_TWO<T> <<") and Fib: (" << quantity - V_ONE<T> << ")." << std::endl;
+				addition = getFib(quantity - V_ONE<T>) + getFib(quantity - V_TWO<T>);
 			}
 		else
-			{
-				std::cout << "> Calling Fib: (" << number - V_TWO<T> <<") and Fib: (" << number - V_ONE<T> << ")." << std::endl;
-				return getFib(number - V_TWO<T>) + getFib(number - V_ONE<T>);
-			}
-	}
-
-/*****************************************************************
- ** Function:		template <typename T>			**
- **			T get_Fib				**
- **				(T number,			**
- **				 T first_number = V_ZERO<T>,	**
- **				 T second_number = V_ONE<T>);	**
- ** Explanation:	This function aims to calculate		**
- **			Fibonacci numbers up to a given		**
- **			position, taking as a base the initial	**
- **			values ​​of zero and one up to the number	**
- **			of iterations indicated as the final	**
- **			quantity number.			**
- ** Input Parms:	T number.				**
- **			T first_number = V_ZERO<T>.		**
- **			T second_number = V_ONE<T>.		**
- ** Output Parms:	None.					**
- ** Result:							**
- **			Fibonacci number calculation function.	**
- **			======================================	**
- **			Returns the last number of the Fibonacci**
- **			series given a series of given terms.	**
- **								**
- **			The calculation procedure is as follows:**
- **			x=0, y=1; sum from '0' to 'n':		**
- **				{z=x+y; x=y; y=z}.		**
- **								**
- **			This recursive function obeys the	**
- **			next condition:				**
- **			Fibo(n) = (n <= 1) ?			**
- **				n : Fibo(n - 1) + Fibo (n -2).	**
- *****************************************************************/
-template <typename T>
-T get_Fib(T number, T first_number = V_ZERO<T>, T second_number = V_ONE<T>)
-	{
-		T addition {first_number + second_number};
-
-		if (number < V_THREE<T>)
-			return V_ONE<T>;
-
-		for (number -= V_THREE<T>; number != V_ZERO<T>; number--)
-			{
-				second_number = first_number;
-				first_number = addition;
-				addition = first_number + second_number;
-			}
+			std::cout << "> Giving back: (" << addition << ")." << std::endl;
 
 		return addition;
 	}
 
 /*****************************************************************
  ** Function:		template <typename T>			**
- **			T getFibo (const T& quantity);		**
+ **			T getfib (const T& quantity);		**
  ** Explanation:	This function calculates the last number**
  **			of the Fibonacci series given a given	**
  **			number of series to generate, and	**
@@ -520,53 +471,16 @@ T get_Fib(T number, T first_number = V_ZERO<T>, T second_number = V_ONE<T>)
  **				n : Fibo(n - 1) + Fibo (n -2).	**
  *****************************************************************/
 template <typename T>
-T getFibo(const T& quantity)
+T getfib(const T& quantity)
 	{
-		return (quantity > V_ONE<T>) ? getFibo(quantity - V_ONE<T>) + getFibo(quantity - V_TWO<T>) : quantity;
-	};
-
-/*****************************************************************
- ** Function:		template <typename T>			**
- **			T getFibonacci				**
- **				(const T& quantity,		**
- **				 const T& first_number,		**
- **				 const T& second_number);	**
- ** Explanation:	This function calculates the last number**
- **			of the Fibonacci series given a given	**
- **			number of series to generate, and	**
- **			obtains it discursively, exchanging the	**
- **			first value for the second and the	**
- **			latter for the sum of the first and	**
- **			second values, until reaching a		**
- **			iteration such that the value is less	**
- **			than or equal to unity (1).		**
- ** Input Parms:	const T& quantity.			**
- **			const T& first_number.			**
- **			const T& second_number.			**
- ** Output Parms:	None.					**
- ** Result:		Returns the last number of the Fibonacci**
- **			series given a series of given terms.	**
- **								**
- **			The calculation procedure is as follows:**
- **			x=0, y=1; sum from '0' to 'n':		**
- **				{z=x+y; x=y; y=z}.		**
- **								**
- **			This recursive function obeys the	**
- **			next condition:				**
- **			Fibo(n, x, y) = (n <= 1) ?		**
- **				x + y : Fibo(n - 1, y, x + y).	**
- ****************************************************************/
-template <typename T>
-T getFibonacci(const T& quantity, const T& first_number, const T& second_number)
-	{
-		return	(quantity <= V_ONE<T>) ? first_number + second_number :
-			getFibonacci(quantity + V_MINUS_ONE<T>, second_number, first_number + second_number);
+		return (quantity > V_ONE<T>) ? getfib(quantity - V_ONE<T>) + getfib(quantity - V_TWO<T>) : V_ONE<T>;
 	};
 
 /*****************************************************************
  ** Function:		template <typename T>			**
  **			std::vector				**
- **			<Fibonacci_Record, My_Allocator		**
+ **				<Fibonacci_Record<T>,		**
+ **				 Fibonacci_Allocator		**
  **				<Fibonacci_Record<T>>>		**
  **				getVectorFibo			**
  **				(const T& quantity,		**
@@ -589,13 +503,13 @@ T getFibonacci(const T& quantity, const T& first_number, const T& second_number)
  **				{z=x+y; x=y; y=z}.		**
  ****************************************************************/
 template <typename T>
-std::vector<Fibonacci_Record<T>, My_Allocator<Fibonacci_Record<T>>> getVectorFibo(const T& quantity, const T& first_number, const T& second_number)
+std::vector<Fibonacci_Record<T>, Fibonacci_Allocator<Fibonacci_Record<T>>> getVectorFibo(const T& quantity, const T& first_number, const T& second_number)
 	{
 		/* Initial declaration of work variables. */
 		T counting_items {V_ZERO<T>};
 
 		Fibonacci_Record<T> st_rec_Fibo {};
-		std::vector<Fibonacci_Record<T>, My_Allocator<Fibonacci_Record<T>>> vec_st_rec_Fibo {};
+		std::vector<Fibonacci_Record<T>, Fibonacci_Allocator<Fibonacci_Record<T>>> vec_st_rec_Fibo {};
 
 		/* Initial assignment of series starting values. */
 		st_rec_Fibo.first_number = first_number;
@@ -604,7 +518,7 @@ std::vector<Fibonacci_Record<T>, My_Allocator<Fibonacci_Record<T>>> getVectorFib
 		/* Routine information window. */
 		std::cout << std::endl;
 		std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
-		std::cout << "+     Fibonnaci Number Creation.    +" << std::endl;
+		std::cout << "+ Fibonnaci Record Vector Creation. +" << std::endl;
 		std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
 		std::cout << "| Generating the Fibonacci Series..." << std::endl;
 
@@ -632,15 +546,104 @@ std::vector<Fibonacci_Record<T>, My_Allocator<Fibonacci_Record<T>>> getVectorFib
 
 /*****************************************************************
  ** Function:		template <typename T>			**
+ **			T obtain_Fibonacci			**
+ **				(const T& quantity,		**
+ **				 T first_number = V_ZERO<T>,	**
+ **				 T second_number = V_ONE<T>);	**
+ ** Explanation:	This function aims to calculate		**
+ **			Fibonacci numbers up to a given		**
+ **			position, taking as a base the initial	**
+ **			values ​​of zero and one up to the number	**
+ **			of iterations indicated as the final	**
+ **			quantity number.			**
+ ** Input Parms:	const T& quantity.			**
+ **			T first_number = V_ZERO<T>.		**
+ **			T second_number = V_ONE<T>.		**
+ ** Output Parms:	None.					**
+ ** Result:							**
+ **			Fibonacci number calculation function.	**
+ **			======================================	**
+ **			Returns the last number of the Fibonacci**
+ **			series given a series of given terms.	**
+ **								**
+ **			The calculation procedure is as follows:**
+ **			x=0, y=1; sum from '0' to 'n':		**
+ **				{z=x+y; x=y; y=z}.		**
+ **								**
+ **			This recursive function obeys the	**
+ **			next condition:				**
+ **			Fibo(n) = (n <= 1) ?			**
+ **				n : Fibo(n - 1) + Fibo (n -2).	**
+ *****************************************************************/
+template <typename T>
+T obtain_Fibonacci(const T& quantity, T first_number = V_ZERO<T>, T second_number = V_ONE<T>)
+	{
+		/* Preliminary working variables. */
+		T addition {first_number + second_number};
+
+		/* Main cycle of ultimate value exchange. */
+		for (T idx {V_ZERO<T>}; idx < quantity; idx++)
+			{
+				second_number = first_number;
+				first_number = addition;
+
+				addition = first_number + second_number;
+			}
+
+		/* Return of accumulated and added value. */
+		return addition;
+	}
+
+/*****************************************************************
+ ** Function:		template <typename T>			**
+ **			T obtainFibonacci			**
+ **			(const T& quantity,			**
+ **			 const T& first_number = V_ZERO<T>,	**
+ **			 const T& second_number = V_ONE<T>);	**
+ ** Explanation:	This function calculates the last number**
+ **			of the Fibonacci series given a given	**
+ **			number of series to generate, and	**
+ **			obtains it discursively, exchanging the	**
+ **			first value for the second and the	**
+ **			latter for the sum of the first and	**
+ **			second values, until reaching a		**
+ **			iteration such that the value is less	**
+ **			than or equal to unity (1).		**
+ ** Input Parms:	const T& quantity.			**
+ **			const T& first_number = V_ZERO<T>.	**
+ **			const T& second_number = V_ONE<T>.	**
+ ** Output Parms:	None.					**
+ ** Result:		Returns the last number of the Fibonacci**
+ **			series given a series of given terms.	**
+ **								**
+ **			The calculation procedure is as follows:**
+ **			x=0, y=1; sum from '0' to 'n':		**
+ **				{z=x+y; x=y; y=z}.		**
+ **								**
+ **			This recursive function obeys the	**
+ **			next condition:				**
+ **			Fibo(n, x, y) = (n <= 1) ?		**
+ **				x + y : Fibo(n - 1, y, x + y).	**
+ ****************************************************************/
+template <typename T>
+T obtainFibonacci(const T& quantity, const T& first_number = V_ZERO<T>, const T& second_number = V_ONE<T>)
+	{
+		return	(quantity <= V_ONE<T>) ? first_number + second_number :
+			obtainFibonacci(quantity - V_ONE<T>, second_number, first_number + second_number);
+	};
+
+/*****************************************************************
+ ** Function:		template <typename T>			**
  **			void viewInfoFibo			**
  **				(const T& quantity,		**
  **				 const T& first_number,		**
  **				 const T& second_number,	**
  **				 const std::vector		**
  **					<Fibonacci_Record<T>,	**
- **					My_Allocator		**
+ **					Fibonacci_Allocator	**
  **					<Fibonacci_Record<T>>>&	**
  **					vec_st_rec_Fibo,	**
+ **				 const T& iterative_Fibo,	**
  **				 const T& recursive_Fibo);	**
  ** Explanation:	The purpose of this function is to show	**
  **			the general information with which the	**
@@ -654,9 +657,10 @@ std::vector<Fibonacci_Record<T>, My_Allocator<Fibonacci_Record<T>>> getVectorFib
  **			const T& first_number,			**
  **			const T& second_number,			**
  **			const std::vector<Fibonacci_Record<T>,	**
- **				My_Allocator			**
+ **				Fibonacci_Allocator		**
  **					<Fibonacci_Record<T>>&	**
  **					vec_st_rec_Fibo.	**
+ **			const T& iterative_Fibo,		**
  **			const T& recursive_Fibo.		**
  ** Output Parms:	None.					**
  ** Result:		This function shows the most relevant	**
@@ -666,19 +670,27 @@ std::vector<Fibonacci_Record<T>, My_Allocator<Fibonacci_Record<T>>> getVectorFib
  **			'n' iterations.				**
  ****************************************************************/
 template <typename T>
-void viewInfoFibo(const T& quantity, const T& first_number, const T& second_number, const std::vector<Fibonacci_Record<T>, My_Allocator<Fibonacci_Record<T>>>& vec_st_rec_Fibo, const T& recursive_Fibo)
+void viewInfoFibo(const T& quantity, const T& first_number, const T& second_number, const std::vector<Fibonacci_Record<T>, Fibonacci_Allocator<Fibonacci_Record<T>>>& vec_st_rec_Fibo, const T& iterative_Fibo, const T& recursive_Fibo)
 	{
-		/* Call to a recursive function that obtains the direct Fibonacci of two values. */
+		/* Call to a recursive and iterative functions that obtains the direct Fibonacci of two values. */
 		std::cout << std::endl;
 		std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
-		std::cout << "+ Direct Fibonnaci Number Generator.+" << std::endl;
+		std::cout << "+  Fibonacci Iterative & Recursive. +" << std::endl;
 		std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
-		std::cout << "| [" << quantity << "] : [" << vec_st_rec_Fibo.size() << "] Fibonacci series records." << std::endl;
+		std::cout << "|        General Information.       |" << std::endl;
 		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
-		std::cout << "| * First  value:\t[" << first_number << "]." << std::endl;
-		std::cout << "| * Second value:\t[" << second_number << "]." << std::endl;
+		std::cout << "| + Quantity:\t[" << quantity << "]." << std::endl;
+		std::cout << "| + Size:\t[" << vec_st_rec_Fibo.size() << "]." << std::endl;
 		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
-		std::cout << "| > Final  value:\t[" << recursive_Fibo << "]." << std::endl;
+		std::cout << "|              Values.              |" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+		std::cout << "| - First:\t[" << first_number << "]." << std::endl;
+		std::cout << "| - Second:\t[" << second_number << "]." << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+		std::cout << "|             Results.              |" << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+		std::cout << "| * Iterative:\t[" << iterative_Fibo << "]." << std::endl;
+		std::cout << "| * Recursive:\t[" << recursive_Fibo << "]." << std::endl;
 		std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
 		enter_a_pause("Press the ENTER key to continue...");
 	};
@@ -688,7 +700,7 @@ void viewInfoFibo(const T& quantity, const T& first_number, const T& second_numb
 			T viewVectorFibo			**
  **				(const std::vector		**
  **				<Fibonacci_Record<T>,		**
- **				My_Allocator			**
+ **				Fibonacci_Allocator		**
  **				<Fibonacci_Record<T>>>&		**
  **					vec_st_rec_Fibo;	**
  ** Explanation:	The final goal of this procedure is to	**
@@ -700,7 +712,7 @@ void viewInfoFibo(const T& quantity, const T& first_number, const T& second_numb
  **			vector of Fibonacci numbers by		**
  **			traversing an iterator.			**
  ** Input Parms:	const std::vector<Fibonacci_Record<T>,	**
- **				My_Allocator			**
+ **				Fibonacci_Allocator		**
  **				<Fibonacci_Record<T>>>&		**
  **			 		vec_st_rec_Fibo		**
  ** Output Parms:	None.					**
@@ -712,7 +724,7 @@ void viewInfoFibo(const T& quantity, const T& first_number, const T& second_numb
  **				{z=x+y; x=y; y=z}.		**
  ****************************************************************/
 template <typename T>
-T viewVectorFibo(const std::vector<Fibonacci_Record<T>, My_Allocator<Fibonacci_Record<T>>>& vec_st_rec_Fibo)
+T viewVectorFibo(const std::vector<Fibonacci_Record<T>, Fibonacci_Allocator<Fibonacci_Record<T>>>& vec_st_rec_Fibo)
 	{
 		/* Initial declaration of work variables. */
 		T counting_items {V_ZERO<T>};
@@ -720,13 +732,13 @@ T viewVectorFibo(const std::vector<Fibonacci_Record<T>, My_Allocator<Fibonacci_R
 		/* Routine information window. */
 		std::cout << std::endl;
 		std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
-		std::cout << "+Fibonacci Number Generator Results.+" << std::endl;
+		std::cout << "+  Fibonacci Record Vector Results. +" << std::endl;
 		std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
 		std::cout << "| Number of records calculated: [" << vec_st_rec_Fibo.size() << "]." << std::endl;
 		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
 
 		/* Generation and implementation of an automatic iterator for the 'vector' class. */
-		for (typename std::vector<Fibonacci_Record<T>, My_Allocator<Fibonacci_Record<T>>>::const_iterator itc_vec_st_rec_Fibo = std::cbegin(vec_st_rec_Fibo); itc_vec_st_rec_Fibo != std::cend(vec_st_rec_Fibo); itc_vec_st_rec_Fibo++, counting_items++)
+		for (typename std::vector<Fibonacci_Record<T>, Fibonacci_Allocator<Fibonacci_Record<T>>>::const_iterator itc_vec_st_rec_Fibo = std::cbegin(vec_st_rec_Fibo); itc_vec_st_rec_Fibo != std::cend(vec_st_rec_Fibo); itc_vec_st_rec_Fibo++, counting_items++)
 			std::cout << "| # [" << itc_vec_st_rec_Fibo->idx << "]:\t[" << itc_vec_st_rec_Fibo->first_number << "]\t+\t[" << itc_vec_st_rec_Fibo->second_number << "]\t=\t[" << (*itc_vec_st_rec_Fibo).addition << "]." << std::endl;
 
 		/* Expected results. */
@@ -767,7 +779,7 @@ int main()
 		/* Initial declaration of work variables. */
 		char chr_response {NULL_CHARACTER<char>};
 		size_t *list_Fibonacci {nullptr}, recursive_Fibo{};
-		std::vector<Fibonacci_Record<size_t>, My_Allocator<Fibonacci_Record<size_t>>> vec_st_rec_Fibo {};
+		std::vector<Fibonacci_Record<size_t>, Fibonacci_Allocator<Fibonacci_Record<size_t>>> vec_st_rec_Fibo {};
 		Fibonacci_Record<size_t> *ptr_Fibonacci_Record {nullptr};
 
 		/* Intermediate calculation variables. */
@@ -804,7 +816,7 @@ int main()
 						/* Generate a pointer to the dynamic structure of the Fibonacci series. */
 						try
 							{
-								if ((ptr_Fibonacci_Record = dump_record_Fibonacci<size_t>(quantity, first_number, second_number, &ptr_Fibonacci_Record)))
+								if ((ptr_Fibonacci_Record = breakdown_record_Fibonacci<size_t>(quantity, first_number, second_number, &ptr_Fibonacci_Record)))
 									/* Memory cleaning assigned areas. */
 									std::free(ptr_Fibonacci_Record);
 								else
@@ -822,19 +834,8 @@ int main()
 						catch (const std::exception& e)
 						{std::cout << std::endl << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
-						/* Shows the general information of the Fibonacci series. */
-						viewInfoFibo<size_t>(quantity, first_number, second_number, vec_st_rec_Fibo, getFibonacci(quantity, first_number, second_number));
-
-						/* Displays the base Fibonacci value with default values ​​of one and one. */
-						recursive_Fibo = get_Fib<size_t>(quantity, V_ONE<size_t>, V_ONE<size_t>);
-
-						std::cout << std::endl;
-						std::cout << "+---|----+---|----+---|----+" << std::endl;
-						std::cout << "| Fibonacci with one & one.|" << std::endl;
-						std::cout << "+---|----+---|----+---|----+" << std::endl;
-						std::cout << "| + Iters:\t[" << quantity << "]." << std::endl;
-						std::cout << "| + Result:\t{" << recursive_Fibo << "}." << std::endl;
-						std::cout << "+---|----+---|----+---|----+" << std::endl;
+						/* Shows the general information of the Fibonacci series with iterativity and recursivity. */
+						viewInfoFibo<size_t>(quantity, first_number, second_number, vec_st_rec_Fibo, obtain_Fibonacci<size_t>(quantity, first_number, second_number), obtainFibonacci<size_t>(quantity, first_number, second_number));
 						enter_a_pause("Press the ENTER key to continue...");
 
 						/* Displays the regular and normal fibonacci series with intermediate messages. */
@@ -858,7 +859,7 @@ int main()
 								std::cout << "+---|----+---|----+---|----+" << std::endl;
 								std::cout << "| Fibonacci Final Results. |" << std::endl;
 								std::cout << "+---|----+---|----+---|----+" << std::endl;
-								std::cout << "| + Position:\t[" << quantity << "]." << std::endl;
+								std::cout << "| + Quantity:\t[" << quantity << "]." << std::endl;
 								std::cout << "| + Result:\t{" << recursive_Fibo << "}." << std::endl;
 								std::cout << "+---|----+---|----+---|----+" << std::endl;
 								enter_a_pause("Press the ENTER key to continue...");
@@ -877,13 +878,13 @@ int main()
 						if ((chr_response == V_CHAR_LOWER_Y<char>) || (chr_response == V_CHAR_UPPER_Y<char>))
 							{
 								std::cout << "Generating value..." << std::endl;
-								recursive_Fibo = getFibo<size_t>(quantity);
+								recursive_Fibo = getfib<size_t>(quantity);
 
 								std::cout << std::endl;
 								std::cout << "+---|----+---|----+---|----+" << std::endl;
-								std::cout << "|Fibonacci with zero & one.|" << std::endl;
+								std::cout << "| Fibonacci Final Results. |" << std::endl;
 								std::cout << "+---|----+---|----+---|----+" << std::endl;
-								std::cout << "| + Cycles:\t[" << quantity << "]." << std::endl;
+								std::cout << "| + Quantity:\t[" << quantity << "]." << std::endl;
 								std::cout << "| - Result:\t{" << recursive_Fibo << "}." << std::endl;
 								std::cout << "+---|----+---|----+---|----+" << std::endl;
 								enter_a_pause("Press the ENTER key to continue...");
