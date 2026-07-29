@@ -87,6 +87,8 @@ int main()
 	std::cout << "+ Content:\t[" << q_cube << "]." << std::endl;
 	std::cout << "+ Value:\t[" << *q_cube << "]." << std::endl;
 
+	std::cout << std::endl << "Freeing assigned memory..." << std::endl;
+
 	delete p_square;
 	p_square = nullptr;
 
