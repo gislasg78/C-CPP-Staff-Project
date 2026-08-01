@@ -21,25 +21,31 @@ int getStats(const int *const ptr_begin, const int *const ptr_end, int *const av
 		/* Validate that the pointers are valid and not null. */
 		if (ptr_begin && ptr_end && avg && count && max && min && sum)
 			{
-				/* Initialize element count, sum, maximum value, and minimum value. */
-				int m_max = *ptr_begin, m_min = m_max;
-				*count = V_ZERO; *sum = V_ZERO;
-
-				/* Fundamental cycle of traversing the array to be calculated. */
-				for (const int* ptr = ptr_begin; ptr != ptr_end; ptr++)
+				/* Validate that the array is not empty. */
+				if (ptr_begin != ptr_end)
 					{
-						counter++;
-						(*count)++;	//Counting values ​​one by one.
-						*sum += *ptr;	//Cumulative sum of values.
+						/* Initialize element count, sum, maximum value, and minimum value. */
+						int m_max = *ptr_begin, m_min = m_max;
+						*count = V_ZERO; *sum = V_ZERO;
 
-						if (*ptr > m_max) m_max = *ptr;	//Maximum value.
-						if (*ptr < m_min) m_min = *ptr;	//Minimum value.
+						/* Fundamental cycle of traversing the array to be calculated. */
+						for (const int* ptr = ptr_begin; ptr != ptr_end; ptr++)
+							{
+								counter++;	//It is intentionally repeated to return it as part of the function's return value.
+								(*count)++;	//Counting values ​​one by one.
+								*sum += *ptr;	//Cumulative sum of values.
+
+								if (*ptr > m_max) m_max = *ptr;	//Maximum value.
+								if (*ptr < m_min) m_min = *ptr;	//Minimum value.
+							}
+
+						/* Returned values: maximum, minimum, and average. */
+						*avg = (*count) ? *sum / *count : V_ZERO;	//Arithmetic mean.
+						*max = m_max;		//Maximum value.
+						*min = m_min;		//Minimum value.
 					}
-
-				/* Returned values: maximum, minimum, and average. */
-				*avg = *sum / *count;	//Arithmetic mean.
-				*max = m_max;		//Maximum value.
-				*min = m_min;		//Minimum value.
+				else
+					fprintf(stderr, "\nThe array comes empty (without any elements).\n");
 			}
 		else
 			fprintf(stderr, "\nValid memory addresses were not passed correctly.\n");
