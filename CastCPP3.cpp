@@ -24,6 +24,11 @@ class Base
 					std::cout << "+ <<Base>>::[k()]." << std::endl;
 				}
 
+			virtual Base* clone()
+				{
+					return new Base(*this);
+				}
+
 			virtual ~Base() = default;
 	};
 
@@ -45,6 +50,11 @@ class Derived : public Base
 			void h() const
 				{
 					std::cout << "- >>Derived<<::{h()}." << std::endl;
+				}
+
+			virtual Base* clone()
+				{
+					return new Derived(*this);
 				}
 
 			~Derived() = default;
@@ -74,8 +84,8 @@ int main()
 		Derived derived;
 		derived.f();
 		derived.g();
-		derived.k();
 		derived.h();
+		derived.k();
 		enter_a_pause("Press the ENTER key to continue...");
 
 		std::cout << std::endl << "'Base' Pointer instantiated from a 'Base' object." << std::endl;
@@ -185,8 +195,54 @@ int main()
 		Derived my_derived {derived};
 		my_derived.f();
 		my_derived.g();
+		my_derived.h();
 		my_derived.k();
 		enter_a_pause("Press the ENTER key to continue...");
+
+		std::cout << std::endl << "'Base' pointer obtained from the 'Base' class pointer as a 'Base' clone." << std::endl;
+		Base *ptr_base_clone {base.clone()};
+		if (ptr_base_clone)
+			{
+				ptr_base_clone->f();
+				ptr_base_clone->g();
+				ptr_base_clone->k();
+			}
+
+		std::cout << std::endl << "'Derivative' pointer obtained from the 'Base' class as a 'Derivative' clone." << std::endl;
+		Base *ptr_base_derived_clone {derived.clone()};
+		if (ptr_base_derived_clone)
+			{
+				ptr_base_derived_clone->f();
+				ptr_base_derived_clone->g();
+				ptr_base_derived_clone->k();
+			}
+
+		std::cout << std::endl << "'Derivative' Pointer <dynamic cast> to 'Derivative' Pointer with a 'Derivative' object." << std::endl;
+		if (Derived* ptr_base_derived = dynamic_cast<Derived*>(ptr_base_derived_clone))
+			{
+				ptr_base_derived->f();
+				ptr_base_derived->g();
+				ptr_base_derived->h();
+				ptr_base_derived->k();
+			}
+
+		std::cout << std::endl << "'Derivative' pointer obtained from the 'Derivative' class as a 'Derivative' clone." << std::endl;
+		Base *ptr_derived_clone {derived.clone()};
+		if (ptr_derived_clone)
+			{
+				ptr_derived_clone->f();
+				ptr_derived_clone->g();
+				ptr_derived_clone->k();
+			}
+
+		std::cout << std::endl << "'Derivative' pointer <dynamic cast> to 'Base' Pointer with a 'Derivative' object." << std::endl;
+		if (Derived* ptr_inner_derived_clone = dynamic_cast<Derived*>(ptr_derived_clone))
+			{
+				ptr_inner_derived_clone->f();
+				ptr_inner_derived_clone->g();
+				ptr_inner_derived_clone->h();
+				ptr_derived_clone->k();
+			}
 
 		std::cout << std::endl << "'Base' object initialized with a 'Base' object." << std::endl;
 		Base slice_base {base};
@@ -241,13 +297,13 @@ int main()
 
 		std::cout << std::endl << "Removing dynamically assigned pointers..." << std::endl;
 
-		delete p_base;
-		delete p_derived;
-		delete p_base_derived;
+		if (p_base) {delete p_base; p_base = nullptr;}
+		if (p_derived) {delete p_derived; p_derived = nullptr;}
+		if (p_base_derived) {delete p_base_derived; p_base_derived = nullptr;}
+		if (ptr_base_clone) {delete ptr_base_clone; ptr_base_clone = nullptr;}
+		if (ptr_base_derived_clone) {delete ptr_base_derived_clone; ptr_base_derived_clone = nullptr;}
+		if (ptr_derived_clone) {delete ptr_derived_clone; ptr_derived_clone = nullptr;}
 
-		p_base = nullptr;
-		p_derived = nullptr;
-		p_base_derived = nullptr;
 		enter_a_pause("Press the ENTER key to continue...");
 
 		std::cout << std::endl << "Done!" << std::endl;
