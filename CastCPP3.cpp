@@ -24,7 +24,7 @@ class Base
 					std::cout << "+ <<Base>>::[k()]." << std::endl;
 				}
 
-			virtual Base* clone()
+			virtual Base* clone() const
 				{
 					return new Base(*this);
 				}
@@ -52,7 +52,7 @@ class Derived : public Base
 					std::cout << "- >>Derived<<::{h()}." << std::endl;
 				}
 
-			Base* clone() override
+			Base* clone() const override
 				{
 					return new Derived(*this);
 				}
