@@ -52,7 +52,7 @@ class Derived : public Base
 					std::cout << "- >>Derived<<::{h()}." << std::endl;
 				}
 
-			virtual Base* clone()
+			Base* clone() override
 				{
 					return new Derived(*this);
 				}
