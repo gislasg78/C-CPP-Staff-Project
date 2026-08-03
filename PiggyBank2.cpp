@@ -197,19 +197,31 @@ class MyArray
 			if (m_array && m_array_size)
 				for (std::size_t idx{}; idx < m_array_size; idx++)
 					m_array[idx] = V_ZERO<size_t>;
+			else
+				setSize(V_ONE<size_t>);
 		}
 
 		void setSize(const std::size_t& array_size)
 		{
-			if (array_size)
+			if (m_array && m_array_size)
 			{
-				release();
-
-				if (!m_array && !m_array_size)
+				if (array_size > std::numeric_limits<size_t>::min() && array_size < std::numeric_limits<size_t>::max())
 				{
-					m_array_size = array_size;
-					m_array = new T[m_array_size]{};
+					std::size_t t_array_size {array_size};
+					T* t_array {new T[t_array_size]()};
+
+					for (size_t idx{}; idx < t_array_size && idx < m_array_size; idx++)
+						t_array[idx] = *(m_array + idx);
+
+					release();
+					m_array = t_array;
+					m_array_size = t_array_size;
 				}
+			}
+			else
+			{
+				m_array_size = array_size;
+				m_array = new T[m_array_size]{};
 			}
 		}
 
@@ -309,6 +321,36 @@ int main()
 
 	std::cout << std::endl << "Setting size array..." << std::endl;
 	their_array.setSize(V_ELEVEN<size_t>);
+	their_array.print();
+	enter_a_pause("Press the ENTER key to continue...");
+
+	std::cout << std::endl << "Setting size array..." << std::endl;
+	their_array.setSize(V_ONE<size_t>);
+	their_array.print();
+	enter_a_pause("Press the ENTER key to continue...");
+
+	std::cout << std::endl << "Setting size array..." << std::endl;
+	their_array.setSize(V_ELEVEN<size_t>);
+	their_array.print();
+	enter_a_pause("Press the ENTER key to continue...");
+
+	std::cout << std::endl << "Restoring..." << std::endl;
+	their_array.restore();
+	their_array.print();
+	enter_a_pause("Press the ENTER key to continue...");
+
+	std::cout << std::endl << "Releasing..." << std::endl;
+	their_array.release();
+	their_array.print();
+	enter_a_pause("Press the ENTER key to continue...");
+
+	std::cout << std::endl << "Inserting a value..." << std::endl;
+	their_array.insert(V_ZERO<size_t>, V_ELEVEN<size_t>);
+	their_array.print();
+	enter_a_pause("Press the ENTER key to continue...");
+
+	std::cout << std::endl << "Deleting a value..." << std::endl;
+	their_array.erase(V_ZERO<size_t>);
 	their_array.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
