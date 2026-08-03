@@ -4,11 +4,13 @@
 #include <limits>
 
 template <typename T>
-constexpr T CARRIAGE_RETURN	{T('\n')};
+constexpr T CARRIAGE_RETURN	{static_cast<T>('\n')};
 template <typename T>
-constexpr T V_ELEVEN		{T(11)};
+constexpr T V_ELEVEN		{static_cast<T>(11)};
 template <typename T>
-constexpr T V_ZERO		{T(0)};
+constexpr T V_ONE		{static_cast<T>(1)};
+template <typename T>
+constexpr T V_ZERO		{static_cast<T>(0)};
 
 template <typename T>
 class MyArray
@@ -21,7 +23,8 @@ class MyArray
 		static int s_counter;
 
 	public:
-		MyArray() = default;
+		MyArray()
+		{s_counter++;}
 
 		MyArray(const std::size_t& array_size) : m_array_size(array_size), m_array(new T[array_size]())
 		{s_counter++;}
@@ -44,8 +47,6 @@ class MyArray
 
 		MyArray(MyArray<T>&& my_array) : m_array_size {my_array.m_array_size}, m_array {my_array.m_array}
 		{
-			s_counter--;
-
 			my_array.m_array = nullptr;
 			my_array.m_array_size = V_ZERO<size_t>;
 		}
@@ -57,8 +58,6 @@ class MyArray
 		{
 			if (this != &my_array)
 			{
-				s_counter++;
-
 				if (my_array.m_array && my_array.m_array_size)
 				{
 					release();
@@ -85,8 +84,6 @@ class MyArray
 		{
 			if (this != &my_array)
 			{
-				s_counter--;
-
 				if (my_array.m_array && my_array.m_array_size)
 				{
 					release();
@@ -106,7 +103,26 @@ class MyArray
 		}
 
 		bool checkLimits(const std::size_t& index) const
-		{return (m_array) && (index >= V_ZERO<size_t> && index < m_array_size);}
+		{return (m_array) && (m_array_size > std::numeric_limits<size_t>::min() && m_array_size < std::numeric_limits<size_t>::max()) && (index >= V_ZERO<size_t> && index < m_array_size);}
+
+		void erase(const std::size_t& index)
+		{
+			if (checkLimits(index))
+			{
+				std::size_t t_array_size {m_array_size - V_ONE<size_t>};
+				T* t_array {new T[t_array_size]()};
+
+				for (size_t idx{}; idx < index; idx++)
+					t_array[idx] = *(m_array + idx);
+
+				for (size_t idx{index + V_ONE<size_t>}; idx < m_array_size; idx++)
+					t_array[idx - V_ONE<size_t>] = *(m_array + idx);
+
+				release();
+				m_array = t_array;
+				m_array_size = t_array_size;
+			}
+		}
 
 		const T* const& getPtrArray() const
 		{return m_array;}
@@ -116,6 +132,27 @@ class MyArray
 
 		const T& getValue(const std::size_t& index) const
 		{return checkLimits(index) ? m_array[index] : V_ZERO<T>;}
+
+		void insert(const std::size_t& index, const T& value)
+		{
+			if (checkLimits(index))
+			{
+				std::size_t t_array_size {m_array_size + V_ONE<size_t>};
+				T* t_array {new T[t_array_size]()};
+
+				for (size_t idx{}; idx < index; idx++)
+					*(t_array + idx) = m_array[idx];
+
+				t_array[index] = value;
+
+				for (size_t idx{index}; idx < m_array_size; idx++)
+					*(t_array + idx + V_ONE<size_t>) = m_array[idx];
+
+				release();
+				m_array = t_array;
+				m_array_size = t_array_size;
+			}
+		}
 
 		void print() const
 		{
@@ -180,7 +217,7 @@ class MyArray
 		{if (checkLimits(index)) m_array[index] = value;}
 
 		~MyArray()
-		{release();}
+		{release(); s_counter--;}
 };
 
 template <typename T>
@@ -207,6 +244,20 @@ int main()
 		my_array.setValue(idx, static_cast<int>(idx));
 		std::cout << "#: [" << idx << "] = [" << my_array.getValue(idx) << "]." << std::endl;
 	}
+	enter_a_pause("Press the ENTER key to continue...");
+
+	std::cout << std::endl << "Printing initial data..." << std::endl;
+	my_array.print();
+	enter_a_pause("Press the ENTER key to continue...");
+
+	std::cout << std::endl << "Inserting a value..." << std::endl;
+	my_array.insert(V_ZERO<size_t>, V_ELEVEN<size_t>);
+	my_array.print();
+	enter_a_pause("Press the ENTER key to continue...");
+
+	std::cout << std::endl << "Deleting a value..." << std::endl;
+	my_array.erase(V_ZERO<size_t>);
+	my_array.print();
 	enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "Unloading data..." << std::endl;
