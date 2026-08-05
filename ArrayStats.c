@@ -64,7 +64,7 @@ int printArray(const int int_array[], const int size_array)
 		printf("\nArrangement dump.\n");
 		for (int idx = V_ZERO; idx < size_array; idx++)
 			{
-				printf("#: [%2d]\t=\t[%3d].\n", counter++, int_array[idx]);
+				printf("#:\x20[%2d]\t=\t[%3d].\n", counter++, int_array[idx]);
 			}
 		printf("[%d] Output results generated.\n", counter);
 
@@ -77,10 +77,7 @@ int main()
 	{
 		/* Preliminary working variables. */
 		int avg = V_ZERO, count = V_ZERO, max = V_ZERO, min = V_ZERO, recs = V_ZERO, sum = V_ZERO;
-		int int_array[] = {103, 61, 41, 67, 73, 101, 13, 31, 29, 89,
-				   83, 11, 7, 47, 43, 19, 71, 79, 97, 37,
-				   59, 23, 17, 3, 53, 53, 61, 11, 2, 71};
-
+		int int_array[] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97};
 		const int size_array = sizeof(int_array) / sizeof(*int_array);	//Automatically calculate the array size.
 
 		/* Initial header messages. */
