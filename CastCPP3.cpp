@@ -57,6 +57,11 @@ class Derived : public Base
 					return new Derived(*this);
 				}
 
+			Derived* clone_similar() const
+				{
+					return new Derived(*this);
+				}
+
 			~Derived() = default;
 	};
 
@@ -207,6 +212,7 @@ int main()
 				ptr_base_clone->g();
 				ptr_base_clone->k();
 			}
+		enter_a_pause("Press the ENTER key to continue...");
 
 		std::cout << std::endl << "'Derivative' pointer obtained from the 'Base' class as a 'Derivative' clone." << std::endl;
 		Base *ptr_base_derived_clone {derived.clone()};
@@ -216,6 +222,7 @@ int main()
 				ptr_base_derived_clone->g();
 				ptr_base_derived_clone->k();
 			}
+		enter_a_pause("Press the ENTER key to continue...");
 
 		std::cout << std::endl << "'Derivative' Pointer <dynamic cast> to 'Derivative' Pointer with a 'Derivative' object." << std::endl;
 		if (Derived* ptr_base_derived = dynamic_cast<Derived*>(ptr_base_derived_clone))
@@ -225,6 +232,7 @@ int main()
 				ptr_base_derived->h();
 				ptr_base_derived->k();
 			}
+		enter_a_pause("Press the ENTER key to continue...");
 
 		std::cout << std::endl << "'Derivative' pointer obtained from the 'Derivative' class as a 'Derivative' clone." << std::endl;
 		Base *ptr_derived_clone {derived.clone()};
@@ -234,6 +242,7 @@ int main()
 				ptr_derived_clone->g();
 				ptr_derived_clone->k();
 			}
+		enter_a_pause("Press the ENTER key to continue...");
 
 		std::cout << std::endl << "'Derivative' pointer <dynamic cast> to 'Base' Pointer with a 'Derivative' object." << std::endl;
 		if (Derived* ptr_inner_derived_clone = dynamic_cast<Derived*>(ptr_derived_clone))
@@ -243,6 +252,18 @@ int main()
 				ptr_inner_derived_clone->h();
 				ptr_derived_clone->k();
 			}
+		enter_a_pause("Press the ENTER key to continue...");
+
+		std::cout << std::endl << "'Derivative' pointer <dynamic cast> to 'Derivative' Pointer with a 'Derivative' object." << std::endl;
+		Derived *ptr_derived_similar_clone {derived.clone_similar()};
+		if (ptr_derived_clone)
+			{
+				ptr_derived_similar_clone->f();
+				ptr_derived_similar_clone->g();
+				ptr_derived_similar_clone->h();
+				ptr_derived_similar_clone->k();
+			}
+		enter_a_pause("Press the ENTER key to continue...");
 
 		std::cout << std::endl << "'Base' object initialized with a 'Base' object." << std::endl;
 		Base slice_base {base};
@@ -303,6 +324,7 @@ int main()
 		if (ptr_base_clone) {delete ptr_base_clone; ptr_base_clone = nullptr;}
 		if (ptr_base_derived_clone) {delete ptr_base_derived_clone; ptr_base_derived_clone = nullptr;}
 		if (ptr_derived_clone) {delete ptr_derived_clone; ptr_derived_clone = nullptr;}
+		if (ptr_derived_similar_clone) {delete ptr_derived_similar_clone; ptr_derived_similar_clone = nullptr;}
 
 		enter_a_pause("Press the ENTER key to continue...");
 
