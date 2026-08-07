@@ -75,19 +75,9 @@ TX create_matrix_3D (const TX& n_matrix, TY*** &matrix, TX* &matrix_r, TX** &mat
 		return items;
 	}
 
-/* Function that pauses execution until a key is pressed to continue. */
-void enter_a_pause(const std::string& str_Message)
-	{
-		std::cout << str_Message;
-		std::cin.clear();
-		std::cin.get();
-		std::cin.clear();
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN<char>);
-	}
-
 /* Function that cleans up and frees the three-dimensional dynamic matrix and its auxiliary matrices. */
 template <typename TX, typename TY>
-TX release_matrix_3D(const TX& n_matrix, TY*** &matrix, TX* &matrix_r, TX** &matrix_rxc)
+TX destroy_matrix_3D(const TX& n_matrix, TY*** &matrix, TX* &matrix_r, TX** &matrix_rxc)
 	{
 		/* Preliminary working variables. */
 		TX items {V_ZERO<TX>};
@@ -132,6 +122,16 @@ TX release_matrix_3D(const TX& n_matrix, TY*** &matrix, TX* &matrix_r, TX** &mat
 
 		/* Return and refund of the calculated amount. */
 		return items;
+	}
+
+/* Function that pauses execution until a key is pressed to continue. */
+void enter_a_pause(const std::string& str_Message)
+	{
+		std::cout << str_Message;
+		std::cin.clear();
+		std::cin.get();
+		std::cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN<char>);
 	}
 
 /* This function displays the values ​​contained in the various dynamically created matrices. */
@@ -200,7 +200,7 @@ int main()
 		enter_a_pause("Press the ENTER key to continue...");
 
 		/* Deallocation of the memory assigned to each auxiliary matrix and the dynamic three-dimensional matrix. */
-		items = release_matrix_3D<std::size_t, int>(n_matrix, matrix, matrix_r, matrix_rxc);
+		items = destroy_matrix_3D<std::size_t, int>(n_matrix, matrix, matrix_r, matrix_rxc);
 		std::cout << std::endl << "[" << items << "] Items released." << std::endl;
 		enter_a_pause("Press the ENTER key to continue...");
 
