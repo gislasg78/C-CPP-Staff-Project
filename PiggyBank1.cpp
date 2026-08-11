@@ -40,7 +40,9 @@ class PiggyBank
 		static int s_counter;
 
 	public:
-		PiggyBank() = default;
+		PiggyBank()
+		{s_counter++;}
+
 		PiggyBank(const T& _coins) : ptr_coins(new T{_coins})
 		{s_counter++;}
 
@@ -56,8 +58,6 @@ class PiggyBank
 
 		PiggyBank(PiggyBank&& _piggybank) : ptr_coins(_piggybank.ptr_coins)
 		{
-			s_counter--;
-
 			_piggybank.ptr_coins = nullptr;
 		}
 
@@ -68,8 +68,6 @@ class PiggyBank
 		{
 			if (this != &_piggybank)
 			{
-				s_counter++;
-
 				release();
 
 				if (!ptr_coins && _piggybank.ptr_coins)
@@ -85,8 +83,6 @@ class PiggyBank
 		{
 			if (this != &_piggybank)
 			{
-				s_counter--;
-
 				release();
 
 				if (!ptr_coins && _piggybank.ptr_coins)
@@ -101,8 +97,7 @@ class PiggyBank
 
 		PiggyBank<T>& addCoins(const T& _coins)
 		{
-			if (ptr_coins)
-				*ptr_coins += _coins;
+			if (ptr_coins) *ptr_coins += _coins;
 
 			return *this;
 		}
@@ -127,8 +122,7 @@ class PiggyBank
 		{
 			release();
 
-			if (!ptr_coins)
-				ptr_coins = new T{};
+			if (!ptr_coins) ptr_coins = new T{};
 		}
 
 		void release()
@@ -142,19 +136,17 @@ class PiggyBank
 
 		void setCoins(const T& _coins)
 		{
-			if (ptr_coins)
-				*ptr_coins = _coins;
+			if (ptr_coins) *ptr_coins = _coins;
 		}
 
 		PiggyBank<T>& subtractCoins(const T& _coins)
 		{
-			if (ptr_coins)
-				*ptr_coins -= _coins;
+			if (ptr_coins) *ptr_coins -= _coins;
 
 			return *this;
 		}
 
-		~PiggyBank()	{release();}
+		~PiggyBank()	{release(); s_counter--;}
 };
 
 template <typename T>
@@ -255,9 +247,11 @@ int main()
 	std::cout << std::endl << "Address & Size." << std::endl;
 	std::cout << "> (" << their_money_box.getPtrCoins() << ")." << std::endl;
 	std::cout << "> [" << their_money_box.getCoins() << "]." << std::endl;
+	enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << CARRIAGE_RETURN<char> << "Done!" << CARRIAGE_RETURN<char>;
 	std::cout << "This program has ended." << CARRIAGE_RETURN<char>;
+	enter_a_pause("Press the ENTER key to continue...");
 
 	return EXIT_SUCCESS;
 }
