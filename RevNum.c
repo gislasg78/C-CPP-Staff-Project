@@ -8,44 +8,47 @@
 #define V_ZERO  0
 
 /* Function that returns an integer in reversed form. */
-int reverseNumber(int number)
-{
-	int revNumber = V_ZERO;
-
-	while (number)
+long reverse_number(long number)
 	{
-		revNumber *= V_TEN;
-		revNumber += number % V_TEN;
+		/* Preliminary working variables. */
+		long reversed_number = V_ZERO;
 
-		number /= V_TEN;
+		/* Invert the number provided. */
+		while (number)
+			{
+				reversed_number *= V_TEN;
+				reversed_number += number % V_TEN;
+
+				number /= V_TEN;
+			}
+
+		/* Return of the reversed integer. */
+		return reversed_number;
 	}
-
-	return revNumber;
-}
 
 //Main function.
 int main()
-{
-	/* Preliminary working variables. */
-	int number = V_ZERO;
-	int revNumber = V_ZERO;
+	{
+		/* Preliminary working variables. */
+		long number = V_ZERO;
+		long inversed_number = V_ZERO;
 
-	/* Initial header messages. */
-	printf("Inversion of an integer.\n");
-	printf("Enter an integer: ");
-	scanf("%d", &number);
+		/* Initial header messages. */
+		printf("Inversion of an integer.\n");
+		printf("Enter an integer: ");
+		scanf("%ld", &number);
 
-	/* Call to the function that reverses the integer. */
-	revNumber = reverseNumber(number);
+		/* Call to the function that reverses the integer. */
+		inversed_number = reverse_number(number);
 
-	/* Visualization of results. */
-	printf("\nResults.\n");
-	printf("+ Number:\t[%d].\n", number);
-	printf("+ Reversed:\t[%d].\n", revNumber);
+		/* Visualization of results. */
+		printf("\nResults.\n");
+		printf("+ Number:\t[%ld].\n", number);
+		printf("* Reversed:\t[%ld].\n", inversed_number);
 
-	/* Termination messages. */
-	printf("\nDone!\n");
-	printf("This program has ended.\n");
+		/* Termination messages. */
+		printf("\nDone!\n");
+		printf("This program has ended.\n");
 
-	return V_ZERO;
-}
+		return V_ZERO;
+	}
