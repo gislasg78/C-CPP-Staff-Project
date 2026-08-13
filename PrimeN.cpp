@@ -1,7 +1,7 @@
-/********************* Prime number Generator. *******************
- ** Source Code:	PrimeN.cpp				**
+/********************* Prime Number Generator. *******************
+ ** Source Code:	PrimeNumber.cpp				**
  ** Author:		Gustavo Islas Gálvez.			**
- ** Creation Date:	Saturday, December 30, 2023.		**
+ ** Creation Date:	Wednesday, December 31, 2025.		**
  ** Purpose:		This program aims to determine the	**
  **			number of prime numbers found in a	**
  **			number determined by the user.		**
@@ -12,18 +12,21 @@
  **			coefficients, it will then be		**
  **			considered a composite number.		**
 *****************************************************************/
-//C Standard Libraries.
+/* Standard Work Libraries. */
 #include <iostream>
 #include <vector>
 
-//C Standard Constants.
-#define V_ONE	1
-#define V_TWO	2
-#define V_ZERO	0
+/* Symbolic Work Constants. */
+template <typename T>
+constexpr T V_ONE	{static_cast<T>(1)};
+template <typename T>
+constexpr T V_TWO	{static_cast<T>(2)};
+template <typename T>
+constexpr T V_ZERO	{static_cast<T>(0)};
 
 /*****************************************************************
- ** Function:		static bool blnIsPrimeNumber		**
- **				(size_t szt_number);		**
+ ** Function:		bool IsPrimeNumber			**
+ **				(const size_t& number);		**
  ** Explanation:	The purpose of this function is that a	**
  **			number from 'n' to 'm' is subjected to	**
  **			multiple successive divisions and its	**
@@ -34,7 +37,7 @@
  **			is composite.				**
  **			In the first example, true is returned,	**
  **			in the second, false.			**
- ** Input Parms:	const size_t szt_number.		**
+ ** Input Parms:	const size_t& number.			**
  ** Output Parms:       None.                                   **
  ** Result:		Returns true if there are only two	**
  **			divisors, the unit and the number	**
@@ -45,23 +48,20 @@
  **			number is prime if it is not divisible	**
  **			by two, three, five, or seven.		**
  ****************************************************************/
-static bool blnIsPrimeNumber(const size_t szt_number)
+bool IsPrimeNumber(const size_t& number)
 	{
-		size_t szt_div_count = V_ZERO;
+		std::size_t div_count {};
 
-		for (size_t szt_idx = V_ONE; szt_idx <= szt_number; szt_idx++)
-			if (szt_number % szt_idx == V_ZERO)
-				szt_div_count++;
+		for (size_t idx {V_ONE<size_t>}; idx <= number; idx++)
+			if (!(number % idx)) div_count++;
 
-		return (szt_div_count == V_TWO);
+		return (div_count == V_TWO<size_t>);
 	}
 
 /*****************************************************************
  ** Function:           std::vector<size_t>			**
- **				getvecsztPrimeNumbers		**
- **					(const size_t		**
- **						szt_quantity);	**
- **			(const int int_quantity);		**
+ **				getVectorPrimeNumbers		**
+ **				(const size_t& quantity);	**
  ** Explanation:	The purpose of this function is to loop	**
  **			back and forth from unity to 'n'	**
  **			to find each prime number divided by	**
@@ -71,7 +71,7 @@ static bool blnIsPrimeNumber(const size_t szt_number)
  **			and thus verify that the number		**
  **			to be shown can only be divided between	**
  **			itself and the unit.			**
- ** Input Parms:	const int int_quantity.			**
+ ** Input Parms:	const size_t& quantity.			**
  ** Output Parms:       None.                                   **
  ** Result:		As a result, this function returns an	**
  **			object of type 'vector' that		**
@@ -79,17 +79,20 @@ static bool blnIsPrimeNumber(const size_t szt_number)
  **			numbers obtained for later review and	**
  **			visualization.				**
  ****************************************************************/
-std::vector<size_t> getvecsztPrimeNumbers(const size_t szt_quantity)
+std::vector<size_t> getVectorPrimeNumbers(const size_t& quantity)
 	{
-		std::vector<size_t> vec_szt_prime_numbers = {V_ZERO};
+		size_t counter {};
+		std::vector<std::size_t> vec_prime_numbers {};
 
-		for (size_t szt_idx = V_ZERO; szt_idx < szt_quantity; szt_idx++)
-			if (blnIsPrimeNumber(szt_idx))
-				vec_szt_prime_numbers.push_back(szt_idx);
+		for (size_t idx {}; counter < quantity; idx++)
+			if (IsPrimeNumber(idx))
+				{
+					counter++;
+					vec_prime_numbers.push_back(idx);
+				}
 
-		return vec_szt_prime_numbers;
+		return vec_prime_numbers;
 	}
-
 
 /*****************************************************************
  ** Function:           int main()				**
@@ -110,27 +113,38 @@ std::vector<size_t> getvecsztPrimeNumbers(const size_t szt_quantity)
  ****************************************************************/
 int main()
 	{
-		size_t szt_counting = V_ZERO;
-		size_t szt_quantity = V_ZERO;
+		/* Preliminary working variables. */
+		size_t counting {V_ZERO<size_t>};
+		size_t quantity {V_ZERO<size_t>};
 
-		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+		/* Initial header messages. */
+		std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
 		std::cout << "+      Prime Number Generator.      +" << std::endl;
-		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+		std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
 		std::cout << "Number of prime numbers you want to get: ";
-		std::cin >> szt_quantity;
+		std::cin >> quantity;
 
-		std::vector<size_t> vec_szt_prime_numbers = getvecsztPrimeNumbers(szt_quantity);
+		/* Obtain a vector containing the prime numbers found. */
+		std::cout << std::endl << "Generating list of prime numbers..." << std::endl;
+		std::vector<std::size_t> vec_prime_numbers = getVectorPrimeNumbers(quantity);
 
-		std::cout << std::endl;
-		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+		/* Outbound header messages. */
+		std::cout << std::endl << "Visualizing list of prime numbers..." << std::endl << std::endl;
+		std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
 		std::cout << "+       Prime Number Results.       +" << std::endl;
+		std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
+		std::cout << "| [" << quantity << "] First Prime Numbers." << std::endl;
 		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
-		std::cout << "| [" << szt_quantity << "] First Prime Numbers:" << std::endl;
 
-		for (size_t szt_prime_number : vec_szt_prime_numbers)
-			std::cout << "| # " << szt_counting++ << "\t:\t[" << szt_prime_number << "]." << std::endl;
+		/* Dumping of the contents of the obtained vector. */
+		for (size_t prime_number : vec_prime_numbers)
+			std::cout << "| (" << counting++ << ")\t:\t[" << prime_number << "]." << std::endl;
 
-		std::cout << "[" << szt_counting << "] Obtained output results." << std::endl;
+		std::cout << "[" << counting << "] Obtained output results." << std::endl;
 
-		return V_ZERO;
+		/* Termination messages program. */
+		std::cout << std::endl << "Done!" << std::endl;
+		std::cout << "This program has ended." << std::endl;
+
+		return EXIT_SUCCESS;
 	}
