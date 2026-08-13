@@ -1,5 +1,5 @@
 /********************* Prime Number Generator. *******************
- ** Source Code:	PrimeNumber.cpp				**
+ ** Source Code:	PrimeNumberGenerator.cpp		**
  ** Author:		Gustavo Islas Gálvez.			**
  ** Creation Date:	Wednesday, December 31, 2025.		**
  ** Purpose:		This program aims to determine the	**
@@ -137,9 +137,10 @@ int main()
 		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
 
 		/* Dumping of the contents of the obtained vector. */
-		for (size_t prime_number : vec_prime_numbers)
+		for (const size_t& prime_number : vec_prime_numbers)
 			std::cout << "| (" << counting++ << ")\t:\t[" << prime_number << "]." << std::endl;
 
+		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
 		std::cout << "[" << counting << "] Obtained output results." << std::endl;
 
 		/* Termination messages program. */
