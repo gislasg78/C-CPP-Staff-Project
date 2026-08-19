@@ -11,6 +11,11 @@
  **			if a prime number is divisible by other	**
  **			coefficients, it will then be		**
  **			considered a composite number.		**
+ **								**
+ **			+---|----+---|----+---|----+---|----+	**
+ **			Note: This program uniquely compares	**
+ **			different algorithms for generating	**
+ **			prime numbers.				**
 *****************************************************************/
 /* Standard Work Libraries. */
 #include <iostream>
@@ -20,8 +25,22 @@
 /* Symbolic Work Constants. */
 template <typename T>
 constexpr T CARRIAGE_RETURN	{static_cast<T>('\n')};
+
+/* Template symbolic numeric bound constants. */
+template <typename T>
+constexpr T V_LOWER_LIMIT_PRIME	{static_cast<T>(1)};
+template <typename T>
+constexpr T V_UPPER_LIMIT_PRIME	{static_cast<T>(10000)};
+
+/* Template symbolic numeric constants. */
+template <typename T>
+constexpr T V_FIVE		{static_cast<T>(5)};
 template <typename T>
 constexpr T V_ONE		{static_cast<T>(1)};
+template <typename T>
+constexpr T V_SEVEN		{static_cast<T>(7)};
+template <typename T>
+constexpr T V_THREE		{static_cast<T>(3)};
 template <typename T>
 constexpr T V_TWO		{static_cast<T>(2)};
 template <typename T>
@@ -35,6 +54,32 @@ void enter_a_pause(const std::string& str_Message)
 		std::cin.get();
 		std::cin.clear();
 		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN<char>);
+	}
+
+/*****************************************************************
+ ** Function:		bool IsPrime				**
+ **				(const std::size_t& number);	**
+ ** Explanation:	The fundamental purpose of this function**
+ **			is to determine whether a number is	**
+ **			prime based on its position in the	**
+ **			Sieve of Eratosthenes—specifically, by	**
+ **			checking that it is not a multiple of	**
+ **			2, 3, 5, or 7—thereby excluding these	**
+ **			numbers to ascertain whether it is	**
+ **			truly prime or definitely not prime.	**
+ ** Input Parms:	const std::size_t& number.		**
+ ** Output Parms:       None.                                   **
+ ** Result:		This function returns true if the	**
+ **			number is prime				**
+ **			(not divisible by 2, 3, 5, or 7),	**
+ **			with these numbers excluded because	**
+ **			they are the initial primes.		**
+ ****************************************************************/
+bool IsPrime(const std::size_t& number)
+	{
+		return	(number < V_TWO<size_t>) ? false :
+			(((number == V_TWO<size_t>) || (number == V_THREE<size_t>) || (number == V_FIVE<size_t>) || (number == V_SEVEN<size_t>)) ||
+			((number % V_TWO<size_t>) && (number % V_THREE<size_t>) && (number % V_FIVE<size_t>) && (number % V_SEVEN<size_t>)));
 	}
 
 /*****************************************************************
@@ -162,29 +207,35 @@ int main()
 		std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
 		std::cout << "+      Prime Number Generator.      +" << std::endl;
 		std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
-		std::cout << "Number of prime numbers you want to get: ";
+		std::cout << "Prime numbers between: [" << V_LOWER_LIMIT_PRIME<size_t> << "] and: [" << V_UPPER_LIMIT_PRIME<size_t> << "] you want to get: ";
 		std::cin >> quantity;
 
-		/* Obtain a vector containing the prime numbers found. */
-		std::cout << std::endl << "Generating list of prime numbers..." << std::endl;
-		std::vector<std::size_t> vec_prime_numbers = getVectorPrimeNumbers(quantity);
-		enter_a_pause("Press the ENTER key to continue...");
+		/* Validate that the maximum number of prime numbers is within the range of 1 to 10,000. */
+		if (quantity >= V_LOWER_LIMIT_PRIME<std::size_t> && quantity <= V_UPPER_LIMIT_PRIME<std::size_t>)
+			{
+				/* Obtain a vector containing the prime numbers found. */
+				std::cout << std::endl << "Generating list of prime numbers..." << std::endl;
+				std::vector<std::size_t> vec_prime_numbers = getVectorPrimeNumbers(quantity);
+				enter_a_pause("Press the ENTER key to continue...");
 
-		/* Outbound header messages. */
-		std::cout << std::endl << "Visualizing list of prime numbers..." << std::endl << std::endl;
-		std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
-		std::cout << "+       Prime Number Results.       +" << std::endl;
-		std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
-		std::cout << "| [" << quantity << "] First Prime Numbers." << std::endl;
-		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+				/* Outbound header messages. */
+				std::cout << std::endl << "Visualizing list of prime numbers..." << std::endl << std::endl;
+				std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
+				std::cout << "+       Prime Number Results.       +" << std::endl;
+				std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
+				std::cout << "| [" << quantity << "] First Prime Numbers." << std::endl;
+				std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
 
-		/* Dumping of the contents of the obtained vector. */
-		for (const size_t& prime_number : vec_prime_numbers)
-			std::cout << "| (" << counting++ << ")\t:\t[" << prime_number << "]." << std::endl;
+				/* Dumping of the contents of the obtained vector. */
+				for (const size_t& prime_number : vec_prime_numbers)
+					std::cout << "| (" << counting++ << ")\t:\t[" << prime_number << "]." << std::endl;
 
-		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
-		std::cout << "[" << counting << "] Obtained output results." << std::endl;
-		enter_a_pause("Press the ENTER key to continue...");
+				std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+				std::cout << "[" << counting << "] Obtained output results." << std::endl;
+				enter_a_pause("Press the ENTER key to continue...");
+			}
+		else
+			std::cerr << "The entered value: [" << quantity << "] is outside the range between: [" << V_LOWER_LIMIT_PRIME<std::size_t> << "] and: [" << V_UPPER_LIMIT_PRIME<std::size_t> << "]." << std::endl;
 
 		/* Termination messages program. */
 		std::cout << std::endl << "Done!" << std::endl;
