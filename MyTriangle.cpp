@@ -1,12 +1,20 @@
+#include <cmath>
 #include <iostream>
 #include <limits>
 
-#define	CARRIAGE_RETURN			'\n'
+template <typename T>
+constexpr T CARRIAGE_RETURN		{T('\n')};
 
-#define V_FOUR				4
-#define V_ONE_POINT_SEVENTY_THREE	1.73
-#define V_THREE				3
-#define V_ZERO				0
+template <typename T>
+constexpr T V_FOUR			{T(4)};
+template <typename T>
+constexpr T V_ONE_POINT_SEVENTY_THREE	{T(1.73)};
+template <typename T>
+constexpr T V_THREE			{T(3)};
+template <typename T>
+constexpr T V_TWO			{T(2)};
+template <typename T>
+constexpr T V_ZERO			{T(0)};
 
 template <typename T>
 class EquilateralTriangle
@@ -19,7 +27,6 @@ class EquilateralTriangle
 
 		friend std::ostream& operator<< (std::ostream& os, const EquilateralTriangle<T>& eq_tr)
 		{eq_tr.print(); return os;}
-
 		friend std::istream& operator>> (std::istream& is, EquilateralTriangle& eq_tr)
 		{eq_tr.capture(); return is;}
 
@@ -27,22 +34,28 @@ class EquilateralTriangle
 		static std::size_t counter;
 
 	public:
-		EquilateralTriangle() : side(V_ZERO)
-		{(*this).counter++; (*this).capture();}
+		using value_type = T;
+
+		EquilateralTriangle() : side(V_ZERO<T>)		{(*this).counter++; (*this).capture();}
 		EquilateralTriangle(const T& _side) : side(_side)
 		{this->counter++;}
 
 		EquilateralTriangle(const EquilateralTriangle<T>& eq_tr) : side(eq_tr.side)
 		{this->counter++;}
 		EquilateralTriangle(EquilateralTriangle<T>&& eq_tr) : side (eq_tr.side)
-		{(*this).counter++; eq_tr.side = V_ZERO;}
+		{(*this).counter++; eq_tr.side = V_ZERO<T>;}
 
-		EquilateralTriangle<T>& operator= (const EquilateralTriangle<T>& eq_tr)
+		EquilateralTriangle<T>& operator=(const EquilateralTriangle<T>& eq_tr)
 		{this->copy(eq_tr); return *this;}
-		EquilateralTriangle<T>& operator= (EquilateralTriangle<T>&& eq_tr)
-		{(*this).copy(eq_tr); eq_tr.side = V_ZERO; return *this;}
+		EquilateralTriangle<T>& operator=(EquilateralTriangle<T>&& eq_tr)
+		{(*this).copy(eq_tr); eq_tr.side = V_ZERO<T>; return *this;}
 
-		operator T() const			{return side;}
+		EquilateralTriangle<T>& operator++()		{++this->side; return *this;}
+		EquilateralTriangle<T> operator++(int)		{const EquilateralTriangle<T> eq_tr {*this}; (*this).side++; return eq_tr;}
+		EquilateralTriangle<T>& operator--()		{--(*this).side; return *this;}
+		EquilateralTriangle<T> operator--(int)		{const EquilateralTriangle<T> eq_tr {*this}; this->side--; return eq_tr;}
+
+		operator T() const				{return side;}
 
 		void capture()
 		{
@@ -51,14 +64,17 @@ class EquilateralTriangle
 			std::cin >> (*this).side;
 		}
 
-		void copy(const EquilateralTriangle<T>& eq_tr)
-		{this->side = eq_tr.side;}
+		void copy(const EquilateralTriangle<T>& eq_tr)	{this->side = eq_tr.side;}
 
-		const T getArea() const			{return side * V_THREE;}
-		const T getCircumference() const	{return (V_ONE_POINT_SEVENTY_THREE * side * side) / V_FOUR;}
+		const T getArea() const				{return ((side * side) * std::sqrt(V_THREE<T>) / V_FOUR<T>);}
+		const T getCircumference() const		{return (V_ONE_POINT_SEVENTY_THREE<T> * side * side) / V_FOUR<T>;}
+		const std::size_t& getCounter() const		{return (*this).counter;}
+		const T getPerimeter() const			{return V_THREE<T> * side;}
 
-		const T& getSide() const		{return side;}
-		T& getSide()				{return side;}
+		const T& getSide() const			{return side;}
+		T& getSide()					{return side;}
+
+		void move(EquilateralTriangle<T>&& eq_tr)	{(*this).copy(eq_tr); eq_tr.side = V_ZERO<T>;}
 
 		void print() const
 		{
@@ -67,15 +83,16 @@ class EquilateralTriangle
 			std::cout << "+ Side:\t\t\t[" << this->side << "]." << std::endl;
 			std::cout << "* Area:\t\t\t{" << this->getArea() << "}." << std::endl;
 			std::cout << "* Circumference:\t{" << this->getCircumference() << "}." << std::endl;
+			std::cout << "* Perimeter:\t\t{" << this->getPerimeter() << "}." << std::endl;
 		}
 
-		void setSide(const T& _side = V_ZERO)	{side = _side;}
+		void setSide(const T& _side = V_ZERO<T>)	{side = _side;}
 
-		~EquilateralTriangle()			{counter--;}
+		~EquilateralTriangle()				{counter--;}
 };
 
 template <typename T>
-std::size_t EquilateralTriangle<T>::counter {V_ZERO};
+std::size_t EquilateralTriangle<T>::counter {V_ZERO<size_t>};
 
 template <typename T>
 void displayResults (const EquilateralTriangle<T>& eq_tr)
@@ -85,15 +102,16 @@ void displayResults (const EquilateralTriangle<T>& eq_tr)
 	std::cout << "+ Side:\t\t\t[" << eq_tr.side << "]." << std::endl;
 	std::cout << "* Area:\t\t\t{" << eq_tr.getArea() << "}." << std::endl;
 	std::cout << "* Circumference:\t{" << eq_tr.getCircumference() << "}." << std::endl;
+	std::cout << "* Perimeter:\t\t{" << eq_tr.getPerimeter() << "}." << std::endl;
 }
 
-void enter_a_pause(const std::string& str_Message)
+void enter_a_pause (const std::string& str_Message)
 {
 	std::cout << str_Message;
 	std::cin.clear();
 	std::cin.get();
 	std::cin.clear();
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN<char>);
 }
 
 int main()
@@ -108,7 +126,7 @@ int main()
 	std::cout << std::endl << eq_tr2;
 	enter_a_pause("Press the ENTER key to continue...");
 
-	EquilateralTriangle<double> eq_temp {V_THREE};
+	EquilateralTriangle<double> eq_temp {V_THREE<double>};
 	std::cout << std::endl << eq_temp;
 	enter_a_pause("Press the ENTER key to continue...");
 
@@ -159,7 +177,27 @@ int main()
 	displayResults(eq_tr2);
 	enter_a_pause("Press the ENTER key to continue...");
 
-	std::cout << std::endl << "(" << (double) eq_tr1 << ", " << double(eq_tr2) << ")." << std::endl;
+	eq_tr1++;
+	std::cout << std::endl;
+	displayResults(eq_tr1);
+	enter_a_pause("Press the ENTER key to continue...");
+
+	eq_tr1--;
+	std::cout << std::endl;
+	displayResults(eq_tr1);
+	enter_a_pause("Press the ENTER key to continue...");
+
+	++eq_tr1;
+	std::cout << std::endl;
+	displayResults(eq_tr1);
+	enter_a_pause("Press the ENTER key to continue...");
+
+	--eq_tr1;
+	std::cout << std::endl;
+	displayResults(eq_tr1);
+	enter_a_pause("Press the ENTER key to continue...");
+
+	std::cout << std::endl << "# (" << eq_tr1.getCounter() << ") : [" << (double) eq_tr1 << ", " << double(eq_tr2) << "]." << std::endl;
 
 	std::cout << std::endl << "Done!" << std::endl;
 	std::cout << "This program has ended." << std::endl;
