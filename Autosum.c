@@ -1,4 +1,4 @@
-#include <stdio.h>\
+#include <stdio.h>
 
 #define	V_MINUS_ONE	-1
 #define	V_ONE		1
