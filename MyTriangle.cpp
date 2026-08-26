@@ -195,6 +195,7 @@ int main()
 	enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "# (" << eq_tr1.getCounter() << ") : [" << (double) eq_tr1 << ", " << double(eq_tr2) << "]." << std::endl;
+	enter_a_pause("Press the ENTER key to continue...");
 
 	eq_tr1.reset();
 	std::cout << std::endl;
