@@ -8,8 +8,6 @@ constexpr T CARRIAGE_RETURN		{T('\n')};
 template <typename T>
 constexpr T V_FOUR			{T(4)};
 template <typename T>
-constexpr T V_ONE_POINT_SEVENTY_THREE	{T(1.73)};
-template <typename T>
 constexpr T V_THREE			{T(3)};
 template <typename T>
 constexpr T V_TWO			{T(2)};
@@ -67,7 +65,6 @@ class EquilateralTriangle
 		void copy(const EquilateralTriangle<T>& eq_tr)	{this->side = eq_tr.side;}
 
 		const T getArea() const				{return ((side * side) * std::sqrt(V_THREE<T>) / V_FOUR<T>);}
-		const T getCircumference() const		{return (V_ONE_POINT_SEVENTY_THREE<T> * side * side) / V_FOUR<T>;}
 		const std::size_t& getCounter() const		{return (*this).counter;}
 		const T getPerimeter() const			{return V_THREE<T> * side;}
 
@@ -82,9 +79,10 @@ class EquilateralTriangle
 			std::cout << "+ Counter:\t\t[" << (*this).counter << "]." << std::endl;
 			std::cout << "+ Side:\t\t\t[" << this->side << "]." << std::endl;
 			std::cout << "* Area:\t\t\t{" << this->getArea() << "}." << std::endl;
-			std::cout << "* Circumference:\t{" << this->getCircumference() << "}." << std::endl;
 			std::cout << "* Perimeter:\t\t{" << this->getPerimeter() << "}." << std::endl;
 		}
+
+		void reset()					{this->side = V_ZERO<T>;}
 
 		void setSide(const T& _side = V_ZERO<T>)	{side = _side;}
 
@@ -101,7 +99,6 @@ void displayResults (const EquilateralTriangle<T>& eq_tr)
 	std::cout << "+ Counter:\t\t[" << eq_tr.counter << "]." << std::endl;
 	std::cout << "+ Side:\t\t\t[" << eq_tr.side << "]." << std::endl;
 	std::cout << "* Area:\t\t\t{" << eq_tr.getArea() << "}." << std::endl;
-	std::cout << "* Circumference:\t{" << eq_tr.getCircumference() << "}." << std::endl;
 	std::cout << "* Perimeter:\t\t{" << eq_tr.getPerimeter() << "}." << std::endl;
 }
 
@@ -198,6 +195,11 @@ int main()
 	enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "# (" << eq_tr1.getCounter() << ") : [" << (double) eq_tr1 << ", " << double(eq_tr2) << "]." << std::endl;
+
+	eq_tr1.reset();
+	std::cout << std::endl;
+	displayResults(eq_tr1);
+	enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "Done!" << std::endl;
 	std::cout << "This program has ended." << std::endl;
