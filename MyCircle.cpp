@@ -63,12 +63,12 @@ class Circle
 			Circle(const Circle<T>& circle) : id(circle.id), radius(circle.radius)
 				{(*this).counter++;};
 			Circle(Circle<T>&& circle) : id(circle.id), radius(circle.radius)
-				{circle.reset();}
+				{this->counter++; circle.reset();}
 
 			Circle<T>& operator=(const T& _radius)
 				{this->radius = _radius; return *this;}
 			Circle<T>& operator=(const Circle<T>& circle)
-				{this->copy(circle); return *this;}
+				{(*this).copy(circle); return *this;}
 			Circle<T>& operator=(Circle<T>&& circle)
 				{this->copy(circle); circle.reset(); return *this;}
 
@@ -192,7 +192,6 @@ class Circle
 			virtual void capture()
 				{
 					std::cout << "Capture of the radius of the 'Circle' object." << std::endl;
-
 					std::cout << "+ Enter the desired radius: ";
 					try {(*this).radius = (*this).enter_a_data(&this->radius);}
 					catch (const std::exception& e)
@@ -741,7 +740,7 @@ int main ()
 				if (Cylinder<double> *my_Cylinder = dynamic_cast<Cylinder<double>*>(array_Circle[idx]))
 					{
 						std::cout << std::endl << "Convert a 'Cylinder' object to 'Cylinder' type." << std::endl;
-						std::cout << "* (Height = [" << (*my_Cylinder).getHeight() << "])." << std::endl;
+						std::cout << "* Height:\t{" << (*my_Cylinder).getHeight() << "}." << std::endl;
 						std::cout << "+ Height:\t[" << static_cast<double>(*my_Cylinder) << "]." << std::endl;
 						std::cout << "+ Cylinder:\t[" << my_Cylinder->getValue() << "]." << std::endl;
 						Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
