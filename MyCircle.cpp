@@ -7,7 +7,6 @@
 #include <iostream>
 #include <limits>
 #include <sstream>
-#include <string_view>
 
 /* Character constants. */
 template <typename T>
@@ -175,13 +174,13 @@ class Circle
 				{return ((*this).radius <= circle.radius);}
 
 			const T operator>>(Circle<T>& circle) const
-				{circle.setRadius(this->radius); return this->radius;}
-			const T operator>>(const T&)
-				{return this->radius;}
+				{circle.radius = this->radius; return this->radius;}
+			const T operator>>(const T& value)
+				{value = this->radius; return this->radius;}
 			Circle<T>& operator<<(const Circle<T>& circle)
-				{(*this).setRadius(circle.radius); return *this;}
+				{(*this).radius = circle.radius; return *this;}
 			Circle<T>& operator<<(const T& _radius)
-				{(*this).setRadius(_radius); return *this;}
+				{(*this).radius = _radius; return *this;}
 
 			operator T() const
 				{
@@ -192,6 +191,7 @@ class Circle
 			virtual void capture()
 				{
 					std::cout << "Capture of the radius of the 'Circle' object." << std::endl;
+
 					std::cout << "+ Enter the desired radius: ";
 					try {(*this).radius = (*this).enter_a_data(&this->radius);}
 					catch (const std::exception& e)
@@ -253,7 +253,7 @@ class Circle
 					return (ptr_data) ? *ptr_data : V_ZERO<T>;
 				}
 
-			static void enter_a_pause(std::string_view str_Message)
+			static void enter_a_pause(const std::string& str_Message)
 				{
 					std::cout << str_Message;
 					std::cin.clear();
@@ -553,7 +553,7 @@ class Cylinder final : public Circle<T>
 				{return ((*this).height <= cylinder.height);}
 
 			const T operator>>(Cylinder<T>& cylinder) const
-				{cylinder.setHeight(this->height); cylinder.setRadius((*this).getRadius()); return this->height;}
+				{cylinder.height = this->height; cylinder.setRadius((*this).getRadius()); return this->height;}
 			const T operator>>(T& value) const
 				{value = this->height; return this->height;}
 			Cylinder<T>& operator<<(const Cylinder<T>& cylinder)
@@ -569,13 +569,14 @@ class Cylinder final : public Circle<T>
 
 			void capture() override
 				{
+					Circle<T>::capture();
+
 					std::cout << "Capture of the height of the 'Cylinder' object." << std::endl;
 
 					std::cout << "+ Enter the desired height: ";
 					try{(*this).height = (*this).enter_a_data(&this->height);}
 					catch(const std::exception& e)
 					{std::cout << "Exception: [" << e.what() << "]." << std::endl;}
-					Circle<T>::capture();
 				}
 
 			template <typename C = T>
@@ -863,11 +864,12 @@ int main ()
 			}
 
                 /* Deleting the array of pointer objects of type 'Circle'. */
-                std::cout << "Deleting the array of pointers of type 'Circle'..." << std::endl;
+		std::cout << "Deleting the array of pointers of type 'Circle'..." << std::endl;
 		delete [] array_Circle;
 		array_Circle = nullptr;
 		Circle<double>::enter_a_pause("\nPress the ENTER key to continue...");
 
+		/* Final program termination messages. */
 		std::cout << CARRIAGE_RETURN<char> << "Done!" << CARRIAGE_RETURN<char>;
 		std::cout << "This program has ended." << CARRIAGE_RETURN<char>;
 
