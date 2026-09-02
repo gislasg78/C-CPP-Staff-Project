@@ -6,17 +6,28 @@
 #include <iostream>
 #include <limits>
 #include <sstream>
-#include <string_view>
 
-/* Symbolic work constants. */
+/* Character constants. */
 template <typename T>
 constexpr T CARRIAGE_RETURN	{T('\n')};
 template <typename T>
 constexpr T TABULATOR		{T('\t')};
+
+/* Symbolic work constants. */
 template <typename T>
 constexpr T V_ONE		{T(1)};
 template <typename T>
 constexpr T V_ZERO		{T(0)};
+
+/* Forward declaration of the 'Point2D' base class prototype. */
+template <typename T>
+class Point2D;
+/* Forward declaration of the 'Point3D' derived class prototype. */
+template <typename T>
+class Point3D;
+/* Function that displays a base class 'Point2D' and its derived class 'Point3D'. */
+template <typename T>
+void displayResults (const Point2D<T> *const &point2D);
 
 /* Base or parent class of the 'Point2D' type. */
 template <typename T>
@@ -47,14 +58,14 @@ class Point2D
 			Point2D(const Point2D<T>& point2D) : id(point2D.id), x(point2D.x), y(point2D.y)
 				{this->counter++;}
 			Point2D(Point2D<T>&& point2D) : id(point2D.id), x(point2D.x), y(point2D.y)
-				{(*this).counter--; point2D.reset();}
+				{(*this).counter++; point2D.reset();}
 
 			Point2D<T>& operator=(const T& value)
 				{(*this).x = (*this).y = value; return *this;}
 			Point2D<T>& operator=(const Point2D<T> &point2D)
 				{this->copy(point2D); return *this;}
 			Point2D<T>& operator=(Point2D<T> &&point2D)
-				{this->counter--; (*this).copy(point2D); point2D.reset(); return *this;}
+				{(*this).copy(point2D); point2D.reset(); return *this;}
 
 			Point2D<T>& operator()()
 				{
@@ -70,57 +81,57 @@ class Point2D
 			Point2D<T> operator+() const
 				{return *this;}
 			Point2D<T> operator+(const Point2D<T>& point2D) const
-				{return Point2D<T>((*this).x + point2D.getX(), (*this).y + point2D.getY());}
+				{return Point2D<T>((*this).x + point2D.x, (*this).y + point2D.y);}
 			Point2D<T> operator+(const T& value) const
 				{return Point2D<T>(this->x + value, this->y + value);}
 			Point2D<T>& operator+=(const Point2D<T>& point2D)
-				{this->x += point2D.getX(); this->y += point2D.getY(); return *this;}
+				{this->x += point2D.x; this->y += point2D.y; return *this;}
 			Point2D<T>& operator+=(const T& value)
 				{(*this).x += value; (*this).y += value; return *this;}
 
 			Point2D<T>& operator++()	{++this->x; ++this->y; return *this;}
-			Point2D<T> operator++(int)	{Point2D<T> point2D {*this}; (*this).x++; (*this).y++; return point2D;}
+			Point2D<T> operator++(int)	{const Point2D<T> point2D {*this}; (*this).x++; (*this).y++; return point2D;}
 			Point2D<T>& operator--()	{--(*this).x; --(*this).y; return *this;}
-			Point2D<T> operator--(int)	{Point2D<T> point2D {*this}; this->x--; this->y--; return point2D;}
+			Point2D<T> operator--(int)	{const Point2D<T> point2D {*this}; this->x--; this->y--; return point2D;}
 
 			Point2D<T> operator-() const
 				{return Point2D<T>(-this->x, -this->y);}
 			Point2D<T> operator-(const Point2D<T>& point2D) const
-				{return Point2D<T>((*this).x - point2D.getX(), (*this).y - point2D.getY());}
+				{return Point2D<T>((*this).x - point2D.x, (*this).y - point2D.y);}
 			Point2D<T> operator-(const T& value) const
 				{return Point2D<T>(this->x - value, this->y - value);}
 			Point2D<T>& operator-=(const Point2D<T>& point2D)
-				{(*this).x -= point2D.getX(); (*this).y -= point2D.getY(); return *this;}
+				{(*this).x -= point2D.x; (*this).y -= point2D.y; return *this;}
 			Point2D<T>& operator-=(const T& value)
 				{this->x -= value; this->y -= value; return *this;}
 
 			Point2D<T> operator*(const Point2D<T>& point2D) const
-				{return Point2D<T>((*this).x * point2D.getX(), (*this).y * point2D.getY());}
+				{return Point2D<T>((*this).x * point2D.x, (*this).y * point2D.y);}
 			Point2D<T> operator*(const T& value) const
 				{return Point2D<T>(this->x * value, this->y * value);}
 			Point2D<T>& operator*=(const Point2D<T>& point2D)
-				{this->x *= point2D.getX(); this->y *= point2D.getY(); return *this;}
+				{this->x *= point2D.x; this->y *= point2D.y; return *this;}
 			Point2D<T>& operator*=(const T& value)
 				{(*this).x *= value; (*this).y *= value; return *this;}
 
 			Point2D<T> operator/(const Point2D<T>& point2D) const
 				{
 					Point2D<T> object_point2D(point2D.getX(), point2D.getY());
-					object_point2D.getX() = (point2D.getX()) ? (*this).x / point2D.getX() : V_ZERO<T>;
-					object_point2D.getY() = (point2D.getY()) ? (*this).y / point2D.getY() : V_ZERO<T>;
+					object_point2D.x = (point2D.x) ? (*this).x / point2D.x : V_ZERO<T>;
+					object_point2D.y = (point2D.y) ? (*this).y / point2D.y : V_ZERO<T>;
 					return object_point2D;
 				}
 			Point2D<T> operator/(const T& value) const
 				{
 					Point2D<T> object_point2D(this->x, this->y);
-					object_point2D.getX() = (value) ? (*this).x / value : V_ZERO<T>;
-					object_point2D.getY() = (value) ? (*this).y / value : V_ZERO<T>;
+					object_point2D.x = (value) ? (*this).x / value : V_ZERO<T>;
+					object_point2D.y = (value) ? (*this).y / value : V_ZERO<T>;
 					return object_point2D;
 				}
 			Point2D<T>& operator/=(const Point2D<T>& point2D)
 				{
-					this->x = (point2D.getX()) ? this->x / point2D.getX() : V_ZERO<T>;
-					this->y = (point2D.getY()) ? this->y / point2D.getY() : V_ZERO<T>;
+					this->x = (point2D.x) ? this->x / point2D.c : V_ZERO<T>;
+					this->y = (point2D.y) ? this->y / point2D.y : V_ZERO<T>;
 					return *this;
 				}
 			Point2D<T>& operator/=(const T& value)
@@ -132,22 +143,22 @@ class Point2D
 
 			Point2D<T> operator%(const Point2D<T>& point2D) const
 				{
-					Point2D<T> object_point2D(point2D.getX(), point2D.getY());
-					object_point2D.getX() = (point2D.getX()) ? static_cast<int>((*this).x) % static_cast<int>(point2D.getX()) : V_ZERO<T>;
-					object_point2D.getY() = (point2D.getY()) ? static_cast<int>((*this).y) % static_cast<int>(point2D.getY()) : V_ZERO<T>;
+					Point2D<T> object_point2D(point2D.x, point2D.y);
+					object_point2D.x = (point2D.x) ? static_cast<int>((*this).x) % static_cast<int>(point2D.x) : V_ZERO<T>;
+					object_point2D.y = (point2D.y) ? static_cast<int>((*this).y) % static_cast<int>(point2D.y) : V_ZERO<T>;
 					return object_point2D;
 				}
 			Point2D<T> operator%(const T& value) const
 				{
 					Point2D<T> object_point2D(this->x, this->y);
-					object_point2D.getX() = (value) ? static_cast<int>((*this).x) % static_cast<int>(value) : V_ZERO<T>;
-					object_point2D.getY() = (value) ? static_cast<int>((*this).y) % static_cast<int>(value) : V_ZERO<T>;
+					object_point2D.x = (value) ? static_cast<int>((*this).x) % static_cast<int>(value) : V_ZERO<T>;
+					object_point2D.y = (value) ? static_cast<int>((*this).y) % static_cast<int>(value) : V_ZERO<T>;
 					return object_point2D;
 				}
 			Point2D<T>& operator%=(const Point2D<T>& point2D)
 				{
-					this->x = (point2D.getX()) ? static_cast<int>((*this).x) % static_cast<int>(point2D.getX()) : V_ZERO<T>;
-					this->y = (point2D.getY()) ? static_cast<int>((*this).y) % static_cast<int>(point2D.getY()) : V_ZERO<T>;
+					this->x = (point2D.x) ? static_cast<int>((*this).x) % static_cast<int>(point2D.x) : V_ZERO<T>;
+					this->y = (point2D.y) ? static_cast<int>((*this).y) % static_cast<int>(point2D.y) : V_ZERO<T>;
 					return *this;
 				}
 			Point2D<T>& operator%=(const T& value)
@@ -158,24 +169,24 @@ class Point2D
 				}
 
 			const T operator!=(const Point2D<T>& point2D) const
-				{return ((this->id != point2D.getId()) || (this->x != point2D.getX()) || (this->y != point2D.getY()));}
+				{return ((this->id != point2D.id) || (this->x != point2D.x) || (this->y != point2D.y));}
 			const T operator==(const Point2D<T>& point2D) const
-				{return ((this->id == point2D.getId()) && (this->x == point2D.getX()) && (this->y == point2D.getY()));}
+				{return ((this->id == point2D.id) && (this->x == point2D.x) && (this->y == point2D.y));}
 			const T operator>(const Point2D<T>& point2D) const
-				{return (((*this).x > point2D.getX()) || ((*this).y > point2D.getY()));}
+				{return (((*this).x > point2D.x) || ((*this).y > point2D.y));}
 			const T operator>=(const Point2D<T>& point2D) const
-				{return (((*this).x >= point2D.getX()) || ((*this).y >= point2D.getY()));}
+				{return (((*this).x >= point2D.x) || ((*this).y >= point2D.y));}
 			const T operator<(const Point2D<T>& point2D) const
-				{return (((*this).x < point2D.getX()) || ((*this).y < point2D.getY()));}
+				{return (((*this).x < point2D.x) || ((*this).y < point2D.y));}
 			const T operator<=(const Point2D<T>& point2D) const
-				{return (((*this).x <= point2D.getX()) || ((*this).y <= point2D.getY()));}
+				{return (((*this).x <= point2D.x) || ((*this).y <= point2D.y));}
 
 			const T operator>>(Point2D<T>& point2D) const
-				{point2D.setX(this->x); point2D.setY(this->y); return this->id;}
+				{point2D.x = this->x; point2D.y = this->y; return this->id;}
 			const T operator>>(T& value) const
 				{value = (*this).id; return this->id;}
 			Point2D<T>& operator<<(const Point2D<T>& point2D)
-				{(*this).setX(point2D.getX()); (*this).setY(point2D.getY()); return *this;}
+				{(*this).x = point2D.x; (*this).y = point2D.y; return *this;}
 			Point2D<T>& operator<<(const T& value)
 				{this->x = this->y = value; return *this;}
 
@@ -204,8 +215,8 @@ class Point2D
 			const Point2D<C> convert() const
 				{
 					Point2D<C> converted_point2D(V_ZERO<T>, V_ZERO<T>);
-					converted_point2D.setX(static_cast<C>(this->getX()));
-					converted_point2D.setY(static_cast<C>(this->getY()));
+					converted_point2D.setX(static_cast<C>(this->x));
+					converted_point2D.setY(static_cast<C>(this->y));
 					return converted_point2D;
 				}
 
@@ -213,13 +224,13 @@ class Point2D
 			const Point2D<C> convert(const Point2D<T>& point2D) const
 				{
 					Point2D<C> converted_point2D(V_ZERO<T>, V_ZERO<T>);
-					converted_point2D.getX() = static_cast<C>(point2D.getX());
-					converted_point2D.getY() = static_cast<C>(point2D.getY());
+					converted_point2D.x = static_cast<C>(point2D.x);
+					converted_point2D.y = static_cast<C>(point2D.y);
 					return converted_point2D;
 				}
 
 			virtual Point2D<T>& copy(const Point2D<T> &point2D)
-				{this->x = point2D.getX(); this->y = point2D.getY(); return *this;}
+				{this->x = point2D.x; this->y = point2D.y; return *this;}
 
 			static const T &enter_a_data(T *const& ptr_data)
 				{
@@ -257,7 +268,7 @@ class Point2D
 					return (ptr_data) ? *ptr_data : V_ZERO<T>;
 				};
 
-			static void enter_a_pause(std::string_view str_Message)
+			static void enter_a_pause(const std::string& str_Message)
 				{
 					std::cout << str_Message;
 					std::cin.clear();
@@ -321,7 +332,7 @@ class Point2D
 
 			template <typename U = T>
 			typename std::enable_if<std::is_integral<T>::value, U>::type
-			getValue()		const	{return this->getId();}
+			getValue()		const	{return this->id;}
 
 			const T& getX()		const	{return this->x;}
 			const T& getY()		const	{return this->y;}
@@ -329,11 +340,11 @@ class Point2D
 			T& getX()			{return (*this).x;}
 			T& getY()			{return (*this).y;}
 
-			bool isitme(Point2D<T>& point2D) const
+			virtual bool isitme(Point2D<T>& point2D) const
 				{return (this == &point2D);}
 
 			virtual Point2D<T>& move(Point2D<T> &&point2D)
-				{this->counter--; this->copy(point2D); point2D.reset(); return *this;}
+				{this->copy(point2D); point2D.reset(); return *this;}
 
 			virtual void print() const
 				{
@@ -384,7 +395,10 @@ class Point2D
 
 			using value_type = T;
 
-			virtual ~Point2D() = default;
+			template <typename U>
+			friend void displayResults (const Point2D<U> *const &point2D);
+
+			virtual ~Point2D()		{counter--;};
 	};
 
 /* Initialization of the static accounting variable of the 'Point2D' class. */
@@ -393,7 +407,7 @@ int Point2D<T>::counter = V_ZERO<int>;
 
 /* Derived class of the 'Point2D' type thru 'Point3D' class. */
 template <typename T>
-class Point3D : public Point2D<T>
+class Point3D final : public Point2D<T>
 	{
 		private:
 			Point2D<T> base {};
@@ -406,34 +420,34 @@ class Point3D : public Point2D<T>
 
 		public:
 			Point3D() : Point2D<T>(V_ZERO<T>, V_ZERO<T>), z(V_ZERO<T>)
-				{this->counter++; this->capture();}
+				{this->capture();}
 			Point3D(const T &_z) : Point2D<T>(V_ZERO<T>, V_ZERO<T>), z(_z)
-				{(*this).counter++;}
+				{}
 			Point3D(const T &_x, const T &_y) : Point2D<T>(_x, _y), z(V_ZERO<T>)
-				{(*this).counter++;}
+				{}
 			Point3D(const T &_x, const T &_y, const T &_z) : Point2D<T>(_x, _y), z(_z)
-				{(*this).counter++;}
+				{}
 			Point3D(const int &_id, const T &_x, const T &_y, const T &_z) : Point2D<T>(_id, _x, _y), z(_z)
-				{this->counter++;}
+				{}
 
 			Point3D(const Point2D<T>& point2D) : Point2D<T>{point2D.getId(), point2D.getX(), point2D.getY()}, z{V_ZERO<T>}
-				{(*this).counter++;}
+				{}
 			Point3D(const Point2D<T>& point2D, const T& _z) : Point2D<T>(point2D.getId(), point2D.getX(), point2D.getY()), z(_z)
-				{(*this).counter++;}
+				{}
 			Point3D(const int &_id, const Point2D<T>& point2D, const T& _z) : Point2D<T>{_id, point2D.getX(), point2D.getY()}, z(_z)
-				{this->counter++;}
+				{}
 
 			Point3D(const Point3D<T>& point3D) : Point2D<T>(point3D.getId(), point3D.getX(), point3D.getY()), z(point3D.getZ())
-				{this->counter++;}
+				{}
 			Point3D(Point3D<T>&& point3D) : Point2D<T>(point3D.getId(), point3D.getX(), point3D.getY()), z(point3D.getZ())
-				{(*this).counter--; point3D.reset();}
+				{point3D.reset();}
 
 			Point3D<T>& operator=(const T& value)
 				{(*this).getX() = (*this).getY() = (*this).z = value; return *this;}
 			Point3D<T>& operator=(const Point3D<T> &point3D)
 				{this->copy(point3D); return *this;}
 			Point3D<T>& operator=(Point3D<T> &&point3D)
-				{this->counter--; (*this).copy(point3D); point3D.reset(); return *this;}
+				{(*this).copy(point3D); point3D.reset(); return *this;}
 
 			Point3D<T>& operator()()
 				{
@@ -449,45 +463,45 @@ class Point3D : public Point2D<T>
 			Point3D<T> operator+() const
 				{return *this;}
 			Point3D<T> operator+(const Point3D<T>& point3D) const
-				{return Point3D<T>((*this).getX() + point3D.getX(), (*this).getY() + point3D.getY(), (*this).z + point3D.getZ());}
+				{return Point3D<T>((*this).getX() + point3D.getX(), (*this).getY() + point3D.getY(), (*this).z + point3D.z);}
 			Point3D<T> operator+(const T& value) const
 				{return Point3D<T>(this->getX() + value, this->getY() + value, this->z + value);}
 			Point3D<T>& operator+=(const Point3D<T>& point3D)
-				{(*this).getX() += point3D.getX(); (*this).getY() += point3D.getY(); this->z += point3D.getZ(); return *this;}
+				{(*this).getX() += point3D.getX(); (*this).getY() += point3D.getY(); this->z += point3D.z; return *this;}
 			Point3D<T>& operator+=(const T& value)
 				{this->getX() += value; this->getY() += value; this->z += value; return *this;}
 
 			Point3D<T>& operator++()	{++this->getX(); ++this->getY(); ++this->z; return *this;}
-			Point3D<T> operator++(int)	{Point3D<T> point3D {*this}; this->getX()++; this->getY()++; (*this).z++; return point3D;}
+			Point3D<T> operator++(int)	{const Point3D<T> point3D {*this}; this->getX()++; this->getY()++; (*this).z++; return point3D;}
 			Point3D<T>& operator--()	{--this->getX(); --this->getY(); --(*this).z; return *this;}
-			Point3D<T> operator--(int)	{Point3D<T> point3D {*this}; this->getX()--; this->getY()--; this->z--; return point3D;}
+			Point3D<T> operator--(int)	{const Point3D<T> point3D {*this}; this->getX()--; this->getY()--; this->z--; return point3D;}
 
 			Point3D<T> operator-() const
 				{return Point3D<T>(-(*this).getX(), -(*this).getY(), -(*this).z);}
 			Point3D<T> operator-(const Point3D<T>& point3D) const
-				{return Point3D<T>((*this).getX() - point3D.getX(), (*this).getY() - point3D.getY(), (*this).z - point3D.getZ());}
+				{return Point3D<T>((*this).getX() - point3D.getX(), (*this).getY() - point3D.getY(), (*this).z - point3D.z);}
 			Point3D<T> operator-(const T& value) const
 				{return Point3D<T>(this->getX() - value, this->getY() - value, this->z - value);}
 			Point3D<T>& operator-=(const Point3D<T>& point3D)
-				{(*this).getX() -= point3D.getX(); (*this).getY() -= point3D.getY(); this->z -= point3D.getZ(); return *this;}
+				{(*this).getX() -= point3D.getX(); (*this).getY() -= point3D.getY(); this->z -= point3D.z; return *this;}
 			Point3D<T>& operator-=(const T& value)
 				{this->getX() -= value; this->getY() -= value; this->z -= value; return *this;}
 
 			Point3D<T> operator*(const Point3D<T>& point3D) const
-				{return Point3D<T>((*this).getX() * point3D.getX(), (*this).getY() * point3D.getY(), (*this).z * point3D.getZ());}
+				{return Point3D<T>((*this).getX() * point3D.getX(), (*this).getY() * point3D.getY(), (*this).z * point3D.z);}
 			Point3D<T> operator*(const T& value) const
 				{return Point3D<T>(this->getX() * value, this->getY() * value, this->z * value);}
 			Point3D<T>& operator*=(const Point3D<T>& point3D)
-				{(*this).getX() *= point3D.getX(); (*this).getY() *= point3D.getY(); this->z *= point3D.getZ(); return *this;}
+				{(*this).getX() *= point3D.getX(); (*this).getY() *= point3D.getY(); this->z *= point3D.z; return *this;}
 			Point3D<T>& operator*=(const T& value)
 				{this->getX() *= value; this->getY() *= value; this->z *= value; return *this;}
 
 			Point3D<T> operator/(const Point3D<T>& point3D) const
 				{
-					Point3D<T> object_point3D(point3D.getX(), point3D.getY(), point3D.getZ());
+					Point3D<T> object_point3D(point3D.getX(), point3D.getY(), point3D.z);
 					object_point3D.getX() = (point3D.getX()) ? (*this).getX() / point3D.getX() : V_ZERO<T>;
 					object_point3D.getY() = (point3D.getY()) ? (*this).getY() / point3D.getY() : V_ZERO<T>;
-					object_point3D.getZ() = (point3D.getZ()) ? (*this).z / point3D.getZ() : V_ZERO<T>;
+					object_point3D.z = (point3D.z) ? (*this).z / point3D.z : V_ZERO<T>;
 					return object_point3D;
 				}
 			Point3D<T> operator/(const T& value) const
@@ -495,14 +509,14 @@ class Point3D : public Point2D<T>
 					Point3D<T> object_point3D((*this).getX(), (*this).getY(), this->z);
 					object_point3D.getX() = (value) ? this->getX() / value : V_ZERO<T>;
 					object_point3D.getY() = (value) ? this->getY() / value : V_ZERO<T>;
-					object_point3D.getZ() = (value) ? this->z / value : V_ZERO<T>;
+					object_point3D.z = (value) ? this->z / value : V_ZERO<T>;
 					return object_point3D;
 				}
 			Point3D<T>& operator/=(const Point3D<T>& point3D)
 				{
 					(*this).getX() = (point3D.getX()) ? this->getX() / point3D.getX() : V_ZERO<T>;
 					(*this).getY() = (point3D.getY()) ? this->getY() / point3D.getY() : V_ZERO<T>;
-					this->z = (point3D.getZ()) ? this->z / point3D.getZ() : V_ZERO<T>;
+					this->z = (point3D.z) ? this->z / point3D.z : V_ZERO<T>;
 					return *this;
 				}
 			Point3D<T>& operator/=(const T& value)
@@ -515,10 +529,10 @@ class Point3D : public Point2D<T>
 
 			Point3D<T> operator%(const Point3D<T>& point3D) const
 				{
-					Point3D<T> object_point3D(point3D.getX(), point3D.getY(), point3D.getZ());
+					Point3D<T> object_point3D(point3D.getX(), point3D.getY(), point3D.z);
 					object_point3D.getX() = (point3D.getX()) ? static_cast<int>((*this).getX()) % static_cast<int>(point3D.getX()) : V_ZERO<T>;
 					object_point3D.getY() = (point3D.getY()) ? static_cast<int>((*this).getY()) % static_cast<int>(point3D.getY()) : V_ZERO<T>;
-					object_point3D.getZ() = (point3D.getZ()) ? static_cast<int>((*this).z) % static_cast<int>(point3D.getZ()) : V_ZERO<T>;
+					object_point3D.z = (point3D.z) ? static_cast<int>((*this).z) % static_cast<int>(point3D.z) : V_ZERO<T>;
 					return object_point3D;
 				}
 			Point3D<T> operator%(const T& value) const
@@ -526,14 +540,14 @@ class Point3D : public Point2D<T>
 					Point3D<T> object_point3D((*this).getX(), (*this).getY(), this->z);
 					object_point3D.getX() = (value) ? static_cast<int>(this->getX()) % static_cast<int>(value) : V_ZERO<T>;
 					object_point3D.getY() = (value) ? static_cast<int>(this->getY()) % static_cast<int>(value) : V_ZERO<T>;
-					object_point3D.getZ() = (value) ? static_cast<int>(this->z) % static_cast<int>(value) : V_ZERO<T>;
+					object_point3D.z = (value) ? static_cast<int>(this->z) % static_cast<int>(value) : V_ZERO<T>;
 					return object_point3D;
 				}
 			Point3D<T>& operator%=(const Point3D<T>& point3D)
 				{
 					(*this).getX() = (point3D.getX()) ? static_cast<int>(this->getX()) % static_cast<int>(point3D.getX()) : V_ZERO<T>;
 					(*this).getY() = (point3D.getY()) ? static_cast<int>(this->getY()) % static_cast<int>(point3D.getY()) : V_ZERO<T>;
-					this->z = (point3D.getZ()) ? static_cast<int>(this->z) % static_cast<int>(point3D.getZ()) : V_ZERO<T>;
+					this->z = (point3D.z) ? static_cast<int>(this->z) % static_cast<int>(point3D.z) : V_ZERO<T>;
 					return *this;
 				}
 			Point3D<T>& operator%=(const T& value)
@@ -545,24 +559,24 @@ class Point3D : public Point2D<T>
 				}
 
 			const T operator!=(const Point3D<T>& point3D) const
-				{return ((this->getId() != point3D.getId()) || (this->getX() != point3D.getX()) || (this->getY() != point3D.getY()) || (this->z != point3D.getZ()));}
+				{return ((this->getId() != point3D.getId()) || (this->getX() != point3D.getX()) || (this->getY() != point3D.getY()) || (this->z != point3D.z));}
 			const T operator==(const Point3D<T>& point3D) const
-				{return ((this->getId() == point3D.getId()) && (this->getX() == point3D.getX()) && (this->getY() == point3D.getY()) && (this->z != point3D.getZ()));}
+				{return ((this->getId() == point3D.getId()) && (this->getX() == point3D.getX()) && (this->getY() == point3D.getY()) && (this->z != point3D.z));}
 			const T operator>(const Point3D<T>& point3D) const
-				{return ((*this).z > point3D.getZ());}
+				{return ((*this).z > point3D.z);}
 			const T operator>=(const Point3D<T>& point3D) const
-				{return ((*this).z >= point3D.getZ());}
+				{return ((*this).z >= point3D.z);}
 			const T operator<(const Point3D<T>& point3D) const
-				{return ((*this).z < point3D.getZ());}
+				{return ((*this).z < point3D.z);}
 			const T operator<=(const Point3D<T>& point3D) const
-				{return ((*this).z <= point3D.getZ());}
+				{return ((*this).z <= point3D.z);}
 
 			const T operator>>(Point3D<T>& point3D) const
-				{point3D.setX(this->getX()); point3D.setY(this->getY()); point3D.setZ(this->z); return this->getId();}
+				{point3D.setX(this->getX()); point3D.setY(this->getY()); point3D.z = this->z; return this->getId();}
 			const T operator>> (T& value) const
 				{value = this->z; return this->z;}
 			Point3D<T>& operator<<(const Point3D<T>& point3D)
-				{(*this).setX(point3D.getX()); (*this).setY(point3D.getY()); (*this).z = point3D.getZ(); return *this;}
+				{(*this).setX(point3D.getX()); (*this).setY(point3D.getY()); (*this).z = point3D.z; return *this;}
 			Point3D<T>& operator<<(const T& value)
 				{(*this).setX(value); (*this).setY(value); (*this).z = value; return *this;}
 
@@ -572,16 +586,16 @@ class Point3D : public Point2D<T>
 					? ((*this).getY()) ? static_cast<T>((*this).getX()) / static_cast<T>((*this).getY()) : V_ZERO<T> : V_ZERO<T>;
 				}
 
-			virtual void capture()
+			void capture() override
 				{
+					Point2D<T>::capture();
+
 					std::cout << "Capture the coordinates of a 'Point3D' object." << std::endl;
 
 					std::cout << "+ Z Coord = ";
 					try {this->z = this->enter_a_data(&this->z);}
 					catch (const std::exception& e)
 					{std::cout << "Exception: [" << e.what() << "]." << std::endl;}
-
-					Point2D<T>::capture();
 				}
 
 			template <typename C = T>
@@ -590,7 +604,7 @@ class Point3D : public Point2D<T>
 					Point3D<C> converted_point3D(V_ZERO<T>, V_ZERO<T>, V_ZERO<T>);
 					converted_point3D.setX(static_cast<C>(this->getX()));
 					converted_point3D.setY(static_cast<C>(this->getY()));
-					converted_point3D.setZ(static_cast<C>(this->getZ()));
+					converted_point3D.setZ(static_cast<C>(this->z));
 					return converted_point3D;
 				}
 
@@ -600,12 +614,12 @@ class Point3D : public Point2D<T>
 					Point3D<C> converted_point3D(V_ZERO<T>, V_ZERO<T>, V_ZERO<T>);
 					converted_point3D.getX() = static_cast<C>(point3D.getX());
 					converted_point3D.getY() = static_cast<C>(point3D.getY());
-					converted_point3D.getZ() = static_cast<C>(point3D.getZ());
+					converted_point3D.z = static_cast<C>(point3D.z);
 					return converted_point3D;
 				}
 
 			virtual Point3D<T>& copy(const Point3D<T> &point3D)
-				{this->setX(point3D.getX()); this->setY(point3D.getY()); this->setZ(point3D.getZ()); return *this;}
+				{this->setX(point3D.getX()); this->setY(point3D.getY()); this->z = point3D.z; return *this;}
 			virtual Point3D<T>& copy(const Point2D<T> &point2D)
 				{(*this).setX(point2D.getX()); (*this).setY(point2D.getY()); return *this;}
 
@@ -618,39 +632,41 @@ class Point3D : public Point2D<T>
 
 			template <typename U = T>
 			typename std::enable_if<std::is_integral<T>::value, U>::type
-			getValue() const		{return this->getZ();}
+			getValue() const		{return (*this).z;}
 
 			const T& getZ() const		{return this->z;}
 			T& getZ()			{return (*this).z;}
 
+			bool isitme(Point2D<T>& point2D) const override
+				{return (this == &point2D);}
 			bool isitme(Point3D<T>& point3D) const
 				{return (this == &point3D);}
 
-			virtual Point3D<T>& move(Point3D<T> &&point3D)
+			Point3D<T>& move(Point3D<T> &&point3D)
 				{this->counter--; this->copy(point3D); point3D.reset(); return *this;}
-			virtual Point3D<T>& move(Point2D<T> &&point2D)
+			Point3D<T>& move(Point2D<T> &&point2D) override
 				{this->counter--; (*this).copy(point2D); point2D.reset(); return *this;}
 
-			virtual void print() const
+			void print() const override
 				{
 					std::cout << "Display the current values ​​of a 'Point3D' object." << std::endl;
 					(*this).see(); (*this).view(); (*this).watch();
 				}
 
-			virtual void reset()			{Point2D<T>::reset(); this->z = V_ZERO<T>;}
+			void reset() override			{Point2D<T>::reset(); this->z = V_ZERO<T>;}
 
 			void setXYZ(const T& _x = V_ZERO<T>, const T& _y = V_ZERO<T>, const T& _z = V_ZERO<T>)
 				{this->setX(_x); this->setY(_y); this->z = _z;}
 			void setZ(const T &_z = V_ZERO<T>)	{(*this).z = _z;}
 
-			virtual void see() const
+			void see() const override
 				{
 					std::cout << "Brief information about the 'Point3D' object." << std::endl;
 					std::cout << "+ Z Coord:\t[" << this->z << "]." << std::endl << std::endl;
 					Point2D<T>::see();
 				}
 
-			virtual void view() const
+			void view() const override
 				{
 					std::cout << "Extended information about the 'Point3D' object." << std::endl;
 					std::cout << "+ Z Coord:\t[" << (*this).z << "]\t:\t[" << this->z << "]\t=\t";
@@ -658,15 +674,34 @@ class Point3D : public Point2D<T>
 					Point2D<T>::view();
 				}
 
-			virtual void watch() const
+			void watch() const override
 				{
 					std::cout << "Specific information about the 'Point3D' object." << std::endl;
 					std::cout << "(Z Coord = [" << this->z << "])." << std::endl << std::endl;
 					Point2D<T>::watch();
 				}
 
+			template <typename U>
+			friend void displayResults (const Point2D<U> *const &point2D);
+
 			virtual ~Point3D() = default;
 	};
+
+/* A friend function displays the brief values ​​of both a base 'Point2D' class and a derived 'Point3D' class. */
+template <typename U>
+void displayResults (const Point2D<U> *const &point2D)
+	{
+		std::cout << std::endl << "'Point2D' Base Class Information." << std::endl;
+
+		std::cout << "[" << (*point2D).counter << ", "
+			  << (*point2D).id << ", " << (*point2D).x << ", " << (*point2D).y << "]." << std::endl;
+
+		if (const Point3D<U> *const point3D = dynamic_cast<const Point3D<U> *const>(point2D))
+			{
+				std::cout << std::endl << "'Point3D' Derived Class Information." << std::endl;
+				std::cout << "{" << (*point3D).z <<  "}." << std::endl;
+			}
+	}
 
 //Main function.
 int main()
@@ -723,7 +758,7 @@ int main()
 				if (Point3D<int> *my_Point3D = dynamic_cast<Point3D<int>*>(array_Point2D[idx]))
 					{
 						std::cout << std::endl << "Convert a 'Point3D' object to 'Point3D' type." << std::endl;
-						std::cout << "* (z = [" << (*my_Point3D).getZ() << "])." << std::endl;
+						std::cout << "* Z Value:\t{" << (*my_Point3D).getZ() << "}." << std::endl;
 						std::cout << "+ Z Value:\t[" << static_cast<int>(*my_Point3D) << "]." << std::endl;
 						std::cout << "+ Point3D:\t[" << my_Point3D->getValue() << "]." << std::endl;
 						Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
@@ -804,6 +839,10 @@ int main()
 				(*(*(array_Point2D + idx))).watch();
 				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 
+				/* A friend function displays a base 'Circle' class and a derived 'Cylinder' class. */
+				displayResults<int>(array_Point2D[idx]);
+				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
+
 				/* Various ways to call methods on an array of object pointers (pointer of pointers). */
 				std::cout << std::endl << "Initializing the values ​​in the units of the coordinates of a 'Point2D' object." << std::endl;
 				array_Point2D[idx]->reset();
@@ -832,15 +871,20 @@ int main()
 		for (int idx {V_ZERO<int>}; idx < quantity; idx++)
 			{
 				std::cout << "Deleting object 'Point2D' #: [" << idx + V_ONE<int> << "] of: [" << quantity << "]." << std::endl;
+
 				delete *(array_Point2D + idx);
+				array_Point2D[idx] = nullptr;
+
 				Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 			}
 
 		/* Deleting the array of pointer objects of type 'Point2D'. */
 		std::cout << "Deleting the array of pointers of type 'Point2D'..." << std::endl;
 		delete [] array_Point2D;
+		array_Point2D = nullptr;
 		Point2D<int>::enter_a_pause("\nPress the ENTER key to continue...");
 
+		/* Final program termination messages. */
 		std::cout << CARRIAGE_RETURN<char> << "Done!" << CARRIAGE_RETURN<char>;
 		std::cout << "This program has ended." << CARRIAGE_RETURN<char>;
 
