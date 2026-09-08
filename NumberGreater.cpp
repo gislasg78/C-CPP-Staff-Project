@@ -1,47 +1,19 @@
+/* The purpose of this program is to demonstrate various implementations
+   of comparisons to determine the largest of three given numbers
+   across different data types.
+*/
+
+/* Standard Work Libraries. */
 #include <algorithm>
 #include <iostream>
 #include <limits>
 #include <sstream>
 
+/* Symbolic work constants. */
 template <typename T>
 constexpr T CARRIAGE_RETURN	{T('\n')};
 template <typename T>
 constexpr T V_ZERO		{T(0)};
-
-template <typename T, typename U, typename V>
-auto greater(const T& x, const U& y, const V& z)
-	{
-		using Common_Type = std::common_type_t<T, U, V>;
-		Common_Type major = static_cast<Common_Type>(x);
-
-		if (static_cast<Common_Type>(y) > major)
-			major = static_cast<Common_Type>(y);
-
-		if (static_cast<Common_Type>(z) > major)
-			major = static_cast<Common_Type>(z);
-
-		return major;
-	}
-
-template <typename T, typename U, typename V>
-auto larger(const T& x, const U& y, const V& z) -> decltype(x + y + z)
-	{
-		using Common_Type = std::common_type_t<T, U, V>;
-		Common_Type major = V_ZERO<Common_Type>;
-
-		if (static_cast<Common_Type>(x) > static_cast<Common_Type>(y))
-			if (static_cast<Common_Type>(x) > static_cast<Common_Type>(z))
-				major = static_cast<Common_Type>(x);
-			else
-				major = static_cast<Common_Type>(y);
-		else
-			if (static_cast<Common_Type>(y) > static_cast<Common_Type>(z))
-				major = static_cast<Common_Type>(y);
-			else
-				major = static_cast<Common_Type>(z);
-
-		return major;
-	}
 
 /* Improvised 'Template' type function to capture a given string of characters. */
 template <typename T>
@@ -88,6 +60,60 @@ const T& capture_a_value(T* const &ptr_value)
 		return (ptr_value) ? *ptr_value : V_ZERO<T>;
 	}
 
+/* Function to detect the biggest of three numbers of different types. */
+template <typename T, typename U, typename V>
+auto bigger(const T& x, const U& y, const V& z)
+	{
+		using Common_Type = std::common_type_t<T, U, V>;
+		Common_Type major = V_ZERO<Common_Type>;
+
+		if (static_cast<Common_Type>(x) >= static_cast<Common_Type>(y) && static_cast<Common_Type>(x) >= static_cast<Common_Type>(z))
+			major = static_cast<Common_Type>(x);
+		else if (static_cast<Common_Type>(y) >= static_cast<Common_Type>(x) && static_cast<Common_Type>(y) >= static_cast<Common_Type>(z))
+			major = static_cast<Common_Type>(y);
+		else if (static_cast<Common_Type>(z) >= static_cast<Common_Type>(x) && static_cast<Common_Type>(z) >= static_cast<Common_Type>(y))
+			major = static_cast<Common_Type>(z);
+
+		return major;
+	}
+
+/* Function to detect the greatest of three numbers of different types. */
+template <typename T, typename U, typename V>
+auto greater(const T& x, const U& y, const V& z)
+	{
+		using Common_Type = std::common_type_t<T, U, V>;
+		Common_Type major = static_cast<Common_Type>(x);
+
+		if (static_cast<Common_Type>(y) > major)
+			major = static_cast<Common_Type>(y);
+
+		if (static_cast<Common_Type>(z) > major)
+			major = static_cast<Common_Type>(z);
+
+		return major;
+	}
+
+/* Function to detect the largest of three numbers of different types. */
+template <typename T, typename U, typename V>
+auto larger(const T& x, const U& y, const V& z)
+	{
+		using Common_Type = std::common_type_t<T, U, V>;
+		Common_Type major = V_ZERO<Common_Type>;
+
+		if (static_cast<Common_Type>(x) > static_cast<Common_Type>(y))
+			if (static_cast<Common_Type>(x) > static_cast<Common_Type>(z))
+				major = static_cast<Common_Type>(x);
+			else
+				major = static_cast<Common_Type>(z);
+		else
+			if (static_cast<Common_Type>(y) > static_cast<Common_Type>(z))
+				major = static_cast<Common_Type>(y);
+			else
+				major = static_cast<Common_Type>(z);
+
+		return major;
+	}
+
 //Main function.
 int main()
 	{
@@ -96,30 +122,38 @@ int main()
 		float y (V_ZERO<float>);
 		double z = V_ZERO<double>;
 
+		/* Initial introductory header. */
 		std::cout << "Choosing the largest number from three values." << std::endl;
 
 		/* Capturing values. */
-		std::cout << "Enter the value of 'x': ";
+		std::cout << "Enter the value of 'x': ";	//Capturing value 'x'.
 		try {x = capture_a_value<int>(&x);}
 		catch (const std::exception& e)
 		{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
-		std::cout << "Enter the value of 'y': ";
+		std::cout << "Enter the value of 'y': ";	//Capturing value 'y'.
 		try {y = capture_a_value<float>(&y);}
 		catch (const std::exception& e)
 		{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
-		std::cout << "Enter the value of 'z': ";
+		std::cout << "Enter the value of 'z': ";	//Capturing value 'z'.
 		try {z = capture_a_value<double>(&z);}
 		catch (const std::exception& e)
 		{std::cerr << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
+		/* Visualization of the possible results of the comparison. */
 		std::cout << std::endl << "Values ​​entered for comparison." << std::endl;
 		std::cout << "(x = [" << x << "], y = [" << y << "], z = [" << z << "])." << std::endl << std::endl;
 
+		/* Results of the three implemented 'template' functions. */
 		std::cout << "Products Results." << std::endl;
-		std::cout << "+ Greatest value is:\t[" << greater(x, y, z) << "]." << std::endl;
-		std::cout << "+ Largest  value is:\t[" << larger(x, y, z) << "]." << std::endl;
+		std::cout << "+ Biggest  value:\t(" << bigger(x, y, z) << ")." << std::endl;
+		std::cout << "+ Greatest value:\t[" << greater(x, y, z) << "]." << std::endl;
+		std::cout << "+ Largest  value:\t{" << larger(x, y, z) << "}." << std::endl;
+
+		/* Program termination messages. */
+		std::cout << std::endl << "Done!" << std::endl;
+		std::cout << "This program has ended." << std::endl;
 
 		return EXIT_SUCCESS;
 	}
