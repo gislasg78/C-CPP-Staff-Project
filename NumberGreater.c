@@ -11,7 +11,7 @@ int greater(int x, int y, int z)
 			if (x > z)
 				major = x;
 			else
-				major = y;
+				major = z;
 		else
 			if (y > z)
 				major = y;
