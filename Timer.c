@@ -1,7 +1,7 @@
 /************* Generate a random number every second. ************
  ** Source Code:	Timer.c					**
  ** Author:		Gustavo Islas Gálvez.			**
- ** Creation Date:	Wednesday, December 31, 2025.		**
+ ** Creation Date:	Thursday, December 31, 2026.		**
  ** Purpose:		The primary function of this program is	**
  **			to exploit different functions from the	**
  **			C library 'time.h' to simulate a timer	**
@@ -11,33 +11,33 @@
  **			the computer that is running the	**
  **			program.				**
 *****************************************************************/
-//C Standard Libraries.
+/* C Standard Libraries. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-//Symbolic constants of minimum and maximum limits.
-#define V_LOWER_LIMIT_SECS	1
-#define V_UPPER_LIMIT_SECS	30
+/* Symbolic constants of minimum and maximum limits. */
+#define V_LOWER_LIMIT_SECS		1
+#define V_UPPER_LIMIT_SECS		30
 
-//Intermediate symbolic constants.
-#define V_REFERENCE_YEAR	1900
-#define V_RESIDUAL_MODULUS	65536
+/* Intermediate symbolic constants. */
+#define V_REFERENCE_YEAR		1900
+#define GENERATE_RANDOM(v, minV, maxV)	(((v) % ((maxV) - (minV) + (V_ONE))) + (minV))
 
-//Work Symbolic Constants.
-#define V_ELEVEN		11
-#define V_ONE			1
-#define V_SEVEN			7
-#define	V_TEN			10
-#define	V_TWELVE		12
-#define V_ZERO			0
+/* Work Symbolic Constants. */
+#define V_ELEVEN			11
+#define V_ONE				1
+#define V_SEVEN				7
+#define	V_TEN				10
+#define	V_TWELVE			12
+#define V_ZERO				0
 
 /* Static array of characters with the names of the days of the week. */
-static char sttc_chr_Day_Week[V_SEVEN][V_TEN] =
+char chr_Day_Week[V_SEVEN][V_TEN] =
 	{"Sunday", "Monday", "Tuesday" , "Wednesday", "Thursday", "Friday", "Saturday"};
 
 /* Static array of characters with the names of the months of the year. */
-static char sttc_chr_Month_Name[V_TWELVE][V_ELEVEN] =
+char chr_Month_Name[V_TWELVE][V_ELEVEN] =
 	{"January", "February", "March" , "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
 /*****************************************************************
@@ -57,16 +57,15 @@ static char sttc_chr_Month_Name[V_TWELVE][V_ELEVEN] =
 int main()
 	{
 		/* Declaration of regular variables. */
-		size_t szt_random_seed = V_ZERO;
+		size_t szt_minValue = V_ZERO;
+		size_t szt_maxValue = V_ZERO;
 		size_t szt_values_number = V_ZERO;
 
 		/* Variable that contains the time spent by the processor. */
-		clock_t clck_clock_ticks_latency = V_ZERO;
-		clck_clock_ticks_latency = clock();
+		clock_t clck_clock_ticks_latency = clock();
 
 		/* The 'time' function returns the number of seconds since zero hours on January 1, 1970. */
-		time_t t_tm_seconds = V_ZERO;
-		t_tm_seconds = time(&t_tm_seconds);
+		time_t t_elapsed_seconds = time(&t_elapsed_seconds);
 
 		/* ------------------------------------------------------------------------------------	--
 		 * The 'localtime' function converts the number d" seconds elapsed since 0 hours on	--
@@ -80,21 +79,14 @@ int main()
 		 * The 'localtime' function returns a pointer to the structure containing the result,	--
 		 * or a null pointer if the time cannot be interpreted.					--
 		 * ------------------------------------------------------------------------------------	*/
-		struct tm *strct_tm_dt = NULL;
-		strct_tm_dt = localtime(&t_tm_seconds);
+		struct tm *strct_tm_dt = localtime(&t_elapsed_seconds);
 
 		/* Welcome messages from this program. */
-		printf("+---|----+---|----+---|----+---|----+---|----+\n");
-		printf("|          PC Clock Cycles Program.          |\n");
-		printf("+---|----+---|----+---|----+---|----+---|----+\n");
-		printf("Values between [%d] and [%d]: ", V_LOWER_LIMIT_SECS, V_UPPER_LIMIT_SECS);
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("|        PC Clock Cycles Program.       |\n");
+		printf("+---|----+---|----+---|----+---|----+---|\n");
+		printf("Quantity values [%d] - [%d]: ", V_LOWER_LIMIT_SECS, V_UPPER_LIMIT_SECS);
 		scanf("%zu", &szt_values_number);
-
-		/* ------------------------------------------------------------------------------------	--
-		 * The 'ctime' function converts a time stored as a value of type 'time_t' into a	--
-		 * character string of the form.							--
-		 * ------------------------------------------------------------------------------------	*/
-		printf("\n%s", ctime(&t_tm_seconds));
 
 		/* ------------------------------------------------------------------------------------	--
 		 * The 'srand' function sets the starting point for generating pseudorandom numbers;	--
@@ -105,70 +97,103 @@ int main()
 		 * number is always the same for each execution						--
 		 * (corresponds to an argument of value 1).						--
 		 * ------------------------------------------------------------------------------------ */
-		szt_random_seed = (unsigned int) (t_tm_seconds % V_RESIDUAL_MODULUS);
-		srand((unsigned int) szt_random_seed);
+		srand((unsigned int) t_elapsed_seconds);
 
 		/* Verification that the value is in a given range. */
 		if (szt_values_number >= V_LOWER_LIMIT_SECS && szt_values_number <= V_UPPER_LIMIT_SECS)
 			{
-				/* Display of date and time information. */
-				printf("+===|====+===|====+===|====+===|===+====|====+\n");
-				printf("|         Date and time information.         |\n");
-				printf("+===|====+===|====+===|====+===|===+====|====+\n");
-				printf("| Date: [%s].\tTime: [%s].    |\n", __DATE__, __TIME__);
-				printf("+---|----+---|----+---|----+---|----+---|----+\n");
-				printf("|       Seconds since January 1, 1970.       |\n");
-				printf("+---|----+---|----+---|----+---|----+---|----+\n");
-				printf("| Value:\t[%ld].\n", t_tm_seconds);
-				printf("| Address:\t[%p].\n", (void *) &t_tm_seconds);
-				printf("+--------------------------------------------+\n");
-				printf("| Latency:\t[%ld].\n", clck_clock_ticks_latency);
-				printf("| Tickness:\t[%ld].\n", CLOCKS_PER_SEC);
-				printf("+---|----+---|----+---|----+---|----+---|----+\n");
-				printf("|         PC date and time structure.        |\n");
-				printf("+---|----+---|----+---|----+---|----+---|----+\n");
-				printf("| Day of year:\t[%03d].\n", strct_tm_dt->tm_yday);
-				printf("| Day of week:\t[%d].\n", strct_tm_dt->tm_wday);
-				printf("+--------------------------------------------+\n");
-				printf("| DD/MM/YYYY:\t[%02d/%02d/%04d].\n", strct_tm_dt->tm_mday, strct_tm_dt->tm_mon + V_ONE, strct_tm_dt->tm_year + V_REFERENCE_YEAR);
-				printf("+--------------------------------------------+\n");
-				printf("| [%s],\t[%s] [%02d], [%04d].\n", sttc_chr_Day_Week[strct_tm_dt->tm_wday], sttc_chr_Month_Name[strct_tm_dt->tm_mon], strct_tm_dt->tm_mday, strct_tm_dt->tm_year + V_REFERENCE_YEAR);
-				printf("+--------------------------------------------+\n");
-				printf("| HH:MM:SS:\t[%02d:%02d:%02d].\n", strct_tm_dt->tm_hour, strct_tm_dt->tm_min, strct_tm_dt->tm_sec);
-				printf("+===|====+===|====+===|====+===|===+====|====+\n\n");
+				/* Request minimum and maximum values. */
+				printf("Minimum value: ");
+				scanf("%zu", &szt_minValue);
+				printf("Maximum value: ");
+				scanf("%zu", &szt_maxValue);
 
-				/* --------------------------------------------------------------------	--
-				 * Portion of the program that generates the sequence of random numbers	--
-				 * each designated time interval.					--
-				 * --------------------------------------------------------------------	--
-				 * The 'clock' function indicates the time spent by the processor in	--
-				 * the current process. This time, expressed in seconds, is the result	--
-				 * of dividing the value returned by 'clock' by the constant		--
-				 *'CLOCKS_PER_SEC'.							--
-				 * --------------------------------------------------------------------	--
-				 * If it is not possible to obtain this time, the 'clock' function	--
-				 * returns the value (clock_t) - 1.					--
-				 * --------------------------------------------------------------------	*/
-				printf("Generating sequences of random numbers...\n");
-				for (size_t szt_iter = V_ZERO; szt_iter < szt_values_number; szt_iter++)
+				/* Verify that the values ​​range are positive and not zero. */
+				if (szt_minValue && szt_maxValue)
 					{
-						/* Waiting time in clock cycles equal to one second. */
-						do
-							clck_clock_ticks_latency = clock() / CLOCKS_PER_SEC;
-						while (clck_clock_ticks_latency < (long int)(szt_iter));
+						/* Swap minimum and maximum values ​​if they are inverted. */
+						if (szt_minValue > szt_maxValue || szt_maxValue < szt_minValue)
+							{
+								printf("\nSwapping minimum and maximum values...\n");
+								size_t szt_temp_value = szt_minValue;
+								szt_minValue = szt_maxValue;
+								szt_maxValue = szt_temp_value;
+							}
 
-						/* A value is generated every second. */
-						printf ("# [%ld]:\t[%d].\n", szt_iter, rand());
+						/* ------------------------------------------------------------------------------------	--
+						* The 'ctime' function converts a time stored as a value of type 'time_t' into a	--
+						* character string of the form.							--
+						* ------------------------------------------------------------------------------------	*/
+						printf("\n%s", ctime(&t_elapsed_seconds));
+
+						/* Display of date and time information. */
+						printf("+===|====+===|====+===|====+===|===+====|\n");
+						printf("|       Date and time information.      |\n");
+						printf("+===|====+===|====+===|====+===|===+====|\n");
+						printf("| File:\t\t[%s].\n", __FILE__);
+						printf("| Date:\t\t[%s].\n", __DATE__);
+						printf("| Time:\t\t[%s].\n", __TIME__);
+						printf("+---|----+---|----+---|----+---|----+---|\n");
+						printf("|    Seconds since January 1th, 1970.   |\n");
+						printf("+---|----+---|----+---|----+---|----+---|\n");
+						printf("| Value:\t[%ld].\n", t_elapsed_seconds);
+						printf("| Address:\t[%p].\n", (void *) &t_elapsed_seconds);
+						printf("+---------------------------------------+\n");
+						printf("| Latency:\t[%ld].\n", clck_clock_ticks_latency);
+						printf("| Tickness:\t[%ld].\n", CLOCKS_PER_SEC);
+						printf("+---|----+---|----+---|----+---|----+---|\n");
+						printf("|      PC date and time structure.      |\n");
+						printf("+---|----+---|----+---|----+---|----+---|\n");
+						printf("| Year day:\t[%03d].\n", strct_tm_dt->tm_yday);
+						printf("| Week day:\t[%d].\n", strct_tm_dt->tm_wday);
+						printf("+---------------------------------------+\n");
+						printf("| DD/MM/YYYY:\t[%02d/%02d/%04d].\n", strct_tm_dt->tm_mday, strct_tm_dt->tm_mon + V_ONE, strct_tm_dt->tm_year + V_REFERENCE_YEAR);
+						printf("| MM/DD/YYYY:\t[%02d/%02d/%04d].\n", strct_tm_dt->tm_mon + V_ONE, strct_tm_dt->tm_mday, strct_tm_dt->tm_year + V_REFERENCE_YEAR);
+						printf("+---------------------------------------+\n");
+						printf("| %s,\t%s %02d, %04d.\n", chr_Day_Week[strct_tm_dt->tm_wday], chr_Month_Name[strct_tm_dt->tm_mon], strct_tm_dt->tm_mday, strct_tm_dt->tm_year + V_REFERENCE_YEAR);
+						printf("+---------------------------------------+\n");
+						printf("| HH:MM:SS:\t[%02d:%02d:%02d].\n", strct_tm_dt->tm_hour, strct_tm_dt->tm_min, strct_tm_dt->tm_sec);
+						printf("+===|====+===|====+===|====+===|===+====|\n\n");
+
+						/* --------------------------------------------------------------------	--
+						* Portion of the program that generates the sequence of random numbers	--
+						* each designated time interval.					--
+						* --------------------------------------------------------------------	--
+						* The 'clock' function indicates the time spent by the processor in	--
+						* the current process. This time, expressed in seconds, is the result	--
+						* of dividing the value returned by 'clock' by the constant		--
+						*'CLOCKS_PER_SEC'.							--
+						* --------------------------------------------------------------------	--
+						* If it is not possible to obtain this time, the 'clock' function	--
+						* returns the value (clock_t) - 1.					--
+						* --------------------------------------------------------------------	*/
+						printf("Generating sequences of random numbers...\n");
+						for (size_t szt_iter = V_ZERO; szt_iter < szt_values_number; szt_iter++)
+							{
+								/* Waiting time in clock cycles equal to one second. */
+								do
+									clck_clock_ticks_latency = clock() / CLOCKS_PER_SEC;
+								while (clck_clock_ticks_latency < (long int)(szt_iter));
+
+								/* A value is generated every second. */
+								printf ("# [%ld]:\t[%ld].\n", szt_iter, GENERATE_RANDOM((size_t)rand(), szt_minValue, szt_maxValue));
+
+								/* Constantly change the random number generation seed. */
+								t_elapsed_seconds = time(NULL);
+								srand((unsigned int) t_elapsed_seconds);
+							}
+
+						/* --------------------------------------------------------------------	--
+						* The 'rand' function outputs an integer pseudorandom number between	--
+						* zero and the maximum value for an int.				--
+						* --------------------------------------------------------------------	*/
+						printf("[%ld] Output generated results.\n", szt_values_number);
 					}
-
-				/* --------------------------------------------------------------------	--
-				 * The 'rand' function outputs an integer pseudorandom number between	--
-				 * zero and the maximum value for an int.				--
-				 * --------------------------------------------------------------------	*/
-				printf("[%ld] Output generated results.\n", szt_values_number);
+				else
+					printf("Fail! Values: [%ld] and: [%ld] both must be non-zero.\n", szt_minValue, szt_maxValue);
 			}
 		else
-			printf("Mistake! Value [%ld] is not between [%d] and [%d].\n", szt_values_number, V_LOWER_LIMIT_SECS, V_UPPER_LIMIT_SECS);
+			printf("Mistake! Value: [%ld] is not between: [%d] and: [%d].\n", szt_values_number, V_LOWER_LIMIT_SECS, V_UPPER_LIMIT_SECS);
 
 		return V_ZERO;
 	}
