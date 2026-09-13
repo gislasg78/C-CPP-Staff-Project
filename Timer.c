@@ -33,7 +33,7 @@
 #define V_ZERO				0
 
 /* Static array of characters with the names of the days of the week. */
-char chr_Day_Week[V_SEVEN][V_TEN] =
+char chr_Day_Name[V_SEVEN][V_TEN] =
 	{"Sunday", "Monday", "Tuesday" , "Wednesday", "Thursday", "Friday", "Saturday"};
 
 /* Static array of characters with the names of the months of the year. */
@@ -118,7 +118,8 @@ size_t displayRandom(const size_t szt_random_seed, const size_t szt_quantity_num
 	}
 
 /*****************************************************************
- ** Function:		long int showTimePanel().		**
+ ** Function:		long int showTimePanel			**
+ **				(long * tm_elapsed_seconds).	**
  ** Explanation:	The 'localtime' function converts the	**
  **			number d" seconds elapsed since 0 hours	**
  **			on January 1, 1970, the value obtained	**
@@ -129,8 +130,8 @@ size_t displayRandom(const size_t szt_random_seed, const size_t szt_quantity_num
  **								**
  **			The result is stored in a structure of	**
  **			type 'tm', defined in 'time.h'.		**
- ** Input Parms:	None.					**
- ** Output Parms:	None.					**
+ ** Input Parms:	long * tm_elapsed_seconds.		**
+ ** Output Parms:	long * tm_elapsed_seconds.		**
  ** Result:		This function returns a pointer to the	**
  **			resulting character string or a null	**
  **			pointer if data before January 1, 1970	**
@@ -145,7 +146,7 @@ size_t displayRandom(const size_t szt_random_seed, const size_t szt_quantity_num
  **			result, or a null pointer if the time	**
  **			cannot be interpreted.			**
 *****************************************************************/
-long int showTimePanel()
+long int showTimePanel(long* tm_elapsed_seconds)
 	{
 		/* Variable that contains the time spent by the processor. */
 		clock_t clck_clock_ticks_latency = clock();
@@ -189,13 +190,13 @@ long int showTimePanel()
 		printf("| DD/MM/YYYY:\t[%02d/%02d/%04d].\n", ptr_strct_tm_dt->tm_mday, ptr_strct_tm_dt->tm_mon + V_ONE, ptr_strct_tm_dt->tm_year + V_REFERENCE_YEAR);
 		printf("| MM/DD/YYYY:\t{%02d/%02d/%04d}.\n", ptr_strct_tm_dt->tm_mon + V_ONE, ptr_strct_tm_dt->tm_mday, ptr_strct_tm_dt->tm_year + V_REFERENCE_YEAR);
 		printf("+--------+--------+--------+-------+----+\n");
-		printf("| %s,\t%s %02d, %04d.\n", chr_Day_Week[ptr_strct_tm_dt->tm_wday], chr_Month_Name[ptr_strct_tm_dt->tm_mon], ptr_strct_tm_dt->tm_mday, ptr_strct_tm_dt->tm_year + V_REFERENCE_YEAR);
+		printf("| %s,\t%s %02d, %04d.\n", chr_Day_Name[ptr_strct_tm_dt->tm_wday], chr_Month_Name[ptr_strct_tm_dt->tm_mon], ptr_strct_tm_dt->tm_mday, ptr_strct_tm_dt->tm_year + V_REFERENCE_YEAR);
 		printf("+--------+--------+--------+-------+----+\n");
 		printf("| HH:MM:SS:\t[%02d:%02d:%02d].\n", ptr_strct_tm_dt->tm_hour, ptr_strct_tm_dt->tm_min, ptr_strct_tm_dt->tm_sec);
 		printf("+===|====+===|====+===|====+===|===+====|\n\n");
 
 		/* Return the number of seconds from January 1th, 1970, to the present moment. */
-		return t_elapsed_seconds;
+		return (tm_elapsed_seconds) ? *tm_elapsed_seconds = t_elapsed_seconds : t_elapsed_seconds;
 	}
 
 /*****************************************************************
@@ -222,7 +223,7 @@ int main()
 		size_t szt_random_seed = V_ZERO;
 
 		/* Call the function that displays the current date and time panel. */
-		szt_random_seed = (size_t) showTimePanel();
+		szt_random_seed = (size_t) showTimePanel((long *) &szt_random_seed);
 
 		/* Welcome messages from this program. */
 		printf("+---|----+---|----+---|----+---|----+---|\n");
