@@ -1,16 +1,12 @@
-#include <cassert>
-#include <cstddef>
+#include <algorithm>
 #include <iostream>
 #include <limits>
+#include <sstream>
 
 template <typename T>
 constexpr T CARRIAGE_RETURN	{static_cast<T>('\n')};
 template <typename T>
-constexpr T V_ELEVEN		{static_cast<T>(11)};
-template <typename T>
 constexpr T V_ONE		{static_cast<T>(1)};
-template <typename T>
-constexpr T V_TWENTY_THREE	{static_cast<T>(23)};
 template <typename T>
 constexpr T V_ZERO		{static_cast<T>(0)};
 
@@ -22,24 +18,29 @@ class MyArray
 		TY* m_array {nullptr};
 
 	protected:
-		static int s_counter;
+		static std::size_t s_counter;
 
 	public:
-		MyArray()
+		MyArray() : m_array_size(V_ZERO<TX>), m_array(nullptr)
 		{s_counter++;}
 
-		MyArray(const TX& array_size) : m_array_size(array_size), m_array(new TY[array_size]())
-		{s_counter++;}
+		MyArray(const TX& array_size) : m_array_size(array_size), m_array(nullptr)
+		{
+			s_counter++;
+
+			if (m_array_size > V_ZERO<TX>)
+				m_array = new TY[m_array_size]();
+		}
 
 		MyArray(const MyArray<TX, TY>& my_array) : m_array_size {my_array.m_array_size}, m_array {nullptr}
 		{
 			s_counter++;
 
-			if (my_array.m_array && my_array.m_array_size)
+			if ((my_array.m_array_size > V_ZERO<TX>) && my_array.m_array)
 			{
 				if ((m_array = new TY[m_array_size]{}))
 				{
-					for (TX idx{}; idx < my_array.m_array_size; idx++)
+					for (TX idx{}; idx < m_array_size; idx++)
 					{
 						m_array[idx] = my_array.m_array[idx];
 					}
@@ -49,6 +50,8 @@ class MyArray
 
 		MyArray(MyArray<TX, TY>&& my_array) : m_array_size {my_array.m_array_size}, m_array {my_array.m_array}
 		{
+			s_counter++;
+
 			my_array.m_array = nullptr;
 			my_array.m_array_size = V_ZERO<TX>;
 		}
@@ -70,17 +73,17 @@ class MyArray
 		{
 			if (this != &my_array)
 			{
-				if (my_array.m_array && my_array.m_array_size)
+				if ((my_array.m_array_size > V_ZERO<TX>) && my_array.m_array)
 				{
 					release();
 
-					if (!m_array && !m_array_size)
+					if (!checkValidity())
 					{
 						m_array_size = my_array.m_array_size;
 
 						if ((m_array = new TY[m_array_size]{}))
 						{
-							for (TX idx{}; idx < my_array.m_array_size; idx++)
+							for (TX idx{}; idx < m_array_size; idx++)
 							{
 								m_array[idx] = my_array.m_array[idx];
 							}
@@ -96,11 +99,11 @@ class MyArray
 		{
 			if (this != &my_array)
 			{
-				if (my_array.m_array && my_array.m_array_size)
+				if ((my_array.m_array_size > V_ZERO<TX>) && my_array.m_array)
 				{
 					release();
 
-					if (!m_array && !m_array_size)
+					if (!checkValidity())
 					{
 						m_array_size = my_array.m_array_size;
 						m_array = my_array.m_array;
@@ -119,6 +122,38 @@ class MyArray
 
 		bool checkLimits(const TX& index) const
 		{return (m_array) && (index >= V_ZERO<TX> && index < m_array_size);}
+
+		bool checkValidity() const
+		{return (m_array && m_array_size);}
+
+		static void enter_a_pause(const std::string& str_Message)
+		{
+			std::cout << str_Message;
+			std::cin.clear();
+			std::cin.get();
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN<char>);
+		}
+
+		static const TX& enter_a_value(TX *const ptr_value)
+		{
+			static TX ZERO{};
+
+			if (ptr_value)
+			{
+				std::string str_value {};
+				std::getline(std::cin >> std::ws, str_value);
+				str_value.erase(std::remove_if(str_value.begin(), str_value.end(), ::isspace), str_value.end());
+				std::stringstream(str_value) >> *ptr_value;
+
+				std::cout << "Value entered:\t[" << *ptr_value << "]. OK!" << std::endl;
+			}
+			else
+				std::cerr << std::endl << "A valid memory address was not provided." << std::endl;
+
+			return (ptr_value) ? *ptr_value : ZERO;
+		}
+
 
 		void erase(const TX& index)
 		{
@@ -181,7 +216,7 @@ class MyArray
 
 		void print() const
 		{
-			int counter{};
+			std::size_t counter{};
 
 			std::cout << std::endl << "Dynamic array information." << std::endl;
 			std::cout << "< Counter:\t\t<" << s_counter << ">." << std::endl;
@@ -191,7 +226,7 @@ class MyArray
 			std::cout << "+ Address pointer:\t(" << &m_array << ")." << std::endl;
 			std::cout << "+ Content address:\t[" << m_array << "]." << std::endl;
 
-			if (m_array && m_array_size)
+			if (checkValidity())
 				{
 					std::cout << std::endl << "> First element:\t{" << *m_array << "}." << std::endl;
 					std::cout << "* List of items. *" << std::endl;
@@ -209,7 +244,7 @@ class MyArray
 
 		void release()
 		{
-			if (m_array && m_array_size)
+			if (checkValidity())
 			{
 				delete [] m_array;
 				m_array = nullptr;
@@ -219,14 +254,14 @@ class MyArray
 
 		void restore()
 		{
-			if (m_array && m_array_size)
+			if (checkValidity())
 				for (TX idx{}; idx < m_array_size; idx++)
 					m_array[idx] = V_ZERO<TX>;
 		}
 
 		void setSize(const TX& array_size)
 		{
-			if (m_array && m_array_size && checkSize(array_size))
+			if (array_size > V_ZERO<TX>)
 			{
 				TX t_array_size {array_size};
 				TY* t_array {new TY[t_array_size]()};
@@ -239,10 +274,7 @@ class MyArray
 				m_array_size = t_array_size;
 			}
 			else
-			{
-				m_array_size = array_size;
-				m_array = new TY[m_array_size]{};
-			}
+				release();
 		}
 
 		void setValue(const TX& index, const TY& value)
@@ -253,22 +285,17 @@ class MyArray
 };
 
 template <typename TX, typename TY>
-int MyArray<TX, TY>::s_counter {V_ZERO<int>};
-
-void enter_a_pause(const std::string& str_Message)
-{
-	std::cout << str_Message;
-	std::cin.clear();
-	std::cin.get();
-	std::cin.clear();
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN<char>);
-}
+size_t MyArray<TX, TY>::s_counter {V_ZERO<int>};
 
 int main()
 {
+	int int_value {};
+	std::size_t szt_position {}, szt_quantity_items {};
 	std::cout << "Test Class Array Values." << std::endl;
 
-	MyArray<size_t, int> my_array {V_TWENTY_THREE<size_t>};
+	std::cout << std::endl << "Enter a quantity items: ";
+	MyArray<size_t, int>::enter_a_value(&szt_quantity_items);
+	MyArray<size_t, int> my_array {szt_quantity_items};
 
 	std::cout << std::endl << "Loading data..." << std::endl;
 	for (size_t idx{}; idx < my_array.getSize(); idx++)
@@ -279,113 +306,121 @@ int main()
 
 		std::cout << "#: [" << idx << "] = [" << my_array.getValue(idx) << "]." << std::endl;
 	}
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "Printing initial data..." << std::endl;
 	my_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "Inserting a value..." << std::endl;
-	my_array.insert(V_ZERO<size_t>, V_TWENTY_THREE<size_t>);
+	std::cout << "Enter a position: ";
+	szt_position = MyArray<size_t, int>::enter_a_value(&szt_position);
+	std::cout << "Enter a value: ";
+	int_value = MyArray<int, int>::enter_a_value(&int_value);
+	my_array.insert(szt_position, int_value);
 	my_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "Deleting a value..." << std::endl;
-	my_array.erase(V_ZERO<size_t>);
+	std::cout << "Enter a position: ";
+	szt_position = MyArray<size_t, int>::enter_a_value(&szt_position);
+	my_array.erase(szt_position);
 	my_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "Unloading data..." << std::endl;
 	for (size_t idx{}; idx < my_array.getSize(); idx++)
 	{
 		std::cout << "#: [" << idx << "] = [" << my_array[idx] << "]." << std::endl;
 	}
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "Copy constructor." << std::endl;
 	MyArray<size_t, int> your_array {my_array};
 	my_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 	your_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "Copy assignment." << std::endl;
 	MyArray<size_t, int> her_array;
 	her_array = my_array;
 	my_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 	her_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "Move constructor." << std::endl;
 	MyArray<size_t, int> his_array {std::move(your_array)};
 	your_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 	his_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "Move assignment." << std::endl;
 	MyArray<size_t, int> our_array;
 	our_array = std::move(my_array);
 	my_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 	his_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "Builder with size information." << std::endl;
-	MyArray<size_t, int> their_array{V_TWENTY_THREE<size_t>};
+	std::cout << std::endl << "Enter a quantity items: ";
+	MyArray<size_t, int>::enter_a_value(&szt_quantity_items);
+	MyArray<size_t, int> their_array{szt_quantity_items};
 	their_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "Releasing..." << std::endl;
 	their_array.release();
 	their_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "Setting size array..." << std::endl;
-	their_array.setSize(V_ELEVEN<size_t>);
+	std::cout << std::endl << "Enter a quantity items: ";
+	MyArray<size_t, int>::enter_a_value(&szt_quantity_items);
+	their_array.setSize(szt_quantity_items);
 	their_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
-
-	std::cout << std::endl << "Setting size array..." << std::endl;
-	their_array.setSize(V_TWENTY_THREE<size_t>);
-	their_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
-
-	std::cout << std::endl << "Setting size array..." << std::endl;
-	their_array.setSize(V_ELEVEN<size_t>);
-	their_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "Restoring..." << std::endl;
 	their_array.restore();
 	their_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "Releasing..." << std::endl;
 	their_array.release();
 	their_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "Inserting a value..." << std::endl;
-	their_array.insert(V_ZERO<size_t>, V_ELEVEN<size_t>);
+	std::cout << "Enter a position: ";
+	szt_position = MyArray<size_t, int>::enter_a_value(&szt_position);
+	std::cout << "Enter a value: ";
+	int_value = MyArray<int, int>::enter_a_value(&int_value);
+	their_array.insert(szt_position, int_value);
 	their_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "Deleting a value..." << std::endl;
-	their_array.erase(V_ZERO<size_t>);
+	std::cout << "Enter a position: ";
+	szt_position = MyArray<size_t, int>::enter_a_value(&szt_position);
+	their_array.erase(szt_position);
 	their_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "Restoring..." << std::endl;
 	their_array.restore();
 	their_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "Setting size array..." << std::endl;
-	their_array.setSize(V_TWENTY_THREE<size_t>);
+	std::cout << std::endl << "Enter a quantity items: ";
+	MyArray<size_t, int>::enter_a_value(&szt_quantity_items);
+	their_array.setSize(szt_quantity_items);
 	their_array.print();
-	enter_a_pause("Press the ENTER key to continue...");
+	MyArray<size_t, int>::enter_a_pause("Press the ENTER key to continue...");
 
 	std::cout << std::endl << "Address & Size." << std::endl;
 	std::cout << "> (" << their_array.getPtrArray() << ")." << std::endl;
