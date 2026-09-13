@@ -119,7 +119,8 @@ size_t displayRandom(const size_t szt_random_seed, const size_t szt_quantity_num
 
 /*****************************************************************
  ** Function:		long int showTimePanel			**
- **				(long * tm_elapsed_seconds).	**
+ **				(long * const			**
+ **					tm_elapsed_seconds).	**
  ** Explanation:	The 'localtime' function converts the	**
  **			number d" seconds elapsed since 0 hours	**
  **			on January 1, 1970, the value obtained	**
@@ -130,8 +131,8 @@ size_t displayRandom(const size_t szt_random_seed, const size_t szt_quantity_num
  **								**
  **			The result is stored in a structure of	**
  **			type 'tm', defined in 'time.h'.		**
- ** Input Parms:	long * tm_elapsed_seconds.		**
- ** Output Parms:	long * tm_elapsed_seconds.		**
+ ** Input Parms:	long * const tm_elapsed_seconds.	**
+ ** Output Parms:	long * const tm_elapsed_seconds.	**
  ** Result:		This function returns a pointer to the	**
  **			resulting character string or a null	**
  **			pointer if data before January 1, 1970	**
@@ -146,7 +147,7 @@ size_t displayRandom(const size_t szt_random_seed, const size_t szt_quantity_num
  **			result, or a null pointer if the time	**
  **			cannot be interpreted.			**
 *****************************************************************/
-long int showTimePanel(long* tm_elapsed_seconds)
+long int showTimePanel(long* const tm_elapsed_seconds)
 	{
 		/* Variable that contains the time spent by the processor. */
 		clock_t clck_clock_ticks_latency = clock();
@@ -248,9 +249,14 @@ int main()
 						if (szt_minValue > szt_maxValue || szt_maxValue < szt_minValue)
 							{
 								printf("\nSwapping minimum and maximum values...\n");
+
 								size_t szt_tempValue = szt_minValue;
 								szt_minValue = szt_maxValue;
 								szt_maxValue = szt_tempValue;
+
+								printf("\nExchanged values.\n");
+								printf("+ Maximum:\t[%ld].\n", szt_maxValue);
+								printf("+ Minimum:\t[%ld].\n", szt_minValue);
 							}
 
 						/* Display the generated numbers at intervals of approximately one second. */
