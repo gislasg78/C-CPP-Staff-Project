@@ -11,7 +11,6 @@
  **			if a prime number is divisible by other	**
  **			coefficients, it will then be		**
  **			considered a composite number.		**
- **								**
  **			+---|----+---|----+---|----+---|----+	**
  **			Note: This program uniquely compares	**
  **			different algorithms for generating	**
@@ -185,9 +184,9 @@ bool IsPrimeNumber(const size_t& number)
 	}
 
 /*****************************************************************
- ** Function:           std::vector<size_t>			**
+ ** Function:           std::vector<std::size_t>		**
  **				getVectorPrimeNumbers		**
- **				(const size_t& quantity);	**
+ **				(const std::size_t& quantity);	**
  ** Explanation:	The purpose of this function is to loop	**
  **			back and forth from unity to 'n'	**
  **			to find each prime number divided by	**
@@ -197,7 +196,7 @@ bool IsPrimeNumber(const size_t& number)
  **			and thus verify that the number		**
  **			to be shown can only be divided between	**
  **			itself and the unit.			**
- ** Input Parms:	const size_t& quantity.			**
+ ** Input Parms:	const std::size_t& quantity.		**
  ** Output Parms:       None.                                   **
  ** Result:		As a result, this function returns an	**
  **			object of type 'vector' that		**
@@ -205,12 +204,12 @@ bool IsPrimeNumber(const size_t& number)
  **			numbers obtained for later review and	**
  **			visualization.				**
  ****************************************************************/
-std::vector<size_t> getVectorPrimeNumbers(const size_t& quantity)
+std::vector<std::size_t> getVectorPrimeNumbers(const std::size_t& quantity)
 	{
-		size_t counter {};
+		std::size_t counter {};
 		std::vector<std::size_t> vec_primes_numbers {};
 
-		for (size_t idx {}; counter < quantity; idx++)
+		for (std::size_t idx {}; counter < quantity; idx++)
 			if (IsPrimeNum(idx))
 				{
 					counter++;
@@ -222,7 +221,7 @@ std::vector<size_t> getVectorPrimeNumbers(const size_t& quantity)
 
 /*****************************************************************
  ** Function:           std::vector<size_t>			**
- **				getVectorPrimes			**
+ **				getVectorPrimesNumbers		**
  **				(const std::size_t& quantity);	**
  ** Explanation:	This function returns a 'vector'	**
  **			container holding all the requested	**
@@ -246,17 +245,64 @@ std::vector<size_t> getVectorPrimeNumbers(const size_t& quantity)
 std::vector<std::size_t> getVectorPrimesNumbers(const std::size_t& quantity)
 	{
 		std::size_t counter {};
-		std::vector<std::size_t> vec_primes_numbers {}, vec_previous_primes_numbers {};
+		std::vector<std::size_t> vec_primes_numbers {};
 
-		for (size_t idx {}; counter < quantity; ++idx)
-			if (IsPrimeNum(idx, vec_previous_primes_numbers))
+		for (std::size_t idx {V_TWO<std::size_t>}; counter < quantity; (idx == V_TWO<std::size_t>) ? ++idx : idx += V_TWO<std::size_t>)
+			if (IsPrimeNum(idx, vec_primes_numbers))
 				{
 					counter++;
-					vec_previous_primes_numbers.push_back(idx);
 					vec_primes_numbers.push_back(idx);
 				}
 
 		return vec_primes_numbers;
+	}
+
+/*****************************************************************
+ ** Function:		std::size_t viewVectorPrimeNumber	**
+ **			(const std::vector<std::size_t>&	**
+ **				vec_primes_numbers);		**
+ ** Explanation:	The purpose of this function is		**
+ **			to display every single element of the	**
+ **			'vector' container holding prime	**
+ **			numbers—a vector generated using one of	**
+ **			the functions implemented in this	**
+ **			program to produce prime numbers via	**
+ **			various algorithms.			**
+ ** Input Parms:	const std::vector<std::size_t>&		**
+ **				vec_primes_numbers).		**
+ ** Output Parms:       None.                                   **
+ ** Result:		This function returns the number of	**
+ **			elements displayed on the screen after	**
+ **			outputting, element by element, the	**
+ **			contents of the vector passed to it as	**
+ **			an argument.				**
+ ****************************************************************/
+std::size_t viewVectorPrimeNumber(const std::vector<std::size_t>& vec_primes_numbers)
+	{
+		/* Preliminary internal working variables. */
+		std::size_t counter {};
+
+		/* Outbound header messages. */
+		std::cout << std::endl << "Visualizing list of prime numbers..." << std::endl << std::endl;
+		std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
+		std::cout << "+       Prime Number Results.       +" << std::endl;
+		std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
+		std::cout << "| [" << vec_primes_numbers.size() << "] First Prime Numbers." << std::endl;
+		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+
+		/* Dumping of the contents of the first obtained vector. */
+		for (std::vector<std::size_t>::const_iterator itc_vec_primes_numbers = vec_primes_numbers.cbegin(); itc_vec_primes_numbers != vec_primes_numbers.cend(); itc_vec_primes_numbers++)
+			{
+				std::cout << "| (" << counter++ << ")\t:\t[" << *itc_vec_primes_numbers << "]." << std::endl;
+			}
+
+		/* Final result messages. */
+		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+		std::cout << "[" << counter << "] Obtained output results." << std::endl;
+		enter_a_pause("Press the ENTER key to continue...");
+
+		/* Returns the count of elements printed on the screen. */
+		return counter;
 	}
 
 /*****************************************************************
@@ -292,46 +338,22 @@ int main()
 		/* Validate that the maximum number of prime numbers is within the range of 1 to 10,000. */
 		if (quantity >= V_LOWER_LIMIT_PRIME<std::size_t> && quantity <= V_UPPER_LIMIT_PRIME<std::size_t>)
 			{
-				/* Obtain a vector containing the prime numbers found. */
+				/* Obtain a vector containing the first prime numbers found. */
 				std::cout << std::endl << "Generating first list of prime numbers..." << std::endl;
-				const std::vector<std::size_t> vec_prime_numbers = getVectorPrimeNumbers(quantity);
+				std::vector<std::size_t> vec_prime_numbers = getVectorPrimeNumbers(quantity);
 				enter_a_pause("Press the ENTER key to continue...");
 
+				counting = viewVectorPrimeNumber(vec_prime_numbers);
+				std::cout << "Outcomes: [" << counting << "]." << std::endl;
+				enter_a_pause("Press the ENTER key to continue...");
+
+				/* Obtain a vector containing the second prime numbers found. */
 				std::cout << std::endl << "Generating second list of primes numbers..." << std::endl;
-				const std::vector<std::size_t> vec_primes_numbers = getVectorPrimesNumbers(quantity);
+				std::vector<std::size_t> vec_primes_numbers = getVectorPrimesNumbers(quantity);
 				enter_a_pause("Press the ENTER key to continue...");
 
-				/* Outbound header messages. */
-				std::cout << std::endl << "Visualizing first list of prime numbers..." << std::endl << std::endl;
-				std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
-				std::cout << "+       Prime Number Results.       +" << std::endl;
-				std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
-				std::cout << "| [" << quantity << "] First Prime Numbers." << std::endl;
-				std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
-
-				/* Dumping of the contents of the first obtained vector. */
-				for (const std::size_t& prime_number : vec_prime_numbers)
-					std::cout << "| (" << counting++ << ")\t:\t[" << prime_number << "]." << std::endl;
-
-				std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
-				std::cout << "[" << counting << "] Obtained output results." << std::endl;
-				enter_a_pause("Press the ENTER key to continue...");
-
-				/* Dumping of the contents of the second obtained vector. */
-				counting = V_ZERO<size_t>;
-
-				std::cout << std::endl << "Visualizing second list of prime numbers..." << std::endl << std::endl;
-				std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
-				std::cout << "+       Prime Number Results.       +" << std::endl;
-				std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
-				std::cout << "| [" << quantity << "] First Prime Numbers." << std::endl;
-				std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
-
-				for (const std::size_t& prime_number : vec_primes_numbers)
-					std::cout << "| (" << counting++ << ")\t:\t[" << prime_number << "]." << std::endl;
-
-				std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
-				std::cout << "[" << counting << "] Obtained output results." << std::endl;
+				counting = viewVectorPrimeNumber(vec_primes_numbers);
+				std::cout << "Results: [" << counting << "]." << std::endl;
 				enter_a_pause("Press the ENTER key to continue...");
 			}
 		else
