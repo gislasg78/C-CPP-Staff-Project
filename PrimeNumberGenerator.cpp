@@ -111,6 +111,46 @@ bool IsPrimeNum(const size_t &number)
 	}
 
 /*****************************************************************
+ ** Function:		bool IsPrimeNum				**
+ **			(const std::size_t& number,		**
+ **			 const std::vector<std::size_t>&	**
+ **					vec_primes);		**
+ ** Explanation:	The purpose of this function is to	**
+ **			verify that a number is prime—meaning	**
+ **			it is divisible only by 1 and itself—and**
+ **			to check a 'vector' container for	**
+ **			previously stored prime numbers to	**
+ **			ensure the number under analysis is not	**
+ **			divisible by any of them.		**
+ ** Input Parms:	const std::size_t& number.		**
+ **			const std::vector<std::size_t>&		**
+ **				vec_primes.			**
+ ** Output Parms:       None.                                   **
+ ** Result:		This function returns a result		**
+ **			indicating whether the number is	**
+ **			prime—specifically,			**
+ **			if it is not found to be divisible by	**
+ **			previously identified prime numbers	**
+ **			(which are themselves divisible only by	**
+ **			themselves and one).			**
+ ****************************************************************/
+bool IsPrimeNum(const std::size_t& number, const std::vector<std::size_t>& vec_primes_numbers)
+	{
+		if (number < V_TWO<std::size_t>) return false;
+
+		for (const std::size_t& prime : vec_primes_numbers)
+			{
+				if ((prime * prime) > number)
+					break;
+
+				if (!(number % prime))
+					return false;
+			}
+
+		return true;
+	}
+
+/*****************************************************************
  ** Function:		bool IsPrimeNumber			**
  **				(const size_t& number);		**
  ** Explanation:	The purpose of this function is that a	**
@@ -168,16 +208,55 @@ bool IsPrimeNumber(const size_t& number)
 std::vector<size_t> getVectorPrimeNumbers(const size_t& quantity)
 	{
 		size_t counter {};
-		std::vector<std::size_t> vec_prime_numbers {};
+		std::vector<std::size_t> vec_primes_numbers {};
 
 		for (size_t idx {}; counter < quantity; idx++)
 			if (IsPrimeNum(idx))
 				{
 					counter++;
-					vec_prime_numbers.push_back(idx);
+					vec_primes_numbers.push_back(idx);
 				}
 
-		return vec_prime_numbers;
+		return vec_primes_numbers;
+	}
+
+/*****************************************************************
+ ** Function:           std::vector<size_t>			**
+ **				getVectorPrimes			**
+ **				(const std::size_t& quantity);	**
+ ** Explanation:	This function returns a 'vector'	**
+ **			container holding all the requested	**
+ **			prime numbers up to a quantity 'n';	**
+ **			it checks each candidate by comparing	**
+ **			it against previously stored primes	**
+ **			to ensure it is not divisible by them,	**
+ **			thereby guaranteeing that the generated	**
+ **			prime is divisible only by itself and	**
+ **			one.					**
+ ** Input Parms:	const std::size_t& quantity.		**
+ ** Output Parms:       None.                                   **
+ ** Result:		This function returns a 'vector'	**
+ **			container holding all the generated	**
+ **			prime numbers, verifying that they are	**
+ **			not divisible by the primes already	**
+ **			obtained—since, by definition,		**
+ **			a prime number must be divisible	**
+ **			strictly only by one and itself.	**
+ ****************************************************************/
+std::vector<std::size_t> getVectorPrimesNumbers(const std::size_t& quantity)
+	{
+		std::size_t counter {};
+		std::vector<std::size_t> vec_primes_numbers {}, vec_previous_primes_numbers {};
+
+		for (size_t idx {}; counter < quantity; ++idx)
+			if (IsPrimeNum(idx, vec_previous_primes_numbers))
+				{
+					counter++;
+					vec_previous_primes_numbers.push_back(idx);
+					vec_primes_numbers.push_back(idx);
+				}
+
+		return vec_primes_numbers;
 	}
 
 /*****************************************************************
@@ -214,20 +293,41 @@ int main()
 		if (quantity >= V_LOWER_LIMIT_PRIME<std::size_t> && quantity <= V_UPPER_LIMIT_PRIME<std::size_t>)
 			{
 				/* Obtain a vector containing the prime numbers found. */
-				std::cout << std::endl << "Generating list of prime numbers..." << std::endl;
-				std::vector<std::size_t> vec_prime_numbers = getVectorPrimeNumbers(quantity);
+				std::cout << std::endl << "Generating first list of prime numbers..." << std::endl;
+				const std::vector<std::size_t> vec_prime_numbers = getVectorPrimeNumbers(quantity);
+				enter_a_pause("Press the ENTER key to continue...");
+
+				std::cout << std::endl << "Generating second list of primes numbers..." << std::endl;
+				const std::vector<std::size_t> vec_primes_numbers = getVectorPrimesNumbers(quantity);
 				enter_a_pause("Press the ENTER key to continue...");
 
 				/* Outbound header messages. */
-				std::cout << std::endl << "Visualizing list of prime numbers..." << std::endl << std::endl;
+				std::cout << std::endl << "Visualizing first list of prime numbers..." << std::endl << std::endl;
 				std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
 				std::cout << "+       Prime Number Results.       +" << std::endl;
 				std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
 				std::cout << "| [" << quantity << "] First Prime Numbers." << std::endl;
 				std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
 
-				/* Dumping of the contents of the obtained vector. */
-				for (const size_t& prime_number : vec_prime_numbers)
+				/* Dumping of the contents of the first obtained vector. */
+				for (const std::size_t& prime_number : vec_prime_numbers)
+					std::cout << "| (" << counting++ << ")\t:\t[" << prime_number << "]." << std::endl;
+
+				std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+				std::cout << "[" << counting << "] Obtained output results." << std::endl;
+				enter_a_pause("Press the ENTER key to continue...");
+
+				/* Dumping of the contents of the second obtained vector. */
+				counting = V_ZERO<size_t>;
+
+				std::cout << std::endl << "Visualizing second list of prime numbers..." << std::endl << std::endl;
+				std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
+				std::cout << "+       Prime Number Results.       +" << std::endl;
+				std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
+				std::cout << "| [" << quantity << "] First Prime Numbers." << std::endl;
+				std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
+
+				for (const std::size_t& prime_number : vec_primes_numbers)
 					std::cout << "| (" << counting++ << ")\t:\t[" << prime_number << "]." << std::endl;
 
 				std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
