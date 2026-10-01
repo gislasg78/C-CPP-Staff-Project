@@ -178,10 +178,7 @@ class PrimeNumber
 			bool IsPrime(const T& number) const
 				{
 					for (T divisor{V_TWO<T>}; divisor <= (number / divisor); divisor += (divisor == V_TWO<T>) ? V_ONE<T> : V_TWO<T>)
-						{
-							if (!(number % divisor))
-								return false;
-						}
+						if (!(number % divisor)) return false;
 
 					return (number < V_TWO<T>) ? false : true;
 				}
