@@ -159,7 +159,7 @@ class PrimeNumber
 					if (this->checkValidity())
 						{
 							for (T idx {start}, number {last_number}; idx <= finish; number++)
-								if ((*this).IsPrimeNumber(number))
+								if ((*this).IsPrime(number))
 									{
 										counter++;
 										*(this->array + idx++) = number;
@@ -175,14 +175,14 @@ class PrimeNumber
 			const T& getSize() const
 				{return this->size;}
 
-			bool IsPrimeNumber(const T& number) const
+			bool IsPrime(const T& number)
 				{
 					if (number < V_TWO<T>)
 						return false;
 
-					for (T idx{V_TWO<T>}; idx < number; ++idx)
+					for (T divisor{V_TWO<T>}; divisor <= (number / divisor); divisor += (divisor == V_TWO<T>) ? V_ONE<T> : V_TWO<T>)
 						{
-							if (!(number % idx))
+							if (!(number % divisor))
 								return false;
 						}
 
