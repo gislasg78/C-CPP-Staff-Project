@@ -175,7 +175,7 @@ class PrimeNumber
 			const T& getSize() const
 				{return this->size;}
 
-			bool IsPrime(const T& number)
+			bool IsPrime(const T& number) const
 				{
 					if (number < V_TWO<T>)
 						return false;
