@@ -23,16 +23,10 @@ constexpr T V_ZERO		{T(0)};
 template <typename T>
 bool IsPrime(const T& number)
 	{
-		if (number < V_TWO<T>)
-			return false;
-
 		for (T divisor{V_TWO<T>}; divisor <= (number / divisor); divisor += (divisor == V_TWO<T>) ? V_ONE<T> : V_TWO<T>)
-			{
-				if (!(number % divisor))
-					return false;
-			}
+			if (!(number % divisor)) return false;
 
-		return true;
+		return (number < V_TWO<T>) ? false : true;
 	}
 
 /* Generates a dynamic array with prime numbers. */
