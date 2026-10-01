@@ -8,23 +8,34 @@
 #include <sstream>
 
 /* Symbolic work constants. */
-#define CARRIAGE_RETURN	'\n'
+template <typename T>
+constexpr T CARRIAGE_RETURN	{T('\n')};
 
-#define	V_FIVE		5
-#define	V_SEVEN		7
-#define V_THREE		3
-#define V_TWO		2
-#define V_ZERO		0
+/* Numerical symbolic constants. */
+template <typename T>
+constexpr T V_ONE		{T(1)};
+template <typename T>
+constexpr T V_TWO		{T(2)};
+template <typename T>
+constexpr T V_ZERO		{T(0)};
 
-//Determine whether a given number is prime or not.
+/* Determine whether a given number is prime or not. */
 template <typename T>
 bool IsPrime(const T& number)
 	{
-		return (((number == V_TWO) || (number == V_THREE) || (number == V_FIVE) || (number == V_SEVEN)) ||
-			((number % V_TWO) && (number % V_THREE) && (number % V_FIVE) && (number % V_SEVEN)));
+		if (number < V_TWO<T>)
+			return false;
+
+		for (T divisor{V_TWO<T>}; divisor <= (number / divisor); divisor += (divisor == V_TWO<T>) ? V_ONE<T> : V_TWO<T>)
+			{
+				if (!(number % divisor))
+					return false;
+			}
+
+		return true;
 	}
 
-//Generates a dynamic array with prime numbers.
+/* Generates a dynamic array with prime numbers. */
 template <typename T>
 T* create_array(const T& size, const T& last_number, T** array)
 	{
@@ -32,7 +43,7 @@ T* create_array(const T& size, const T& last_number, T** array)
 
 		if (dynamic_array)
 			{
-				for (T idx = V_ZERO, number = last_number; idx < size; number++)
+				for (T idx {V_ZERO<T>}, number = last_number; idx < size; number++)
 					if (IsPrime<T>(number))	*(dynamic_array + idx++) = number;
 			}
 		else
@@ -42,12 +53,13 @@ T* create_array(const T& size, const T& last_number, T** array)
 		return dynamic_array;
 	}
 
-//Get a given value from the keyboard.
+/* Get a given value from the keyboard. */
 template <typename T>
-auto getData(T* ptr_data_value)
+auto getData(const std::string& str_Message, T *const ptr_data_value)
 	{
 		if (ptr_data_value)
 			{
+				std::cout << str_Message;
 				std::string str_data_value {};
 				std::getline(std::cin >> std::ws, str_data_value);
 				str_data_value.erase(std::remove_if(str_data_value.begin(), str_data_value.end(), ::isspace), str_data_value.end());
@@ -61,32 +73,32 @@ auto getData(T* ptr_data_value)
 		return *ptr_data_value;
 	}
 
-//Generate a pause to continue later.
+/* Generate a pause to continue later. */
 void getPause(const std::string& str_Message)
 	{
-		std::cout << std::endl << str_Message;
+		std::cout << str_Message;
 		std::cin.clear();
 		std::cin.get();
 		std::cin.clear();
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN);
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN<char>);
 	}
 
-//Display final statistics messages.
+/* Display final statistics messages. */
 template <typename T>
 void statistics(const T& count, const T& sum)
 	{
 		std::cout << std::endl << "Final Statistics." << std::endl;
 		std::cout << "+ Counter:\t[" << count << "]." << std::endl;
-		std::cout << "+ Summation:\t[" << sum << "]." << std::endl;
+		std::cout << "+ Summation:\t[" << sum << "]." << std::endl << std::endl;
 
 		getPause("Press the ENTER key to continue...");
 	}
 
-//Cumulative sum of the increased and shifted value.
+/* Cumulative sum of the increased and shifted value. */
 template <typename T>
 auto sum_array(const T* start, const T* stop)
 	{
-		T sum = V_ZERO;
+		T sum {V_ZERO<T>};
 
 		while (start != stop)
 			sum += *start++;
@@ -94,11 +106,11 @@ auto sum_array(const T* start, const T* stop)
 		return sum;
 	}
 
-//Counting of the values.
+/* Counting of the values. */
 template <typename T>
 T view_array(const T *start, const T *stop)
 	{
-		T count = V_ZERO;
+		T count {V_ZERO<T>};
 
 		std::cout << std::endl << "Dumping the array elements." << std::endl;
 
@@ -108,7 +120,7 @@ T view_array(const T *start, const T *stop)
 				start++;
 			}
 
-		std::cout << "[" << count << "] Output results generated." << std::endl;
+		std::cout << "[" << count << "] Output results generated." << std::endl << std::endl;
 		getPause("Press the ENTER key to continue...");
 
 		return count;
@@ -121,23 +133,24 @@ int main()
 		const int array_numbers[] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97};
 		const int num_elements = sizeof(array_numbers) / sizeof(*array_numbers);
 
-		int count = V_ZERO, size {V_ZERO}, sum = V_ZERO;
+		int count = {V_ZERO<int>}, size {V_ZERO<int>}, sum(V_ZERO<int>);
 
 		/* Header messages. */
 		std::cout << "Generator of an array with prime numbers." << std::endl;
-		std::cout << "Enter the number of items: ";
-		size = getData<int>(&size);
+		size = getData<int>("Enter the number of items: ", &size);
 
 		/* Code block to create a dynamic array with prime numbers. */
-		int *ptr_array_numbers = create_array<int>(size, V_TWO, &ptr_array_numbers);
+		int *ptr_array_numbers = create_array<int>(size, V_TWO<int>, &ptr_array_numbers);
 
+		/* Verify whether the prime number pointer was successfully created. */
 		if (ptr_array_numbers)
 			{
 				count = view_array<int>(ptr_array_numbers, ptr_array_numbers + size);
 				sum = sum_array<int>(ptr_array_numbers, ptr_array_numbers + size);
 				statistics<int>(count, sum);
 
-				delete ptr_array_numbers;
+				delete [] ptr_array_numbers;
+				ptr_array_numbers = nullptr;
 			}
 		else
 			std::cerr << std::endl << "Error allocating memory for a dynamic array of prime numbers." << std::endl;
@@ -147,5 +160,10 @@ int main()
 		sum = sum_array<int>(array_numbers, array_numbers + num_elements);
 		statistics<int>(count, sum);
 
-		return V_ZERO;
+		/* Program termination messages. */
+		std::cout << std::endl << "Done!" << std::endl;
+		std::cout << "This program has ended." << std::endl;
+		getPause("Press the ENTER key to continue...");
+
+		return EXIT_SUCCESS;
 	}
