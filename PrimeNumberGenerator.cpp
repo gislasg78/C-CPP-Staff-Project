@@ -146,6 +146,14 @@ bool IsPrimeNum(const size_t &number)
  **			previously identified prime numbers	**
  **			(which are themselves divisible only by	**
  **			themselves and one).			**
+ **								**
+ **			Clarification Note:			**
+ **				The prime number checking cycle	**
+ **				can also use this stopping	**
+ **				condition:			**
+ **								**
+ **				if ((prime * prime) > number)	**
+ **					break;			**
  ****************************************************************/
 bool IsPrimeNum(const std::size_t& number, const std::vector<std::size_t>& vec_primes_numbers)
 	{
@@ -154,7 +162,7 @@ bool IsPrimeNum(const std::size_t& number, const std::vector<std::size_t>& vec_p
 
 		for (const std::size_t& prime : vec_primes_numbers)
 			{
-				if ((prime * prime) > number)
+				if (prime > (number / prime))
 					break;
 
 				if (!(number % prime))
@@ -262,7 +270,7 @@ std::vector<std::size_t> getVectorPrimesNumbers(const std::size_t& quantity)
 		std::size_t counter {};
 		std::vector<std::size_t> vec_primes_numbers {};
 
-		for (std::size_t idx {V_TWO<std::size_t>}; counter < quantity; (idx == V_TWO<std::size_t>) ? ++idx : idx += V_TWO<std::size_t>)
+		for (std::size_t idx {V_TWO<std::size_t>}; counter < quantity; idx += (idx == V_TWO<std::size_t>) ? V_ONE<std::size_t> : V_TWO<std::size_t>)
 			if (IsPrimeNum(idx, vec_primes_numbers))
 				{
 					counter++;
@@ -357,23 +365,23 @@ int main()
 					{
 						/* Obtain a vector containing the first prime numbers found. */
 						std::cout << std::endl << "Generating first list of prime numbers..." << std::endl;
-						std::vector<std::size_t> vec_prime_numbers = getVectorPrimeNumbers(quantity);
+						std::vector<std::size_t> vec_primes_numbers_1 = getVectorPrimeNumbers(quantity);
 						enter_a_pause("Press the ENTER key to continue...");
 
-						counting = viewVectorPrimeNumber(vec_prime_numbers);
+						counting = viewVectorPrimeNumber(vec_primes_numbers_1);
 						std::cout << std::endl << "Displaying the prime number array." << std::endl;
-						std::copy(vec_prime_numbers.cbegin(), vec_prime_numbers.cend(), std::ostream_iterator<std::size_t>(std::cout, "\t"));
+						std::copy(vec_primes_numbers_1.cbegin(), vec_primes_numbers_1.cend(), std::ostream_iterator<std::size_t>(std::cout, "\t"));
 						std::cout << std::endl << "Outcomes: [" << counting << "]." << std::endl;
 						enter_a_pause("Press the ENTER key to continue...");
 
 						/* Obtain a vector containing the second prime numbers found. */
 						std::cout << std::endl << "Generating second list of primes numbers..." << std::endl;
-						std::vector<std::size_t> vec_primes_numbers = getVectorPrimesNumbers(quantity);
+						std::vector<std::size_t> vec_primes_numbers_2 = getVectorPrimesNumbers(quantity);
 						enter_a_pause("Press the ENTER key to continue...");
 
-						counting = viewVectorPrimeNumber(vec_primes_numbers);
+						counting = viewVectorPrimeNumber(vec_primes_numbers_2);
 						std::cout << std::endl << "Displaying the prime number array." << std::endl;
-						std::copy(std::cbegin(vec_primes_numbers), std::cend(vec_primes_numbers), std::ostream_iterator<std::size_t>(std::cout, "\t"));
+						std::copy(std::cbegin(vec_primes_numbers_2), std::cend(vec_primes_numbers_2), std::ostream_iterator<std::size_t>(std::cout, "\t"));
 						std::cout << std::endl << "Results: [" << counting << "]." << std::endl;
 						enter_a_pause("Press the ENTER key to continue...");
 					}
