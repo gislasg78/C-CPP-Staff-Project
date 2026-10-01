@@ -58,8 +58,9 @@ void enter_a_pause(const std::string& str_Message)
 	}
 
 /*****************************************************************
- ** Function:		bool IsPrime				**
- **				(const std::size_t& number);	**
+ ** Function:		template <typename T>			**
+ **				bool IsPrime			**
+ **				(const T& number);		**
  ** Explanation:	The fundamental purpose of this function**
  **			is to determine whether a number is	**
  **			prime based on a divisibility		**
@@ -73,7 +74,7 @@ void enter_a_pause(const std::string& str_Message)
  **			prime numbers less than one hundred	**
  **			(100).					**
  **								**
- ** Input Parms:	const std::size_t& number.		**
+ ** Input Parms:	const T& number.			**
  ** Output Parms:       None.                                   **
  ** Result:		This function returns true if the	**
  **			number is prime				**
@@ -87,16 +88,18 @@ void enter_a_pause(const std::string& str_Message)
  **			but this is not sufficient to determine	**
  **			general primality.			**
  ****************************************************************/
-bool IsPrime(const std::size_t& number)
+template <typename T>
+bool IsPrime(const T& number)
 	{
-		return	(number < V_TWO<size_t>) ? false :
-			(((number == V_TWO<size_t>) || (number == V_THREE<size_t>) || (number == V_FIVE<size_t>) || (number == V_SEVEN<size_t>)) ||
-			((number % V_TWO<size_t>) && (number % V_THREE<size_t>) && (number % V_FIVE<size_t>) && (number % V_SEVEN<size_t>)));
+		return	(number < V_TWO<T>) ? false :
+			(((number == V_TWO<T>) || (number == V_THREE<T>) || (number == V_FIVE<T>) || (number == V_SEVEN<T>)) ||
+			((number % V_TWO<T>) && (number % V_THREE<T>) && (number % V_FIVE<T>) && (number % V_SEVEN<T>)));
 	}
 
 /*****************************************************************
- ** Function:		bool IsPrimeNum				**
- **				(const size_t &number);		**
+ ** Function:		template <typename T>			**
+ **				bool IsPrimeNum			**
+ **				(const T& number);		**
  ** Explanation:	The primary purpose of this function is	**
  **			to determine whether a given		**
  **			number—passed as a parameter—is prime	**
@@ -107,7 +110,7 @@ bool IsPrime(const std::size_t& number)
  **			preceding number, it is ruled out as	**
  **			a prime, since a prime number must be	**
  **			divisible only by 1 and itself.		**
- ** Input Parms:	const size_t &number.			**
+ ** Input Parms:	const T& number.			**
  ** Output Parms:       None.                                   **
  ** Result:		This function returns 'true' or 'false'	**
  **			based on whether the number provided as	**
@@ -115,19 +118,21 @@ bool IsPrime(const std::size_t& number)
  **			and sequentially, without leaving any	**
  **			remainder—by its predecessors.		**
  ****************************************************************/
-bool IsPrimeNum(const size_t &number)
+template <typename T>
+bool IsPrimeNum(const T& number)
 	{
-		for (std::size_t idx {V_TWO<std::size_t>}; idx <= (number / idx); idx += (idx == V_TWO<std::size_t>) ? V_ONE<std::size_t> : V_TWO<std::size_t>)
-			if ((number % idx) == V_ZERO<std::size_t>) return false;
+		for (T divisor {V_TWO<T>}; divisor <= (number / divisor); divisor += (divisor == V_TWO<T>) ? V_ONE<T> : V_TWO<T>)
+			if (!(number % divisor)) return false;
 
-		return (number < V_TWO<std::size_t>) ? false : true;
+		return (number < V_TWO<T>) ? false : true;
 	}
 
 /*****************************************************************
- ** Function:		bool IsPrimeNum				**
- **			(const std::size_t& number,		**
- **			 const std::vector<std::size_t>&	**
- **					vec_primes);		**
+ ** Function:		template <typename T>			**
+ **				bool IsPrimeNum			**
+ **				(const T& number,		**
+ **			 	 const std::vector<T>&		**
+ **					vec_primes_numbers);	**
  ** Explanation:	The purpose of this function is to	**
  **			verify that a number is prime—meaning	**
  **			it is divisible only by 1 and itself—and**
@@ -135,9 +140,9 @@ bool IsPrimeNum(const size_t &number)
  **			previously stored prime numbers to	**
  **			ensure the number under analysis is not	**
  **			divisible by any of them.		**
- ** Input Parms:	const std::size_t& number.		**
- **			const std::vector<std::size_t>&		**
- **				vec_primes.			**
+ ** Input Parms:	const T& number.			**
+ **			const std::vector<T>&			**
+ **				vec_primes_numbers.		**
  ** Output Parms:       None.                                   **
  ** Result:		This function returns a result		**
  **			indicating whether the number is	**
@@ -155,12 +160,10 @@ bool IsPrimeNum(const size_t &number)
  **				if ((prime * prime) > number)	**
  **					break;			**
  ****************************************************************/
-bool IsPrimeNum(const std::size_t& number, const std::vector<std::size_t>& vec_primes_numbers)
+template <typename T>
+bool IsPrimeNum(const T& number, const std::vector<T>& vec_primes_numbers)
 	{
-		if (number < V_TWO<std::size_t>)
-			return false;
-
-		for (const std::size_t& prime : vec_primes_numbers)
+		for (const T& prime : vec_primes_numbers)
 			{
 				if (prime > (number / prime))
 					break;
@@ -169,12 +172,13 @@ bool IsPrimeNum(const std::size_t& number, const std::vector<std::size_t>& vec_p
 					return false;
 			}
 
-		return true;
+		return (number < V_TWO<T>) ? false : true;
 	}
 
 /*****************************************************************
- ** Function:		bool IsPrimeNumber			**
- **				(const std::size_t& number);	**
+ ** Function:		template <typename T>			**
+ **				bool IsPrimeNumber		**
+ **					(const T& number);	**
  ** Explanation:	The purpose of this function is that a	**
  **			number from 'n' to 'm' is subjected to	**
  **			multiple successive divisions and its	**
@@ -185,7 +189,7 @@ bool IsPrimeNum(const std::size_t& number, const std::vector<std::size_t>& vec_p
  **			is composite.				**
  **			In the first example, true is returned,	**
  **			in the second, false.			**
- ** Input Parms:	const std::size_t& number.		**
+ ** Input Parms:	const T& number.			**
  ** Output Parms:       None.                                   **
  ** Result:		Returns true if there are only two	**
  **			divisors, the unit and the number	**
@@ -196,20 +200,22 @@ bool IsPrimeNum(const std::size_t& number, const std::vector<std::size_t>& vec_p
  **			number is prime if it is not divisible	**
  **			by two, three, five, or seven.		**
  ****************************************************************/
-bool IsPrimeNumber(const std::size_t& number)
+template <typename T>
+bool IsPrimeNumber(const T& number)
 	{
-		std::size_t div_count {};
+		T div_count {};
 
-		for (std::size_t idx {V_ONE<std::size_t>}; idx <= number; idx++)
+		for (T idx {V_ONE<T>}; idx <= number; idx++)
 			if (!(number % idx)) div_count++;
 
-		return (div_count == V_TWO<std::size_t>);
+		return (div_count == V_TWO<T>);
 	}
 
 /*****************************************************************
- ** Function:           std::vector<std::size_t>		**
- **				getVectorPrimeNumbers		**
- **				(const std::size_t& quantity);	**
+ ** Function:		template <typename T>			**
+ **				std::vector<T>			**
+ *	*				getVectorPrimeNumbers	**
+ **					(const T& quantity);	**
  ** Explanation:	The purpose of this function is to loop	**
  **			back and forth from unity to 'n'	**
  **			to find each prime number divided by	**
@@ -219,7 +225,7 @@ bool IsPrimeNumber(const std::size_t& number)
  **			and thus verify that the number		**
  **			to be shown can only be divided between	**
  **			itself and the unit.			**
- ** Input Parms:	const std::size_t& quantity.		**
+ ** Input Parms:	const T& quantity.			**
  ** Output Parms:       None.                                   **
  ** Result:		As a result, this function returns an	**
  **			object of type 'vector' that		**
@@ -227,12 +233,13 @@ bool IsPrimeNumber(const std::size_t& number)
  **			numbers obtained for later review and	**
  **			visualization.				**
  ****************************************************************/
-std::vector<std::size_t> getVectorPrimeNumbers(const std::size_t& quantity)
+template <typename T>
+std::vector<T> getVectorPrimeNumbers(const T& quantity)
 	{
-		std::size_t counter {};
-		std::vector<std::size_t> vec_primes_numbers {};
+		T counter {};
+		std::vector<T> vec_primes_numbers {};
 
-		for (std::size_t idx {}; counter < quantity; idx++)
+		for (T idx {}; counter < quantity; idx++)
 			if (IsPrimeNum(idx))
 				{
 					counter++;
@@ -243,9 +250,10 @@ std::vector<std::size_t> getVectorPrimeNumbers(const std::size_t& quantity)
 	}
 
 /*****************************************************************
- ** Function:           std::vector<std::size_t>		**
+ ** Function:		template <typename T>			**
+ **				std::vector<T>			**
  **				getVectorPrimesNumbers		**
- **				(const std::size_t& quantity);	**
+ **				(const T& quantity);		**
  ** Explanation:	This function returns a 'vector'	**
  **			container holding all the requested	**
  **			prime numbers up to a quantity 'n';	**
@@ -255,7 +263,7 @@ std::vector<std::size_t> getVectorPrimeNumbers(const std::size_t& quantity)
  **			thereby guaranteeing that the generated	**
  **			prime is divisible only by itself and	**
  **			one.					**
- ** Input Parms:	const std::size_t& quantity.		**
+ ** Input Parms:	const T& quantity.			**
  ** Output Parms:       None.                                   **
  ** Result:		This function returns a 'vector'	**
  **			container holding all the generated	**
@@ -265,12 +273,13 @@ std::vector<std::size_t> getVectorPrimeNumbers(const std::size_t& quantity)
  **			a prime number must be divisible	**
  **			strictly only by one and itself.	**
  ****************************************************************/
-std::vector<std::size_t> getVectorPrimesNumbers(const std::size_t& quantity)
+template <typename T>
+std::vector<T> getVectorPrimesNumbers(const T& quantity)
 	{
-		std::size_t counter {};
-		std::vector<std::size_t> vec_primes_numbers {};
+		T counter {};
+		std::vector<T> vec_primes_numbers {};
 
-		for (std::size_t idx {V_TWO<std::size_t>}; counter < quantity; idx += (idx == V_TWO<std::size_t>) ? V_ONE<std::size_t> : V_TWO<std::size_t>)
+		for (T idx {V_TWO<T>}; counter < quantity; idx += (idx == V_TWO<T>) ? V_ONE<T> : V_TWO<T>)
 			if (IsPrimeNum(idx, vec_primes_numbers))
 				{
 					counter++;
@@ -281,9 +290,10 @@ std::vector<std::size_t> getVectorPrimesNumbers(const std::size_t& quantity)
 	}
 
 /*****************************************************************
- ** Function:		std::size_t viewVectorPrimeNumber	**
- **			(const std::vector<std::size_t>&	**
- **				vec_primes_numbers);		**
+ ** Function:		template <typename T>			**
+ **				T viewVectorPrimeNumber		**
+ **					(const std::vector<T>&	**
+ **					vec_primes_numbers);	**
  ** Explanation:	The purpose of this function is		**
  **			to display every single element of the	**
  **			'vector' container holding prime	**
@@ -291,7 +301,7 @@ std::vector<std::size_t> getVectorPrimesNumbers(const std::size_t& quantity)
  **			the functions implemented in this	**
  **			program to produce prime numbers via	**
  **			various algorithms.			**
- ** Input Parms:	const std::vector<std::size_t>&		**
+ ** Input Parms:	const std::vector<T>&			**
  **				vec_primes_numbers).		**
  ** Output Parms:       None.                                   **
  ** Result:		This function returns the number of	**
@@ -300,10 +310,11 @@ std::vector<std::size_t> getVectorPrimesNumbers(const std::size_t& quantity)
  **			contents of the vector passed to it as	**
  **			an argument.				**
  ****************************************************************/
-std::size_t viewVectorPrimeNumber(const std::vector<std::size_t>& vec_primes_numbers)
+template <typename T>
+T viewVectorPrimeNumber(const std::vector<T>& vec_primes_numbers)
 	{
 		/* Preliminary internal working variables. */
-		std::size_t counter {};
+		T counter {};
 
 		/* Outbound header messages. */
 		std::cout << std::endl << "Visualizing list of prime numbers..." << std::endl << std::endl;
@@ -314,10 +325,8 @@ std::size_t viewVectorPrimeNumber(const std::vector<std::size_t>& vec_primes_num
 		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
 
 		/* Dumping of the contents of the first obtained vector. */
-		for (std::vector<std::size_t>::const_iterator itc_vec_primes_numbers = vec_primes_numbers.cbegin(); itc_vec_primes_numbers != vec_primes_numbers.cend(); itc_vec_primes_numbers++)
-			{
-				std::cout << "| (" << counter++ << ")\t:\t[" << *itc_vec_primes_numbers << "]." << std::endl;
-			}
+		for (typename std::vector<T>::const_iterator itc_vec_primes_numbers = vec_primes_numbers.cbegin(); itc_vec_primes_numbers != vec_primes_numbers.cend(); itc_vec_primes_numbers++)
+			std::cout << "| (" << counter++ << ")\t:\t[" << *itc_vec_primes_numbers << "]." << std::endl;
 
 		/* Final result messages. */
 		std::cout << "+---|----+---|----+---|----+---|----+" << std::endl;
@@ -348,14 +357,14 @@ std::size_t viewVectorPrimeNumber(const std::vector<std::size_t>& vec_primes_num
 int main()
 	{
 		/* Preliminary working variables. */
-		size_t counting {V_ZERO<size_t>};
-		size_t quantity {V_ZERO<size_t>};
+		std::size_t counter {V_ZERO<std::size_t>};
+		std::size_t quantity {V_ZERO<std::size_t>};
 
 		/* Initial header messages. */
 		std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
 		std::cout << "+      Prime Number Generator.      +" << std::endl;
 		std::cout << "+===|====+===|====+===|====+===|====+" << std::endl;
-		std::cout << "Quantity prime numbers between: [" << V_LOWER_LIMIT_PRIME<size_t> << "] and: [" << V_UPPER_LIMIT_PRIME<size_t> << "] you want to get: ";
+		std::cout << "Quantity prime numbers between: [" << V_LOWER_LIMIT_PRIME<std::size_t> << "] and: [" << V_UPPER_LIMIT_PRIME<std::size_t> << "] you want to get: ";
 
 		/* Input validation. */
 		if (std::cin >> quantity)
@@ -365,24 +374,24 @@ int main()
 					{
 						/* Obtain a vector containing the first prime numbers found. */
 						std::cout << std::endl << "Generating first list of prime numbers..." << std::endl;
-						std::vector<std::size_t> vec_primes_numbers_1 = getVectorPrimeNumbers(quantity);
+						std::vector<std::size_t> vec_primes_numbers_1 = getVectorPrimeNumbers<std::size_t>(quantity);
 						enter_a_pause("Press the ENTER key to continue...");
 
-						counting = viewVectorPrimeNumber(vec_primes_numbers_1);
+						counter = viewVectorPrimeNumber<std::size_t>(vec_primes_numbers_1);
 						std::cout << std::endl << "Displaying the prime number array." << std::endl;
 						std::copy(vec_primes_numbers_1.cbegin(), vec_primes_numbers_1.cend(), std::ostream_iterator<std::size_t>(std::cout, "\t"));
-						std::cout << std::endl << "Outcomes: [" << counting << "]." << std::endl;
+						std::cout << std::endl << "Outcomes: [" << counter << "]." << std::endl;
 						enter_a_pause("Press the ENTER key to continue...");
 
 						/* Obtain a vector containing the second prime numbers found. */
 						std::cout << std::endl << "Generating second list of primes numbers..." << std::endl;
-						std::vector<std::size_t> vec_primes_numbers_2 = getVectorPrimesNumbers(quantity);
+						std::vector<std::size_t> vec_primes_numbers_2 = getVectorPrimesNumbers<std::size_t>(quantity);
 						enter_a_pause("Press the ENTER key to continue...");
 
-						counting = viewVectorPrimeNumber(vec_primes_numbers_2);
+						counter = viewVectorPrimeNumber<std::size_t>(vec_primes_numbers_2);
 						std::cout << std::endl << "Displaying the prime number array." << std::endl;
 						std::copy(std::cbegin(vec_primes_numbers_2), std::cend(vec_primes_numbers_2), std::ostream_iterator<std::size_t>(std::cout, "\t"));
-						std::cout << std::endl << "Results: [" << counting << "]." << std::endl;
+						std::cout << std::endl << "Results: [" << counter << "]." << std::endl;
 						enter_a_pause("Press the ENTER key to continue...");
 					}
 				else
