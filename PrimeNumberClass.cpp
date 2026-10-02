@@ -158,7 +158,7 @@ class PrimeNumber
 
 					if (this->checkValidity())
 						{
-							for (T idx {start}, number {last_number}; idx <= finish; number++)
+							for (T idx {start}, number {last_number}; idx <= finish; (!(number % V_TWO<T>)) ? number++ : number += V_TWO<T>)
 								if ((*this).IsPrime(number))
 									{
 										counter++;
@@ -177,10 +177,10 @@ class PrimeNumber
 
 			bool IsPrime(const T& number) const
 				{
-					for (T divisor{V_TWO<T>}; divisor <= (number / divisor); divisor += (divisor == V_TWO<T>) ? V_ONE<T> : V_TWO<T>)
+					for (T divisor{V_TWO<T>}; divisor <= (number / divisor); divisor += (!(divisor % V_TWO<T>)) ? V_ONE<T> : V_TWO<T>)
 						if (!(number % divisor)) return false;
 
-					return (number < V_TWO<T>) ? false : true;
+					return (number > V_ONE<T>);
 				}
 
 			void release()
