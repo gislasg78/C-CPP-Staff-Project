@@ -4,6 +4,7 @@
 /* Standard work libraries. */
 #include <algorithm>
 #include <iostream>
+#include <iterator>
 #include <limits>
 #include <sstream>
 
@@ -23,28 +24,30 @@ constexpr T V_ZERO		{T(0)};
 template <typename T>
 bool IsPrime(const T& number)
 	{
-		for (T divisor{V_TWO<T>}; divisor <= (number / divisor); divisor += (divisor == V_TWO<T>) ? V_ONE<T> : V_TWO<T>)
+		for (T divisor{V_TWO<T>}; divisor <= (number / divisor); divisor += (!(divisor % V_TWO<T>)) ? V_ONE<T> : V_TWO<T>)
 			if (!(number % divisor)) return false;
 
-		return (number < V_TWO<T>) ? false : true;
+		return (number > V_ONE<T>);
 	}
 
 /* Generates a dynamic array with prime numbers. */
 template <typename T>
 T* create_array(const T& size, const T& last_number, T** array)
 	{
+		/* Dynamically create the array of prime numbers based on a requested size. */
 		T *dynamic_array = new T[size]();
 
+		/* Verify whether dynamic memory allocation for the given size was successful. */
 		if (dynamic_array)
 			{
-				for (T idx {V_ZERO<T>}, number = last_number; idx < size; number++)
+				for (T idx {V_ZERO<T>}, number = last_number; idx < size; (!(number % V_TWO<T>)) ? number++ : number += V_TWO<T>)
 					if (IsPrime<T>(number))	*(dynamic_array + idx++) = number;
 			}
 		else
 			std::cerr << std::endl << "The reserved memory area could not be properly allocated." << std::endl;
 
-		*array = dynamic_array;
-		return dynamic_array;
+		/* It returns the required memory address as the function result. */
+		return (array) ? *array = dynamic_array : dynamic_array;
 	}
 
 /* Get a given value from the keyboard. */
@@ -104,19 +107,23 @@ auto sum_array(const T* start, const T* stop)
 template <typename T>
 T view_array(const T *start, const T *stop)
 	{
+		/* Preliminary working variables. */
 		T count {V_ZERO<T>};
 
 		std::cout << std::endl << "Dumping the array elements." << std::endl;
 
+		/* A loop that iterates from a start address to an end address of the array. */
 		while (start != stop)
 			{
 				std::cout << "#: [" << count++ << "]\t:\t{" << start << "}\t=\t(" << *start << ")." << std::endl;
 				start++;
 			}
 
+		/* Latest output results generated. */
 		std::cout << "[" << count << "] Output results generated." << std::endl << std::endl;
 		getPause("Press the ENTER key to continue...");
 
+		/* Returns the number of counted elements. */
 		return count;
 	}
 
@@ -139,10 +146,20 @@ int main()
 		/* Verify whether the prime number pointer was successfully created. */
 		if (ptr_array_numbers)
 			{
+				/* View the elements contained in the prime number pointer. */
 				count = view_array<int>(ptr_array_numbers, ptr_array_numbers + size);
+
+				/* Dumping the prime number pointer to the output streams. */
+				std::cout << std::endl << "Generated prime numbers." << std::endl;
+				std::copy(ptr_array_numbers, ptr_array_numbers + size, std::ostream_iterator<int>(std::cout, "\t"));
+				std::cout << std::endl << "Results: [" << count << "]." << std::endl;
+				getPause("Press the ENTER key to continue...");
+
+				/* Calculate the sum of the prime number elements in the created array. */
 				sum = sum_array<int>(ptr_array_numbers, ptr_array_numbers + size);
 				statistics<int>(count, sum);
 
+				/* Clear and free the memory at the prime number address. */
 				delete [] ptr_array_numbers;
 				ptr_array_numbers = nullptr;
 			}
@@ -150,7 +167,16 @@ int main()
 			std::cerr << std::endl << "Error allocating memory for a dynamic array of prime numbers." << std::endl;
 
 		/* Code block to read a static array with predefined prime numbers. */
+		/* View the elements contained in the prime number static array. */
 		count = view_array<int>(array_numbers, array_numbers + num_elements);
+
+		/* Output the prime numbers from the predefined static array. */
+		std::cout << std::endl << "Recovered prime numbers." << std::endl;
+		std::copy(std::cbegin(array_numbers), std::cend(array_numbers), std::ostream_iterator<int>(std::cout, "\t"));
+		std::cout << std::endl << "Outcomes: [" << count << "]." << std::endl;
+		getPause("Press the ENTER key to continue...");
+
+		/* Calculate the sum of the prime numbers in the static array. */
 		sum = sum_array<int>(array_numbers, array_numbers + num_elements);
 		statistics<int>(count, sum);
 
