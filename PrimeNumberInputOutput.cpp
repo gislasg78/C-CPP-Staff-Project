@@ -1,5 +1,5 @@
 /********************* Prime Number Generator. *******************
- ** Source Code:	PrimesInputOutput.cpp			**
+ ** Source Code:	PrimeNumberInputOutput.cpp		**
  ** Author:		Gustavo Islas Gálvez.			**
  ** Creation Date:	Thursday, December 31, 2026.		**
  ** Purpose:		This program aims to determine the	**
@@ -67,10 +67,10 @@ void enter_a_pause(const std::string& str_Message)
 template <typename T>
 bool IsPrime(const T& number)
 	{
-		for (T divisor{V_TWO<T>}; divisor <= (number / divisor); divisor += (divisor == V_TWO<T>) ? V_ONE<T> : V_TWO<T>)
-			if ((number % divisor) == V_ZERO<T>) return false;
+		for (T divisor{V_TWO<T>}; divisor <= (number / divisor); divisor += (!(divisor % V_TWO<T>)) ? V_ONE<T> : V_TWO<T>)
+			if (!(number % divisor)) return false;
 
-		return (number < V_TWO<T>) ? false : true;
+		return (number > V_ONE<T>);
 	}
 
 /*****************************************************************
@@ -120,6 +120,7 @@ T loadFile(const std::string& str_FileName)
 		else
 			std::cerr << std::endl << "File: [" << str_FileName << "] could not be opened!" << std::endl;
 
+		/* Returns the number of records written to the file being read, including their headers and footers. */
 		return counter;
 	}
 
@@ -161,7 +162,7 @@ T saveFile(const std::string& str_FileName, const T& quantity)
 				iof_File << "[Index].\t[Prime]." << std::endl;
 
 				/* Main loop that records each successfully found prime number. */
-				for (T idx {V_ZERO<T>}; counter < quantity; idx++)
+				for (T idx {V_TWO<T>}; counter < quantity; (!(idx % V_TWO<T>)) ? idx++ : idx += V_TWO<T>)
 					if (IsPrime<T>(idx))
 						iof_File << "(" << counter++ << ")\t:\t[" << idx << "]" << std::endl;
 
@@ -173,6 +174,7 @@ T saveFile(const std::string& str_FileName, const T& quantity)
 		else
 			std::cerr << std::endl << "File: [" << str_FileName << "] could not be opened!" << std::endl;
 
+		/* Returns the number of rows written containing the prime numbers found. */
 		return counter;
 	}
 
