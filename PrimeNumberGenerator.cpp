@@ -121,10 +121,10 @@ bool IsPrime(const T& number)
 template <typename T>
 bool IsPrimeNum(const T& number)
 	{
-		for (T divisor {V_TWO<T>}; divisor <= (number / divisor); divisor += (divisor == V_TWO<T>) ? V_ONE<T> : V_TWO<T>)
+		for (T divisor {V_TWO<T>}; divisor <= (number / divisor); divisor += (!(divisor % V_TWO<T>)) ? V_ONE<T> : V_TWO<T>)
 			if (!(number % divisor)) return false;
 
-		return (number < V_TWO<T>) ? false : true;
+		return (number > V_ONE<T>);
 	}
 
 /*****************************************************************
@@ -172,7 +172,7 @@ bool IsPrimeNum(const T& number, const std::vector<T>& vec_primes_numbers)
 					return false;
 			}
 
-		return (number < V_TWO<T>) ? false : true;
+		return (number > V_ONE<T>);
 	}
 
 /*****************************************************************
@@ -239,7 +239,7 @@ std::vector<T> getVectorPrimeNumbers(const T& quantity)
 		T counter {};
 		std::vector<T> vec_primes_numbers {};
 
-		for (T idx {}; counter < quantity; idx++)
+		for (T idx {V_TWO<T>}; counter < quantity; (!(idx % V_TWO<T>)) ? idx++ : idx += V_TWO<T>)
 			if (IsPrimeNum(idx))
 				{
 					counter++;
@@ -279,7 +279,7 @@ std::vector<T> getVectorPrimesNumbers(const T& quantity)
 		T counter {};
 		std::vector<T> vec_primes_numbers {};
 
-		for (T idx {V_TWO<T>}; counter < quantity; idx += (idx == V_TWO<T>) ? V_ONE<T> : V_TWO<T>)
+		for (T idx {V_TWO<T>}; counter < quantity; idx += (!(idx % V_TWO<T>)) ? V_ONE<T> : V_TWO<T>)
 			if (IsPrimeNum(idx, vec_primes_numbers))
 				{
 					counter++;
