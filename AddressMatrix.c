@@ -111,7 +111,7 @@ int viewMatrix(const int matrix[][V_THREE], const int matrix_rows, const int mat
 				/* Travel cycle for columns. */
 				for (int current_column = V_ZERO; current_column < matrix_columns; current_column++)
 					{
-						printf("# [%d]. <%p : %p : %p>. (%d, %d) = {%d} : {%d} : {%d}.\n",
+						printf("# [%d]. <%p : %p : %p>. (%d, %d) = {%d} : {%d} : {%d} : {%d}.\n",
 							counter++,
 							(void *) (matrix[current_row] + current_column),
 							(void *) &matrix[current_row][current_column],
@@ -120,6 +120,7 @@ int viewMatrix(const int matrix[][V_THREE], const int matrix_rows, const int mat
 							current_column,
 							*(matrix[current_row] + current_column),
 							matrix[current_row][current_column],
+							(*(matrix + current_row))[current_column],
 							*(*(matrix + current_row) + current_column));
 					}
 
