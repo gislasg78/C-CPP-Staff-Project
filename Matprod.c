@@ -1,7 +1,7 @@
 /**  Program that performs the product of two dynamic matrices. **
- ** Source Code:        Matprod.c				**
+ ** Source Code:        MatrixProduct.c				**
  ** Author:             Gustavo Islas Gálvez.                   **
- ** Creation Date:      Saturday, November 30, 2024.            **
+ ** Creation Date:      Wednesday, December 31, 2025.		**
  ** Purpose:		The main purpose of this program is to	**
  **			perform the product of two dynamically  **
  **			created rectangular matrices, such that **
@@ -27,7 +27,7 @@
  **			two-dimensional arrays:			**
  **								**
  **			'A' = {{2, 0, 1}, {3, 0, 0}, {5. 1. 1}}.**
- **			'B' = {{1, 0, 1}. {1. 2. 1}. {1, 1, 0}}.**
+ **			'B' = {{1, 0, 1}. {1, 2, 1}, {1, 1, 0}}.**
  **								**
  **			The multiplication of both		**
  **			two-dimensional matrices would be as	**
@@ -58,15 +58,47 @@
  **					[7, 3, 6]		**
  **				}.				**
  ****************************************************************/
-//C Standard Libraries.
+/* C Standard Libraries. */
 #include <stdio.h>
 #include <stdlib.h>
 
-//C Standard Constants.
-#define	V_ONE	1
-#define	V_THREE	3
-#define	V_TWO	2
-#define	V_ZERO	0
+/* C Standard Constants. */
+#define	CARRIAGE_RETURN	'\n'
+
+/* Standard Numeric Constants. */
+#define	V_ONE		1
+#define	V_THREE		3
+#define	V_TWO		2
+#define	V_ZERO		0
+
+/* Function that performs a specified pause with a warning message. */
+char getPause(const char *str_Message)
+	{
+		/* Preliminary working variables. */
+		char chr_key = V_ZERO;
+		int int_chars = V_ZERO;
+
+		/* Header message. */
+		printf("%s", str_Message);
+
+		/* Validate data entry as correct. */
+		if (scanf("%c%*c%n", &chr_key, &int_chars))
+			{
+				/* Get a correct character value. */
+				printf("\nInput value: [%x] : [%d] = [%c] : [%d]. OK!\n", chr_key, chr_key, chr_key, int_chars);
+			}
+		else
+			{
+				/* Get an incorrect character value. */
+				fprintf(stderr, "\nThe value entered is not valid.\n");
+
+				scanf("%*[^\n]%*c");
+				while ((chr_key = (char) getchar()) != CARRIAGE_RETURN && chr_key != EOF);
+			}
+
+		/* Return of key value. */
+		return chr_key;
+	}
 
 /*****************************************************************
  ** Function:		int int_capture_matrix			**
@@ -134,7 +166,7 @@ int int_capture_matrix(int **int_matrix, const int int_rows, const int int_cols)
 			}
 
 		/* Returns the number of elements captured. */
-		printf("[%d] Captured input elements...\n", int_captured_items);
+		printf("[%d] Captured input elements.\n", int_captured_items);
 
 		return int_captured_items;
 	}
@@ -172,12 +204,12 @@ int **int_create_matrix(const int int_rows, const int int_cols)
 		printf("+---|----+---|----+---|----+---|----+---|----+\n");
 
 		/* Dynamic allocation of memory for the matrix row area. */
-		if ((int_matrix = (int **) calloc(int_rows, sizeof(int *))))
+		if ((int_matrix = (int **) calloc((size_t)int_rows, sizeof(int *))))
 			{
 				for (int int_row = V_ZERO; int_row < int_rows; int_row++)
 					{
 						/* Dynamic allocation of memory for the matrix column area. */
-						if ((int_matrix[int_row] = (int *) calloc(int_cols, sizeof(int))))
+						if ((int_matrix[int_row] = (int *) calloc((size_t)int_cols, sizeof(int))))
 							{
 								int_created_items++;
 							}
@@ -195,7 +227,7 @@ int **int_create_matrix(const int int_rows, const int int_cols)
 			}
 
 		/* Returns the number of elements created. */
-		printf("[%d] Lines generated for the dynamic matrix...\n", int_created_items);
+		printf("[%d] Lines generated for the dynamic matrix.\n", int_created_items);
 
 		return int_matrix;
 	}
@@ -258,7 +290,7 @@ int int_deallocate_matrix(int **int_matrix, const int int_rows)
 			}
 
 		/* Returns the number of deallocated elements. */
-		printf("[%d] Lines unallocated for the dynamic array...\n", int_deallocated_items);
+		printf("[%d] Lines unallocated for the dynamic array.\n", int_deallocated_items);
 
 		return int_deallocated_items;
 	}
@@ -313,7 +345,7 @@ int **int_matrix_product(int **int_f_matrix, int **int_s_matrix, const int int_f
 		*int_max_cols = (int_f_cols > int_s_cols) ? int_f_cols : int_s_cols;
 
 		/* Dynamic creation of the product matrix of two dynamic matrices. */
-		if (int_matrix_prod = int_create_matrix(*int_max_rows, *int_max_cols))
+		if ((int_matrix_prod = int_create_matrix(*int_max_rows, *int_max_cols)))
 			{
 				printf("\n");
 				printf("+---|----+---|----+---|----+---|----+---|----+\n");
@@ -348,7 +380,7 @@ int **int_matrix_product(int **int_f_matrix, int **int_s_matrix, const int int_f
 			}
 
 		/* Returns the number of calculations performed. */
-		printf("[%d] Calculations performed to obtain the product of two matrices...\n", int_counting_items);
+		printf("[%d] Calculations performed to obtain the product of two matrices.\n", int_counting_items);
 
 		return int_matrix_prod;
 	}
@@ -431,7 +463,7 @@ int int_view_matrix(int **int_matrix, const int int_rows, const int int_cols)
 			}
 
 		/* Returns the number of displayed elements from the specified two-dimensional array. */
-		printf("[%d] Output results generated...\n", int_counting_items);
+		printf("[%d] Output results generated.\n", int_counting_items);
 
 		return int_counting_items;
 	}
@@ -495,7 +527,7 @@ int main()
 		 * Dynamic generation of a three-dimensional matrix that groups	*
                  * the three two-dimensional calculation matrices.		*
 		 * ------------------------------------------------------------ */
-		if (int_matrix_3D = (int ***) calloc(V_THREE, sizeof(int **)))
+		if ((int_matrix_3D = (int ***) calloc(V_THREE, sizeof(int **))))
 			{
 				/* Cycle of generation of the first two matrices for the calculation. */
 				for (int int_n_matrix = V_ZERO; int_n_matrix < V_TWO; int_n_matrix++)
@@ -511,16 +543,24 @@ int main()
 
 						int_matrix_3D[int_n_matrix] = int_create_matrix(int_matrix_rows_cols[int_n_matrix][V_ZERO], int_matrix_rows_cols[int_n_matrix][V_ONE]);
 						int_counting_items = int_capture_matrix(int_matrix_3D[int_n_matrix], int_matrix_rows_cols[int_n_matrix][V_ZERO], int_matrix_rows_cols[int_n_matrix][V_ONE]);
+						printf("[%d] Captured elements.\n", int_counting_items);
+						getPause("Press the ENTER key to continue...");
+
 						int_counting_items = int_view_matrix(int_matrix_3D[int_n_matrix], int_matrix_rows_cols[int_n_matrix][V_ZERO], int_matrix_rows_cols[int_n_matrix][V_ONE]);
+						printf("[%d] Displayed elements.\n", int_counting_items);
+						getPause("Press the ENTER key to continue...");
 					}
 
 				/* Creation and generation of the product-result matrix. */
 				int_matrix_3D[V_TWO] = int_matrix_product(int_matrix_3D[V_ZERO], int_matrix_3D[V_ONE], int_matrix_rows_cols[V_ZERO][V_ZERO], int_matrix_rows_cols[V_ZERO][V_ONE], int_matrix_rows_cols[V_ONE][V_ZERO], int_matrix_rows_cols[V_ONE][V_ONE], &int_matrix_rows_cols[V_TWO][V_ZERO], &int_matrix_rows_cols[V_TWO][V_ONE]);
+				getPause("Press the ENTER key to continue...");
 
 				/* Dumping the product result matrix. */
 				printf("\n");
 				printf("The complete product matrix is ​​displayed...\n");
 				int_counting_items = int_view_matrix(int_matrix_3D[V_TWO], int_matrix_rows_cols[V_TWO][V_ZERO], int_matrix_rows_cols[V_TWO][V_ONE]);
+				printf("[%d] Displayed elements.\n", int_counting_items);
+				getPause("Press the ENTER key to continue...");
 
 				/* Freeing memory of all generated matrices. */
 				printf("\n");
@@ -529,6 +569,8 @@ int main()
 				for (int int_n_matrix = V_ZERO; int_n_matrix < V_THREE; int_n_matrix++)
 					{
 						int_counting_items = int_deallocate_matrix(int_matrix_3D[int_n_matrix], int_matrix_rows_cols[int_n_matrix][V_ZERO]);
+						printf("[%d] Released elements.\n", int_counting_items);
+						getPause("Press the ENTER key to continue...");
 					}
 
 				/* ------------------------------------------------------------	*
@@ -538,12 +580,19 @@ int main()
 				printf("\n");
 				printf("Three-dimensional matrix pointer released...\n");
 				free(int_matrix_3D);
+				int_matrix_3D = NULL;
+				getPause("Press the ENTER key to continue...");
 			}
 		else
 			{
 				perror("Error allocating memory for a three-dimensional array...");
 				exit(EXIT_FAILURE);
 			}
+
+		/* Program termination messages. */
+		printf("\nDone!\n");
+		printf("This program has ended.\n");
+		getPause("Press the ENTER key to continue...");
 
 		return EXIT_SUCCESS;
 	}
