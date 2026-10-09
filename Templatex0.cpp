@@ -1,39 +1,60 @@
-// enable_if example: two ways of using enable_if.
+/* enable_if example: two ways of using enable_if. */
 #include <iostream>
+#include <limits>
 #include <type_traits>
 
 /* Symbolic working variables. */
-#define	V_AUREUM	1.6180339f
-#define	V_PI		3.1415926
-
-#define	NULL_CHARACTER	'\0'
+template <typename T>
+constexpr T CARRIAGE_RETURN	{T('\n')};
 
 /* Numerical working constants. */
-#define	V_FIVE		5
-#define	V_SEVEN		7
-#define	V_THREE		3
-#define V_TWO   	2
-#define V_ZERO  	0
+template <typename T>
+constexpr T V_FIVE		{T(5)};
+template <typename T>
+constexpr T V_ONE		{T(1)};
+template <typename T>
+constexpr T V_SEVEN		{T(7)};
+template <typename T>
+constexpr T V_THREE		{T(3)};
+template <typename T>
+constexpr T V_TWO		{T(2)};
+template <typename T>
+constexpr T V_ZERO		{T(0)};
 
-// 1. The first template argument syntax is only valid if T is an integral type.
+/* Generate a pause to continue later. */
+void getPause(const std::string& str_Message)
+	{
+		std::cout << str_Message;
+		std::cin.clear();
+		std::cin.get();
+		std::cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN<char>);
+	}
+
+/* 1. The first template argument syntax is only valid if T is an integral type. */
 template <typename T, typename = typename std::enable_if<std::is_same<T, int>::value>::type>
-bool is_even (T var)	{return !bool(var % V_TWO);}
+requires std::integral<T>
+bool is_even (T var)	{return !bool(var % V_TWO<T>);}
 
-// 2. The second template argument syntax is the return type (bool) is only valid if T is an integral type.
+/* 2. The second template argument syntax is the return type (bool) is only valid if T is an integral type. */
 template <typename T>
+requires std::integral<T>
 typename std::enable_if<std::is_same<T, int>::value, bool>::type
-is_odd (T var)		{return bool(var % V_TWO);}
+is_odd (T var)		{return bool(var % V_TWO<T>);}
 
-// 3. The second syntax clause is used right now.
+/* 3. The second syntax clause is used right now. */
 template <typename T>
+requires std::integral<T>
 typename std::enable_if<std::is_same<T, int>::value, bool>::type
 is_prime (T var)
 	{
-		return (((var == V_TWO) || (var == V_THREE) || (var == V_FIVE) || (var == V_SEVEN)) ||
-			((var % V_TWO) && (var % V_THREE) && (var % V_FIVE) && (var % V_SEVEN)));
+		for (T divisor {V_TWO<T>}; divisor <= (var / divisor); divisor += (!(divisor % V_TWO<T>)) ? V_ONE<T> : V_TWO<T>)
+			if (!(var % divisor)) return false;
+
+		return (var > V_ONE<T>);
 	}
 
-// 4. The second syntax is used but with the 'std::is_floating_point' clause.
+/* 4. The second syntax is used but with the 'std::is_floating_point' clause. */
 template <typename T>
 typename std::enable_if<std::is_floating_point<T>::value, T>::type
 process (T var)
@@ -45,7 +66,7 @@ process (T var)
 		return var;
 	}
 
-// 5. The second syntax is used but with the 'std::is_integral' clause.
+/* 5. The second syntax is used but with the 'std::is_integral' clause. */
 template <typename T>
 typename std::enable_if<std::is_integral<T>::value, T>::type
 process (T var)
@@ -57,8 +78,9 @@ process (T var)
 		return var;
 	}
 
-//7. Template function that displays the type of variable sent.
+/* 6. Template function that displays the type of variable sent. */
 template <typename T>
+requires std::integral<T> || std::floating_point<T>
 T process_data(T var)
 	{
 		std::cout << std::boolalpha << std::endl;
@@ -69,27 +91,27 @@ T process_data(T var)
 
 		if (std::is_same<T, char>::value)
 			{
-				std::cout << "[char]\t:\t{" << std::is_same<T, char>::value << "}." << std::endl;
+				std::cout << "+ [char]\t:\t{" << std::is_same<T, char>::value << "}." << std::endl;
 			}
 		else if (std::is_same<T, double>::value)
 			{
-				std::cout << "[double]:\t{" << std::is_same<T, double>::value << "}." << std::endl;
+				std::cout << "+ [double]\t:\t{" << std::is_same<T, double>::value << "}." << std::endl;
 			}
 		else if (std::is_same<T, float>::value)
 			{
-				std::cout << "[float]\t:\t{" << std::is_same<T, float>::value << "}." << std::endl;
+				std::cout << "+ [float]\t:\t{" << std::is_same<T, float>::value << "}." << std::endl;
 			}
 		else if (std::is_same<T, int>::value)
 			{
-				std::cout << "[int]\t:\t{" << std::is_same<T, int>::value << "}." << std::endl;
+				std::cout << "+ [int]\t\t:\t{" << std::is_same<T, int>::value << "}." << std::endl;
 			}
 		else if (std::is_same<T, long>::value)
 			{
-				std::cout << "[long]\t:\t{" << std::is_same<T, long>::value << "}." << std::endl;
+				std::cout << "+ [long]\t:\t{" << std::is_same<T, long>::value << "}." << std::endl;
 			}
 		else if (std::is_same<T, short>::value)
 			{
-				std::cout << "[short]\t:\t{" << std::is_same<T, short>::value << "}." << std::endl;
+				std::cout << "+ [short]\t:\t{" << std::is_same<T, short>::value << "}." << std::endl;
 			}
 		else
 			{
@@ -97,27 +119,27 @@ T process_data(T var)
 				std::cout << "(char, double, float, int, long or short)." << std::endl;
 			}
 
-		std::cout << "Value:\t\t[" << var << "]." << std::endl;
+		std::cout << "* Value\t\t:\t[" << var << "]." << std::endl;
 
 		return var;
 	}
 
-// 8. Another syntax for calling template conditionals.
+/* 7. Another syntax for calling template conditionals. */
 template <typename T, typename std::enable_if<std::is_same<T, int>::value>::type* = nullptr>
 T process_number (T var)
 	{
 		std::cout << std::endl << "Results." << std::endl;
-		std::cout << "Type of variable detected: [" << typeid(var).name() << "]" << std::endl;
+		std::cout << "Type of variable detected:\t[" << typeid(var).name() << "]" << std::endl;
 		std::cout << "* Value integer\t\t:\t[" << var << "]." << std::endl;
 		return var;
 	}
 
-// 9. Another syntax to overload the same function but with template-based conditionals.
+/* 8. Another syntax to overload the same function but with template-based conditionals. */
 template <typename T, typename std::enable_if<std::is_same<T, double>::value>::type* = nullptr>
 T process_number(T var)
 	{
 		std::cout << std::endl << "Results." << std::endl;
-		std::cout << "Type of variable detected: [" << typeid(var).name() << "]" << std::endl;
+		std::cout << "Type of variable detected:\t[" << typeid(var).name() << "]" << std::endl;
 		std::cout << "* Value double\t\t:\t[" << var << "]." << std::endl;
 		return var;
 	}
@@ -126,26 +148,26 @@ T process_number(T var)
 int main()
 	{
 		/* Preliminary working variables. */
-		char chr_value = NULL_CHARACTER;
-		double dbl_value = V_PI;
-		float flt_value = V_AUREUM;
-		int int_value = V_ZERO;	// Code does not compile if type of 'int_value' var is not integral.
-		long lng_value = V_ZERO;
-		short shrt_value = V_ZERO;
+		char chr_value {V_ZERO<char>};
+		double dbl_value {V_ZERO<double>};	//For instance, aurean value: 1.6180339887...
+		float flt_value {V_ZERO<float>};
+		int int_value {V_ZERO<int>};		// Code does not compile if type of 'int_value' var is not integral.
+		long lng_value {V_ZERO<long>};
+		short shrt_value {V_ZERO<short>};
 
 		/* Main headings start. */
 		std::cout << "Conditional templates." << std::endl;
-		std::cout << "Enter a char    value : ";
+		std::cout << "> Enter a char    value : ";
 		std::cin >> chr_value;
-		std::cout << "Enter a double  number: ";
+		std::cout << "> Enter a double  number: ";
 		std::cin >> dbl_value;
-		std::cout << "Enter a float   number: ";
+		std::cout << "> Enter a float   number: ";
 		std::cin >> flt_value;
-		std::cout << "Enter a integer number: ";
+		std::cout << "> Enter a integer number: ";
 		std::cin >> int_value;
-		std::cout << "Enter a long    number: ";
+		std::cout << "> Enter a long    number: ";
 		std::cin >> lng_value;
-		std::cout << "Enter a short   number: ";
+		std::cout << "> Enter a short   number: ";
 		std::cin >> shrt_value;
 
 		/* Calls to template functions of type 'integer' only. */
@@ -158,23 +180,53 @@ int main()
 
 		/* Calls to template functions of exclusively 'integer' or 'double precision' types. */
 		process_number(int_value);
+		getPause("Press the ENTER key to continue...");
+
 		process_number(dbl_value);
+		getPause("Press the ENTER key to continue...");
 
 		/* Calls to template functions of exclusively 'integer', 'single precision' or 'double precision' types. */
 		process(chr_value);
+		getPause("Press the ENTER key to continue...");
+
 		process(dbl_value);
+		getPause("Press the ENTER key to continue...");
+
 		process(flt_value);
+		getPause("Press the ENTER key to continue...");
+
 		process(int_value);
+		getPause("Press the ENTER key to continue...");
+
 		process(lng_value);
+		getPause("Press the ENTER key to continue...");
+
 		process(shrt_value);
+		getPause("Press the ENTER key to continue...");
 
 		/* Data type validation. */
 		process_data(chr_value);
-		process_data(dbl_value);
-		process_data(flt_value);
-		process_data(int_value);
-		process_data(lng_value);
-		process_data(shrt_value);
+		getPause("Press the ENTER key to continue...");
 
-		return V_ZERO;
+		process_data(dbl_value);
+		getPause("Press the ENTER key to continue...");
+
+		process_data(flt_value);
+		getPause("Press the ENTER key to continue...");
+
+		process_data(int_value);
+		getPause("Press the ENTER key to continue...");
+
+		process_data(lng_value);
+		getPause("Press the ENTER key to continue...");
+
+		process_data(shrt_value);
+		getPause("Press the ENTER key to continue...");
+
+		/* Termination messages for this program. */
+		std::cout << std::endl << "Done!" << std::endl;
+		std::cout << "This program has ended!" << std::endl;
+		getPause("Press the ENTER key to continue...");
+
+		return EXIT_SUCCESS;
 	}
