@@ -1,10 +1,12 @@
 /* Program that copies one file to another with sequential access. */
-#include "errno.h"
-#include "stdio.h"
-#include "stdlib.h"
-#include "string.h"
 
-//Symbolic work constants.
+/* Standard Work Libraries. */
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+/* Symbolic work constants. */
 #define NULL_CHARACTER		'\0'
 #define	CARRIAGE_RETURN		'\n'
 
@@ -19,11 +21,12 @@
 int key = V_ZERO;
 
 /* Prototypes of the functions of this program. */
-int CheckErrorFile(const char *strFile, FILE *pFile);
+int CheckErrorFile(const char *const strFile, FILE *pFile);
 int CopyFile(const char *str_SourceFile, const char *str_TargetFile, const int numRecords);
 char *GetFileName(const char *strMessage, char *strFile);
+char GetPause(const char *const str_Message);
 int DumpFile(const char *str_File, const int numRecords);
-int CreateFile(const char *str_File);
+int CreateFile(const char *const str_File);
 
 /* Main function */
 int main()
@@ -35,21 +38,38 @@ int main()
 
 		/* Data entry */
 		printf("File Copy.\n");
-		GetFileName("Source file : ", strFIn);
-		GetFileName("Target file : ", strFOut);
+		GetFileName("> Source file : ", strFIn);
+		GetFileName("> Target file : ", strFOut);
 
-		//Calls to special functions.
+		/* Calls to special functions. */
 		numRecords = CreateFile(strFIn);
-		numRecords = DumpFile(strFIn, numRecords);
-		numRecords = CopyFile(strFIn, strFOut, numRecords);
-		numRecords = DumpFile(strFOut, numRecords);
+		GetPause("Press the ENTER key to continue...");
 
-		//Freeing memory pointers.
+		numRecords = DumpFile(strFIn, numRecords);
+		GetPause("Press the ENTER key to continue...");
+
+		numRecords = CopyFile(strFIn, strFOut, numRecords);
+		GetPause("Press the ENTER key to continue...");
+
+		numRecords = DumpFile(strFOut, numRecords);
+		GetPause("Press the ENTER key to continue...");
+
+		/* Freeing memory file pointers. */
+		puts("\nFreeing allocated memory...");
 		free(strFIn);
 		free(strFOut);
+		GetPause("Press the ENTER key to continue...");
+
+		/* Program termination messages. */
+		printf("\nDone!\n");
+		printf("This program has ended.\n");
+		GetPause("Press the ENTER key to continue...");
+
+		return V_ZERO;
 	}
 
-int CheckErrorFile(const char *strFile, FILE *pFile)
+/* A function that returns whether an end-of-file or an error occurred for a file pointer. */
+int CheckErrorFile(const char *const strFile, FILE *pFile)
 	{
 		if (ferror(pFile))
 			{
@@ -58,7 +78,7 @@ int CheckErrorFile(const char *strFile, FILE *pFile)
 				printf("| I/O Error detection |\n");
 				printf("+---+----+---+----+---+\n");
 				printf("| - File:\t\t[%s].\n", strFile);
-				printf("| - Address:\t[%p].\n", pFile);
+				printf("| - Address:\t[%p].\n", (void *) pFile);
 				printf("| - Error number:\t[%d].\n", errno);
 				printf("| - Description:\t[%s].\n", strerror(errno));
 				printf("+---+----+---+----+---+\n");
@@ -68,11 +88,12 @@ int CheckErrorFile(const char *strFile, FILE *pFile)
 			}
 
 		if (feof(pFile))
-			printf("End of file: [%s] in address: [%p] reached.\n", strFile, pFile);
+			printf("End of file: [%s] in address: [%p] reached.\n", strFile, (void *) pFile);
 
 		return (ferror(pFile) || feof(pFile));
 	}
 
+/* Copies records identically from one file to another, record by record. */
 int CopyFile(const char *strSource, const char *strTarget, const int numRecords)
 	{
 		FILE *pFSource = NULL, *pFTarget = NULL;
@@ -87,7 +108,7 @@ int CopyFile(const char *strSource, const char *strTarget, const int numRecords)
 			{
 				if ((pFSource = fopen(strSource, _READ_ONLY_FILE_)))
 					{
-						printf("File: [%s] is copied to file: [%s].\n", strSource, strTarget);
+						printf("File: [%s] with number: [%d] is copied to file: [%s] with number: [%d].\n", strSource, fileno(pFSource), strTarget, fileno(pFTarget));
 
 						while ((!feof(pFSource) && !ferror(pFSource))
 						    && (!feof(pFTarget) && !ferror(pFTarget))
@@ -123,29 +144,31 @@ int CopyFile(const char *strSource, const char *strTarget, const int numRecords)
 		return idx;
 	}
 
-int CreateFile(const char *strFile)
+/* This function creates and captures a specific file. */
+int CreateFile(const char *const strFile)
 	{
 		char c = NULL_CHARACTER;
 		FILE *pFile = NULL;
-		int idx = V_ZERO, outBytes = V_ZERO;
+		int idx = V_ZERO, inBytes = V_ZERO, outBytes = V_ZERO;
 
 		printf("\nCreate file.\n");
 		printf("Loading File: [%s]. Opening mode: [%s].\n", strFile, _WRITE_ONLY_FILE_);
 
-		if ((pFile = fopen(strFile, _WRITE_ONLY_FILE_)))
+		if ((strFile) && (pFile = fopen(strFile, _WRITE_ONLY_FILE_)))
 			{
 				printf("Capturing file...\n");
+				printf("File number: [%d].\n", fileno(pFile));
 
 				while (!feof(pFile) && !ferror(pFile))
 					{
 						printf("Code: ");
 
-						if (scanf("%d%*c", &key) == V_ONE)
-							printf("Correct entry: [%d]. OK!\n", key);
+						if (scanf("%d%*c%n", &key, &inBytes) == V_ONE)
+							printf("Correct entry: [%d] with: [%d] bytes. OK!\n", key, inBytes);
 						else
 							{
 								scanf("%*[^\n]%*c");
-								while((c = getchar()) != CARRIAGE_RETURN && c != EOF);
+								while((c = (char) getchar()) != CARRIAGE_RETURN && c != EOF);
 							}
 
 						if (key == V_ZERO) break;
@@ -169,10 +192,11 @@ int CreateFile(const char *strFile)
 		return idx;
 	}
 
+/* This function displays the contents of a created file, record by record. */
 int DumpFile(const char *strFile, const int numRecords)
 	{
 		FILE *pFile = NULL;
-		int inpBytes = V_ZERO, idx = V_ZERO;
+		int inBytes = V_ZERO, idx = V_ZERO;
 
 		printf("\nDump file.\n");
 		printf("Unloading File: [%s]. Opening mode: [%s].\n", strFile, _READ_ONLY_FILE_);
@@ -180,11 +204,12 @@ int DumpFile(const char *strFile, const int numRecords)
 		if ((pFile = fopen(strFile, _READ_ONLY_FILE_)))
 			{
 				printf("Viewing file content...\n");
+				printf("File number: [%d].\n", fileno(pFile));
 
 				while (!feof(pFile) && !ferror(pFile) && idx < numRecords)
 					{
-						if (fscanf(pFile, "%*c%d%*c%*c%n", &key, &inpBytes) && !feof(pFile) && !ferror(pFile) && idx < numRecords)
-							printf("#: [%d]\t:\t[%d].\t<%d>.\n", idx++, key, inpBytes);
+						if (fscanf(pFile, "%*c%d%*c%*c%n", &key, &inBytes) && !feof(pFile) && !ferror(pFile) && idx < numRecords)
+							printf("#: [%d]\t:\t[%d].\t<%d>.\n", idx++, key, inBytes);
 					}
 
 				CheckErrorFile(strFile, pFile);
@@ -202,24 +227,55 @@ int DumpFile(const char *strFile, const int numRecords)
 		return idx;
 	}
 
+/* Capture the name of the file to be created. */
 char *GetFileName(const char *strMessage, char *strFile)
 	{
 		char c = NULL_CHARACTER;
+		int inBytes = V_ZERO;
 
 		if (strFile)
 			{
 				printf("\n%s", strMessage);
 
-				if (scanf("%[^\n]%*c", strFile) == V_ONE)
-					printf("Correct entry: [%s]. OK!\n", strFile);
+				if (scanf("%[^\n]%*c%n", strFile, &inBytes) == V_ONE)
+					printf("Correct entry: [%s] with: [%d] bytes. OK!\n", strFile, inBytes);
 				else
 					{
 						scanf("%*[^\n]%*c");
-						while((c = getchar()) != CARRIAGE_RETURN && c != EOF);
+						while((c = (char) getchar()) != CARRIAGE_RETURN && c != EOF);
 					}
 			}
 		else
 			printf("No valid memory address allocated for the file name: [%s].\n", strFile);
 
 		return strFile;
+	}
+
+/* Function that performs a specified pause with a warning message. */
+char GetPause(const char *const str_Message)
+	{
+		/* Preliminary working variables. */
+		char chr_key = V_ZERO;
+		int int_chars = V_ZERO;
+
+		/* Header message. */
+		printf("%s", str_Message);
+
+		/* Validate data entry as correct. */
+		if (scanf("%c%*c%n", &chr_key, &int_chars))
+			{
+				/* Get a correct character value. */
+				printf("\nInput value: [%x] : [%d] = [%c] : [%d]. OK!\n", chr_key, chr_key, chr_key, int_chars);
+			}
+		else
+			{
+				/* Get an incorrect character value. */
+				fprintf(stderr, "\nThe value entered is not valid.\n");
+
+				scanf("%*[^\n]%*c");
+				while ((chr_key = (char) getchar()) != CARRIAGE_RETURN && chr_key != EOF);
+			}
+
+		/* Return of key value. */
+		return chr_key;
 	}
