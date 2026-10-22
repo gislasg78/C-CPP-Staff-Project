@@ -80,7 +80,6 @@ size_t create_matrix_3D(const size_t n_matrix, int **** matrix, size_t **matrix_
 																		{
 																			printf("For the matrix #: [%lu] of [%lu], and its row #: [%lu] of [%lu].\n", m + V_ONE, n_matrix, r + V_ONE, matrix_r[V_ZERO][m]);
 																			printf("How many columns will it generate for it and its respective row? : ");
-
 																			matrix_rxc[V_ZERO][m][r] = *((size_t *) getEntry(&matrix_rxc[V_ZERO][m][r], enm_type_entry_sizet));
 
 																			/* Dynamic memory is allocated for each row of the matrix in concurrent turn to know the number of columns it will have. */
@@ -112,13 +111,13 @@ size_t create_matrix_3D(const size_t n_matrix, int **** matrix, size_t **matrix_
 											printf("[%lu] Captured input values.\n", items);
 										}
 									else
-										fprintf(stderr, "\nError! Insufficient memory allocation. Matrix 3D. [%lu].\n", n_matrix);
+										fprintf(stderr, "\nError! Insufficient memory allocation. Matrix by rows. [%lu].\n", n_matrix);
 								}
 							else
 								fprintf(stderr, "\nError! Insufficient memory allocation: Matrix rows by columns. [%lu].\n.", n_matrix);
 						}
 				else
-						fprintf(stderr, "Error! Insufficient memory allocation: Matrix by rows. [%lu].\n", n_matrix);
+						fprintf(stderr, "Error! Insufficient memory allocation: Matrix 3D. [%lu].\n", n_matrix);
 			}
 		else
 			{
@@ -156,14 +155,14 @@ size_t destroy_matrix_3D(const size_t n_matrix, int ****matrix, size_t **matrix_
 							{
 								printf("\tDeallocating memory for its row #: [%lu] of [%lu].\n", r + V_ONE, matrix_r[V_ZERO][m]);
 
-								free(matrix[V_ZERO][m][r]);	//Deallocate each row of each matrix.
+								free(matrix[V_ZERO][m][r]);	//Clear the three-dimensional matrix by rows.
 								matrix[V_ZERO][m][r] = NULL;
 							}
 
-						free(matrix[V_ZERO][m]);	//Clear the three-dimensional matrix.
+						free(matrix[V_ZERO][m]);	//Clear the three-dimensional matrix by matrices.
 						matrix[V_ZERO][m] = NULL;
 
-						free(matrix_rxc[V_ZERO][m]);	//Clear the matrix, row by row, column by column.
+						free(matrix_rxc[V_ZERO][m]);	//Clear the matrix, row by row, matrix by matrix.
 						matrix_rxc[V_ZERO][m] = NULL;
 
 						printf("\n");
@@ -173,13 +172,13 @@ size_t destroy_matrix_3D(const size_t n_matrix, int ****matrix, size_t **matrix_
 				/* Higher-order pointers are deallocated. */
 				printf("\nEvicting main memory addresses...\n");
 
-				free(matrix_rxc[V_ZERO]);			//Clear the matrix, row by row, column by column.
+				free(matrix_rxc[V_ZERO]);			//Clear the matrix, row by row, matrix by matrix.
 				matrix_rxc[V_ZERO] = NULL;
 
-				free(matrix_r[V_ZERO]);				//Clear the three-dimensional matrix.
+				free(matrix_r[V_ZERO]);				//Clear the matrix, row by row.
 				matrix_r[V_ZERO] = NULL;
 
-				free(matrix[V_ZERO]);				//Deallocate each row of each matrix.
+				free(matrix[V_ZERO]);				//Clear the three-dimensional matrix.
 				matrix[V_ZERO] = NULL;
 			}
 		else
@@ -210,64 +209,64 @@ void *getEntry(void *const voidPtr, enum enm_type_entry enm_type_value_data)
 				/* Validate the data type to be captured. */
 				switch (enm_type_value_data)
 					{
+						/* Get a correct character value. */
 						case enm_type_entry_char:
 							if ((int_fields = scanf("%c%*c%n", (char *) voidPtr, &int_chars)))
 								{
-									/* Get a correct character value. */
 									printf("\nFields: [%d]. Input value: [%x] : [%d] = [%c]. Characters: [%d]. OK!\n", int_fields, *((char *) voidPtr), *((char *) voidPtr), *((char *) voidPtr), int_chars);
 								}
 							break;
 
+						/* Get a correct floating-point double precision value. */
 						case enm_type_entry_double:
 							if ((int_fields = scanf("%lf%*c%n", (double *) voidPtr, &int_chars)))
 								{
-									/* Get a correct floating-point double precision value. */
 									printf("\nFields: [%d]. Input value: [%lf]. Characters: [%d]. OK!\n", int_fields, *((double *) voidPtr), int_chars);
 								}
 							break;
 
+						/* Get a correct floating-point single precision value. */
 						case enm_type_entry_float:
 							if ((int_fields = scanf("%f%*c%n", (float *) voidPtr, &int_chars)))
 								{
-									/* Get a correct floating-point single precision value. */
 									double dbl_value = (double) *((float *) voidPtr);
-
 									printf("\nFields: [%d]. Input value: [%f]. Characters: [%d]. OK!\n", int_fields, dbl_value, int_chars);
 								}
 							break;
 
+						/* Get a correct integer value. */
 						case enm_type_entry_int:
 							if ((int_fields = scanf("%d%*c%n", (int *) voidPtr, &int_chars)))
 								{
-									/* Get a correct integer value. */
 									printf("\nFields: [%d]. Input value: [%d]. Characters: [%d]. OK!\n", int_fields, *((int *) voidPtr), int_chars);
 								}
 							break;
 
+						/* Get a correct long int value. */
 						case enm_type_entry_long:
 							if ((int_fields = scanf("%ld%*c%n", (long *) voidPtr, &int_chars)))
 								{
-									/* Get a correct long int value. */
 									printf("\nFields: [%d]. Input value: [%ld]. Characters: [%d]. OK!\n", int_fields, *((long *) voidPtr), int_chars);
 								}
 							break;
 
+						/* Get a correct short int value. */
 						case enm_type_entry_short:
 							if ((int_fields = scanf("%hi%*c%n", (short *) voidPtr, &int_chars)))
 								{
-									/* Get a correct short int value. */
 									printf("\nFields: [%d]. Input value: [%hi]. Characters: [%d]. OK!\n", int_fields, *((short *) voidPtr), int_chars);
 								}
 							break;
 
+						/* Get a correct unsigned long int value. */
 						case enm_type_entry_sizet:
 							if ((int_fields = scanf("%lu%*c%n", (size_t *) voidPtr, &int_chars)))
 								{
-									/* Get a correct unsigned long int value. */
 									printf("\nFields: [%d]. Input value: [%lu]. Characters: [%d]. OK!\n", int_fields, *((size_t *) voidPtr), int_chars);
 								}
 							break;
 
+						/* It is specified that if the option is incorrect, an error message should be sent. */
 						default:
 							fprintf(stderr, "\nIncorrect option for capturing a given data type!\n");
 							break;
@@ -414,7 +413,7 @@ int main()
 		/* Function that dynamically creates and captures the three-dimensional matrix. */
 		if ((items = create_matrix_3D(n_matrix, &matrix, &matrix_r, &matrix_rxc)))
 			{
-				printf("[%lu] Items created.\n", items);
+				printf("[%zu] Items created.\n", items);
 				getPause("Press the ENTER key to continue...");
 			}
 
