@@ -13,7 +13,7 @@
 
 /* Numeric Symbolic Constants. */
 #define	CARRIAGE_RETURN		'\n'	//Value: 0xC == 13.
-#define	NULL_CHARACTER		'\0'	//Value: 0x00.
+#define	NULL_CHARACTER		'\0'	//Value: 0x00 == 0.
 #define	V_CHAR_DIGIT_ZERO	'\x30'	//Value: '0'.
 #define	V_CHAR_DIGIT_ONE	'\x31'	//Value: '1'.
 
@@ -36,8 +36,8 @@ _Static_assert(USHRT_MAX == V_0XFFFF, "This program requires a 16-bit unsigned s
 char *binString(unsigned short number)
 {
 	/* Preliminary Working Variables. */
-	const size_t size_bin = SIZE_BINARY(number);
-	static char bin[SIZE_BINARY_MAX(number)];
+	const size_t size_bin = SIZE_BINARY(number);	//Size in bits of the study variable.
+	static char bin[SIZE_BINARY_MAX(number)];	//Character pointer with the binary number.
 
 	/* Construction of the binary character string, character by character. */
 	for (size_t idx = V_ZERO; idx < size_bin; idx++)
@@ -134,10 +134,18 @@ int main()
 	printf("+   End: [%5u] - {%04x} - <%s>.\n", c, c, binString(c));
 	getPause("Press the ENTER key to continue...");
 
-	/* Bit test with 'one's complement'. */
+	/* Bit test with 'one's complement' with 'a' variable. */
 	c = ~a;
 
-	printf("\n\x22One\x27s Complement\x22 Bitwise operation.\n");
+	printf("\n\x22One\x27s Complement\x22 \'a\' Bitwise operation.\n");
+	printf("+ Start: [%5u] - {%04x} - <%s>.\n", a, a, binString(a));
+	printf("+   End: [%5u] - {%04x} - <%s>.\n", c, c, binString(c));
+	getPause("Press the ENTER key to continue...");
+
+	/* Bit test with 'one's complement' with 'b' variable. */
+	c = ~b;
+
+	printf("\n\x22One\x27s Complement\x22 \'b\' Bitwise operation.\n");
 	printf("+ Start: [%5u] - {%04x} - <%s>.\n", a, a, binString(a));
 	printf("+   End: [%5u] - {%04x} - <%s>.\n", c, c, binString(c));
 	getPause("Press the ENTER key to continue...");
