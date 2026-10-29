@@ -332,6 +332,7 @@ char getPause(const char *str_Message)
 				fprintf(stderr, "Press ENTER to continue...");
 				scanf("%*[^\n]%*c");
 
+				/* Clear the input buffer until a carriage return followed by a line feed, or an end-of-file, is encountered. */
 				fputs("\nPress the ENTER key to clear the input buffer...", stderr);
 				while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
 
