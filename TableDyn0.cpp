@@ -180,7 +180,7 @@ TX destroy_matrix_3D(const TX& n_matrix, TY*** &matrix, TX* &matrix_r, TX** &mat
 		else
 			{
 				/* Error messages for critical validation. */
-				std::cerr << std::endl << "Incorrect input values ​​for creating the matrix." << std::endl;
+				std::cerr << std::endl << "Incorrect input values ​​for destroying the matrix." << std::endl;
 				std::cerr << "+ Matrices:\t\t\t[" << n_matrix << "]." << std::endl;
 				std::cerr << "+ Matrix 3D:\t\t\t[" << matrix << "]." << std::endl;
 				std::cerr << "+ Matrix rows:\t\t\t[" << matrix_r << "]." << std::endl;
@@ -225,6 +225,7 @@ const T& getEntry(T *const &ptr_value)
 						std::cin.clear();
 						std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN<char>);
 
+						std::cout << std::flush;
 						std::cerr << "> Throwing overflow exception..." << std::endl << std::endl;
 						throw std::overflow_error("The information coming from the keyboard input is overloaded!");
 					}
@@ -289,7 +290,7 @@ TX view_matrix_3D(const TX& n_matrix, const TY *const *const *const &matrix, con
 		else
 			{
 				/* Error messages for critical validation. */
-				std::cerr << std::endl << "Incorrect input values ​​for creating the matrix." << std::endl;
+				std::cerr << std::endl << "Incorrect input values ​​for viewing the matrix." << std::endl;
 				std::cerr << "+ Matrices:\t\t\t[" << n_matrix << "]." << std::endl;
 				std::cerr << "+ Matrix 3D:\t\t\t[" << matrix << "]." << std::endl;
 				std::cerr << "+ Matrix rows:\t\t\t[" << matrix_r << "]." << std::endl;
@@ -315,7 +316,14 @@ int main()
 		/* Header messages. */
 		std::cout << "Highly dynamic pointer generator." << std::endl;
 		std::cout << "How many rectangular arrangements do you want to create? : ";
-		n_matrix = getEntry<size_t>(&n_matrix);
+
+		/* Specify the number of 3D matrices to be dynamically generated. */
+		try
+			{
+				n_matrix = getEntry<size_t>(&n_matrix);
+			}
+		catch (const std::exception& e)
+			{std::cerr << std::endl << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
 		/* Function that dynamically creates and captures the three-dimensional matrix. */
 		try
