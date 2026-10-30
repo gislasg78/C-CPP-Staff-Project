@@ -146,7 +146,7 @@ int main()
 	c = ~b;
 
 	printf("\n\x22One\x27s Complement\x22 \'b\' Bitwise operation.\n");
-	printf("+ Start: [%5u] - {%04x} - <%s>.\n", a, a, binString(a));
+	printf("+ Start: [%5u] - {%04x} - <%s>.\n", b, b, binString(a));
 	printf("+   End: [%5u] - {%04x} - <%s>.\n", c, c, binString(c));
 	getPause("Press the ENTER key to continue...");
 
