@@ -20,10 +20,10 @@
 #define	NULL_CHARACTER		'\0'
 #define	V_CHR_LOWER_Y		0x79
 #define	V_CHR_UPPER_Y		0x59
+#define	V_SIZE_ARRAY		232
 
 /* Symbolic work constants. */
 #define	V_MINUS_ONE		-1
-#define	V_ONE_HUNDRED		100
 #define	V_TEN			10
 #define	V_THREE			3
 #define	V_TWO			2
@@ -57,36 +57,25 @@ enum enm_type_entry
 		enm_type_entry_float,
 		enm_type_entry_int,
 		enm_type_entry_long,
-		enm_type_entry_short
-	} enm_type_value;
+		enm_type_entry_short,
+		enm_type_entry_sizet
+	};
 
 /* Enumeration for memory area reset system. */
 enum enm_type_reset
 	{
 		enm_type_reset_NO,
 		enm_type_reset_YES
-	} enm_type_reset_global_OK;
+	};
 
 /* Global static array of prime numbers. */
-static const int global_array[] =	{
-					2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97,
-					101, 103, 107, 109, 113, 121, 127, 131, 137, 139, 143, 149, 151, 157, 163, 167, 169, 173, 179, 181, 187, 191, 193, 197, 199,
-					209, 211, 221, 223, 227, 229, 233, 239, 241, 247, 251, 253, 257, 263, 269, 271, 277, 281, 283, 289, 293, 299,
-					307, 311, 313, 317, 319, 323, 331, 337, 341, 347, 349, 353, 359, 361, 367, 373, 377, 379, 383, 389, 391, 397,
-					401, 403, 407, 409, 419, 421, 431, 433, 437, 439, 443, 449, 451, 457, 461, 463, 467, 473, 479, 481, 487, 491, 493, 499,
-					503, 509, 517, 521, 523, 527, 529, 533, 541, 547, 551, 557, 559, 563, 569, 571, 577, 583, 587, 589, 593, 599,
-					601, 607, 611, 613, 617, 619, 629, 631, 641, 643, 647, 649, 653, 659, 661, 667, 671, 673, 677, 683, 689, 691, 697,
-					701, 703, 709, 713, 719, 727, 731, 733, 737, 739, 743, 751, 757, 761, 767, 769, 773, 779, 781, 787, 793, 797, 799,
-					803, 809, 811, 817, 821, 823, 827, 829, 839, 841, 851, 853, 857, 859, 863, 869, 871, 877, 881, 883, 887, 893, 899,
-					901, 907, 911, 913, 919, 923, 929, 937, 941, 943, 947, 949, 953, 961, 967, 971, 977, 979, 983, 989, 991, 997,
-					1003
-					};
+static int global_array[V_SIZE_ARRAY];
 
 const int size_of_global_array = sizeof(global_array) / sizeof(*global_array);	//Overall determination of the fixed array size.
 
 /* Array of pointers pointing to the main global array. */
 const int *p_array = global_array,
-	*pa_array[] =
+	*pa_array[V_SIZE_ARRAY] =
 		{
 			global_array + 0, global_array + 1, global_array + 2, global_array + 3, global_array + 4,
 			global_array + 5, global_array + 6, global_array + 7, global_array + 8, global_array + 9,
@@ -144,14 +133,16 @@ int BinarySearchRecursive(const int array[], const int bottom, const int top, co
 int DumpAllItems(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
 int *Fibonacci_Series_Numbers(const int max_number, size_t *qty_items, int **Fibo_Series_Nums);
 int FibonacciSearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
+int FillArray(int array[], const int quantity, const int last_number);
 int GetElement(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, const int size, const int position, const int calls, const int iterations, const int iters, const int random_seed);
+void *GetEntry(const char *str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, enum enm_type_reset enm_type_reset_OK);
 int GetItem(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int position, const int iterations);
-void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_entry enm_type_value, enum enm_type_reset enm_type_reset_OK);
 int GetRandomInterval(const int start, const int finish, int *random_seed);
 double GetRandomNumber(int *random_seed);
 int GetValidInputs(int *start, int *finish, int *target_key, int *bottom, int *top);
 int GetValidLimits(const int position, int *start, int *finish);
 int InterpolationLocate(const int array[], const int bottom, const int top, const int target_key, int *middle_bottom, int *middle_top, int *iters);
+int IsPrime(const int number, const int start);
 int MainMenu(int *option);
 int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls, int *iter, int *iters, int *position, int *random_seed, int *value);
 int SequentialSearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
@@ -163,22 +154,22 @@ int ViewEachElement(const int array[], const int start, const int finish, const 
 int ViewRandomInterval(const int start, const int finish, const int position, int *random_seed);
 
 
-//Improved traditional binary search function.
+/* Improved traditional binary search function. */
 int BinarySearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters)
 	{
-		//Preliminary working variables.
+		/* Preliminary working variables. */
 		int high = finish, low = start;
 
-		//Calculate the midpoint position.
+		/* Calculate the midpoint position. */
 		int middle = low + (high - low) / V_TWO;
 
-		//Continue searching as long as there is a valid range.
+		/* Continue searching as long as there is a valid range. */
 		for (; low <= high && array[middle] != target_key; (*iters)++)
 			{
-				//An adjustment is made to the substitute middle position.
+				/* An adjustment is made to the substitute middle position. */
 				middle = low + (high - low) / V_TWO;
 
-				//Compare the value at the midpoint with the target.
+				/* Compare the value at the midpoint with the target. */
 				if (array[middle] == target_key)
 					*pos = middle;			//The number was found. Leaves!
 				else if (array[middle] > target_key)
@@ -187,20 +178,20 @@ int BinarySearch(const int array[], const int start, const int finish, const int
 					low = middle + V_ONE;		//We adjust the lower limit of the array.
 			}
 
-		//The located position of the element is returned as a result.
+		/* The located position of the element is returned as a result. */
 		return (*pos = (array[middle] == target_key) ? middle : V_MINUS_ONE);
 	}
 
-//Improved binary search function with internal delta factor.
+/* Improved binary search function with internal delta factor. */
 int BinarySearchDelta(const int array[], const int start, const int finish, const int target_key, int *delta_factor, int *pos, int *iters)
 	{
-		//Preliminary working variables. Calculate the midpoint position.
+		/* Preliminary working variables. Calculate the midpoint position. */
 		int middle = start + (finish - start) / V_TWO;
 
-		//Continue searching as long as there is a valid range.
+		/* Continue searching as long as there is a valid range. */
 		for (*delta_factor = (finish - start); array[middle] != target_key && *delta_factor; (*iters)++, *delta_factor /= V_TWO)
 			{
-				//Compare the value at the midpoint with the target.
+				/* Compare the value at the midpoint with the target. */
 				if (array[middle] == target_key)
 					*pos = middle;
 				else if (array[middle] > target_key)
@@ -209,21 +200,21 @@ int BinarySearchDelta(const int array[], const int start, const int finish, cons
 					*pos = middle += MEDIUM(*delta_factor);
 			}
 
-		//The located position of the element is returned as a result.
+		/* The located position of the element is returned as a result. */
 		return (*pos = (array[middle] == target_key) ? middle : V_MINUS_ONE);
 	}
 
-//Improved traditional recursirve and cyclic binary search function.
+/* Improved traditional recursirve and cyclic binary search function. */
 int BinarySearchRecursive(const int array[], const int bottom, const int top, const int target_key, int *pos, int *iters, int *itrvs)
 	{
-		//Preliminary working variables.
+		/* Preliminary working variables. */
 		static int iteratives = V_ZERO;
 		int middle = (bottom + top) / V_TWO;	//Calculate the midpoint position.
 
-		//Calculate the first relative position of the element.
+		/* Calculate the first relative position of the element. */
 		(*iters)++; iteratives++; *pos = V_MINUS_ONE;
 
-		//Compare the value at the midpoint with the target.
+		/* Compare the value at the midpoint with the target. */
 		if ((bottom <= top))
 			{
 				if (array[middle] == target_key)
@@ -238,7 +229,7 @@ int BinarySearchRecursive(const int array[], const int bottom, const int top, co
 		return *pos;	//The located position of the element is returned as a result.
 	}
 
-//Dump all elements of the array.
+/* Dump all elements of the array. */
 int DumpAllItems(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters)
 	{
 		/* Preliminary working variables. */
@@ -250,7 +241,7 @@ int DumpAllItems(const int array[], const int start, const int finish, const int
 
 		for (int idx = start; idx <= finish; idx++, (*iters)++)
 			{
-				printf("#[%3.d] = [%3.d].\t", idx, array[idx]);
+				printf("#%d = %d.\t", idx, array[idx]);
 
 				if (array[idx] == target_key) item_pos = idx;
 			}
@@ -265,7 +256,7 @@ int DumpAllItems(const int array[], const int start, const int finish, const int
 		return(*pos = item_pos);
 	}
 
-//Function that generates a Fibonacci number up to the maximum value sent.
+/* Function that generates a Fibonacci number up to the maximum value sent. */
 int *Fibonacci_Series_Numbers(const int max_number, size_t *qty_items, int **Fibo_Series_Nums)
 	{
 		/* Preliminary working variables. */
@@ -313,7 +304,7 @@ int *Fibonacci_Series_Numbers(const int max_number, size_t *qty_items, int **Fib
 		return vector_Fibonacci_Numbers;
 	}
 
-//Function that searches for an element using Fibonacci numbers.
+/* Function that searches for an element using Fibonacci numbers. */
 int FibonacciSearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters)
 	{
 		/* Preliminary working variables. */
@@ -368,14 +359,30 @@ int FibonacciSearch(const int array[], const int start, const int finish, const 
 		return (*pos = (index >= V_ZERO && index < size) ? index : V_MINUS_ONE);
 	}
 
-//Getting an integer value from the keyboard and purging its input.
+/* Function that populates the array with calculated prime numbers. */
+int FillArray(int array[], const int quantity, const int last_number)
+	{
+		/* Preliminary Working Variables. */
+		int counter = V_ZERO;
+
+		/* A loop that determines which prime numbers—within a specific range—are to be generated. */
+		for (int idx = last_number; counter < quantity; idx += (!(idx % V_TWO)) ? V_ONE : V_TWO)
+			if (IsPrime(idx, V_TWO))
+				{
+					*(array + counter++) = idx;
+				}
+
+		return counter;
+	}
+
+/* Getting an integer value from the keyboard and purging its input. */
 int GetElement(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, const int size, const int position, const int calls, const int iterations, const int iters, const int random_seed)
 	{
-		//Preliminary working variables.
+		/* Preliminary working variables. */
 		char char_key = NULL_CHARACTER;
 		int item = V_ZERO;
 
-		//Validates if the position is in a correct range.
+		/* Validates if the position is in a correct range. */
 		if (position >= start && position <= finish)
 			{
 				printf("\n[%s].\n", str_Message);
@@ -421,14 +428,149 @@ int GetElement(const char *str_Message, const int array[], const int start, cons
 		return item;
 	}
 
-//Obtains more succinct information about the queried item.
+/* Function that gets a correct type value depending on its option. */
+void *GetEntry(const char *str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, enum enm_type_reset enm_type_reset_OK)
+	{
+		/* Preliminary working variables. */
+		int int_chars = V_ZERO;
+		int int_fields = V_ZERO;
+		int int_key = V_ZERO;
+
+		/* Convert the specified enumerated type to an 'integer'. */
+		int option_type_entry = (int) enm_type_data;
+
+		/* Validate if the obtained memory addresses are valid. */
+		if (void_var_address)
+			{
+				/* Initialize the specified memory area. */
+				if (enm_type_reset_OK == enm_type_reset_YES)
+					{
+						switch(enm_type_data)
+							{
+								case enm_type_entry_char:
+									*((char *) void_var_address) = V_ZERO;
+									break;
+
+								case enm_type_entry_double:
+									*((double *) void_var_address) = V_ZERO;
+									break;
+
+								case enm_type_entry_float:
+									*((float *) void_var_address) = V_ZERO;
+									break;
+
+								case enm_type_entry_int:
+									*((int *) void_var_address) = V_ZERO;
+									break;
+
+								case enm_type_entry_long:
+									*((long *) void_var_address) = V_ZERO;
+									break;
+
+								case enm_type_entry_short:
+									*((short *) void_var_address) = V_ZERO;
+									break;
+
+								case enm_type_entry_sizet:
+									*((size_t *) void_var_address) = V_ZERO;
+									break;
+
+								default:
+									fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
+									break;
+							}
+					}
+
+				/* Incoming message. */
+				printf("%s", str_Message);
+
+				/* Selection of validating case of the type of variable to generate. */
+				switch(enm_type_data)
+					{
+						/* Get a correct character value. */
+						case enm_type_entry_char:
+							if ((int_fields = scanf("%c%*c%n", (char *) void_var_address, &int_chars)))
+								printf("\nFields: [%d]. Input value: [%x] : [%d] = [%c]. Characters: [%d]. OK!\n", int_fields, *((char *) void_var_address), *((char *) void_var_address), *((char *) void_var_address), int_chars);
+							break;
+
+						/* Get a correct floating-point double precision value. */
+						case enm_type_entry_double:
+							if ((int_fields = scanf("%lf%*c%n", (double *) void_var_address, &int_chars)))
+								printf("\nFields: [%d]. Input value: [%lf]. Characters: [%d]. OK!\n", int_fields, *((double *) void_var_address), int_chars);
+							break;
+
+						/* Get a correct floating-point single precision value. */
+						case enm_type_entry_float:
+							if ((int_fields = scanf("%f%*c%n", (float *) void_var_address, &int_chars)))
+								printf("\nFields: [%d]. Input value: [%f]. Characters: [%d]. OK!\n", int_fields, (double) *((float *) void_var_address), int_chars);
+							break;
+
+						/* Get a correct integer value. */
+						case enm_type_entry_int:
+							if ((int_fields = scanf("%d%*c%n", (int *) void_var_address, &int_chars)))
+								printf("\nFields: [%d]. Input value: [%d]. Characters: [%d]. OK!\n", int_fields, *((int *) void_var_address), int_chars);
+							break;
+
+						/* Get a correct long int value. */
+						case enm_type_entry_long:
+							if ((int_fields = scanf("%ld%*c%n", (long *) void_var_address, &int_chars)))
+								printf("\nFields: [%d]. Input value: [%ld]. Characters: [%d]. OK!\n", int_fields, *((long *) void_var_address), int_chars);
+							break;
+
+						/* Get a correct short int value. */
+						case enm_type_entry_short:
+							if ((int_fields = scanf("%hi%*c%n", (short *) void_var_address, &int_chars)))
+								printf("\nFields: [%d]. Input value: [%hi]. Characters: [%d]. OK!\n", int_fields, *((short *) void_var_address), int_chars);
+							break;
+
+						/* Get a correct unsigned long int value. */
+						case enm_type_entry_sizet:
+							if ((int_fields = scanf("%lu%*c%n", (size_t *) void_var_address, &int_chars)))
+								printf("\nFields: [%d]. Input value: [%lu]. Characters: [%d]. OK!\n", int_fields, *((size_t *) void_var_address), int_chars);
+							break;
+
+						/* It is specified that if the option is incorrect, an error message should be sent. */
+						default:
+							fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
+							break;
+					}
+
+				/* Verify that exactly one field is captured and saved at the given address. */
+				if ((int_fields != V_ONE) || !(int_chars))
+					{
+						/* Check whether an End-of-File condition occurred during keyboard data input. */
+						if (feof(stdin))
+							{
+								fprintf(stderr, "\nEnd of File (EOF) detected in data entry!\n");
+								clearerr(stdin);
+								fflush(stdin);
+							}
+
+						/* Get an incorrect entried value. */
+						fputs("\nThe value entered is not valid!\n", stderr);
+						fprintf(stderr, "Press ENTER to continue...");
+						scanf("%*[^\n]%*c");
+
+						/* We must always clear the input buffer of impurities. */
+						fputs("\nPress the ENTER key to clear the input buffer...", stderr);
+						while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
+					}
+			}
+		else
+			fprintf(stderr, "\nThe memory address to hold the variable is not valid!\n");
+
+		/* Return of void pointer key value. */
+		return void_var_address;
+	}
+
+/* Obtains more succinct information about the queried item. */
 int GetItem(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int position, const int iterations)
 	{
-		//Preliminary working variables.
+		/* Preliminary working variables. */
 		char char_key = NULL_CHARACTER;
 		int item = V_ZERO;
 
-		//Validates if the position is in a correct range.
+		/* Validates if the position is in a correct range. */
 		if (position >= start && position <= finish)
 			{
 				printf("\n[%s].\n", str_Message);
@@ -458,162 +600,19 @@ int GetItem(const char *str_Message, const int array[], const int start, const i
 		return item;
 	}
 
-//Function that gets a correct type value depending on its option.
-void *GetEntry(const char *str_Message, void *void_var_address, enum enm_type_entry enm_type_data, enum enm_type_reset enm_type_reset_OK)
-	{
-		//Preliminary working variables.
-		char *buffer = NULL;
-		int count_bytes = V_ZERO, number_arguments = V_ZERO;
-		int int_char = NULL_CHARACTER;
-		int option_type_entry = (int) enm_type_data;
-		size_t number_elements = V_ONE_HUNDRED;
-
-		/* Structure with the type of the returned variable. */
-		struct s_input_type_format
-			{
-				char *type_variable;
-				char *format_variable;
-			}
-			s_input_types_formats[] =
-				{{"char", "%c%n"}, {"double", "%lf%n"}, {"float", "%f%n"},
-				 {"int", "%d%n"}, {"long", "%ld%n"}, {"short", "%hi%n"}};
-
-		/* Validate if the obtained memory addresses are valid. */
-		if (void_var_address)
-			{
-				if ((buffer = (char *) calloc(number_elements, sizeof(char))))
-					{
-						/* Incoming message. */
-						printf("%s", str_Message);
-						scanf("%[^\n]", buffer);
-
-						/* Selection of validating case of the type of variable to generate. */
-						switch(enm_type_data)
-							{
-								//Get a correct character value.
-								case enm_type_entry_char:
-									if ((number_arguments = sscanf(buffer, s_input_types_formats[option_type_entry].format_variable, (char *) void_var_address, &count_bytes)) == V_ONE)
-										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%x] : [%d] = [%c]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(char), (char *) void_var_address, *((char *) void_var_address), *((char *) void_var_address), *((char *) void_var_address));
-									break;
-
-								//Get a correct double value.
-								case enm_type_entry_double:
-									if ((number_arguments = sscanf(buffer, s_input_types_formats[option_type_entry].format_variable, (double *) void_var_address, &count_bytes)) == V_ONE)
-										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%lf]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(double), (void *) (double *) void_var_address, *((double *) void_var_address));
-									break;
-
-								//Get a correct float value.
-								case enm_type_entry_float:
-									if ((number_arguments = sscanf(buffer, s_input_types_formats[option_type_entry].format_variable, (float *) void_var_address, &count_bytes)) == V_ONE)
-										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%f]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(float), (void *) (float *) void_var_address, *((float *) void_var_address));
-									break;
-
-								//Get a correct integer value.
-								case enm_type_entry_int:
-									if ((number_arguments = sscanf(buffer, s_input_types_formats[option_type_entry].format_variable, (int *) void_var_address, &count_bytes)) == V_ONE)
-										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%d]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(int), (void *) (int *) void_var_address, *((int *) void_var_address));
-									break;
-
-								//Get a correct long value.
-								case enm_type_entry_long:
-									if ((number_arguments = sscanf(buffer, s_input_types_formats[option_type_entry].format_variable, (long *) void_var_address, &count_bytes)) == V_ONE)
-										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%ld]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(long), (void *) (long *) void_var_address, *((long *) void_var_address));
-									break;
-
-								//Get a correct short value.
-								case enm_type_entry_short:
-									if ((number_arguments = sscanf(buffer, s_input_types_formats[option_type_entry].format_variable, (short *) void_var_address, &count_bytes)) == V_ONE)
-										printf("\nOption: [%d]. Type: [%s]. Bytes: [%d]. Size: [%ld]. Memory address: [%p]. Input value: [%hi]. OK!\n", option_type_entry, s_input_types_formats[option_type_entry].type_variable, count_bytes, sizeof(short), (void *) (short *) void_var_address, *((short *) void_var_address));
-									break;
-
-								//Option no valid.
-								default:
-									printf("The selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
-									break;
-							}
-
-							//Get an incorrect value.
-							if (number_arguments != V_ONE)
-								{
-									if (feof(stdin))
-										{
-											printf("\nEnd of File (EOF) detected in data entry.\n");
-											clearerr(stdin);
-											fflush(stdin);
-										}
-									else
-										{
-											printf("\nThe value entered is not valid. Trying again!\n");
-											scanf("%*[^\n]%*c");
-											while((int_char = getchar()) != CARRIAGE_RETURN && int_char != EOF);
-										}
-
-									/* Initialize the specified memory area. */
-									if (enm_type_reset_OK == enm_type_reset_YES)
-										{
-											printf("The value at memory address: [%p] is going to be reset.\n", void_var_address);
-
-											switch(enm_type_data)
-												{
-													case enm_type_entry_char:
-														*((char *) void_var_address) = V_ZERO;
-														break;
-
-													case enm_type_entry_double:
-														*((double *) void_var_address) = V_ZERO;
-														break;
-
-													case enm_type_entry_float:
-														*((float *) void_var_address) = V_ZERO;
-														break;
-
-													case enm_type_entry_int:
-														*((int *) void_var_address) = V_ZERO;
-														break;
-
-													case enm_type_entry_long:
-														*((long *) void_var_address) = V_ZERO;
-														break;
-
-													case enm_type_entry_short:
-														*((short *) void_var_address) = V_ZERO;
-														break;
-
-													default:
-														printf("The value of memory address: [%p] was not altered.\n", void_var_address);
-														break;
-												}
-										}
-								}
-
-						/* We must always clear the input buffer of impurities. */
-						printf("Address: [%p] = {%s}. Clearing buffer...\n", buffer, buffer);
-						while ((int_char = getchar()) != CARRIAGE_RETURN && int_char != EOF);
-
-						free(buffer);
-					}
-				else
-					perror("An error occurred while allocating memory for the character string.");
-			}
-		else
-			fprintf(stderr, "The memory address to hold the variable is not valid.\n");
-
-		return void_var_address;
-	}
-
-//Function that obtains a random number within a range.
+/* Function that obtains a random number within a range. */
 int GetRandomInterval(const int start, const int finish, int *random_seed)
 	{
 		return ((int) ((finish - start + V_ONE) * GetRandomNumber(random_seed) + start));
 	}
 
-//Function that generates a single-precision floating-point random number between zero and one.
+/* Function that generates a single-precision floating-point random number between zero and one. */
 double GetRandomNumber(int *random_seed)
 	{
 		return ((double) (*random_seed = RANDOM_GENERATOR(*random_seed)) / (double) V_RESIDUAL_MODULUS);
 	}
 
-//Valid entries for the initial and final search indexes, as well as the value to be searched for, are obtained.
+/* Valid entries for the initial and final search indexes, as well as the value to be searched for, are obtained. */
 int GetValidInputs(int *start, int *finish, int *target_key, int *bottom, int *top)
 	{
 		/* Preliminary working variables. */
@@ -653,7 +652,7 @@ int GetValidInputs(int *start, int *finish, int *target_key, int *bottom, int *t
 		return ((*start >= *bottom && *start <= *top) && (*finish >= *bottom && *finish <= *top) && (target_key));
 	}
 
-//Limits validation for the given position.
+/* Limits validation for the given position. */
 int GetValidLimits(const int position, int *start, int *finish)
 	{
 		/* Preliminary working variables. */
@@ -679,7 +678,7 @@ int GetValidLimits(const int position, int *start, int *finish)
 		return (position >= *start && position <= *finish);
 	}
 
-//Function to locate a certain value by means of interpolations.
+/* Function to locate a certain value by means of interpolations. */
 int InterpolationLocate(const int array[], const int bottom, const int top, const int target_key, int *middle_bottom, int *middle_top, int *iters)
 	{
 		/* Preliminary working variables. */
@@ -687,11 +686,20 @@ int InterpolationLocate(const int array[], const int bottom, const int top, cons
 		*middle_bottom = bottom + ((target_key - array[bottom]) * (top - bottom)) / (array[top] - array[bottom] + V_ONE);
 		(*iters)++;
 
-		//The located position of the element is returned as a result.
+		/* The located position of the element is returned as a result. */
 		return (*middle_top >= bottom && *middle_top <= top) && (*middle_bottom >= bottom && *middle_bottom <= top);
 	}
 
-//Options menu.
+/* A function that validates whether a number is prime or not. */
+int IsPrime(const int number, const int start)
+	{
+		for (int divisor = start; divisor <= (number / divisor); divisor += (!(divisor % V_TWO)) ? V_ONE : V_TWO)
+			if (!(number % divisor)) return V_ZERO;
+
+		return (number > V_ONE);
+	}
+
+/* Options menu. */
 int MainMenu(int *option)
 	{
 		/* Preliminary working variables. */
@@ -703,7 +711,7 @@ int MainMenu(int *option)
 			{
 				printf("\n");
 				printf("+===+====+===+====+===+====+===+====+\n");
-				printf("|       Binary search services.     |\n");
+				printf("|   Search and Sorting Algorithms.  |\n");
 				printf("+===+====+===+====+===+====+===+====+\n");
 				printf("| [01]. Binary search.              |\n");
 				printf("| [02]. Binary search with delta.   |\n");
@@ -729,7 +737,7 @@ int MainMenu(int *option)
 		return value;
 	}
 
-//Function to execute a function given an option.
+/* Function to execute a function given an option. */
 int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls, int *iter, int *iters, int *position, int *random_seed, int *value)
 	{
 		/* Preliminary working variables. */
@@ -738,7 +746,7 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 		int iteratives = V_ZERO;					//Number of iterations performed.
 		int middle_bottom = V_ZERO, middle_top = V_ZERO;		//Positions for interpolations.
 		int bottom = V_ZERO, top = size_of_global_array + V_MINUS_ONE;	//Lower and upper bounds of the array.
-		int size = size_of_global_array;					//Calculated array size.
+		int size = size_of_global_array;				//Calculated array size.
 
 		/* Convert integer value to enumerated value. */
 		enm_option = (enum enm_options) *value;
@@ -933,13 +941,13 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 					if (GetValidLimits(*start, &bottom, &top))
 						{
 							/* Locate a value determined by its index within the global array. */
-							*finish = *start;
+							*position = *finish = *start;
 							char_key = *((char *) GetEntry("Do you want to compare the value located at the given position with a determined value (y/n)? : ", &char_key, enm_type_entry_char, enm_type_reset_YES));
 
 							if (char_key == V_CHR_UPPER_Y || char_key == V_CHR_LOWER_Y)
 								{
-									//Presentation and indication headers.
-									printf("\nSearch for a prime number within the first thousand.\n");
+									/* Presentation and indication headers. */
+									printf("\nSearch for a determined prime number.\n");
 									printf("Prime number to find: ");
 									*target_key = *((int *) GetEntry("", target_key, enm_type_entry_int, enm_type_reset_YES));
 								}
@@ -1092,7 +1100,7 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 		return *value;
 	}
 
-//Sequential search function given a start position.
+/* Sequential search function given a start position. */
 int SequentialSearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters)
 	{
 		/* Preliminary working variables. */
@@ -1104,7 +1112,7 @@ int SequentialSearch(const int array[], const int start, const int finish, const
 		return(*pos = (array[idx] == target_key) ? idx : V_MINUS_ONE);
 	}
 
-//Function that performs a recursive sequential search for a given element in a given array.
+/* Function that performs a recursive sequential search for a given element in a given array. */
 int SequentialSearchRecursive(const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, int *pos, int *iters)
 	{
 		/* Validates that the start and end ranges are within the bounds of the minimum and maximum array index. */
@@ -1135,7 +1143,7 @@ int SequentialSearchRecursive(const int array[], const int start, const int fini
 		return (*pos = (*pos >= start && *pos <= finish) ? *pos : V_MINUS_ONE);
 	}
 
-//The limits that comprise a given range are exchanged if they are inverted.
+/* The limits that comprise a given range are exchanged if they are inverted. */
 void SwappingLimits(const char *str_Message, int *start, int *finish)
 	{
 		/* Preliminary working variables. */
@@ -1168,7 +1176,7 @@ void SwappingLimits(const char *str_Message, int *start, int *finish)
 		char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 	}
 
-//Exchange of two numerical variables with each other.
+/* Exchange of two numerical variables with each other. */
 void SwapValues(int *left_value, int *right_value)
 	{
 		int temp_value = *left_value;
@@ -1176,7 +1184,7 @@ void SwapValues(int *left_value, int *right_value)
 		*right_value = temp_value;
 	}
 
-//Function that sees all the details of the record to be consulted.
+/* Function that sees all the details of the record to be consulted. */
 int ViewAllItems(const int array[], const int start, const int finish, const int target_key, int *pos, int *iter, int *iters)
 	{
 		/* Preliminary working variables. */
@@ -1231,7 +1239,7 @@ int ViewAllItems(const int array[], const int start, const int finish, const int
 		return(*pos = (--idx >= start && idx <= finish) ? idx : V_MINUS_ONE);
 	}
 
-//Visualize each element of the arrangement step by step.
+/* Visualize each element of the arrangement step by step. */
 int ViewEachElement(const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, const int size, int *pos, const int calls, int *iter, int *iters, const int random_seed)
 	{
 		/* Preliminary working variables. */
@@ -1257,7 +1265,7 @@ int ViewEachElement(const int array[], const int start, const int finish, const 
 		return((*pos >= start && *pos <= finish) ? *pos : V_MINUS_ONE);
 	}
 
-//Displays messages about the random number to be generated and its active seed.
+/* Displays messages about the random number to be generated and its active seed. */
 int ViewRandomInterval(const int start, const int finish, const int position, int *random_seed)
 	{
 		/* Preliminary working variables. */
@@ -1289,7 +1297,24 @@ int ViewRandomInterval(const int start, const int finish, const int position, in
 //Main function.
 int main()
 	{
+		/* Preliminary working variables. */
+		char char_key = NULL_CHARACTER;
+
+		/* Initial header message. */
+		printf("Searching and sorting algorithms for arrays.\n");
+
+		/* Populating the array and calling the main menu. */
+		int counter = FillArray(global_array, size_of_global_array, V_TWO);
+		printf("Output results created: [%d].\n", counter);
+		char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
+
+		/* Call to the main menu. */
 		int option = MainMenu(&option);
+
+		/* Program termination messages. */
+		printf("\nDone!\n");
+		printf("This program has ended.\n");
+		char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 
 		return V_ZERO;
 	}
