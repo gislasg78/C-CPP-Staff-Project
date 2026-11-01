@@ -829,7 +829,7 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 					/* Ask the user for the dimensions of the array grid. */
 					printf("\nGrid dimensions\n");
 					grows = *((int *) GetEntry("Enter the number of rows: ", &grows, enm_type_entry_int, enm_type_reset_YES));
-					gcols = *((int *) GetEntry("Enter the number of rows: ", &gcols, enm_type_entry_int, enm_type_reset_YES));
+					gcols = *((int *) GetEntry("Enter the number of columns: ", &gcols, enm_type_entry_int, enm_type_reset_YES));
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 
 					/* Present the arrangement in the form of a grid. */
