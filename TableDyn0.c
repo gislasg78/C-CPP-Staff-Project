@@ -26,10 +26,17 @@ enum enm_type_entry
 		enm_type_entry_sizet
 	};
 
+/* Enumeration for memory area reset system. */
+enum enm_type_reset
+	{
+		enm_type_reset_NO,
+		enm_type_reset_YES
+	};
+
 /* Preliminary function prototypes. */
 size_t create_matrix_3D(const size_t n_matrix, int **** matrix, size_t **matrix_r, size_t ***matrix_rxc);
 size_t destroy_matrix_3D(const size_t n_matrix, int ****matrix, size_t **matrix_r, size_t ***matrix_rxc);
-void *getEntry(void *const voidPtr, enum enm_type_entry enm_type_value_data);
+void *getEntry(void *const voidPtr, const enum enm_type_entry enm_type_value_data, const enum enm_type_reset enm_type_reset_OK);
 char getPause(const char *str_Message);
 size_t view_matrix_3D(const size_t n_matrix, int *** matrix, size_t *matrix_r, size_t **matrix_rxc);
 
@@ -69,7 +76,7 @@ size_t create_matrix_3D(const size_t n_matrix, int **** matrix, size_t **matrix_
 												{
 													printf("For the matrix #: [%lu] of [%lu].\n", m + V_ONE, n_matrix);
 													printf("How many lines will it generate for it? : ");
-													matrix_r[V_ZERO][m] = *((size_t *) getEntry(&matrix_r[V_ZERO][m], enm_type_entry_sizet));
+													matrix_r[V_ZERO][m] = *((size_t *) getEntry(&matrix_r[V_ZERO][m], enm_type_entry_sizet, enm_type_reset_YES));
 
 													/* Dynamic memory is allocated for each matrix to know the number of rows it will have. */
 													if ((matrix[V_ZERO][m] = (int **) calloc (matrix_r[V_ZERO][m], sizeof(size_t *))))	//Number of rows for each matrix.
@@ -80,7 +87,7 @@ size_t create_matrix_3D(const size_t n_matrix, int **** matrix, size_t **matrix_
 																		{
 																			printf("For the matrix #: [%lu] of [%lu], and its row #: [%lu] of [%lu].\n", m + V_ONE, n_matrix, r + V_ONE, matrix_r[V_ZERO][m]);
 																			printf("How many columns will it generate for it and its respective row? : ");
-																			matrix_rxc[V_ZERO][m][r] = *((size_t *) getEntry(&matrix_rxc[V_ZERO][m][r], enm_type_entry_sizet));
+																			matrix_rxc[V_ZERO][m][r] = *((size_t *) getEntry(&matrix_rxc[V_ZERO][m][r], enm_type_entry_sizet, enm_type_reset_YES));
 
 																			/* Dynamic memory is allocated for each row of the matrix in concurrent turn to know the number of columns it will have. */
 																			if ((matrix[V_ZERO][m][r] = (int *) calloc (matrix_rxc[V_ZERO][m][r], sizeof(int))))	//Number of columns per row of each matrix.
@@ -88,7 +95,7 @@ size_t create_matrix_3D(const size_t n_matrix, int **** matrix, size_t **matrix_
 																						for (size_t c = V_ZERO; c < matrix_rxc[V_ZERO][m][r]; c++)	//Cycle through each column of each row of each matrix.
 																							{
 																								printf("Enter a value #: %lu for Matrix #: [%lu] of [%lu] -> (Row: [%lu] of [%lu], Column: [%lu] of [%lu]) : ", items++, m + V_ONE, n_matrix, r + V_ONE, matrix_r[V_ZERO][m], c + V_ONE, matrix_rxc[V_ZERO][m][r]);
-																								matrix[V_ZERO][m][r][c] = *((int *) getEntry(&matrix[V_ZERO][m][r][c], enm_type_entry_int));
+																								matrix[V_ZERO][m][r][c] = *((int *) getEntry(&matrix[V_ZERO][m][r][c], enm_type_entry_int, enm_type_reset_YES));
 
 																								printf("(Matrix: [%lu] of [%lu], Row: [%lu] of [%lu], Column: [%lu] of [%lu]) = [%d].\n", m + V_ONE, n_matrix, r + V_ONE, matrix_r[V_ZERO][m], c + V_ONE, matrix_rxc[V_ZERO][m][r], matrix[V_ZERO][m][r][c]);
 																							}
@@ -196,16 +203,58 @@ size_t destroy_matrix_3D(const size_t n_matrix, int ****matrix, size_t **matrix_
 	}
 
 /* A function responsible for receiving an argument of type (void *) and the type of conversion—specified via an enumerated set—to be performed. */
-void *getEntry(void *const voidPtr, enum enm_type_entry enm_type_value_data)
+void *getEntry(void *const voidPtr, const enum enm_type_entry enm_type_value_data, const enum enm_type_reset enm_type_reset_OK)
 	{
 		/* Preliminary working variables. */
 		int int_chars = V_ZERO;
 		int int_fields = V_ZERO;
 		int int_key = V_ZERO;
 
+		/* Convert the specified enumerated type to an 'integer'. */
+		int option_type_entry = (int) enm_type_value_data;
+
 		/* Validate if the obtained memory addresses are valid. */
 		if (voidPtr)
 			{
+				/* Initialize the specified memory area. */
+				if (enm_type_reset_OK == enm_type_reset_YES)
+					{
+						switch(enm_type_value_data)
+							{
+								case enm_type_entry_char:
+									*((char *) voidPtr) = V_ZERO;
+									break;
+
+								case enm_type_entry_double:
+									*((double *) voidPtr) = V_ZERO;
+									break;
+
+								case enm_type_entry_float:
+									*((float *) voidPtr) = V_ZERO;
+									break;
+
+								case enm_type_entry_int:
+									*((int *) voidPtr) = V_ZERO;
+									break;
+
+								case enm_type_entry_long:
+									*((long *) voidPtr) = V_ZERO;
+									break;
+
+								case enm_type_entry_short:
+									*((short *) voidPtr) = V_ZERO;
+									break;
+
+								case enm_type_entry_sizet:
+									*((size_t *) voidPtr) = V_ZERO;
+									break;
+
+								default:
+									fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
+									break;
+							}
+					}
+
 				/* Validate the data type to be captured. */
 				switch (enm_type_value_data)
 					{
@@ -268,7 +317,7 @@ void *getEntry(void *const voidPtr, enum enm_type_entry enm_type_value_data)
 
 						/* It is specified that if the option is incorrect, an error message should be sent. */
 						default:
-							fprintf(stderr, "\nIncorrect option for capturing a given data type!\n");
+							fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
 							break;
 					}
 
@@ -312,7 +361,7 @@ char getPause(const char *str_Message)
 		printf("%s", str_Message);
 
 		/* Validate data entry as correct. */
-		if ((int_fields = scanf("%c%*c%n", &chr_key, &int_chars)) == V_ONE)
+		if ((int_fields = scanf("%c%*c%n", &chr_key, &int_chars)))
 			{
 				/* Get a correct character value. */
 				printf("\nFields: [%d]. Input value: [%x] : [%d] = [%c]. Characters: [%d]. OK!\n", int_fields, chr_key, chr_key, chr_key, int_chars);
@@ -409,7 +458,7 @@ int main()
 		/* Header messages. */
 		printf("Highly dynamic pointer generator.\n");
 		printf("How many rectangular arrangements do you want to create? : ");
-		n_matrix = *((size_t *) getEntry(&n_matrix, enm_type_entry_sizet));
+		n_matrix = *((size_t *) getEntry(&n_matrix, enm_type_entry_sizet, enm_type_reset_YES));
 
 		/* Function that dynamically creates and captures the three-dimensional matrix. */
 		if ((items = create_matrix_3D(n_matrix, &matrix, &matrix_r, &matrix_rxc)))
