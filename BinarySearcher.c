@@ -803,7 +803,6 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 	{
 		/* Preliminary working variables. */
 		char char_key = NULL_CHARACTER;					//Variable to obtain a pause character.
-		int counter = V_ZERO;						//Accountant.
 		int delta_factor = V_ZERO;					//Delta factor that adjusts the position of the medium.
 		int iteratives = V_ZERO;					//Number of iterations performed.
 		int gcols = V_ZERO, grows = V_ZERO;				//Number of rows and columns for the array grid.
@@ -833,8 +832,8 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 
 					/* Present the arrangement in the form of a grid. */
-					counter = ArrayGrid(global_array, size_of_global_array, grows, gcols);
-					printf("Output results created: [%d].\n", counter);
+					*iter = ArrayGrid(global_array, size_of_global_array, grows, gcols);
+					printf("Output results created: [%d].\n", *iter);
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
@@ -1069,8 +1068,8 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 				case enm_opt_regenerate_original_array:
 					/* Populating the array and calling the main menu. */
 					printf("\nRegenerate original array.\n");
-					counter = FillArray(global_array, size_of_global_array, V_TWO);
-					printf("Output results created: [%d].\n", counter);
+					*iter = FillArray(global_array, size_of_global_array, V_TWO);
+					printf("Output results created: [%d].\n", *iter);
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
