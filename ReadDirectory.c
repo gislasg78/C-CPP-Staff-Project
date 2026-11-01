@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <time.h>
+#include <unistd.h>
 
 /* Symbolic Work Constants. */
 #define	V_ZERO	0
@@ -18,6 +19,7 @@ int main()
 
 	static char s_directory[BUFSIZ];
 	static char s_filename[BUFSIZ];
+	static char s_path[BUFSIZ];
 
 	struct dirent *file = NULL;
 	struct stat fstat;
@@ -25,8 +27,13 @@ int main()
 	size_t counter = V_ZERO;
 	time_t t_elapsed_seconds = time(&t_elapsed_seconds);
 
+	/* Display the current working directory. */
+	getcwd(s_path, sizeof(s_path));
+	printf("Display the current working directory.\n");
+	printf("\'%s\'\n", s_path);
+
 	/* Code block for obtaining information from a given file. */
-	printf("Obtaining information from files.\n");
+	printf("\nObtaining information from files.\n");
 	printf("Type a filename: ");
 	scanf("%[^\n]%*c", s_filename);
 
