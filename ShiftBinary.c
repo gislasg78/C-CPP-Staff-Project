@@ -66,7 +66,7 @@ char getPause(const char *str_Message)
 	printf("%s", str_Message);
 
 	/* Validate data entry as correct. */
-	if ((int_fields = scanf("%c%*c%n", &chr_key, &int_chars)) == V_ONE)
+	if ((int_fields = scanf("%c%*c%n", &chr_key, &int_chars)))
 	{
 		/* Get a correct character value. */
 		printf("\nFields: [%d]. Input value: [%x] : [%d] = [%c]. Characters: [%d]. OK!\n", int_fields, chr_key, chr_key, chr_key, int_chars);
