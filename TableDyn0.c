@@ -337,6 +337,7 @@ void *getEntry(void *const voidPtr, const enum enm_type_entry enm_type_value_dat
 						fprintf(stderr, "Press ENTER to continue...");
 						scanf("%*[^\n]%*c");
 
+						/* We must always clear the input buffer of impurities. */
 						fputs("\nPress the ENTER key to clear the input buffer...", stderr);
 						while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
 					}
