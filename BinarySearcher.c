@@ -24,7 +24,6 @@
 
 /* Symbolic work constants. */
 #define	V_MINUS_ONE		-1
-#define	V_TEN			10
 #define	V_THREE			3
 #define	V_TWO			2
 #define	V_ONE			1
@@ -33,7 +32,8 @@
 /* Enumeration with menu options. */
 enum enm_options
 	{
-		enm_opt_binary_search = V_ONE,
+		enm_opt_array_grid_layout = V_ONE,
+		enm_opt_binary_search,
 		enm_opt_binary_search_delta,
 		enm_opt_binary_search_recursive,
 		enm_opt_dump_all_items,
@@ -41,6 +41,7 @@ enum enm_options
 		enm_opt_interpolation_search,
 		enm_opt_locate_directly,
 		enm_opt_random_seeking,
+		enm_opt_regenerate_original_array,
 		enm_opt_sequential_search,
 		enm_opt_sequential_search_recursive,
 		enm_opt_view_all_items,
@@ -68,9 +69,31 @@ enum enm_type_reset
 		enm_type_reset_YES
 	};
 
-/* Global static array of prime numbers. */
-static int global_array[V_SIZE_ARRAY];
+/* Definition of a global and static array containing the first '232' prime numbers (from: 2 to: 1459) */
+int global_array[V_SIZE_ARRAY] = {
+	2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37,
+	41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89,
+	97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151,
+	157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223,
+	227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281,
+	283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359,
+	367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433,
+	439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503,
+	509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593,
+	599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659,
+	661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743,
+	751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827,
+	829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911,
+	919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997,
+	1009, 1013, 1019, 1021, 1031, 1033, 1039, 1049, 1051, 1061, 1063, 1069,
+	1087, 1091, 1093, 1097, 1103, 1109, 1117, 1123, 1129, 1151, 1153, 1163,
+	1171, 1181, 1187, 1193, 1201, 1213, 1217, 1223, 1229, 1231, 1237, 1249,
+	1259, 1277, 1279, 1283, 1289, 1291, 1297, 1301, 1303, 1307, 1319, 1321,
+	1327, 1361, 1367, 1373, 1381, 1399, 1409, 1423, 1427, 1429, 1433, 1439,
+	1447, 1451, 1453, 1459
+};
 
+/* Global static array of prime numbers. */
 const int size_of_global_array = sizeof(global_array) / sizeof(*global_array);	//Overall determination of the fixed array size.
 
 /* Array of pointers pointing to the main global array. */
@@ -127,6 +150,7 @@ const int *p_array = global_array,
 		};
 
 /* Prototype service functions. */
+int ArrayGrid(const int array[], const int gsize, const int grows, const int gcols);
 int BinarySearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
 int BinarySearchDelta(const int array[], const int start, const int finish, const int target_key, int *delta_factor, int *pos, int *iters);
 int BinarySearchRecursive(const int array[], const int bottom, const int top, const int target_key, int *pos, int *iters, int *itrvs);
@@ -153,6 +177,39 @@ int ViewAllItems(const int array[], const int start, const int finish, const int
 int ViewEachElement(const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, const int size, int *pos, const int calls, int *iter, int *iters, const int random_seed);
 int ViewRandomInterval(const int start, const int finish, const int position, int *random_seed);
 
+/* A function that arranges the calculated array according to a grid of 'n' rows by 'c' columns. */
+int ArrayGrid(const int array[], const int gsize, const int grows, const int gcols)
+	{
+		/* Preliminary Working Variables. */
+		char char_key = NULL_CHARACTER;
+		int counter = V_ZERO;
+		int position = V_ZERO;
+
+		/* Key headline messages. */
+		printf("\nGrid-like layout of the array.\n");
+
+		/* Nested loops or cycles to accommodate the values. */
+		for (int y = V_ZERO; y < grows; y++)
+			{
+				for (int x = V_ZERO; x < gcols; x++, counter++)
+					{
+						/* The 'x' and 'y' positions can be swapped. */
+						position = grows * x + y;
+
+						if (position >= V_ZERO && position < gsize)
+							printf("\t%d\t", *(array + position));
+					}
+
+				printf("\n");
+			}
+
+		printf("[%d] Output results generated.\n", counter);
+
+		char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
+
+		/* Number of items arranged. */
+		return counter;
+	}
 
 /* Improved traditional binary search function. */
 int BinarySearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters)
@@ -225,6 +282,7 @@ int BinarySearchRecursive(const int array[], const int bottom, const int top, co
 					BinarySearchRecursive(array, middle + V_ONE, top, target_key, pos, iters, itrvs);
 			}
 
+		/* Values ​​are returned as the iterations are performed. */
 		*itrvs = iteratives;
 		return *pos;	//The located position of the element is returned as a result.
 	}
@@ -372,6 +430,7 @@ int FillArray(int array[], const int quantity, const int last_number)
 					*(array + counter++) = idx;
 				}
 
+		/* The number of values ​​generated and stored in the array is returned. */
 		return counter;
 	}
 
@@ -713,20 +772,22 @@ int MainMenu(int *option)
 				printf("+===+====+===+====+===+====+===+====+\n");
 				printf("|   Search and Sorting Algorithms.  |\n");
 				printf("+===+====+===+====+===+====+===+====+\n");
-				printf("| [01]. Binary search.              |\n");
-				printf("| [02]. Binary search with delta.   |\n");
-				printf("| [03]. Binary search recursive.    |\n");
-				printf("| [04]. Dump all items.             |\n");
-				printf("| [05]. Fibonacci search.           |\n");
-				printf("| [06]. Interpolation search.       |\n");
-				printf("| [07]. Locate directly.            |\n");
-				printf("| [08]. Random seeking.             |\n");
-				printf("| [09]. Sequential search.          |\n");
-				printf("| [10]. Sequential search recursive.|\n");
-				printf("| [11]. View all items details.     |\n");
-				printf("| [12]. View each element.          |\n");
-				printf("| [13]. View statistics.            |\n");
-				printf("| [14]. Exit this program.          |\n");
+				printf("| [01]. Array Grid-like layout.     |\n");
+				printf("| [02]. Binary search.              |\n");
+				printf("| [03]. Binary search with delta.   |\n");
+				printf("| [04]. Binary search recursive.    |\n");
+				printf("| [05]. Dump all items.             |\n");
+				printf("| [06]. Fibonacci search.           |\n");
+				printf("| [07]. Interpolation search.       |\n");
+				printf("| [08]. Locate directly.            |\n");
+				printf("| [09]. Random seeking.             |\n");
+				printf("| [10]. Regenerate original array.  |\n");
+				printf("| [11]. Sequential search.          |\n");
+				printf("| [12]. Sequential search recursive.|\n");
+				printf("| [13]. View all items details.     |\n");
+				printf("| [14]. View each element.          |\n");
+				printf("| [15]. View statistics.            |\n");
+				printf("| [16]. Exit this program.          |\n");
 				printf("+===+====+===+====+===+====+===+====+\n");
 				printf("Choose an option: ");
 
@@ -742,15 +803,17 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 	{
 		/* Preliminary working variables. */
 		char char_key = NULL_CHARACTER;					//Variable to obtain a pause character.
+		int counter = V_ZERO;						//Accountant.
 		int delta_factor = V_ZERO;					//Delta factor that adjusts the position of the medium.
 		int iteratives = V_ZERO;					//Number of iterations performed.
+		int gcols = V_ZERO, grows = V_ZERO;				//Number of rows and columns for the array grid.
 		int middle_bottom = V_ZERO, middle_top = V_ZERO;		//Positions for interpolations.
 		int bottom = V_ZERO, top = size_of_global_array + V_MINUS_ONE;	//Lower and upper bounds of the array.
 		int size = size_of_global_array;				//Calculated array size.
 
 		/* Convert integer value to enumerated value. */
 		enm_option = (enum enm_options) *value;
-		if (enm_option >= enm_opt_binary_search && enm_option <= enm_opt_view_each_element)
+		if (enm_option >= enm_opt_array_grid_layout && enm_option <= enm_opt_view_each_element)
 			{
 				(*calls)++;
 				*iter = V_ZERO;
@@ -761,6 +824,20 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 		/* Selection of cases with the enumerated value obtained. */
 		switch (enm_option)
 			{
+				/* Grid-like layout of the array. */
+				case enm_opt_array_grid_layout:
+					/* Ask the user for the dimensions of the array grid. */
+					printf("\nGrid dimensions\n");
+					grows = *((int *) GetEntry("Enter the number of rows: ", &grows, enm_type_entry_int, enm_type_reset_YES));
+					gcols = *((int *) GetEntry("Enter the number of rows: ", &gcols, enm_type_entry_int, enm_type_reset_YES));
+					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
+
+					/* Present the arrangement in the form of a grid. */
+					counter = ArrayGrid(global_array, size_of_global_array, grows, gcols);
+					printf("Output results created: [%d].\n", counter);
+					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
+					break;
+
 				/* We call the traditional binary search function. */
 				case enm_opt_binary_search:
 					if (GetValidInputs(start, finish, target_key, &bottom, &top))
@@ -985,6 +1062,15 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 							GetItem("Random seeking", global_array, *start, *finish, *target_key, *position, *iter);
 						}
 
+					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
+					break;
+
+				/* Regenerate original array. */
+				case enm_opt_regenerate_original_array:
+					/* Populating the array and calling the main menu. */
+					printf("\nRegenerate original array.\n");
+					counter = FillArray(global_array, size_of_global_array, V_TWO);
+					printf("Output results created: [%d].\n", counter);
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
 
@@ -1302,11 +1388,6 @@ int main()
 
 		/* Initial header message. */
 		printf("Searching and sorting algorithms for arrays.\n");
-
-		/* Populating the array and calling the main menu. */
-		int counter = FillArray(global_array, size_of_global_array, V_TWO);
-		printf("Output results created: [%d].\n", counter);
-		char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 
 		/* Call to the main menu. */
 		int option = MainMenu(&option);
