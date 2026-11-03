@@ -37,7 +37,7 @@ enum enm_type_reset
 size_t create_matrix_3D(const size_t n_matrix, int **** matrix, size_t **matrix_r, size_t ***matrix_rxc);
 size_t destroy_matrix_3D(const size_t n_matrix, int ****matrix, size_t **matrix_r, size_t ***matrix_rxc);
 void *getEntry(void *const voidPtr, const enum enm_type_entry enm_type_value_data, const enum enm_type_reset enm_type_reset_OK);
-char getPause(const char *str_Message);
+char getPause(const char *const str_Message);
 size_t view_matrix_3D(const size_t n_matrix, int *** matrix, size_t *matrix_r, size_t **matrix_rxc);
 
 /* This function creates and captures both the three-dimensional dynamic variable array
@@ -350,7 +350,7 @@ void *getEntry(void *const voidPtr, const enum enm_type_entry enm_type_value_dat
 	}
 
 /* Function that performs a specified pause with a warning message. */
-char getPause(const char *str_Message)
+char getPause(const char *const str_Message)
 	{
 		/* Preliminary working variables. */
 		char chr_key = NULL_CHARACTER;
@@ -362,7 +362,7 @@ char getPause(const char *str_Message)
 		printf("%s", str_Message);
 
 		/* Validate data entry as correct. */
-		if ((int_fields = scanf("%c%*c%n", &chr_key, &int_chars)))
+		if ((int_fields = scanf("%c%*c%n", &chr_key, &int_chars)) == V_ONE)
 			{
 				/* Get a correct character value. */
 				printf("\nFields: [%d]. Input value: [%x] : [%d] = [%c]. Characters: [%d]. OK!\n", int_fields, chr_key, chr_key, chr_key, int_chars);
