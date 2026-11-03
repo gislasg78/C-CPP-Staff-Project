@@ -159,7 +159,7 @@ int *Fibonacci_Series_Numbers(const int max_number, size_t *qty_items, int **Fib
 int FibonacciSearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
 int FillArray(int array[], const int quantity, const int last_number);
 int GetElement(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, const int size, const int position, const int calls, const int iterations, const int iters, const int random_seed);
-void *GetEntry(const char *str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, enum enm_type_reset enm_type_reset_OK);
+void *GetEntry(const char *const str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, const enum enm_type_reset enm_type_reset_OK);
 int GetItem(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int position, const int iterations);
 int GetRandomInterval(const int start, const int finish, int *random_seed);
 double GetRandomNumber(int *random_seed);
@@ -488,7 +488,7 @@ int GetElement(const char *str_Message, const int array[], const int start, cons
 	}
 
 /* Function that gets a correct type value depending on its option. */
-void *GetEntry(const char *str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, enum enm_type_reset enm_type_reset_OK)
+void *GetEntry(const char *const str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, const enum enm_type_reset enm_type_reset_OK)
 	{
 		/* Preliminary working variables. */
 		int int_chars = V_ZERO;
