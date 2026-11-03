@@ -12,6 +12,7 @@
 
 /* Symbolic Work Constants. */
 #define	V_ARRAY_SIZE	261
+#define	V_ONE		1
 #define	V_ZERO		0
 
 /* Function that compares two elements of an array. */
@@ -21,7 +22,7 @@ int compare(const void *const lhs, const void *const rhs)
 	}
 
 /* Function that performs a specified pause with a warning message. */
-char getPause(const char *str_Message)
+char getPause(const char *const str_Message)
 	{
 		/* Preliminary working variables. */
 		char chr_key = NULL_CHARACTER;
@@ -33,7 +34,7 @@ char getPause(const char *str_Message)
 		printf("%s", str_Message);
 
 		/* Validate data entry as correct. */
-		if ((int_fields = scanf("%c%*c%n", &chr_key, &int_chars)))
+		if ((int_fields = scanf("%c%*c%n", &chr_key, &int_chars)) == V_ONE)
 			{
 				/* Get a correct character value. */
 				printf("\nFields: [%d]. Input value: [%x] : [%d] = [%c]. Characters: [%d]. OK!\n", int_fields, chr_key, chr_key, chr_key, int_chars);
@@ -117,6 +118,7 @@ int main()
 		const size_t data_size = sizeof(*array);
 		const size_t array_num_elements = array_size / data_size;
 
+		/* Initial header messages. */
 		printf("Array Sorting and Searching Program.\n");
 
 		/* The original array is printed. */
