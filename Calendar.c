@@ -8,7 +8,7 @@
 #include <time.h>
 
 /* Macro definition to encapsulate time. */
-#define SECONDS(hour, minute, second)	(((hour) * V_3600) + ((minute) * V_60) + (second))
+#define SECONDS(hour, minute, second)	(((hour) * (V_3600)) + ((minute) * (V_60)) + (second))
 
 /* Symbolic work constants. */
 #define	CARRIAGE_RETURN		'\n'
@@ -47,6 +47,7 @@
 #define	V_TWO			2
 #define	V_ZERO			0
 
+/* Symbolic constant for obtaining the year from a 'struct tm' type structure. */
 #define	V_REFERENCE_YEAR	1900
 
 /* List of types with the options to try for this Calendar program. */
@@ -94,13 +95,13 @@ enum enm_type_reset
 	};
 
 /* Global tables of the names of the days of the week. */
-static char day_name[V_SEVEN][V_TEN] = {"Saturday", "Sunday", "Monday",
-					"Tuesday", "Wednesday", "Thursday",
-					"Friday"};
+char day_name[V_SEVEN][V_TEN] = {"Saturday", "Sunday", "Monday",
+				 "Tuesday", "Wednesday", "Thursday",
+				 "Friday"};
 
-static char day_week[V_SEVEN][V_TEN] = {"Sunday", "Monday", "Tuesday",
-					"Wednesday", "Thursday", "Friday",
-					"Saturday"};
+char day_week[V_SEVEN][V_TEN] = {"Sunday", "Monday", "Tuesday",
+				 "Wednesday", "Thursday", "Friday",
+				 "Saturday"};
 
 /* Global table of the names of the months of the year. */
 struct months_table
@@ -153,8 +154,7 @@ void EasterSunday(const int year, int *month_east, int *day_east);
 void EntryDate(int *day, int *month, int *year);
 void EntryTime(int *hour, int *minute, int *second);
 long int GetCurrentDateTimeInfo(int *julianyeardays, int *dayoftheweek, int *day, int *month, int *year, int *hour, int *minute, int *second);
-void *GetEntry(void *const voidPtr, const enum enm_type_entry enm_type_value_data, const enum enm_type_reset enm_type_reset_OK);
-char GetPause(const char *const str_Message);
+void *GetEntry(const char *const str_Message, void *const void_var_address, const enum enm_type_entry enm_type_value_data, const enum enm_type_reset enm_type_reset_OK);
 int JulianYear(const int day, const int month, const int year, int *days_rest);
 int LeapYear(const int year);
 int Menu(int *start_day, int *start_month, int *start_year, int *day, int *month, int *year, int *start_hour, int *start_minute, int *start_second, int *hour, int *minute, int *second, int *option, int *counter, char *zodiac_name);
@@ -175,12 +175,14 @@ int ZodiacSign(const int day, const int month, int *zodiac_number, char *zodiac_
 int main()
 	{
 		/* Preliminary working variables. */
+		char chr_key = NULL_CHARACTER;
 		int counter = V_ZERO;
 		int day = V_ONE, month = V_ONE, year = V_ONE;
 		int start_day = V_ONE, start_month = V_ONE, start_year = V_ONE;
 		int start_hour = V_ZERO, start_minute = V_ZERO, start_second = V_ZERO;
 		int hour = V_ZERO, minute = V_ZERO, second = V_ZERO;
 
+		/* Character array for storing the name of the zodiac sign for a given, specific date. */
 		char zodiac_name[V_TWELVE] = 	{
 							NULL_CHARACTER, NULL_CHARACTER, NULL_CHARACTER, NULL_CHARACTER,
 							NULL_CHARACTER, NULL_CHARACTER, NULL_CHARACTER, NULL_CHARACTER,
@@ -193,7 +195,9 @@ int main()
 		/* Program termination messages. */
 		printf("\nDone!\n");
 		printf("This program has ended.\n");
-		GetPause("Press the ENTER key to continue...");
+
+		/* Wait for a key to be pressed to continue. */
+		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 
 		return V_ZERO;
 	}
@@ -201,18 +205,21 @@ int main()
 /* Function that calculates the number of the day of the week that corresponds to a date. */
 int DayOfWeek(const int day, int month, int year)
 	{
+		/* Procedural formula for calculating the name of the day of the week for a given date. */
 		if (month <= V_TWO)
 			{
 				month += V_TWELVE;
 				year--;
 			}
 
+		/* Return the result of the arithmetic operation that yields the day-of-the-week number for a given date. */
 		return ((day + V_TWO * month + V_THREE * (month + V_ONE) / V_FIVE + year + year / V_FOUR - year / V_100 + year / V_400 + V_TWO) % V_SEVEN);
 	}
 
 /* Number of days in a given month and year. */
 int DaysInMonth(const int year, const int month)
 	{
+		/* Preliminary working variables. */
 		int limitdays = months_array[month - V_ONE].month_totaldays;
 
 		if ((month == V_TWO) && (LeapYear(year))) limitdays = V_29;
@@ -286,6 +293,7 @@ int DifferenceBetweenDates(int start_first_day, int start_first_month, int start
 					}
 			}
 
+		/* Returns the number of days between two dates. */
 		return difference_total_number_of_days;
 	}
 
@@ -354,6 +362,7 @@ int DifferenceBetweenTimes(int start_first_hour, int start_first_minute, int sta
 					}
 			}
 
+		/* Returns the number of seconds between two times. */
 		return difference_total_number_of_seconds;
 	}
 
@@ -391,11 +400,11 @@ void EntryDate(int *day, int *month, int *year)
 		printf("\nDate validity checker.\n");
 		printf("Please enter the following requested data.\n");
 		printf("Year   (%04d ->) : ", V_ONE);
-		*year = *((int *) GetEntry(year, enm_type_entry_int, enm_type_reset_YES));
+		*year = *((int *) GetEntry("", year, enm_type_entry_int, enm_type_reset_YES));
 		printf("Month  (%02d - %02d) : ", V_ONE, V_TWELVE);
-		*month = *((int *) GetEntry(month, enm_type_entry_int, enm_type_reset_YES));
+		*month = *((int *) GetEntry("", month, enm_type_entry_int, enm_type_reset_YES));
 		printf("Day    (%02d - %02d) : ", V_ONE, V_31);
-		*day = *((int *) GetEntry(day, enm_type_entry_int, enm_type_reset_YES));
+		*day = *((int *) GetEntry("", day, enm_type_entry_int, enm_type_reset_YES));
 	}
 
 /* Function that receives the date data. */
@@ -404,17 +413,18 @@ void EntryTime(int *hour, int *minute, int *second)
 		printf("\nTime validity checker.\n");
 		printf("Please enter the following requested data.\n");
 		printf("Hour   (%02d - %02d) : ", V_ZERO, V_23);
-		*hour = *((int *) GetEntry(hour, enm_type_entry_int, enm_type_reset_YES));
+		*hour = *((int *) GetEntry("", hour, enm_type_entry_int, enm_type_reset_YES));
 		printf("Minute (%02d - %02d) : ", V_ZERO, V_59);
-		*minute = *((int *) GetEntry(minute, enm_type_entry_int, enm_type_reset_YES));
+		*minute = *((int *) GetEntry("", minute, enm_type_entry_int, enm_type_reset_YES));
 		printf("Second (%02d - %02d) : ", V_ZERO, V_59);
-		*second = *((int *) GetEntry(second, enm_type_entry_int, enm_type_reset_YES));
+		*second = *((int *) GetEntry("", second, enm_type_entry_int, enm_type_reset_YES));
 	}
 
 /* Get Current Date and Time Information. */
 long int GetCurrentDateTimeInfo(int *julianyeardays, int *dayoftheweek, int *day, int *month, int *year, int *hour, int *minute, int *second)
 	{
 		/* Preliminary working variables. */
+		char chr_key = NULL_CHARACTER;
 		clock_t clock_ticks_latency = clock();
 		time_t t_tm_seconds = time(&t_tm_seconds);
 		struct tm *strct_tm_dt = localtime(&t_tm_seconds);
@@ -460,13 +470,15 @@ long int GetCurrentDateTimeInfo(int *julianyeardays, int *dayoftheweek, int *day
 		if (minute) *minute = strct_tm_dt->tm_min;
 		if (second) *second = strct_tm_dt->tm_sec;
 
-		GetPause("Press ENTER key to continue...");
+		/* Wait for a key to be pressed to continue. */
+		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 
+		/* Return a 'struct tm' structure containing the current system time. */
 		return t_tm_seconds;
 	}
 
 /* A function responsible for receiving an argument of type (void *) and the type of conversion—specified via an enumerated set—to be performed. */
-void *GetEntry(void *const voidPtr, const enum enm_type_entry enm_type_value_data, const enum enm_type_reset enm_type_reset_OK)
+void *GetEntry(const char *const str_Message, void *const void_var_address, const enum enm_type_entry enm_type_value_data, const enum enm_type_reset enm_type_reset_OK)
 	{
 		/* Preliminary working variables. */
 		int int_chars = V_ZERO;
@@ -477,7 +489,7 @@ void *GetEntry(void *const voidPtr, const enum enm_type_entry enm_type_value_dat
 		int option_type_entry = (int) enm_type_value_data;
 
 		/* Validate if the obtained memory addresses are valid. */
-		if (voidPtr)
+		if (void_var_address)
 			{
 				/* Initialize the specified memory area. */
 				if (enm_type_reset_OK == enm_type_reset_YES)
@@ -485,31 +497,31 @@ void *GetEntry(void *const voidPtr, const enum enm_type_entry enm_type_value_dat
 						switch(enm_type_value_data)
 							{
 								case enm_type_entry_char:
-									*((char *) voidPtr) = V_ZERO;
+									*((char *) void_var_address) = V_ZERO;
 									break;
 
 								case enm_type_entry_double:
-									*((double *) voidPtr) = V_ZERO;
+									*((double *) void_var_address) = V_ZERO;
 									break;
 
 								case enm_type_entry_float:
-									*((float *) voidPtr) = V_ZERO;
+									*((float *) void_var_address) = V_ZERO;
 									break;
 
 								case enm_type_entry_int:
-									*((int *) voidPtr) = V_ZERO;
+									*((int *) void_var_address) = V_ZERO;
 									break;
 
 								case enm_type_entry_long:
-									*((long *) voidPtr) = V_ZERO;
+									*((long *) void_var_address) = V_ZERO;
 									break;
 
 								case enm_type_entry_short:
-									*((short *) voidPtr) = V_ZERO;
+									*((short *) void_var_address) = V_ZERO;
 									break;
 
 								case enm_type_entry_sizet:
-									*((size_t *) voidPtr) = V_ZERO;
+									*((size_t *) void_var_address) = V_ZERO;
 									break;
 
 								default:
@@ -518,62 +530,65 @@ void *GetEntry(void *const voidPtr, const enum enm_type_entry enm_type_value_dat
 							}
 					}
 
+				/* Incoming message. */
+				printf("%s", str_Message);
+
 				/* Validate the data type to be captured. */
 				switch (enm_type_value_data)
 					{
 						/* Get a correct character value. */
 						case enm_type_entry_char:
-							if ((int_fields = scanf("%c%*c%n", (char *) voidPtr, &int_chars)))
+							if ((int_fields = scanf("%c%*c%n", (char *) void_var_address, &int_chars)))
 								{
-									printf("\nFields: [%d]. Input value: [%x] : [%d] = [%c]. Characters: [%d]. OK!\n", int_fields, *((char *) voidPtr), *((char *) voidPtr), *((char *) voidPtr), int_chars);
+									printf("\nFields: [%d]. Input value: [%x] : [%d] = [%c]. Characters: [%d]. OK!\n", int_fields, *((char *) void_var_address), *((char *) void_var_address), *((char *) void_var_address), int_chars);
 								}
 							break;
 
 						/* Get a correct floating-point double precision value. */
 						case enm_type_entry_double:
-							if ((int_fields = scanf("%lf%*c%n", (double *) voidPtr, &int_chars)))
+							if ((int_fields = scanf("%lf%*c%n", (double *) void_var_address, &int_chars)))
 								{
-									printf("\nFields: [%d]. Input value: [%lf]. Characters: [%d]. OK!\n", int_fields, *((double *) voidPtr), int_chars);
+									printf("\nFields: [%d]. Input value: [%lf]. Characters: [%d]. OK!\n", int_fields, *((double *) void_var_address), int_chars);
 								}
 							break;
 
 						/* Get a correct floating-point single precision value. */
 						case enm_type_entry_float:
-							if ((int_fields = scanf("%f%*c%n", (float *) voidPtr, &int_chars)))
+							if ((int_fields = scanf("%f%*c%n", (float *) void_var_address, &int_chars)))
 								{
-									printf("\nFields: [%d]. Input value: [%f]. Characters: [%d]. OK!\n", int_fields, (double) *((float *) voidPtr), int_chars);
+									printf("\nFields: [%d]. Input value: [%f]. Characters: [%d]. OK!\n", int_fields, (double) *((float *) void_var_address), int_chars);
 								}
 							break;
 
 						/* Get a correct integer value. */
 						case enm_type_entry_int:
-							if ((int_fields = scanf("%d%*c%n", (int *) voidPtr, &int_chars)))
+							if ((int_fields = scanf("%d%*c%n", (int *) void_var_address, &int_chars)))
 								{
-									printf("\nFields: [%d]. Input value: [%d]. Characters: [%d]. OK!\n", int_fields, *((int *) voidPtr), int_chars);
+									printf("\nFields: [%d]. Input value: [%d]. Characters: [%d]. OK!\n", int_fields, *((int *) void_var_address), int_chars);
 								}
 							break;
 
 						/* Get a correct long int value. */
 						case enm_type_entry_long:
-							if ((int_fields = scanf("%ld%*c%n", (long *) voidPtr, &int_chars)))
+							if ((int_fields = scanf("%ld%*c%n", (long *) void_var_address, &int_chars)))
 								{
-									printf("\nFields: [%d]. Input value: [%ld]. Characters: [%d]. OK!\n", int_fields, *((long *) voidPtr), int_chars);
+									printf("\nFields: [%d]. Input value: [%ld]. Characters: [%d]. OK!\n", int_fields, *((long *) void_var_address), int_chars);
 								}
 							break;
 
 						/* Get a correct short int value. */
 						case enm_type_entry_short:
-							if ((int_fields = scanf("%hi%*c%n", (short *) voidPtr, &int_chars)))
+							if ((int_fields = scanf("%hi%*c%n", (short *) void_var_address, &int_chars)))
 								{
-									printf("\nFields: [%d]. Input value: [%hi]. Characters: [%d]. OK!\n", int_fields, *((short *) voidPtr), int_chars);
+									printf("\nFields: [%d]. Input value: [%hi]. Characters: [%d]. OK!\n", int_fields, *((short *) void_var_address), int_chars);
 								}
 							break;
 
 						/* Get a correct unsigned long int value. */
 						case enm_type_entry_sizet:
-							if ((int_fields = scanf("%lu%*c%n", (size_t *) voidPtr, &int_chars)))
+							if ((int_fields = scanf("%lu%*c%n", (size_t *) void_var_address, &int_chars)))
 								{
-									printf("\nFields: [%d]. Input value: [%lu]. Characters: [%d]. OK!\n", int_fields, *((size_t *) voidPtr), int_chars);
+									printf("\nFields: [%d]. Input value: [%lu]. Characters: [%d]. OK!\n", int_fields, *((size_t *) void_var_address), int_chars);
 								}
 							break;
 
@@ -608,51 +623,7 @@ void *GetEntry(void *const voidPtr, const enum enm_type_entry enm_type_value_dat
 			fprintf(stderr, "\nThe memory address to hold the variable is not valid!\n");
 
 		/* Return of void pointer key value. */
-		return voidPtr;
-	}
-
-/* Function that performs a specified pause with a warning message. */
-char GetPause(const char *const str_Message)
-	{
-		/* Preliminary working variables. */
-		char chr_key = NULL_CHARACTER;
-		int int_chars = V_ZERO;
-		int int_fields = V_ZERO;
-		int int_key = V_ZERO;
-
-		/* Header message. */
-		printf("%s", str_Message);
-
-		/* Validate data entry as correct. */
-		if ((int_fields = scanf("%c%*c%n", &chr_key, &int_chars)) == V_ONE)
-			{
-				/* Get a correct character value. */
-				printf("\nFields: [%d]. Input value: [%x] : [%d] = [%c]. Characters: [%d]. OK!\n", int_fields, chr_key, chr_key, chr_key, int_chars);
-			}
-		else
-			{
-				/* Check whether an End-of-File condition occurred during keyboard data input. */
-				if (feof(stdin))
-					{
-						fprintf(stderr, "\nEnd of File (EOF) detected in data entry!\n");
-						clearerr(stdin);
-						fflush(stdin);
-					}
-
-				/* Get an incorrect entried value. */
-				fputs("\nThe value entered is not valid!\n", stderr);
-				fprintf(stderr, "Press ENTER to continue...");
-				scanf("%*[^\n]%*c");
-
-				/* Clear the input buffer until a carriage return followed by a line feed, or an end-of-file, is encountered. */
-				fputs("\nPress the ENTER key to clear the input buffer...", stderr);
-				while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
-
-				chr_key = (char) int_key;
-			}
-
-		/* Return of key value. */
-		return chr_key;
+		return void_var_address;
 	}
 
 /* Function that obtains the current Julian Year and its remainder days. */
@@ -717,13 +688,14 @@ int Menu(int *start_day, int *start_month, int *start_year, int *day, int *month
 				printf("Option: ");
 
 				/* Converting an integer to an enumerated type. */
-				*option = *((int *) GetEntry(option, enm_type_entry_int, enm_type_reset_YES));
+				*option = *((int *) GetEntry("", option, enm_type_entry_int, enm_type_reset_YES));
 				enm_CO_myOption = (enum enm_CalendarOptions) *option;
 
 				/* Execute the requested operation. */
 				*option = SelectMenu(start_day, start_month, start_year, day, month, year, start_hour, start_minute, start_second, hour, minute, second, enm_CO_myOption, counter, zodiac_name);
 			}
 
+		/* Return the last selected or chosen option as the return value. */
 		return *option;
 	}
 
@@ -731,6 +703,8 @@ int Menu(int *start_day, int *start_month, int *start_year, int *day, int *month
 int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int *month, int *year, int *start_hour, int *start_minute, int *start_second, int *hour, int *minute, int *second, enum enm_CalendarOptions enm_CO_myOption, int *counter, char *zodiac_name)
 	{
 		/* Preliminary working variables. */
+		char chr_key = NULL_CHARACTER;
+
 		int start_first_day = V_ZERO, start_first_month = V_ZERO, start_first_year = V_ZERO;
 		int first_day = V_ZERO, first_month = V_ZERO, first_year = V_ZERO;
 		int start_second_day = V_ZERO, start_second_month = V_ZERO, start_second_year = V_ZERO;
@@ -970,9 +944,13 @@ int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int 
 					break;
 			}
 
+		/* Number and quantity of operations carried out and performed. */
 		printf("\nOperations performed: [%d].\n", *counter);
-		GetPause("Press the ENTER key to continue...");
 
+		/* Wait for a key to be pressed to continue. */
+		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
+
+		/* Return the last requested option as a C enumeration. */
 		return (int) enm_CO_myOption;
 	}
 
@@ -1051,12 +1029,14 @@ int SumOfDays(const int start_day, const int start_month, const int start_year, 
 
                 cumofdays += day;
 
+		/* Returns the sum of the number of days corresponding to two given dates. */
 		return cumofdays;
 	}
 
 /* Function that determines the number of seconds from an initial time to an final time. */
 int SumOfSeconds(const int start_hour, const int start_minute, const int start_second, const int first_hour, const int first_minute, const int first_second)
 	{
+		/* Preliminary working variables. */
 		int total_number_of_seconds_start_time = V_ZERO;
 		int total_number_of_seconds_finish_time = V_ZERO;
 
@@ -1069,12 +1049,16 @@ int SumOfSeconds(const int start_hour, const int start_minute, const int start_s
 /* This function validates that a date is perfectly correct. */
 int ValidDate(const int day, const int month, const int year)
 	{
+		/* Preliminary Working Variables. */
+		char chr_key = NULL_CHARACTER;
 		int limitdays = V_ZERO, yearB = V_ZERO, monthB = V_ZERO, dayB = V_ZERO;
 
+		/* Date validations. */
 		yearB = (year >= V_ONE);
 		monthB = (month >= V_ONE && month <= V_TWELVE);
 		dayB = (day >= V_ONE && day <= V_31);
 
+		/* Determine validations for a given date. */
 		if (yearB)
 			if (monthB)
 				if (dayB)
@@ -1095,24 +1079,32 @@ int ValidDate(const int day, const int month, const int year)
 		else
 			printf("\nInvalid year: [%d]. Out of range: [>=%d].\n", year, V_ONE);
 
+		/* Verify whether the day, month, and year of the given date fall within their respective ranges. */
 		if (!(dayB && monthB && yearB))
 			{
 				printf("\nData not valid for the date.\n");
-				GetPause("Press ENTER key to continue...");
+
+				/* Wait for a key to be pressed to continue. */
+				chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 			}
 
+		/* Return the result if and only if they are within the specified ranges. */
 		return (dayB && monthB && yearB);
 	}
 
 /* This function validates that a time is perfectly correct. */
 int ValidTime(const int hour, const int minute, const int second)
 	{
+		/* Preliminary Working Variables. */
+		char chr_key = NULL_CHARACTER;
 		int hourB = V_ZERO, minuteB = V_ZERO, secondB = V_ZERO;
 
+		/* Time validations. */
 		hourB = (hour >= V_ZERO && hour <= V_23);
 		minuteB = (minute >= V_ZERO && minute <= V_59);
 		secondB = (second >= V_ZERO && second <= V_59);
 
+		/* Determine validations for a given time. */
 		if (hourB)
 			if (minuteB)
 				if (secondB)
@@ -1124,18 +1116,23 @@ int ValidTime(const int hour, const int minute, const int second)
 		else
 			printf("\nInvalid hour: [%d]. Out of range: [%d] and [%d].\n", hour, V_ZERO, V_23);
 
+		/* Verify whether the hour, minute and second of the given time fall within their respective ranges. */
 		if (!(hourB && minuteB && secondB))
 			{
 				printf("\nData not valid for the time.\n");
-				GetPause("Press ENTER key to continue...");
+
+				/* Wait for a key to be pressed to continue. */
+				chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 			}
 
+		/* Return the result if and only if they are within the specified ranges. */
 		return (hourB && minuteB && secondB);
 	}
 
 /* Function that writes a correctly validated date. */
 void WriteDate(const int day, const int month, const int year)
 	{
+		/* Preliminary working variables. */
 		int d = V_ZERO, quarter = V_ZERO;
 
 		d = DayOfWeek(day, month, year);
@@ -1172,13 +1169,16 @@ int ZodiacSign(const int day, const int month, int *zodiac_number, char *zodiac_
 		/* Preliminary working variables. */
 		int idx = V_ZERO;
 
+		/* Iterative process to determine which zodiac sign a given date falls under. */
 		for (idx = V_ZERO; idx < V_TWELVE; idx++)
 			{
+				/* Specific validating variables. */
 				int start_month = zodiac_signs_array[idx].start_zodiac_month;
 				int start_day = zodiac_signs_array[idx].start_zodiac_day;
 				int finish_month = zodiac_signs_array[idx].finish_zodiac_month;
 				int finish_day = zodiac_signs_array[idx].finish_zodiac_day;
 
+				/* Core validations to check whether a date falls within a zodiacal period. */
 				if ((month == start_month && day >= start_day) ||
 				    (month == finish_month && day <= finish_day) ||
 				    (month > start_month && month < finish_month))
@@ -1194,5 +1194,6 @@ int ZodiacSign(const int day, const int month, int *zodiac_number, char *zodiac_
 					}
 			}
 
+		/* Return the index number for the zodiac sign found. */
 		return (idx >= V_ZERO && idx < V_TWELVE);
 	}
