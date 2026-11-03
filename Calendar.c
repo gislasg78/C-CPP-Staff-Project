@@ -74,6 +74,25 @@ enum enm_CalendarOptions
 		enm_CO_exit_menu
 	};
 
+/* Enumeration with type entry variables and its reseting. */
+enum enm_type_entry
+	{
+		enm_type_entry_char,
+		enm_type_entry_double,
+		enm_type_entry_float,
+		enm_type_entry_int,
+		enm_type_entry_long,
+		enm_type_entry_short,
+		enm_type_entry_sizet
+	};
+
+/* Enumeration for memory area reset system. */
+enum enm_type_reset
+	{
+		enm_type_reset_NO,
+		enm_type_reset_YES
+	};
+
 /* Global tables of the names of the days of the week. */
 static char day_name[V_SEVEN][V_TEN] = {"Saturday", "Sunday", "Monday",
 					"Tuesday", "Wednesday", "Thursday",
@@ -134,8 +153,8 @@ void EasterSunday(const int year, int *month_east, int *day_east);
 void EntryDate(int *day, int *month, int *year);
 void EntryTime(int *hour, int *minute, int *second);
 long int GetCurrentDateTimeInfo(int *julianyeardays, int *dayoftheweek, int *day, int *month, int *year, int *hour, int *minute, int *second);
-int GetEntry(int *data_value);
-int GetResponse(const char *str_Message);
+void *GetEntry(void *const voidPtr, const enum enm_type_entry enm_type_value_data, const enum enm_type_reset enm_type_reset_OK);
+char GetPause(const char *const str_Message);
 int JulianYear(const int day, const int month, const int year, int *days_rest);
 int LeapYear(const int year);
 int Menu(int *start_day, int *start_month, int *start_year, int *day, int *month, int *year, int *start_hour, int *start_minute, int *start_second, int *hour, int *minute, int *second, int *option, int *counter, char *zodiac_name);
@@ -155,7 +174,7 @@ int ZodiacSign(const int day, const int month, int *zodiac_number, char *zodiac_
 //Main function.
 int main()
 	{
-		//Preliminary working variables.
+		/* Preliminary working variables. */
 		int counter = V_ZERO;
 		int day = V_ONE, month = V_ONE, year = V_ONE;
 		int start_day = V_ONE, start_month = V_ONE, start_year = V_ONE;
@@ -168,12 +187,18 @@ int main()
 							NULL_CHARACTER, NULL_CHARACTER, NULL_CHARACTER, NULL_CHARACTER
 						};
 
+		/* Call to the main menu of this program. */
 		int option = Menu(&start_day, &start_month, &start_year, &day, &month, &year, &start_hour, &start_minute, &start_second, &hour, &minute, &second, &option, &counter, zodiac_name);
+
+		/* Program termination messages. */
+		printf("\nDone!\n");
+		printf("This program has ended.\n");
+		GetPause("Press the ENTER key to continue...");
 
 		return V_ZERO;
 	}
 
-//Function that calculates the number of the day of the week that corresponds to a date.
+/* Function that calculates the number of the day of the week that corresponds to a date. */
 int DayOfWeek(const int day, int month, int year)
 	{
 		if (month <= V_TWO)
@@ -185,7 +210,7 @@ int DayOfWeek(const int day, int month, int year)
 		return ((day + V_TWO * month + V_THREE * (month + V_ONE) / V_FIVE + year + year / V_FOUR - year / V_100 + year / V_400 + V_TWO) % V_SEVEN);
 	}
 
-//Number of days in a given month and year.
+/* Number of days in a given month and year. */
 int DaysInMonth(const int year, const int month)
 	{
 		int limitdays = months_array[month - V_ONE].month_totaldays;
@@ -195,13 +220,14 @@ int DaysInMonth(const int year, const int month)
 		return limitdays;
 	}
 
-//Function that calculates the difference between two given dates.
+/* Function that calculates the difference between two given dates. */
 int DifferenceBetweenDates(int start_first_day, int start_first_month, int start_first_year, int first_day, int first_month, int first_year, int start_second_day, int start_second_month, int start_second_year, int second_day, int second_month, int second_year)
 	{
 		/* Preliminary working variables. */
 		int difference_total_number_of_days = V_ZERO;
 		int total_number_of_days_first_date = V_ZERO, total_number_of_days_second_date = V_ZERO;
 
+		/* Initial header messages. */
 		printf("Calculating the difference between two specific dates.\n");
 
 		/* First calculation date. */
@@ -263,7 +289,7 @@ int DifferenceBetweenDates(int start_first_day, int start_first_month, int start
 		return difference_total_number_of_days;
 	}
 
-//Function that calculates the difference between two given times.
+/* Function that calculates the difference between two given times. */
 int DifferenceBetweenTimes(int start_first_hour, int start_first_minute, int start_first_second, int first_hour, int first_minute, int first_second, int start_second_hour, int start_second_minute, int start_second_second, int second_hour, int second_minute, int second_second)
 	{
 		/* Preliminary working variables. */
@@ -331,21 +357,21 @@ int DifferenceBetweenTimes(int start_first_hour, int start_first_minute, int sta
 		return difference_total_number_of_seconds;
 	}
 
-//Function that obtains the Easter Sunday of a given date.
+/* Function that obtains the Easter Sunday of a given date. */
 void EasterSunday(const int year, int *month_east, int *day_east)
 	{
 		int a = V_ZERO, b = V_ZERO, c = V_ZERO, d = V_ZERO, e = V_ZERO;
 		int f = V_ZERO, g = V_ZERO, h = V_ZERO, i = V_ZERO, k = V_ZERO;
 		int l = V_ZERO, m = V_ZERO;
 
-		//Gauss algorithm for calculating Easter Sunday.
+		/* Gauss algorithm for calculating Easter Sunday. */
 		a = year % V_19;
 		b = year / V_100;
 		c = year % V_100;
 		d = b / V_FOUR;
 		e = b % V_FOUR;
 
-		//Intermediate calculations of the Gauss algorithm.
+		/* Intermediate calculations of the Gauss algorithm. */
 		f = (b + V_8) / V_25;
 		g = (b - f + V_ONE) / V_THREE;
 		h = (V_19 * a + b - d - g + V_15) % V_30;
@@ -354,38 +380,38 @@ void EasterSunday(const int year, int *month_east, int *day_east)
 		l = (V_32 + V_TWO * e + V_TWO * i - h - k) % V_SEVEN;
 		m = (a + V_11 * h + V_22 * l) / V_451;
 
-		//Final results.
+		/* Final results. */
 		*month_east = (h + l - V_SEVEN * m + V_114) / V_31;
 		*day_east = ((h + l - V_SEVEN * m + V_114) % V_31) + V_ONE;
 	}
 
-//Function that receives the date data.
+/* Function that receives the date data. */
 void EntryDate(int *day, int *month, int *year)
 	{
 		printf("\nDate validity checker.\n");
 		printf("Please enter the following requested data.\n");
 		printf("Year   (%04d ->) : ", V_ONE);
-		*year = GetEntry(year);
+		*year = *((int *) GetEntry(year, enm_type_entry_int, enm_type_reset_YES));
 		printf("Month  (%02d - %02d) : ", V_ONE, V_TWELVE);
-		*month = GetEntry(month);
+		*month = *((int *) GetEntry(month, enm_type_entry_int, enm_type_reset_YES));
 		printf("Day    (%02d - %02d) : ", V_ONE, V_31);
-		*day = GetEntry(day);
+		*day = *((int *) GetEntry(day, enm_type_entry_int, enm_type_reset_YES));
 	}
 
-//Function that receives the date data.
+/* Function that receives the date data. */
 void EntryTime(int *hour, int *minute, int *second)
 	{
 		printf("\nTime validity checker.\n");
 		printf("Please enter the following requested data.\n");
 		printf("Hour   (%02d - %02d) : ", V_ZERO, V_23);
-		*hour = GetEntry(hour);
+		*hour = *((int *) GetEntry(hour, enm_type_entry_int, enm_type_reset_YES));
 		printf("Minute (%02d - %02d) : ", V_ZERO, V_59);
-		*minute = GetEntry(minute);
+		*minute = *((int *) GetEntry(minute, enm_type_entry_int, enm_type_reset_YES));
 		printf("Second (%02d - %02d) : ", V_ZERO, V_59);
-		*second = GetEntry(second);
+		*second = *((int *) GetEntry(second, enm_type_entry_int, enm_type_reset_YES));
 	}
 
-//Get Current Date and Time Information.
+/* Get Current Date and Time Information. */
 long int GetCurrentDateTimeInfo(int *julianyeardays, int *dayoftheweek, int *day, int *month, int *year, int *hour, int *minute, int *second)
 	{
 		/* Preliminary working variables. */
@@ -434,63 +460,202 @@ long int GetCurrentDateTimeInfo(int *julianyeardays, int *dayoftheweek, int *day
 		if (minute) *minute = strct_tm_dt->tm_min;
 		if (second) *second = strct_tm_dt->tm_sec;
 
-		GetResponse("Press ENTER key to continue...");
+		GetPause("Press ENTER key to continue...");
 
 		return t_tm_seconds;
 	}
 
-//Validate a correct input from the keyboard.
-int GetEntry(int *data_value)
+/* A function responsible for receiving an argument of type (void *) and the type of conversion—specified via an enumerated set—to be performed. */
+void *GetEntry(void *const voidPtr, const enum enm_type_entry enm_type_value_data, const enum enm_type_reset enm_type_reset_OK)
 	{
-		//Preliminary working variables.
-		int int_key = NULL_CHARACTER;
-		int value_data = V_ZERO;
+		/* Preliminary working variables. */
+		int int_chars = V_ZERO;
+		int int_fields = V_ZERO;
+		int int_key = V_ZERO;
 
-		//Validate data entry as correct.
-		if (scanf("%d%*c", &value_data) == V_ONE)
+		/* Convert the specified enumerated type to an 'integer'. */
+		int option_type_entry = (int) enm_type_value_data;
+
+		/* Validate if the obtained memory addresses are valid. */
+		if (voidPtr)
 			{
-				//Get a correct integer value.
-				printf("\nInput value: [%d]. OK!\n", value_data);
-				*data_value = value_data;
+				/* Initialize the specified memory area. */
+				if (enm_type_reset_OK == enm_type_reset_YES)
+					{
+						switch(enm_type_value_data)
+							{
+								case enm_type_entry_char:
+									*((char *) voidPtr) = V_ZERO;
+									break;
+
+								case enm_type_entry_double:
+									*((double *) voidPtr) = V_ZERO;
+									break;
+
+								case enm_type_entry_float:
+									*((float *) voidPtr) = V_ZERO;
+									break;
+
+								case enm_type_entry_int:
+									*((int *) voidPtr) = V_ZERO;
+									break;
+
+								case enm_type_entry_long:
+									*((long *) voidPtr) = V_ZERO;
+									break;
+
+								case enm_type_entry_short:
+									*((short *) voidPtr) = V_ZERO;
+									break;
+
+								case enm_type_entry_sizet:
+									*((size_t *) voidPtr) = V_ZERO;
+									break;
+
+								default:
+									fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
+									break;
+							}
+					}
+
+				/* Validate the data type to be captured. */
+				switch (enm_type_value_data)
+					{
+						/* Get a correct character value. */
+						case enm_type_entry_char:
+							if ((int_fields = scanf("%c%*c%n", (char *) voidPtr, &int_chars)))
+								{
+									printf("\nFields: [%d]. Input value: [%x] : [%d] = [%c]. Characters: [%d]. OK!\n", int_fields, *((char *) voidPtr), *((char *) voidPtr), *((char *) voidPtr), int_chars);
+								}
+							break;
+
+						/* Get a correct floating-point double precision value. */
+						case enm_type_entry_double:
+							if ((int_fields = scanf("%lf%*c%n", (double *) voidPtr, &int_chars)))
+								{
+									printf("\nFields: [%d]. Input value: [%lf]. Characters: [%d]. OK!\n", int_fields, *((double *) voidPtr), int_chars);
+								}
+							break;
+
+						/* Get a correct floating-point single precision value. */
+						case enm_type_entry_float:
+							if ((int_fields = scanf("%f%*c%n", (float *) voidPtr, &int_chars)))
+								{
+									printf("\nFields: [%d]. Input value: [%f]. Characters: [%d]. OK!\n", int_fields, (double) *((float *) voidPtr), int_chars);
+								}
+							break;
+
+						/* Get a correct integer value. */
+						case enm_type_entry_int:
+							if ((int_fields = scanf("%d%*c%n", (int *) voidPtr, &int_chars)))
+								{
+									printf("\nFields: [%d]. Input value: [%d]. Characters: [%d]. OK!\n", int_fields, *((int *) voidPtr), int_chars);
+								}
+							break;
+
+						/* Get a correct long int value. */
+						case enm_type_entry_long:
+							if ((int_fields = scanf("%ld%*c%n", (long *) voidPtr, &int_chars)))
+								{
+									printf("\nFields: [%d]. Input value: [%ld]. Characters: [%d]. OK!\n", int_fields, *((long *) voidPtr), int_chars);
+								}
+							break;
+
+						/* Get a correct short int value. */
+						case enm_type_entry_short:
+							if ((int_fields = scanf("%hi%*c%n", (short *) voidPtr, &int_chars)))
+								{
+									printf("\nFields: [%d]. Input value: [%hi]. Characters: [%d]. OK!\n", int_fields, *((short *) voidPtr), int_chars);
+								}
+							break;
+
+						/* Get a correct unsigned long int value. */
+						case enm_type_entry_sizet:
+							if ((int_fields = scanf("%lu%*c%n", (size_t *) voidPtr, &int_chars)))
+								{
+									printf("\nFields: [%d]. Input value: [%lu]. Characters: [%d]. OK!\n", int_fields, *((size_t *) voidPtr), int_chars);
+								}
+							break;
+
+						/* It is specified that if the option is incorrect, an error message should be sent. */
+						default:
+							fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
+							break;
+					}
+
+				/* Verify that exactly one field is captured and saved at the given address. */
+				if ((int_fields != V_ONE) || !(int_chars))
+					{
+						/* Check whether an End-of-File condition occurred during keyboard data input. */
+						if (feof(stdin))
+							{
+								fprintf(stderr, "\nEnd of File (EOF) detected in data entry!\n");
+								clearerr(stdin);
+								fflush(stdin);
+							}
+
+						/* Get an incorrect entried value. */
+						fputs("\nThe value entered is not valid!\n", stderr);
+						fprintf(stderr, "Press ENTER to continue...");
+						scanf("%*[^\n]%*c");
+
+						/* We must always clear the input buffer of impurities. */
+						fputs("\nPress the ENTER key to clear the input buffer...", stderr);
+						while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
+					}
 			}
 		else
-			{
-				//Get an incorrect integer value.
-				printf("\nThe value entered is not valid.\n");
+			fprintf(stderr, "\nThe memory address to hold the variable is not valid!\n");
 
-				scanf("%*[^\n]%*c");
-				while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
-			}
-
-		return value_data;
+		/* Return of void pointer key value. */
+		return voidPtr;
 	}
 
-//Function that obtains a response.
-int GetResponse(const char *str_Message)
+/* Function that performs a specified pause with a warning message. */
+char GetPause(const char *const str_Message)
 	{
-		//Preliminary working variables.
-		int int_key = NULL_CHARACTER;
-		char chr_key = V_ZERO;
+		/* Preliminary working variables. */
+		char chr_key = NULL_CHARACTER;
+		int int_chars = V_ZERO;
+		int int_fields = V_ZERO;
+		int int_key = V_ZERO;
 
+		/* Header message. */
 		printf("%s", str_Message);
 
-		//Validate data entry as correct.
-		if (scanf("%c%*c", &chr_key) == V_ONE)
-				//Get a correct character value.
-				printf("\nInput value: [%x] : [%d] = [%c]. OK!\n", chr_key, chr_key, chr_key);
+		/* Validate data entry as correct. */
+		if ((int_fields = scanf("%c%*c%n", &chr_key, &int_chars)) == V_ONE)
+			{
+				/* Get a correct character value. */
+				printf("\nFields: [%d]. Input value: [%x] : [%d] = [%c]. Characters: [%d]. OK!\n", int_fields, chr_key, chr_key, chr_key, int_chars);
+			}
 		else
 			{
-				//Get an incorrect character value.
-				printf("\nThe value entered is not valid.\n");
+				/* Check whether an End-of-File condition occurred during keyboard data input. */
+				if (feof(stdin))
+					{
+						fprintf(stderr, "\nEnd of File (EOF) detected in data entry!\n");
+						clearerr(stdin);
+						fflush(stdin);
+					}
 
+				/* Get an incorrect entried value. */
+				fputs("\nThe value entered is not valid!\n", stderr);
+				fprintf(stderr, "Press ENTER to continue...");
 				scanf("%*[^\n]%*c");
-				while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
-			};
 
-		return int_key;
+				/* Clear the input buffer until a carriage return followed by a line feed, or an end-of-file, is encountered. */
+				fputs("\nPress the ENTER key to clear the input buffer...", stderr);
+				while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
+
+				chr_key = (char) int_key;
+			}
+
+		/* Return of key value. */
+		return chr_key;
 	}
 
-//Function that obtains the current Julian Year and its remainder days.
+/* Function that obtains the current Julian Year and its remainder days. */
 int JulianYear(const int day, const int month, const int year, int *daysrest)
 	{
 		/* Preliminary working variables. */
@@ -501,19 +666,19 @@ int JulianYear(const int day, const int month, const int year, int *daysrest)
 
 		clusterdays += day;
 
-		//Obtaining the remaining days of the year from the number of Julian days.
+		/* Obtaining the remaining days of the year from the number of Julian days. */
 		*daysrest = (LeapYear(year) ? V_366 : V_365) - clusterdays;
 
 		return clusterdays;
 	}
 
-//Function that obtains the current Julian year.
+/* Function that obtains the current Julian year. */
 int LeapYear(const int year)
 	{
 		return (((year % V_FOUR == V_ZERO) && (year % V_100 != V_ZERO)) || (year % V_400 == V_ZERO));
 	}
 
-//Menu for processing calendar dates and times.
+/* Menu for processing calendar dates and times. */
 int Menu(int *start_day, int *start_month, int *start_year, int *day, int *month, int *year, int *start_hour, int *start_minute, int *start_second, int *hour, int *minute, int *second, int *option, int *counter, char *zodiac_name)
 	{
 		/* Preliminary working variables. */
@@ -552,7 +717,7 @@ int Menu(int *start_day, int *start_month, int *start_year, int *day, int *month
 				printf("Option: ");
 
 				/* Converting an integer to an enumerated type. */
-				*option = GetEntry(option);
+				*option = *((int *) GetEntry(option, enm_type_entry_int, enm_type_reset_YES));
 				enm_CO_myOption = (enum enm_CalendarOptions) *option;
 
 				/* Execute the requested operation. */
@@ -562,7 +727,7 @@ int Menu(int *start_day, int *start_month, int *start_year, int *day, int *month
 		return *option;
 	}
 
-//Menu that executes the operation of a given selection.
+/* Menu that executes the operation of a given selection. */
 int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int *month, int *year, int *start_hour, int *start_minute, int *start_second, int *hour, int *minute, int *second, enum enm_CalendarOptions enm_CO_myOption, int *counter, char *zodiac_name)
 	{
 		/* Preliminary working variables. */
@@ -806,18 +971,18 @@ int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int 
 			}
 
 		printf("\nOperations performed: [%d].\n", *counter);
-		GetResponse("Press the ENTER key to continue...");
+		GetPause("Press the ENTER key to continue...");
 
 		return (int) enm_CO_myOption;
 	}
 
-//Function that converts the days in a year in Julian format to their corresponding month and day.
+/* Function that converts the days in a year in Julian format to their corresponding month and day. */
 void SolveJulianYear(const int year, const int julianyeardays, int *julian_month, int *julian_day)
 	{
-		//Preliminary working variables.
+		/* Preliminary working variables. */
 		int days_remaining = julianyeardays, limitdays = (LeapYear(year) ? V_366 : V_365);
 
-		//Validates if the number of days in Julian format is valid.
+		/* Validates if the number of days in Julian format is valid. */
 		if (julianyeardays >= V_ONE && julianyeardays <= limitdays)
 			{
 				for (*julian_month = V_ONE; days_remaining > DaysInMonth(year, *julian_month); (*julian_month)++)
@@ -829,16 +994,16 @@ void SolveJulianYear(const int year, const int julianyeardays, int *julian_month
 			printf("\nInvalid Julian Year days: {%d} : [%d]. Out of range: [%d] and [%d].\n", year, julianyeardays, V_ONE, limitdays);
 	}
 
-//Function that reconverts the number of days obtained into its variables of day, month and year.
+/* Function that reconverts the number of days obtained into its variables of day, month and year. */
 void SolveSumOfDays(const int start_day, const int start_month, const int start_year, int sumofdays, int *day, int *month, int *year)
 	{
-		//Clear the component variables of 'sumofdays'.
+		/* Clear the component variables of 'sumofdays'. */
 		int daysrest = V_ZERO;
 		JulianYear(start_day, start_month, start_year, &daysrest);
 		int days_remaining = sumofdays - daysrest;
 		*day = V_ONE;
 
-		//We return the converted values ​​to the parameters of this function.
+		/* We return the converted values ​​to the parameters of this function. */
 		for (*year = start_year + V_ONE; days_remaining >= (LeapYear(*year) ? V_366 : V_365); (*year)++)
 			days_remaining -= (LeapYear(*year) ? V_366 : V_365);
 
@@ -848,7 +1013,7 @@ void SolveSumOfDays(const int start_day, const int start_month, const int start_
 		*day += days_remaining;
 	}
 
-//Function that converts the total number of seconds to their equivalent in hours, minutes, and seconds.
+/* Function that converts the total number of seconds to their equivalent in hours, minutes, and seconds. */
 void SolveSumOfSeconds(int start_hour, int start_minute, int start_second, const int total_number_of_seconds, int *hour, int *minute, int *second)
 	{
 		/* Preliminary working variables. */
@@ -863,15 +1028,15 @@ void SolveSumOfSeconds(int start_hour, int start_minute, int start_second, const
 		*second = (total_number_of_seconds_aux - (*hour * V_3600)) - (*minute * V_60);
 	}
 
-//Function that loops through the number of days in a year starting from '1582-01-01' for instance.
+/* Function that loops through the number of days in a year starting from '1582-01-01' for instance. */
 int SumOfDays(const int start_day, const int start_month, const int start_year, const int day, const int month, const int year)
 	{
-		//Preliminary working variables.
+		/* Preliminary working variables. */
 		int daysrest = V_ZERO;
 		JulianYear(start_day, start_month, start_year, &daysrest);
 		int cumofdays = daysrest - V_ONE;
 
-		//Cycle of iterations to add days from a given year.
+		/* Cycle of iterations to add days from a given year. */
 		for (int int_year = start_year + V_ONE; int_year <= year; int_year++)
 			{
 				int max_month = (int_year < year) ? V_TWELVE : month - V_ONE;
@@ -889,7 +1054,7 @@ int SumOfDays(const int start_day, const int start_month, const int start_year, 
 		return cumofdays;
 	}
 
-//Function that determines the number of seconds from an initial time to an final time.
+/* Function that determines the number of seconds from an initial time to an final time. */
 int SumOfSeconds(const int start_hour, const int start_minute, const int start_second, const int first_hour, const int first_minute, const int first_second)
 	{
 		int total_number_of_seconds_start_time = V_ZERO;
@@ -901,7 +1066,7 @@ int SumOfSeconds(const int start_hour, const int start_minute, const int start_s
 		return (total_number_of_seconds_finish_time - total_number_of_seconds_start_time);
 	}
 
-//This function validates that a date is perfectly correct.
+/* This function validates that a date is perfectly correct. */
 int ValidDate(const int day, const int month, const int year)
 	{
 		int limitdays = V_ZERO, yearB = V_ZERO, monthB = V_ZERO, dayB = V_ZERO;
@@ -933,13 +1098,13 @@ int ValidDate(const int day, const int month, const int year)
 		if (!(dayB && monthB && yearB))
 			{
 				printf("\nData not valid for the date.\n");
-				GetResponse("Press ENTER key to continue...");
+				GetPause("Press ENTER key to continue...");
 			}
 
 		return (dayB && monthB && yearB);
 	}
 
-//This function validates that a time is perfectly correct.
+/* This function validates that a time is perfectly correct. */
 int ValidTime(const int hour, const int minute, const int second)
 	{
 		int hourB = V_ZERO, minuteB = V_ZERO, secondB = V_ZERO;
@@ -962,13 +1127,13 @@ int ValidTime(const int hour, const int minute, const int second)
 		if (!(hourB && minuteB && secondB))
 			{
 				printf("\nData not valid for the time.\n");
-				GetResponse("Press ENTER key to continue...");
+				GetPause("Press ENTER key to continue...");
 			}
 
 		return (hourB && minuteB && secondB);
 	}
 
-//Function that writes a correctly validated date.
+/* Function that writes a correctly validated date. */
 void WriteDate(const int day, const int month, const int year)
 	{
 		int d = V_ZERO, quarter = V_ZERO;
@@ -982,16 +1147,16 @@ void WriteDate(const int day, const int month, const int year)
 		printf("%s, %s %02d, %04d.\n", day_name[d], months_array[month - V_ONE].month_nameofmonth, day, year);
 	}
 
-//Function that writes a correctly validated time.
+/* Function that writes a correctly validated time. */
 void WriteTime(const int hour, const int minute, const int second)
 	{
-		//Preliminary working variables.
+		/* Preliminary working variables. */
 		int s_hours = V_ZERO, s_minutes = V_ZERO, s_seconds = V_ZERO;
 		int t = V_ZERO;
 
 		t = SECONDS(hour, minute, second);
 
-		//Clear the component variables of the variable 'time'.
+		/* Clear the component variables of the variable 'time'. */
                 s_hours = t / V_3600;
                 s_minutes = (t % V_3600) / V_60;
                 s_seconds = t % V_60;
@@ -1001,7 +1166,7 @@ void WriteTime(const int hour, const int minute, const int second)
 		printf("Seconds Time: {%d}.\n", t);
 	}
 
-//Function that the zodiac sign achieves for a given month and day.
+/* Function that the zodiac sign achieves for a given month and day. */
 int ZodiacSign(const int day, const int month, int *zodiac_number, char *zodiac_name, int *start_zodiac_day, int *start_zodiac_month, int *finish_zodiac_day, int *finish_zodiac_month)
 	{
 		/* Preliminary working variables. */
