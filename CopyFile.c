@@ -27,7 +27,8 @@ enum enm_type_entry
 		enm_type_entry_int,
 		enm_type_entry_long,
 		enm_type_entry_short,
-		enm_type_entry_sizet
+		enm_type_entry_sizet,
+		enm_type_entry_string
 	};
 
 /* Enumeration for memory area reset system. */
@@ -45,7 +46,6 @@ int CheckErrorFile(const char *const strFile, FILE *pFile);
 int CopyFile(const char *const str_SourceFile, const char *const str_TargetFile, const int numRecords);
 int CreateFile(const char *const str_File);
 void *GetEntry(const char *const str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, const enum enm_type_reset enm_type_reset_OK);
-char *GetFileName(const char *const str_Message, char *strFile);
 int DumpFile(const char *const str_File, const int numRecords);
 
 /* Main function */
@@ -59,8 +59,8 @@ int main()
 
 		/* Data entry */
 		printf("File Copy.\n");
-		GetFileName("> Source file : ", strFIn);
-		GetFileName("> Target file : ", strFOut);
+		strFIn = ((char *) GetEntry("\n> Source file : ", strFIn, enm_type_entry_string, enm_type_reset_YES));
+		strFOut = ((char *) GetEntry("\n> Target file : ", strFOut, enm_type_entry_string, enm_type_reset_YES));
 
 		/* Calls to special functions. */
 		numRecords = CreateFile(strFIn);
@@ -316,6 +316,10 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 									*((size_t *) void_var_address) = V_ZERO;
 									break;
 
+								case enm_type_entry_string:
+									memset(void_var_address, V_ZERO, sizeof(void_var_address));
+									break;
+
 								default:
 									fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
 									break;
@@ -370,6 +374,18 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 								printf("\nFields: [%d]. Input value: [%lu]. Characters: [%d]. OK!\n", int_fields, *((size_t *) void_var_address), int_chars);
 							break;
 
+						/* Get a correct string value. */
+						case enm_type_entry_string:
+							if ((int_fields = scanf("%[^\n]%*c%n", (char *) void_var_address, &int_chars)))
+								{
+									/* Get a correct string value. */
+									printf("\nCaptured chain information.\n");
+									printf("+ Fields : [%d].\n", int_fields);
+									printf("+ Value  : [%s].\n", (char *) void_var_address);
+									printf("+ Chars  : [%d].\n", int_chars);
+								}
+							break;
+
 						/* It is specified that if the option is incorrect, an error message should be sent. */
 						default:
 							fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
@@ -402,56 +418,4 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 
 		/* Return of void pointer key value. */
 		return void_var_address;
-	}
-
-/* Capture the name of the file to be created. */
-char *GetFileName(const char *const str_Message, char *strFile)
-	{
-		/* Preliminary working variables. */
-		int int_chars = V_ZERO;
-		int int_fields = V_ZERO;
-		int int_key = V_ZERO;
-
-		/* Validate the filename correctly. */
-		if (strFile)
-			{
-				/* Preliminary header message. */
-				printf("\n%s", str_Message);
-
-				/* Validate the entry of the filename. */
-				if ((int_fields = scanf("%[^\n]%*c%n", strFile, &int_chars)))
-					{
-						/* Get a correct string value. */
-						printf("\nCaptured chain information.\n");
-						printf("+ Fields: [%d].\n", int_fields);
-						printf("+ Value:  [%s].\n", strFile);
-						printf("+ Chars:  [%d].\n", int_chars);
-					}
-
-				/* Verify that exactly one field is captured and saved at the given address. */
-				if ((int_fields != V_ONE) || !(int_chars))
-					{
-						/* Check whether an End-of-File condition occurred during keyboard data input. */
-						if (feof(stdin))
-							{
-								fprintf(stderr, "\nEnd of File (EOF) detected in data entry!\n");
-								clearerr(stdin);
-								fflush(stdin);
-							}
-
-						/* Get an incorrect entried value. */
-						fputs("\nThe value entered is not valid!\n", stderr);
-						fprintf(stderr, "Press ENTER to continue...");
-						scanf("%*[^\n]%*c");
-
-						/* Clear the input buffer until a carriage return followed by a line feed, or an end-of-file, is encountered. */
-						fputs("\nPress the ENTER key to clear the input buffer...", stderr);
-						while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
-					}
-			}
-		else
-			printf("No valid memory address allocated for the file name: [%s].\n", strFile);
-
-		/* Return the pointer to the string containing the filename. */
-		return strFile;
 	}
