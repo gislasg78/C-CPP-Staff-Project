@@ -46,13 +46,13 @@ int CopyFile(const char *const str_SourceFile, const char *const str_TargetFile,
 int CreateFile(const char *const str_File);
 void *GetEntry(const char *const str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, const enum enm_type_reset enm_type_reset_OK);
 char *GetFileName(const char *const str_Message, char *strFile);
-char GetPause(const char *const str_Message);
 int DumpFile(const char *const str_File, const int numRecords);
 
 /* Main function */
 int main()
 	{
 		/* Preliminary working variables. */
+		char chr_key = NULL_CHARACTER;
 		char *strFIn = (char *) calloc(BUFSIZ, sizeof(char));
 		char *strFOut = (char *) calloc(BUFSIZ, sizeof(char));
 		int numRecords = V_ZERO;
@@ -64,16 +64,16 @@ int main()
 
 		/* Calls to special functions. */
 		numRecords = CreateFile(strFIn);
-		GetPause("Press the ENTER key to continue...");
+		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 
 		numRecords = DumpFile(strFIn, numRecords);
-		GetPause("Press the ENTER key to continue...");
+		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 
 		numRecords = CopyFile(strFIn, strFOut, numRecords);
-		GetPause("Press the ENTER key to continue...");
+		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 
 		numRecords = DumpFile(strFOut, numRecords);
-		GetPause("Press the ENTER key to continue...");
+		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 
 		/* Freeing memory file pointers. */
 		puts("\nFreeing allocated memory...");
@@ -83,12 +83,12 @@ int main()
 		free(strFOut);
 		strFOut = NULL;
 
-		GetPause("Press the ENTER key to continue...");
+		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 
 		/* Program termination messages. */
 		printf("\nDone!\n");
 		printf("This program has ended.\n");
-		GetPause("Press the ENTER key to continue...");
+		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 
 		return V_ZERO;
 	}
@@ -454,48 +454,4 @@ char *GetFileName(const char *const str_Message, char *strFile)
 
 		/* Return the pointer to the string containing the filename. */
 		return strFile;
-	}
-
-/* Function that performs a specified pause with a warning message. */
-char GetPause(const char *const str_Message)
-	{
-		/* Preliminary working variables. */
-		char chr_key = NULL_CHARACTER;
-		int int_chars = V_ZERO;
-		int int_fields = V_ZERO;
-		int int_key = V_ZERO;
-
-		/* Header message. */
-		printf("%s", str_Message);
-
-		/* Validate data entry as correct. */
-		if ((int_fields = scanf("%c%*c%n", &chr_key, &int_chars)) == V_ONE)
-			{
-				/* Get a correct character value. */
-				printf("\nFields: [%d]. Input value: [%x] : [%d] = [%c]. Characters: [%d]. OK!\n", int_fields, chr_key, chr_key, chr_key, int_chars);
-			}
-		else
-			{
-				/* Check whether an End-of-File condition occurred during keyboard data input. */
-				if (feof(stdin))
-					{
-						fprintf(stderr, "\nEnd of File (EOF) detected in data entry!\n");
-						clearerr(stdin);
-						fflush(stdin);
-					}
-
-				/* Get an incorrect entried value. */
-				fputs("\nThe value entered is not valid!\n", stderr);
-				fprintf(stderr, "Press ENTER to continue...");
-				scanf("%*[^\n]%*c");
-
-				/* Clear the input buffer until a carriage return followed by a line feed, or an end-of-file, is encountered. */
-				fputs("\nPress the ENTER key to clear the input buffer...", stderr);
-				while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
-
-				chr_key = (char) int_key;
-			}
-
-		/* Return of key value. */
-		return chr_key;
 	}
