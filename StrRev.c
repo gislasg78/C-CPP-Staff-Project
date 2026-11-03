@@ -25,8 +25,7 @@ char* getString(const char *const str_Message)
 
 		/* Create a persistent chain. */
 		static char string[BUFSIZ];
-		const size_t size_of_string = sizeof(string) / sizeof(*string);
-		memset(string, V_ZERO, size_of_string);
+		memset(string, V_ZERO, sizeof(string));
 
 		/* Header message. */
 		printf("%s", str_Message);
