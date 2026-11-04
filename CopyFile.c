@@ -159,9 +159,9 @@ size_t CopyFile(const char *const strSource, const char *const strTarget, const 
 		printf("- Target file: [%s]. Open mode: [%s].\n", strTarget, _FILE_MODE_WRITE_UPDATE_);
 
 		/* Opening and validation of source and destination files. */
-		if ((pFTarget = fopen(strTarget, _FILE_MODE_WRITE_UPDATE_)))
+		if ((strTarget) && (pFTarget = fopen(strTarget, _FILE_MODE_WRITE_UPDATE_)))
 			{
-				if ((pFSource = fopen(strSource, _FILE_MODE_READ_UPDATE_)))
+				if ((strSource) && (pFSource = fopen(strSource, _FILE_MODE_READ_UPDATE_)))
 					{
 						printf("File: [%s] with number: [%d] is copied to file: [%s] with number: [%d].\n", strSource, fileno(pFSource), strTarget, fileno(pFTarget));
 
@@ -264,7 +264,7 @@ size_t DumpFile(const char *const strFile, const size_t numRecords)
 		printf("Unloading File: [%s]. Opening mode: [%s].\n", strFile, _FILE_MODE_READ_UPDATE_);
 
 		/* Correctly validate the opening of the file for the data dump. */
-		if ((pFile = fopen(strFile, _FILE_MODE_READ_UPDATE_)))
+		if ((strFile) && (pFile = fopen(strFile, _FILE_MODE_READ_UPDATE_)))
 			{
 				printf("Viewing file content...\n");
 				printf("File number: [%d].\n", fileno(pFile));
@@ -436,7 +436,7 @@ char *GetFileName(const char *const str_Message, void *const void_var_address, c
 		int int_key = V_ZERO;
 
 		/* Validate the filename correctly. */
-		if (void_var_address)
+		if (void_var_address && size_of_var_address)
 			{
 				/* Create a persistent chain. */
 				static char str_format[BUFSIZ];
@@ -486,7 +486,7 @@ char *GetFileName(const char *const str_Message, void *const void_var_address, c
 					fprintf(stderr, "\nThe format string was not generated correctly! Characters: [%d].\n", int_chars);
 			}
 		else
-			printf("No valid memory address allocated for the file name: [%s].\n", (char *) void_var_address);
+			fprintf(stderr, "No valid memory address allocated for the file name: [%s] with: [%lu] bytes.\n", (char *) void_var_address, size_of_var_address);
 
 		/* Return the pointer to the string containing the filename. */
 		return (char *) void_var_address;
