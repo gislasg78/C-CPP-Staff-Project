@@ -45,8 +45,9 @@ int CheckErrorFile(const char *const strFile, FILE *pFile);
 size_t CopyFile(const char *const str_SourceFile, const char *const str_TargetFile, const size_t numRecords);
 size_t CreateFile(const char *const str_File);
 void *GetEntry(const char *const str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, const enum enm_type_reset enm_type_reset_OK);
-char *GetFileName(const char *const str_Message, void *const void_var_address, const size_t size_of_var_address);
+char *GetStrFileName(const char *const str_Message, char *const char_var_address, const size_t size_of_var_address);
 size_t DumpFile(const char *const str_File, const size_t numRecords);
+void PurgeStream(FILE *pFile);
 
 /* Main function */
 int main()
@@ -55,17 +56,19 @@ int main()
 		char chr_key = NULL_CHARACTER;
 		char *source_file = NULL;
 		char *target_file = NULL;
+		size_t preset_size = BUFSIZ;
+		size_t default_size = preset_size - V_ONE;
 		size_t numRecords = V_ZERO;
 
 		/* Verify that the assigned pointers have been validly created. */
-		if ((source_file = (char *) calloc(BUFSIZ, sizeof(char))))
+		if ((source_file = (char *) calloc(preset_size, sizeof(char))))
 			{
-				if ((target_file = (char *) calloc(BUFSIZ, sizeof(char))))
+				if ((target_file = (char *) calloc(preset_size, sizeof(char))))
 					{
 						/* Data entry */
 						printf("File Copy.\n");
-						source_file = GetFileName("\n> Source file : ", source_file, BUFSIZ);
-						target_file = GetFileName("\n> Target file : ", target_file, BUFSIZ);
+						source_file = GetStrFileName("\n+ Source file : ", source_file, default_size);
+						target_file = GetStrFileName("\n+ Target file : ", target_file, default_size);
 
 						/* Calls to special functions. */
 						numRecords = CreateFile(source_file);
@@ -80,11 +83,8 @@ int main()
 						numRecords = DumpFile(target_file, numRecords);
 						chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 
-						/* Freeing memory file pointers. */
-						puts("\nFreeing allocated memory...");
-						free(source_file);
-						source_file = NULL;
-
+						/* Freeing memory source file pointer. */
+						puts("\nFreeing allocated memory from target file...");
 						free(target_file);
 						target_file = NULL;
 
@@ -92,6 +92,13 @@ int main()
 					}
 				else
 					fprintf(stderr, "\nNo memory available to store the output filename!\n");
+
+				/* Freeing memory source file pointer. */
+				puts("\nFreeing allocated memory from source file...");
+				free(source_file);
+				source_file = NULL;
+
+				chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 			}
 		else
 			fprintf(stderr, "\nNo memory available to store the input filename!\n");
@@ -403,21 +410,25 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 				if ((int_fields != V_ONE) || !(int_chars))
 					{
 						/* Check whether an End-of-File condition occurred during keyboard data input. */
-						if (feof(stdin))
-							{
-								fprintf(stderr, "\nEnd of File (EOF) detected in data entry!\n");
-								clearerr(stdin);
-								fflush(stdin);
-							}
+						PurgeStream(stdin);
 
 						/* Get an incorrect entried value. */
 						fputs("\nThe value entered is not valid!\n", stderr);
 						fprintf(stderr, "Press ENTER to continue...");
-						scanf("%*[^\n]%*c");
+
+						/* Proceed to clear all characters present in the buffer. */
+						int_chars = V_ZERO;
+						int_fields = scanf("%*[^\n]%*c%n", &int_chars);
+
+						/* Check whether an End-of-File condition occurred during keyboard data input. */
+						PurgeStream(stdin);
 
 						/* We must always clear the input buffer of impurities. */
 						fputs("\nPress the ENTER key to clear the input buffer...", stderr);
 						while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
+
+						/* Check whether an End-of-File condition occurred during keyboard data input. */
+						PurgeStream(stdin);
 					}
 			}
 		else
@@ -428,36 +439,56 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 	}
 
 /* Capture the name of the file to be created. */
-char *GetFileName(const char *const str_Message, void *const void_var_address, const size_t size_of_var_address)
+char *GetStrFileName(const char *const str_Message, char *const char_var_address, const size_t size_of_char_var_address)
 	{
 		/* Preliminary working variables. */
+		char *char_aux_var_address = NULL;
 		int int_chars = V_ZERO;
 		int int_fields = V_ZERO;
 		int int_key = V_ZERO;
+		size_t preset_size = BUFSIZ;
+		size_t default_size = preset_size - V_ONE;
 
-		/* Validate the filename correctly. */
-		if (void_var_address && size_of_var_address)
+		/* Function-level persistent auxiliary variable. */
+		static char string[BUFSIZ];
+		memset(string, V_ZERO, sizeof(string));
+
+		/* Create a persistent chain format. */
+		static char str_format[BUFSIZ];
+		memset(str_format, V_ZERO, sizeof(str_format));
+
+		/* Verify that the requested size of the new character string is less than 'BUFSIZ'. */
+		if (size_of_char_var_address >= V_ONE && size_of_char_var_address <= default_size)
 			{
-				/* Create a persistent chain. */
-				static char str_format[BUFSIZ];
-				memset(str_format, V_ZERO, sizeof(str_format));
-
 				/* Construct a format string. */
-				if ((int_chars = snprintf(str_format, sizeof(str_format), "%%%lu[^\n]%%*c%%n", size_of_var_address - V_ONE)))
+				if ((int_chars = snprintf(str_format, sizeof(str_format), "%%%lu[^\n]%%*c%%n", size_of_char_var_address)))
 					{
+						/* Validate the memory address correctly. */
+						if (char_var_address)
+							{
+								char_aux_var_address = char_var_address;
+								printf("\nThe string was created with a provided memory address.\n");
+							}
+						else
+							{
+								char_aux_var_address = string;
+								printf("\nThe string was created with a persistent memory address.\n");
+							}
+
 						/* Preliminary header message. */
+						int_chars = V_ZERO;
 						printf("%s", str_Message);
 
 						/* Validate the entry of the filename. */
 						#pragma GCC diagnostic push
 						#pragma GCC diagnostic ignored "-Wformat-nonliteral"
-						if ((int_fields = scanf(str_format, (char *) void_var_address, &int_chars)))
+						if ((int_fields = scanf(str_format, char_aux_var_address, &int_chars)))
 						#pragma GCC diagnostic pop
 							{
 								/* Get a correct string value. */
 								printf("\nCaptured chain information.\n");
 								printf("+ Fields: [%d].\n", int_fields);
-								printf("+ Value:  [%s].\n", (char *) void_var_address);
+								printf("+ Value:  [%s].\n", char_aux_var_address);
 								printf("+ Chars:  [%d].\n", int_chars);
 							}
 
@@ -465,29 +496,44 @@ char *GetFileName(const char *const str_Message, void *const void_var_address, c
 						if ((int_fields != V_ONE) || !(int_chars))
 							{
 								/* Check whether an End-of-File condition occurred during keyboard data input. */
-								if (feof(stdin))
-									{
-										fprintf(stderr, "\nEnd of File (EOF) detected in data entry!\n");
-										clearerr(stdin);
-										fflush(stdin);
-									}
+								PurgeStream(stdin);
 
 								/* Get an incorrect entried value. */
 								fputs("\nThe value entered is not valid!\n", stderr);
 								fprintf(stderr, "Press ENTER to continue...");
-								scanf("%*[^\n]%*c");
+
+								/* Proceed to clear all characters present in the buffer. */
+								int_chars = V_ZERO;
+								int_fields = scanf("%*[^\n]%*c%n", &int_chars);
+
+								/* Check whether an End-of-File condition occurred during keyboard data input. */
+								PurgeStream(stdin);
 
 								/* Clear the input buffer until a carriage return followed by a line feed, or an end-of-file, is encountered. */
 								fputs("\nPress the ENTER key to clear the input buffer...", stderr);
 								while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
+
+								/* Check whether an End-of-File condition occurred during keyboard data input. */
+								PurgeStream(stdin);
 							}
 					}
 				else
-					fprintf(stderr, "\nThe format string was not generated correctly! Characters: [%d].\n", int_chars);
+					fprintf(stderr, "\nThe format string was not generated correctly with: [%d] characters.\n", int_chars);
 			}
 		else
-			fprintf(stderr, "No valid memory address allocated for the file name: [%s] with: [%lu] bytes.\n", (char *) void_var_address, size_of_var_address);
+			fprintf(stderr, "Cannot allocate: [%lu] bytes in memory!\n", size_of_char_var_address);
 
 		/* Return the pointer to the string containing the filename. */
-		return (char *) void_var_address;
+		return char_aux_var_address;
+	}
+
+/* It handles the flushing of an input or output stream if an End-of-File (EOF) occurs. */
+void PurgeStream(FILE *pFile)
+	{
+		if (feof(pFile) || ferror(pFile))
+			{
+				fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
+				clearerr(pFile);
+				fflush(pFile);
+			}
 	}
