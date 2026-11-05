@@ -54,7 +54,7 @@ char *binString(unsigned short number)
 }
 
 /* Function that performs a specified pause with a warning message. */
-char getPause(const char *const str_Message)
+char GetPause(const char *const str_Message)
 {
 	/* Preliminary working variables. */
 	char chr_key = NULL_CHARACTER;
@@ -74,9 +74,9 @@ char getPause(const char *const str_Message)
 	else
 	{
 		/* Check whether an End-of-File condition occurred during keyboard data input. */
-		if (feof(stdin))
+		if (feof(stdin) || ferror(stdin))
 		{
-			fprintf(stderr, "\nEnd of File (EOF) detected in data entry!\n");
+			fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
 			clearerr(stdin);
 			fflush(stdin);
 		}
@@ -84,11 +84,29 @@ char getPause(const char *const str_Message)
 		/* Get an incorrect entried value. */
 		fputs("\nThe value entered is not valid!\n", stderr);
 		fprintf(stderr, "Press ENTER to continue...");
-		scanf("%*[^\n]%*c");
+
+		/* Proceed to clear all characters present in the buffer. */
+		int_fields = scanf("%*[^\n]%*c%n", &int_chars);
+
+		/* Check whether an End-of-File condition occurred during keyboard data input. */
+		if (feof(stdin) || ferror(stdin))
+		{
+			fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
+			clearerr(stdin);
+			fflush(stdin);
+		}
 
 		/* Clear the input buffer until a carriage return followed by a line feed, or an end-of-file, is encountered. */
 		fputs("\nPress the ENTER key to clear the input buffer...", stderr);
 		while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
+
+		/* Check whether an End-of-File condition occurred during keyboard data input. */
+		if (feof(stdin) || ferror(stdin))
+		{
+			fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
+			clearerr(stdin);
+			fflush(stdin);
+		}
 
 		chr_key = (char) int_key;
 	}
@@ -114,7 +132,7 @@ int main()
 	printf("+ Start: [%5u] - {%04x} - <%s>.\n", a, a, binString(a));
 	printf("+     &: [%5u] - {%04x} - <%s>.\n", b, b, binString(b));
 	printf("+   End: [%5u] - {%04x} - <%s>.\n", c, c, binString(c));
-	getPause("Press the ENTER key to continue...");
+	GetPause("Press the ENTER key to continue...");
 
 	/* Bitwise operation using the 'OR' disjunction. */
 	c = a | b;
@@ -123,7 +141,7 @@ int main()
 	printf("+ Start: [%5u] - {%04x} - <%s>.\n", a, a, binString(a));
 	printf("+     |: [%5u] - {%04x} - <%s>.\n", b, b, binString(b));
 	printf("+   End: [%5u] - {%04x} - <%s>.\n", c, c, binString(c));
-	getPause("Press the ENTER key to continue...");
+	GetPause("Press the ENTER key to continue...");
 
 	/* Bitwise operation using the 'XOR' exclusive-disjunction. */
 	c = a ^ b;
@@ -132,7 +150,7 @@ int main()
 	printf("+ Start: [%5u] - {%04x} - <%s>.\n", a, a, binString(a));
 	printf("+     ^: [%5u] - {%04x} - <%s>.\n", b, b, binString(b));
 	printf("+   End: [%5u] - {%04x} - <%s>.\n", c, c, binString(c));
-	getPause("Press the ENTER key to continue...");
+	GetPause("Press the ENTER key to continue...");
 
 	/* Bit test with 'one's complement' with 'a' variable. */
 	c = ~a;
@@ -140,7 +158,7 @@ int main()
 	printf("\n\x22One\x27s Complement\x22 \'a\' Bitwise operation.\n");
 	printf("+ Start: [%5u] - {%04x} - <%s>.\n", a, a, binString(a));
 	printf("+   End: [%5u] - {%04x} - <%s>.\n", c, c, binString(c));
-	getPause("Press the ENTER key to continue...");
+	GetPause("Press the ENTER key to continue...");
 
 	/* Bit test with 'one's complement' with 'b' variable. */
 	c = ~b;
@@ -148,38 +166,40 @@ int main()
 	printf("\n\x22One\x27s Complement\x22 \'b\' Bitwise operation.\n");
 	printf("+ Start: [%5u] - {%04x} - <%s>.\n", b, b, binString(a));
 	printf("+   End: [%5u] - {%04x} - <%s>.\n", c, c, binString(c));
-	getPause("Press the ENTER key to continue...");
+	GetPause("Press the ENTER key to continue...");
 
 	/* Bit deployment with a leftward shift. */
 	a = V_0X0001;	//Value: +1.
 	counter = V_ZERO;
 	printf("\nLeft bit shift.\n");
 
+	/* Cycle for executing the left-shift behavior. */
 	for (size_t idx = V_ZERO; idx < SIZE_BINARY(a); idx++)
 	{
 		printf("# (%2lu) - [%5u] - {%04x} - <%s>.\n", counter++, (unsigned int) a, (unsigned int) a, binString(a));
 		a = (unsigned short) (a << V_ONE);
 	}
 	printf("[%lu] Output results generated.\n", counter);
-	getPause("Press the ENTER key to continue...");
+	GetPause("Press the ENTER key to continue...");
 
 	/* Bit shift to the right. */
 	a = V_0X8000;	//Value: 32768 == 2¹⁵.
 	counter = V_ZERO;
 	printf("\nRightward bit shift.\n");
 
+	/* Cycle for executing the right-shift behavior. */
 	for (size_t idx = V_ZERO; idx < SIZE_BINARY(a); idx++)
 	{
 		printf("# (%2lu) - [%5u] - {%04x} - <%s>.\n", counter++, (unsigned int) a, (unsigned int) a, binString(a));
 		a >>= V_ONE;
 	}
 	printf("[%lu] Output results generated.\n", counter);
-	getPause("Press the ENTER key to continue...");
+	GetPause("Press the ENTER key to continue...");
 
 	/* Program termination messages. */
 	printf("\nDone!\n");
 	printf("This program has ended.\n");
-	getPause("Press the ENTER key to continue...");
+	GetPause("Press the ENTER key to continue...");
 
 	return V_ZERO;
 }
