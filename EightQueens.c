@@ -195,9 +195,9 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 				if ((int_fields != V_ONE) || !(int_chars))
 					{
 						/* Check whether an End-of-File condition occurred during keyboard data input. */
-						if (feof(stdin))
+						if (feof(stdin) || ferror(stdin))
 							{
-								fprintf(stderr, "\nEnd of File (EOF) detected in data entry!\n");
+								fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
 								clearerr(stdin);
 								fflush(stdin);
 							}
@@ -205,11 +205,30 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 						/* Get an incorrect entried value. */
 						fputs("\nThe value entered is not valid!\n", stderr);
 						fprintf(stderr, "Press ENTER to continue...");
-						scanf("%*[^\n]%*c");
+
+						/* Proceed to clear all characters present in the buffer. */
+						int_chars = V_ZERO;
+						int_fields = scanf("%*[^\n]%*c%n", &int_chars);
+
+						/* Check whether an End-of-File condition occurred during keyboard data input. */
+						if (feof(stdin) || ferror(stdin))
+							{
+								fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
+								clearerr(stdin);
+								fflush(stdin);
+							}
 
 						/* We must always clear the input buffer of impurities. */
 						fputs("\nPress the ENTER key to clear the input buffer...", stderr);
 						while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
+
+						/* Check whether an End-of-File condition occurred during keyboard data input. */
+						if (feof(stdin) || ferror(stdin))
+							{
+								fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
+								clearerr(stdin);
+								fflush(stdin);
+							}
 					}
 			}
 		else
