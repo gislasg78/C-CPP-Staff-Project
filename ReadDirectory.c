@@ -18,7 +18,7 @@
 #define	V_ZERO		0
 
 /* Function that performs a specified pause with a warning message. */
-char getPause(const char *const str_Message)
+char GetPause(const char *const str_Message)
 	{
 		/* Preliminary working variables. */
 		char chr_key = NULL_CHARACTER;
@@ -38,9 +38,9 @@ char getPause(const char *const str_Message)
 		else
 			{
 				/* Check whether an End-of-File condition occurred during keyboard data input. */
-				if (feof(stdin))
+				if (feof(stdin) || ferror(stdin))
 					{
-						fprintf(stderr, "\nEnd of File (EOF) detected in data entry!\n");
+						fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
 						clearerr(stdin);
 						fflush(stdin);
 					}
@@ -48,11 +48,30 @@ char getPause(const char *const str_Message)
 				/* Get an incorrect entried value. */
 				fputs("\nThe value entered is not valid!\n", stderr);
 				fprintf(stderr, "Press ENTER to continue...");
-				scanf("%*[^\n]%*c");
+
+				/* Proceed to clear all characters present in the buffer. */
+				int_chars = V_ZERO;
+				int_fields = scanf("%*[^\n]%*c%n", &int_chars);
+
+				/* Check whether an End-of-File condition occurred during keyboard data input. */
+				if (feof(stdin) || ferror(stdin))
+					{
+						fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
+						clearerr(stdin);
+						fflush(stdin);
+					}
 
 				/* Clear the input buffer until a carriage return followed by a line feed, or an end-of-file, is encountered. */
 				fputs("\nPress the ENTER key to clear the input buffer...", stderr);
 				while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
+
+				/* Check whether an End-of-File condition occurred during keyboard data input. */
+				if (feof(stdin) || ferror(stdin))
+					{
+						fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
+						clearerr(stdin);
+						fflush(stdin);
+					}
 
 				chr_key = (char) int_key;
 			}
@@ -62,7 +81,7 @@ char getPause(const char *const str_Message)
 	}
 
 /* Function that performs a specified pause with a warning message. */
-char* getString(const char *const str_Message)
+char* GetString(const char *const str_Message)
 	{
 		/* Preliminary working variables. */
 		int int_chars = V_ZERO;
@@ -88,9 +107,9 @@ char* getString(const char *const str_Message)
 		else
 			{
 				/* Check whether an End-of-File condition occurred during keyboard data input. */
-				if (feof(stdin))
+				if (feof(stdin) || ferror(stdin))
 					{
-						fprintf(stderr, "\nEnd of File (EOF) detected in data entry!\n");
+						fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
 						clearerr(stdin);
 						fflush(stdin);
 					}
@@ -98,11 +117,30 @@ char* getString(const char *const str_Message)
 				/* Get an incorrect entried value. */
 				fputs("\nThe value entered is not valid!\n", stderr);
 				fprintf(stderr, "Press ENTER to continue...");
-				scanf("%*[^\n]%*c");
+
+				/* Proceed to clear all characters present in the buffer. */
+				int_chars = V_ZERO;
+				int_fields = scanf("%*[^\n]%*c%n", &int_chars);
+
+				/* Check whether an End-of-File condition occurred during keyboard data input. */
+				if (feof(stdin) || ferror(stdin))
+					{
+						fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
+						clearerr(stdin);
+						fflush(stdin);
+					}
 
 				/* Clear the input buffer until a carriage return followed by a line feed, or an end-of-file, is encountered. */
 				fputs("\nPress the ENTER key to clear the input buffer...", stderr);
 				while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
+
+				/* Check whether an End-of-File condition occurred during keyboard data input. */
+				if (feof(stdin) || ferror(stdin))
+					{
+						fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
+						clearerr(stdin);
+						fflush(stdin);
+					}
 			}
 
 		/* Return of a string value. */
@@ -120,6 +158,7 @@ int main()
 		char *ptr_str_filename = NULL;
 
 		/* Self-initializing static array to store the current path. */
+		char *ptr_s_path = NULL;
 		static char s_path[BUFSIZ];
 		memset(s_path, V_ZERO, sizeof(s_path));
 
@@ -133,14 +172,14 @@ int main()
 		time_t t_elapsed_seconds = time(&t_elapsed_seconds);
 
 		/* Display the current working directory. */
-		getcwd(s_path, sizeof(s_path));
+		ptr_s_path = getcwd(s_path, sizeof(s_path));
 		printf("Display the current working directory.\n");
-		printf("\x27%s\x27\n", s_path);
-		getPause("Press the ENTER key to continue...");
+		printf("\x27%s\x27 : %p\n", s_path, ptr_s_path);
+		GetPause("Press the ENTER key to continue...");
 
 		/* Code block for obtaining information from a given file. */
 		printf("\nObtaining information from files.\n");
-		ptr_str_filename = getString("Type a filename: ");
+		ptr_str_filename = GetString("Type a filename: ");
 
 		stat(ptr_str_filename, &fstat);	//Obtain the statistics record for a given file.
 
@@ -148,17 +187,17 @@ int main()
 		printf("%s", ctime(&t_elapsed_seconds));
 		printf("%s is %ld bytes long.\n", ptr_str_filename, fstat.st_size);
 		printf("It was modified on %s", ctime(&fstat.st_mtime));
-		getPause("Press the ENTER key to continue...");
+		GetPause("Press the ENTER key to continue...");
 
 		/* Code block for retrieving information from a specific directory. */
 		t_elapsed_seconds = time(&t_elapsed_seconds);
 
 		printf("\nObtaining information from directories.\n");
-		ptr_str_directory = getString("Type a directory: ");
+		ptr_str_directory = GetString("Type a directory: ");
 
 		printf("\nDirectory information read.\n");
 		printf("%s", ctime(&t_elapsed_seconds));
-		getPause("Press the ENTER key to continue...");
+		GetPause("Press the ENTER key to continue...");
 
 		/* A loop that ensures the files contained in a specific directory are read. */
 		if ((directory = opendir(ptr_str_directory)))
@@ -173,18 +212,18 @@ int main()
 						printf("+ Size: %ld bytes long.\n", fstat.st_size);
 						printf("+ It was modified on %s\n", ctime(&fstat.st_mtime));
 
-						getPause("Press the ENTER key to continue...");
+						GetPause("Press the ENTER key to continue...");
 					}
 
 				printf("[%lu] Output results generated.\n", counter);
-				getPause("Press the ENTER key to continue...");
+				GetPause("Press the ENTER key to continue...");
 
 				closedir(directory);
 			}
 
 		/* Change to the directory specified by the user. */
 		printf("\nChange to the directory specified by the user.\n");
-		ptr_str_directory = getString("Enter the directory to change: ");
+		ptr_str_directory = GetString("Enter the directory to change: ");
 
 		if (chdir(ptr_str_directory))
 			printf("\nThe directory: '%s' was not found!\n", ptr_str_directory);
@@ -192,10 +231,10 @@ int main()
 			printf("\nChanged to the directory: \'%s\'\n", ptr_str_directory);
 
 		/* Print the current directory to verify that it has been changed. */
-		getcwd(s_path, sizeof(s_path));
+		ptr_s_path = getcwd(s_path, sizeof(s_path));
 		printf("\nDisplay the current working directory.\n");
-		printf("Current working directory: \'%s\'\n", s_path);
-		getPause("Press the ENTER key to continue...");
+		printf("Current working directory: \'%s\' in address: %p\n", s_path, ptr_s_path);
+		GetPause("Press the ENTER key to continue...");
 
 		/* Program termination messages. */
 		printf("\nDone!\n");
