@@ -15,54 +15,183 @@
 #define	V_ONE		1
 #define	V_ZERO		0
 
+/* Enumeration with type entry variables and its reseting. */
+enum enm_type_entry
+	{
+		enm_type_entry_char,
+		enm_type_entry_double,
+		enm_type_entry_float,
+		enm_type_entry_int,
+		enm_type_entry_long,
+		enm_type_entry_short,
+		enm_type_entry_sizet
+	};
+
+/* Enumeration for memory area reset system. */
+enum enm_type_reset
+	{
+		enm_type_reset_NO,
+		enm_type_reset_YES
+	};
+
 /* Function that compares two elements of an array. */
 int compare(const void *const lhs, const void *const rhs)
 	{
 		return (*((int *) lhs) > *((int *) rhs)) - (*((int *) lhs) < *((int *) rhs));
 	}
 
-/* Function that performs a specified pause with a warning message. */
-char getPause(const char *const str_Message)
+/* Function that gets a correct type value depending on its option. */
+void *GetEntry(const char *const str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, const enum enm_type_reset enm_type_reset_OK)
 	{
 		/* Preliminary working variables. */
-		char chr_key = NULL_CHARACTER;
 		int int_chars = V_ZERO;
 		int int_fields = V_ZERO;
 		int int_key = V_ZERO;
 
-		/* Header message. */
-		printf("%s", str_Message);
+		/* Convert the specified enumerated type to an 'integer'. */
+		int option_type_entry = (int) enm_type_data;
 
-		/* Validate data entry as correct. */
-		if ((int_fields = scanf("%c%*c%n", &chr_key, &int_chars)) == V_ONE)
+		/* Validate if the obtained memory addresses are valid. */
+		if (void_var_address)
 			{
-				/* Get a correct character value. */
-				printf("\nFields: [%d]. Input value: [%x] : [%d] = [%c]. Characters: [%d]. OK!\n", int_fields, chr_key, chr_key, chr_key, int_chars);
-			}
-		else
-			{
-				/* Check whether an End-of-File condition occurred during keyboard data input. */
-				if (feof(stdin))
+				/* Initialize the specified memory area. */
+				if (enm_type_reset_OK == enm_type_reset_YES)
 					{
-						fprintf(stderr, "\nEnd of File (EOF) detected in data entry!\n");
-						clearerr(stdin);
-						fflush(stdin);
+						switch(enm_type_data)
+							{
+								case enm_type_entry_char:
+									*((char *) void_var_address) = V_ZERO;
+									break;
+
+								case enm_type_entry_double:
+									*((double *) void_var_address) = V_ZERO;
+									break;
+
+								case enm_type_entry_float:
+									*((float *) void_var_address) = V_ZERO;
+									break;
+
+								case enm_type_entry_int:
+									*((int *) void_var_address) = V_ZERO;
+									break;
+
+								case enm_type_entry_long:
+									*((long *) void_var_address) = V_ZERO;
+									break;
+
+								case enm_type_entry_short:
+									*((short *) void_var_address) = V_ZERO;
+									break;
+
+								case enm_type_entry_sizet:
+									*((size_t *) void_var_address) = V_ZERO;
+									break;
+
+								default:
+									fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
+									break;
+							}
 					}
 
-				/* Get an incorrect entried value. */
-				fputs("\nThe value entered is not valid!\n", stderr);
-				fprintf(stderr, "Press ENTER to continue...");
-				scanf("%*[^\n]%*c");
+				/* Incoming message. */
+				printf("%s", str_Message);
 
-				/* Clear the input buffer until a carriage return followed by a line feed, or an end-of-file, is encountered. */
-				fputs("\nPress the ENTER key to clear the input buffer...", stderr);
-				while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
+				/* Selection of validating case of the type of variable to generate. */
+				switch(enm_type_data)
+					{
+						/* Get a correct character value. */
+						case enm_type_entry_char:
+							if ((int_fields = scanf("%c%*c%n", (char *) void_var_address, &int_chars)))
+								printf("\nFields: [%d]. Input value: [%x] : [%d] = [%c]. Characters: [%d]. OK!\n", int_fields, *((char *) void_var_address), *((char *) void_var_address), *((char *) void_var_address), int_chars);
+							break;
 
-				chr_key = (char) int_key;
+						/* Get a correct floating-point double precision value. */
+						case enm_type_entry_double:
+							if ((int_fields = scanf("%lf%*c%n", (double *) void_var_address, &int_chars)))
+								printf("\nFields: [%d]. Input value: [%lf]. Characters: [%d]. OK!\n", int_fields, *((double *) void_var_address), int_chars);
+							break;
+
+						/* Get a correct floating-point single precision value. */
+						case enm_type_entry_float:
+							if ((int_fields = scanf("%f%*c%n", (float *) void_var_address, &int_chars)))
+								printf("\nFields: [%d]. Input value: [%f]. Characters: [%d]. OK!\n", int_fields, (double) *((float *) void_var_address), int_chars);
+							break;
+
+						/* Get a correct integer value. */
+						case enm_type_entry_int:
+							if ((int_fields = scanf("%d%*c%n", (int *) void_var_address, &int_chars)))
+								printf("\nFields: [%d]. Input value: [%d]. Characters: [%d]. OK!\n", int_fields, *((int *) void_var_address), int_chars);
+							break;
+
+						/* Get a correct long int value. */
+						case enm_type_entry_long:
+							if ((int_fields = scanf("%ld%*c%n", (long *) void_var_address, &int_chars)))
+								printf("\nFields: [%d]. Input value: [%ld]. Characters: [%d]. OK!\n", int_fields, *((long *) void_var_address), int_chars);
+							break;
+
+						/* Get a correct short int value. */
+						case enm_type_entry_short:
+							if ((int_fields = scanf("%hi%*c%n", (short *) void_var_address, &int_chars)))
+								printf("\nFields: [%d]. Input value: [%hi]. Characters: [%d]. OK!\n", int_fields, *((short *) void_var_address), int_chars);
+							break;
+
+						/* Get a correct unsigned long int value. */
+						case enm_type_entry_sizet:
+							if ((int_fields = scanf("%lu%*c%n", (size_t *) void_var_address, &int_chars)))
+								printf("\nFields: [%d]. Input value: [%lu]. Characters: [%d]. OK!\n", int_fields, *((size_t *) void_var_address), int_chars);
+							break;
+
+						/* It is specified that if the option is incorrect, an error message should be sent. */
+						default:
+							fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
+							break;
+					}
+
+				/* Verify that exactly one field is captured and saved at the given address. */
+				if ((int_fields != V_ONE) || !(int_chars))
+					{
+						/* Check whether an End-of-File condition occurred during keyboard data input. */
+						if (feof(stdin) || ferror(stdin))
+							{
+								fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
+								clearerr(stdin);
+								fflush(stdin);
+							}
+
+						/* Get an incorrect entried value. */
+						fputs("\nThe value entered is not valid!\n", stderr);
+						fprintf(stderr, "Press ENTER to continue...");
+
+						/* Proceed to clear all characters present in the buffer. */
+						int_chars = V_ZERO;
+						int_fields = scanf("%*[^\n]%*c%n", &int_chars);
+
+						/* Check whether an End-of-File condition occurred during keyboard data input. */
+						if (feof(stdin) || ferror(stdin))
+							{
+								fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
+								clearerr(stdin);
+								fflush(stdin);
+							}
+
+						/* We must always clear the input buffer of impurities. */
+						fputs("\nPress the ENTER key to clear the input buffer...", stderr);
+						while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
+
+						/* Check whether an End-of-File condition occurred during keyboard data input. */
+						if (feof(stdin) || ferror(stdin))
+							{
+								fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
+								clearerr(stdin);
+								fflush(stdin);
+							}
+					}
 			}
+		else
+			fprintf(stderr, "\nThe memory address to hold the variable is not valid!\n");
 
-		/* Return of key value. */
-		return chr_key;
+		/* Return of void pointer key value. */
+		return void_var_address;
 	}
 
 /* Function that prints the array elements one by one. */
@@ -81,6 +210,7 @@ void print_array(const int *array, size_t size)
 int main()
 	{
 		/* Preliminary working variables. */
+		char chr_key = NULL_CHARACTER;
 		int element = V_ZERO;
 
 		/* I’m sorting out the numbers, which are currently jumbled and disorganized. */
@@ -125,25 +255,24 @@ int main()
 		printf("\nOriginal Array.\n");
 		print_array(array, array_num_elements);
 		printf("[%lu] Output results generated.\n", array_num_elements);
-		getPause("Press the ENTER key to continue...");
+		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 
 		/* The array sorted in ascending order is shown. */
 		printf("\nSorted Array.\n");
 		qsort(array, array_num_elements, data_size, compare);
 		print_array(array, array_num_elements);
 		printf("[%lu] Output results sorted.\n", array_num_elements);
-		getPause("Press the ENTER key to continue...");
+		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 
 		/* An element to search for in the array is requested. */
 		printf("\nItem to search for.\n");
-		printf("> Enter an item to track: ");
-		scanf("%d%*c", &element);
+		element = *((int *) GetEntry("> Enter an item to track: ", &element, enm_type_entry_int, enm_type_reset_YES));
 
 		/* The binary search function is called to locate it. */
 		printf("\nBinary Search Result.\n");
 		int *ptr_index = (int *) bsearch(&element, array, sizeof(array) / sizeof(*array), sizeof(*array), compare);
 		printf("[%lu] Output results searched.\n", array_num_elements);
-		getPause("Press the ENTER key to continue...");
+		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 
 		/* It is validated whether the returned pointer holds a valid memory address. */
 		if (ptr_index)
@@ -151,10 +280,12 @@ int main()
 		else
 			printf("\nElement: [%x] : [%d] was not found!\n", element, element);
 
+		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
+
 		/* Program termination messages. */
 		printf("\nDone!\n");
 		printf("This program has ended!\n");
-		getPause("Press the ENTER key to continue...");
+		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 
 		return V_ZERO;
 	}
