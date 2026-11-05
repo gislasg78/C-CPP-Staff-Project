@@ -47,7 +47,6 @@ size_t CreateFile(const char *const str_File);
 void *GetEntry(const char *const str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, const enum enm_type_reset enm_type_reset_OK);
 char *GetStrFileName(const char *const str_Message, char *const char_var_address, const size_t size_of_var_address);
 size_t DumpFile(const char *const str_File, const size_t numRecords);
-void PurgeStream(FILE *pFile);
 
 /* Main function */
 int main()
@@ -410,7 +409,12 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 				if ((int_fields != V_ONE) || !(int_chars))
 					{
 						/* Check whether an End-of-File condition occurred during keyboard data input. */
-						PurgeStream(stdin);
+						if (feof(stdin) || ferror(stdin))
+							{
+								fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
+								clearerr(stdin);
+								fflush(stdin);
+							}
 
 						/* Get an incorrect entried value. */
 						fputs("\nThe value entered is not valid!\n", stderr);
@@ -421,14 +425,24 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 						int_fields = scanf("%*[^\n]%*c%n", &int_chars);
 
 						/* Check whether an End-of-File condition occurred during keyboard data input. */
-						PurgeStream(stdin);
+						if (feof(stdin) || ferror(stdin))
+							{
+								fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
+								clearerr(stdin);
+								fflush(stdin);
+							}
 
 						/* We must always clear the input buffer of impurities. */
 						fputs("\nPress the ENTER key to clear the input buffer...", stderr);
 						while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
 
 						/* Check whether an End-of-File condition occurred during keyboard data input. */
-						PurgeStream(stdin);
+						if (feof(stdin) || ferror(stdin))
+							{
+								fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
+								clearerr(stdin);
+								fflush(stdin);
+							}
 					}
 			}
 		else
@@ -496,7 +510,12 @@ char *GetStrFileName(const char *const str_Message, char *const char_var_address
 						if ((int_fields != V_ONE) || !(int_chars))
 							{
 								/* Check whether an End-of-File condition occurred during keyboard data input. */
-								PurgeStream(stdin);
+								if (feof(stdin) || ferror(stdin))
+									{
+										fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
+										clearerr(stdin);
+										fflush(stdin);
+									}
 
 								/* Get an incorrect entried value. */
 								fputs("\nThe value entered is not valid!\n", stderr);
@@ -507,14 +526,24 @@ char *GetStrFileName(const char *const str_Message, char *const char_var_address
 								int_fields = scanf("%*[^\n]%*c%n", &int_chars);
 
 								/* Check whether an End-of-File condition occurred during keyboard data input. */
-								PurgeStream(stdin);
+								if (feof(stdin) || ferror(stdin))
+									{
+										fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
+										clearerr(stdin);
+										fflush(stdin);
+									}
 
 								/* Clear the input buffer until a carriage return followed by a line feed, or an end-of-file, is encountered. */
 								fputs("\nPress the ENTER key to clear the input buffer...", stderr);
 								while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
 
 								/* Check whether an End-of-File condition occurred during keyboard data input. */
-								PurgeStream(stdin);
+								if (feof(stdin) || ferror(stdin))
+									{
+										fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
+										clearerr(stdin);
+										fflush(stdin);
+									}
 							}
 					}
 				else
@@ -525,15 +554,4 @@ char *GetStrFileName(const char *const str_Message, char *const char_var_address
 
 		/* Return the pointer to the string containing the filename. */
 		return char_aux_var_address;
-	}
-
-/* It handles the flushing of an input or output stream if an End-of-File (EOF) occurs. */
-void PurgeStream(FILE *pFile)
-	{
-		if (feof(pFile) || ferror(pFile))
-			{
-				fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
-				clearerr(pFile);
-				fflush(pFile);
-			}
 	}
