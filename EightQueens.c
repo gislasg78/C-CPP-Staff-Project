@@ -37,6 +37,7 @@ enum enm_option_place
 		enm_option_place_change_random_seed = V_ONE,
 		enm_option_place_random_calculation,
 		enm_option_place_manual_entry,
+		enm_option_place_view_current_board,
 		enm_option_place_view_general_info,
 		enm_option_place_exit_menu
 	};
@@ -284,8 +285,9 @@ size_t Menu(const char _chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS], const siz
 				printf("| [1]. Change the random seed.      |\n");
 				printf("| [2]. Place the 'queen' at random. |\n");
 				printf("| [3]. Provide her row and column.  |\n");
-				printf("| [4]. View general information.    |\n");
-				printf("| [5]. Exit from this menu.         |\n");
+				printf("| [4]. View current board.          |\n");
+				printf("| [5]. View general information.    |\n");
+				printf("| [6]. Exit from this menu.         |\n");
 				printf("+===|====+===|====+===|====+===|====+\n");
 
 				/* Obtain the option and convert it to the given numerator. */
@@ -319,6 +321,12 @@ size_t Menu(const char _chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS], const siz
 							column = *((size_t *) GetEntry("+ Enter a column: ", &column, enm_type_entry_sizet, enm_type_reset_YES));
 
 							printf("\nEntry position: (Row: [%lu], Column: [%lu]).\n", row, column);
+							break;
+
+						/* View the current board. */
+						case enm_option_place_view_current_board:
+							puts("\nView the current board.\n");
+							PrintChessboard(_chessboard, _chessboard_rows, _chessboard_columns);
 							break;
 
 						/* See the general information available so far. */
