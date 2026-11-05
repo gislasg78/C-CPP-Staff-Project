@@ -36,7 +36,7 @@ enum enm_type_reset
 /* Preliminary function prototypes. */
 size_t create_matrix_3D(const size_t n_matrix, int **** matrix, size_t **matrix_r, size_t ***matrix_rxc);
 size_t destroy_matrix_3D(const size_t n_matrix, int ****matrix, size_t **matrix_r, size_t ***matrix_rxc);
-void *getEntry(const char *const str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, const enum enm_type_reset enm_type_reset_OK);
+void *GetEntry(const char *const str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, const enum enm_type_reset enm_type_reset_OK);
 size_t view_matrix_3D(const size_t n_matrix, int *** matrix, size_t *matrix_r, size_t **matrix_rxc);
 
 /* This function creates and captures both the three-dimensional dynamic variable array
@@ -74,7 +74,7 @@ size_t create_matrix_3D(const size_t n_matrix, int **** matrix, size_t **matrix_
 											for (size_t m = V_ZERO; m < n_matrix; m++)		//Cycle by matrix.
 												{
 													printf("For the matrix #: [%lu] of [%lu].\n", m + V_ONE, n_matrix);
-													matrix_r[V_ZERO][m] = *((size_t *) getEntry("How many lines will it generate for it? : ", &matrix_r[V_ZERO][m], enm_type_entry_sizet, enm_type_reset_YES));
+													matrix_r[V_ZERO][m] = *((size_t *) GetEntry("How many lines will it generate for it? : ", &matrix_r[V_ZERO][m], enm_type_entry_sizet, enm_type_reset_YES));
 
 													/* Dynamic memory is allocated for each matrix to know the number of rows it will have. */
 													if ((matrix[V_ZERO][m] = (int **) calloc (matrix_r[V_ZERO][m], sizeof(size_t *))))	//Number of rows for each matrix.
@@ -84,7 +84,7 @@ size_t create_matrix_3D(const size_t n_matrix, int **** matrix, size_t **matrix_
 																	for (size_t r = V_ZERO; r < matrix_r[V_ZERO][m]; r++)		//Cycle through each row of each matrix.
 																		{
 																			printf("For the matrix #: [%lu] of [%lu], and its row #: [%lu] of [%lu].\n", m + V_ONE, n_matrix, r + V_ONE, matrix_r[V_ZERO][m]);
-																			matrix_rxc[V_ZERO][m][r] = *((size_t *) getEntry("How many columns will it generate for it and its respective row? : ", &matrix_rxc[V_ZERO][m][r], enm_type_entry_sizet, enm_type_reset_YES));
+																			matrix_rxc[V_ZERO][m][r] = *((size_t *) GetEntry("How many columns will it generate for it and its respective row? : ", &matrix_rxc[V_ZERO][m][r], enm_type_entry_sizet, enm_type_reset_YES));
 
 																			/* Dynamic memory is allocated for each row of the matrix in concurrent turn to know the number of columns it will have. */
 																			if ((matrix[V_ZERO][m][r] = (int *) calloc (matrix_rxc[V_ZERO][m][r], sizeof(int))))	//Number of columns per row of each matrix.
@@ -92,7 +92,7 @@ size_t create_matrix_3D(const size_t n_matrix, int **** matrix, size_t **matrix_
 																						for (size_t c = V_ZERO; c < matrix_rxc[V_ZERO][m][r]; c++)	//Cycle through each column of each row of each matrix.
 																							{
 																								printf("Enter a value #: %lu for Matrix #: [%lu] of [%lu] -> (Row: [%lu] of [%lu], Column: [%lu] of [%lu]) : ", items++, m + V_ONE, n_matrix, r + V_ONE, matrix_r[V_ZERO][m], c + V_ONE, matrix_rxc[V_ZERO][m][r]);
-																								matrix[V_ZERO][m][r][c] = *((int *) getEntry("", &matrix[V_ZERO][m][r][c], enm_type_entry_int, enm_type_reset_YES));
+																								matrix[V_ZERO][m][r][c] = *((int *) GetEntry("", &matrix[V_ZERO][m][r][c], enm_type_entry_int, enm_type_reset_YES));
 
 																								printf("(Matrix: [%lu] of [%lu], Row: [%lu] of [%lu], Column: [%lu] of [%lu]) = [%d].\n", m + V_ONE, n_matrix, r + V_ONE, matrix_r[V_ZERO][m], c + V_ONE, matrix_rxc[V_ZERO][m][r], matrix[V_ZERO][m][r][c]);
 																							}
@@ -200,7 +200,7 @@ size_t destroy_matrix_3D(const size_t n_matrix, int ****matrix, size_t **matrix_
 	}
 
 /* A function responsible for receiving an argument of type (void *) and the type of conversion—specified via an enumerated set—to be performed. */
-void *getEntry(const char *const str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, const enum enm_type_reset enm_type_reset_OK)
+void *GetEntry(const char *const str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, const enum enm_type_reset enm_type_reset_OK)
 	{
 		/* Preliminary working variables. */
 		int int_chars = V_ZERO;
@@ -325,9 +325,9 @@ void *getEntry(const char *const str_Message, void *const void_var_address, cons
 				if ((int_fields != V_ONE) || !(int_chars))
 					{
 						/* Check whether an End-of-File condition occurred during keyboard data input. */
-						if (feof(stdin))
+						if (feof(stdin) || ferror(stdin))
 							{
-								fprintf(stderr, "\nEnd of File (EOF) detected in data entry!\n");
+								fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
 								clearerr(stdin);
 								fflush(stdin);
 							}
@@ -335,11 +335,30 @@ void *getEntry(const char *const str_Message, void *const void_var_address, cons
 						/* Get an incorrect entried value. */
 						fputs("\nThe value entered is not valid!\n", stderr);
 						fprintf(stderr, "Press ENTER to continue...");
-						scanf("%*[^\n]%*c");
+
+						/* Proceed to clear all characters present in the buffer. */
+						int_chars = V_ZERO;
+						int_fields = scanf("%*[^\n]%*c%n", &int_chars);
+
+						/* Check whether an End-of-File condition occurred during keyboard data input. */
+						if (feof(stdin) || ferror(stdin))
+							{
+								fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
+								clearerr(stdin);
+								fflush(stdin);
+							}
 
 						/* We must always clear the input buffer of impurities. */
 						fputs("\nPress the ENTER key to clear the input buffer...", stderr);
 						while ((int_key = getchar()) != CARRIAGE_RETURN && int_key != EOF);
+
+						/* Check whether an End-of-File condition occurred during keyboard data input. */
+						if (feof(stdin) || ferror(stdin))
+							{
+								fprintf(stderr, "\nEnd of File (EOF) detected in data stream!\n");
+								clearerr(stdin);
+								fflush(stdin);
+							}
 					}
 			}
 		else
@@ -415,33 +434,33 @@ int main()
 
 		/* Header messages. */
 		printf("Highly dynamic pointer generator.\n");
-		n_matrix = *((size_t *) getEntry("How many rectangular arrangements do you want to create? : ", &n_matrix, enm_type_entry_sizet, enm_type_reset_YES));
+		n_matrix = *((size_t *) GetEntry("How many rectangular arrangements do you want to create? : ", &n_matrix, enm_type_entry_sizet, enm_type_reset_YES));
 
 		/* Function that dynamically creates and captures the three-dimensional matrix. */
 		if ((items = create_matrix_3D(n_matrix, &matrix, &matrix_r, &matrix_rxc)))
 			{
 				printf("[%zu] Items created.\n", items);
-				chr_key = *((char *) getEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
+				chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 			}
 
 		/* Visualize each element of the three-dimensional matrix and its auxiliary matrices. */
 		if ((items = view_matrix_3D(n_matrix, matrix, matrix_r, matrix_rxc)))
 			{
 				printf("[%lu] Items displayed.\n", items);
-				chr_key = *((char *) getEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
+				chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 			}
 
 		/* Deallocation of the memory assigned to each auxiliary matrix and the dynamic three-dimensional matrix. */
 		if ((items = destroy_matrix_3D(n_matrix, &matrix, &matrix_r, &matrix_rxc)))
 			{
 				printf("[%lu] Items released.\n", items);
-				chr_key = *((char *) getEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
+				chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 			}
 
 		/* Program closure notice. */
 		printf("\nDone!\n");
 		printf("This program has ended.\n");
-		chr_key = *((char *) getEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
+		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 
 		return V_ZERO;
 	}
