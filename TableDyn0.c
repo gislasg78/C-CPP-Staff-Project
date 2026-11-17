@@ -73,17 +73,17 @@ size_t create_matrix_3D(const size_t n_matrix, int **** matrix, size_t **matrix_
 											/* Dynamic memory is allocated to know the number of matrices to be generated. */
 											for (size_t m = V_ZERO; m < n_matrix; m++)		//Cycle by matrix.
 												{
-													printf("For the matrix #: [%lu] of [%lu].\n", m + V_ONE, n_matrix);
+													printf("For the matrix #: [%zu] of [%zu].\n", m + V_ONE, n_matrix);
 													matrix_r[V_ZERO][m] = *((size_t *) GetEntry("How many lines will it generate for it? : ", &matrix_r[V_ZERO][m], enm_type_entry_sizet, enm_type_reset_YES));
 
 													/* Dynamic memory is allocated for each matrix to know the number of rows it will have. */
-													if ((matrix[V_ZERO][m] = (int **) calloc (matrix_r[V_ZERO][m], sizeof(size_t *))))	//Number of rows for each matrix.
+													if ((matrix[V_ZERO][m] = (int **) calloc (matrix_r[V_ZERO][m], sizeof(int *))))	//Number of rows for each matrix.
 														{
 															if ((matrix_rxc[V_ZERO][m] = (size_t *) calloc (matrix_r[V_ZERO][m], sizeof(size_t))))
 																{
 																	for (size_t r = V_ZERO; r < matrix_r[V_ZERO][m]; r++)		//Cycle through each row of each matrix.
 																		{
-																			printf("For the matrix #: [%lu] of [%lu], and its row #: [%lu] of [%lu].\n", m + V_ONE, n_matrix, r + V_ONE, matrix_r[V_ZERO][m]);
+																			printf("For the matrix #: [%zu] of [%zu], and its row #: [%zu] of [%zu].\n", m + V_ONE, n_matrix, r + V_ONE, matrix_r[V_ZERO][m]);
 																			matrix_rxc[V_ZERO][m][r] = *((size_t *) GetEntry("How many columns will it generate for it and its respective row? : ", &matrix_rxc[V_ZERO][m][r], enm_type_entry_sizet, enm_type_reset_YES));
 
 																			/* Dynamic memory is allocated for each row of the matrix in concurrent turn to know the number of columns it will have. */
@@ -91,43 +91,43 @@ size_t create_matrix_3D(const size_t n_matrix, int **** matrix, size_t **matrix_
 																				{
 																						for (size_t c = V_ZERO; c < matrix_rxc[V_ZERO][m][r]; c++)	//Cycle through each column of each row of each matrix.
 																							{
-																								printf("Enter a value #: %lu for Matrix #: [%lu] of [%lu] -> (Row: [%lu] of [%lu], Column: [%lu] of [%lu]) : ", items++, m + V_ONE, n_matrix, r + V_ONE, matrix_r[V_ZERO][m], c + V_ONE, matrix_rxc[V_ZERO][m][r]);
+																								printf("Enter a value #: %zu for Matrix #: [%zu] of [%zu] -> (Row: [%zu] of [%zu], Column: [%zu] of [%zu]) : ", items++, m + V_ONE, n_matrix, r + V_ONE, matrix_r[V_ZERO][m], c + V_ONE, matrix_rxc[V_ZERO][m][r]);
 																								matrix[V_ZERO][m][r][c] = *((int *) GetEntry("", &matrix[V_ZERO][m][r][c], enm_type_entry_int, enm_type_reset_YES));
 
-																								printf("(Matrix: [%lu] of [%lu], Row: [%lu] of [%lu], Column: [%lu] of [%lu]) = [%d].\n", m + V_ONE, n_matrix, r + V_ONE, matrix_r[V_ZERO][m], c + V_ONE, matrix_rxc[V_ZERO][m][r], matrix[V_ZERO][m][r][c]);
+																								printf("(Matrix: [%zu] of [%zu], Row: [%zu] of [%zu], Column: [%zu] of [%zu]) = [%d].\n", m + V_ONE, n_matrix, r + V_ONE, matrix_r[V_ZERO][m], c + V_ONE, matrix_rxc[V_ZERO][m][r], matrix[V_ZERO][m][r][c]);
 																							}
 
 																						printf("\n");
 																				}
 																			else
-																				fprintf(stderr, "\nError! Insufficient memory allocation: Matrix 3D. [%lu] of [%lu]. Rows: [%lu] of [%lu].\n", m + V_ONE, n_matrix, r + V_ONE,  matrix_r[V_ZERO][m]);
+																				fprintf(stderr, "\nError! Insufficient memory allocation: Matrix 3D. [%zu] of [%zu]. Rows: [%zu] of [%zu].\n", m + V_ONE, n_matrix, r + V_ONE,  matrix_r[V_ZERO][m]);
 																		}
 
 																	printf("\n");
 																}
 															else
-																fprintf(stderr, "\nError! Insufficient memory allocation: Matrix rows by columns. [%lu] of [%lu].\n", m + V_ONE, n_matrix);
+																fprintf(stderr, "\nError! Insufficient memory allocation: Matrix rows by columns. [%zu] of [%zu].\n", m + V_ONE, n_matrix);
 														}
 													else
-														fprintf(stderr, "Error! Insufficient memory allocation: Matrix 3D. [%lu] of [%lu].\n", m + V_ONE, n_matrix);
+														fprintf(stderr, "Error! Insufficient memory allocation: Matrix 3D. [%zu] of [%zu].\n", m + V_ONE, n_matrix);
 												}
 
-											printf("[%lu] Captured input values.\n", items);
+											printf("[%zu] Captured input values.\n", items);
 										}
 									else
-										fprintf(stderr, "\nError! Insufficient memory allocation. Matrix by rows. [%lu].\n", n_matrix);
+										fprintf(stderr, "\nError! Insufficient memory allocation. Matrix by rows. [%zu].\n", n_matrix);
 								}
 							else
-								fprintf(stderr, "\nError! Insufficient memory allocation: Matrix rows by columns. [%lu].\n.", n_matrix);
+								fprintf(stderr, "\nError! Insufficient memory allocation: Matrix rows by columns. [%zu].\n.", n_matrix);
 						}
 				else
-						fprintf(stderr, "Error! Insufficient memory allocation: Matrix 3D. [%lu].\n", n_matrix);
+						fprintf(stderr, "Error! Insufficient memory allocation: Matrix 3D. [%zu].\n", n_matrix);
 			}
 		else
 			{
 				/* Error messages for critical validation. */
 				fputs("\nIncorrect input values ​​for creating the matrix.\n", stderr);
-				fprintf(stderr, "+ Matrices:\t\t\t[%lu].\n", n_matrix);
+				fprintf(stderr, "+ Matrices:\t\t\t[%zu].\n", n_matrix);
 				fprintf(stderr, "+ Matrix 3D:\t\t\t[%p].\n", (void *) matrix);
 				fprintf(stderr, "+ Matrix rows:\t\t\t[%p].\n", (void *) matrix_r);
 				fprintf(stderr, "+ Matrix rows by columns:\t[%p].\n", (void *) matrix_rxc);
@@ -152,12 +152,12 @@ size_t destroy_matrix_3D(const size_t n_matrix, int ****matrix, size_t **matrix_
 				/* Freeing each memory space allocated to each array. */
 				for (size_t m = V_ZERO; m < n_matrix; m++)
 					{
-						printf("Deallocating memory for array #: [%lu] of [%lu].\n", m + V_ONE, n_matrix);
+						printf("Deallocating memory for array #: [%zu] of [%zu].\n", m + V_ONE, n_matrix);
 
 						/* Freeing each memory space allocated to each row of each matrix. */
 						for (size_t r = V_ZERO; r < matrix_r[V_ZERO][m]; r++, items++)
 							{
-								printf("\tDeallocating memory for its row #: [%lu] of [%lu].\n", r + V_ONE, matrix_r[V_ZERO][m]);
+								printf("\tDeallocating memory for its row #: [%zu] of [%zu].\n", r + V_ONE, matrix_r[V_ZERO][m]);
 
 								free(matrix[V_ZERO][m][r]);	//Clear the three-dimensional matrix by rows.
 								matrix[V_ZERO][m][r] = NULL;
@@ -171,7 +171,7 @@ size_t destroy_matrix_3D(const size_t n_matrix, int ****matrix, size_t **matrix_
 
 						printf("\n");
 					}
-				printf("[%lu] Generated output results.\n", items);
+				printf("[%zu] Generated output results.\n", items);
 
 				/* Higher-order pointers are deallocated. */
 				printf("\nEvicting main memory addresses...\n");
@@ -189,7 +189,7 @@ size_t destroy_matrix_3D(const size_t n_matrix, int ****matrix, size_t **matrix_
 			{
 				/* Error messages for critical validation. */
 				fputs("\nIncorrect input values ​​for destroying the matrix.\n", stderr);
-				fprintf(stderr, "+ Matrices:\t\t\t[%lu].\n", n_matrix);
+				fprintf(stderr, "+ Matrices:\t\t\t[%zu].\n", n_matrix);
 				fprintf(stderr, "+ Matrix 3D:\t\t\t[%p].\n", (void *) matrix);
 				fprintf(stderr, "+ Matrix rows:\t\t\t[%p].\n", (void *) matrix_r);
 				fprintf(stderr, "+ Matrix rows by columns:\t[%p].\n", (void *) matrix_rxc);
@@ -309,9 +309,9 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 
 						/* Get a correct unsigned long int value. */
 						case enm_type_entry_sizet:
-							if ((int_fields = scanf("%lu%*c%n", (size_t *) void_var_address, &int_chars)))
+							if ((int_fields = scanf("%zu%*c%n", (size_t *) void_var_address, &int_chars)))
 								{
-									printf("\nFields: [%d]. Input value: [%lu]. Characters: [%d]. OK!\n", int_fields, *((size_t *) void_var_address), int_chars);
+									printf("\nFields: [%d]. Input value: [%zu]. Characters: [%d]. OK!\n", int_fields, *((size_t *) void_var_address), int_chars);
 								}
 							break;
 
@@ -383,18 +383,18 @@ size_t view_matrix_3D(const size_t n_matrix, int *** matrix, size_t *matrix_r, s
 				/* Dump of each matrix. */
 				for (size_t m = V_ZERO; m < n_matrix; m++)
 					{
-						printf("Matrix: [%lu] of [%lu].\n", m + V_ONE, n_matrix);
+						printf("Matrix: [%zu] of [%zu].\n", m + V_ONE, n_matrix);
 
 						/* Dump of each row of each matrix. */
 						for (size_t r = V_ZERO; r < *(matrix_r + m); r++)
 							{
-								printf("\tRow: [%lu] of [%lu].\n", r + V_ONE, *(matrix_r + m));
+								printf("\tRow: [%zu] of [%zu].\n", r + V_ONE, *(matrix_r + m));
 
 								/* Dump of each column of each row of each matrix. */
 								for (size_t c = V_ZERO; c < *(*(matrix_rxc + m) + r); c++, items++)
 									{
-										printf("\t\tColumn: [%lu] of [%lu].\t", c + V_ONE, *(*(matrix_rxc + m) + r));
-										printf("(%lu, %lu, %lu) = [%d] : [%d].\n", m + V_ONE, r + V_ONE, c + V_ONE, matrix[m][r][c], *(*(*(matrix + m) + r) + c));
+										printf("\t\tColumn: [%zu] of [%zu].\t", c + V_ONE, *(*(matrix_rxc + m) + r));
+										printf("(%zu, %zu, %zu) = [%d] : [%d].\n", m + V_ONE, r + V_ONE, c + V_ONE, matrix[m][r][c], *(*(*(matrix + m) + r) + c));
 									}
 
 								printf("\n");
@@ -402,13 +402,13 @@ size_t view_matrix_3D(const size_t n_matrix, int *** matrix, size_t *matrix_r, s
 
 						printf("\n");
 					}
-				printf("[%lu] Generated output results.\n", items);
+				printf("[%zu] Generated output results.\n", items);
 			}
 		else
 			{
 				/* Error messages for critical validation. */
 				fputs("\nIncorrect input values ​​for viewing the matrix.\n", stderr);
-				fprintf(stderr, "+ Matrices:\t\t\t[%lu].\n", n_matrix);
+				fprintf(stderr, "+ Matrices:\t\t\t[%zu].\n", n_matrix);
 				fprintf(stderr, "+ Matrix 3D:\t\t\t[%p].\n", (void *) matrix);
 				fprintf(stderr, "+ Matrix rows:\t\t\t[%p].\n", (void *) matrix_r);
 				fprintf(stderr, "+ Matrix rows by columns:\t[%p].\n", (void *) matrix_rxc);
@@ -446,14 +446,14 @@ int main()
 		/* Visualize each element of the three-dimensional matrix and its auxiliary matrices. */
 		if ((items = view_matrix_3D(n_matrix, matrix, matrix_r, matrix_rxc)))
 			{
-				printf("[%lu] Items displayed.\n", items);
+				printf("[%zu] Items displayed.\n", items);
 				chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 			}
 
 		/* Deallocation of the memory assigned to each auxiliary matrix and the dynamic three-dimensional matrix. */
 		if ((items = destroy_matrix_3D(n_matrix, &matrix, &matrix_r, &matrix_rxc)))
 			{
-				printf("[%lu] Items released.\n", items);
+				printf("[%zu] Items released.\n", items);
 				chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 			}
 
