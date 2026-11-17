@@ -182,8 +182,8 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 
 						/* Get a correct unsigned long int value. */
 						case enm_type_entry_sizet:
-							if ((int_fields = scanf("%lu%*c%n", (size_t *) void_var_address, &int_chars)))
-								printf("\nFields: [%d]. Input value: [%lu]. Characters: [%d]. OK!\n", int_fields, *((size_t *) void_var_address), int_chars);
+							if ((int_fields = scanf("%zu%*c%n", (size_t *) void_var_address, &int_chars)))
+								printf("\nFields: [%d]. Input value: [%zu]. Characters: [%d]. OK!\n", int_fields, *((size_t *) void_var_address), int_chars);
 							break;
 
 						/* It is specified that if the option is incorrect, an error message should be sent. */
@@ -308,19 +308,19 @@ size_t Menu(const char _chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS], const siz
 							puts("\nRandom calculation of the positions of the 'queen' piece.");
 							row = (size_t ) GetRandomInterval(V_ZERO, (int) (_chessboard_rows - V_ONE), &random_seed);
 							column = (size_t) GetRandomInterval(V_ZERO, (int) (_chessboard_columns - V_ONE), &random_seed);
-							printf("\n(Row: [%lu], Column: [%lu]).\n", row, column);
+							printf("\n(Row: [%zu], Column: [%zu]).\n", row, column);
 							break;
 
 						/* Manually enter the row and column for the 'queen' piece. */
 						case enm_option_place_manual_entry:
 							puts("\nManual entry of the positions of the 'queen' piece.");
-							printf("Valid range for row from: [%d] to: [%lu].\n", V_ZERO, _chessboard_rows - V_ONE);
+							printf("Valid range for row from: [%d] to: [%zu].\n", V_ZERO, _chessboard_rows - V_ONE);
 							row = *((size_t *) GetEntry("+ Enter a row: ", &row, enm_type_entry_sizet, enm_type_reset_YES));
 
-							printf("Valid range for column from: [%d] to: [%lu].\n", V_ZERO, _chessboard_columns - V_ONE);
+							printf("Valid range for column from: [%d] to: [%zu].\n", V_ZERO, _chessboard_columns - V_ONE);
 							column = *((size_t *) GetEntry("+ Enter a column: ", &column, enm_type_entry_sizet, enm_type_reset_YES));
 
-							printf("\nEntry position: (Row: [%lu], Column: [%lu]).\n", row, column);
+							printf("\nEntry position: (Row: [%zu], Column: [%zu]).\n", row, column);
 							break;
 
 						/* View the current board. */
@@ -332,8 +332,8 @@ size_t Menu(const char _chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS], const siz
 						/* See the general information available so far. */
 						case enm_option_place_view_general_info:
 							puts("\nView general information.");
-							printf("+ Row:\t\t[%lu].\n", row);
-							printf("+ Column:\t[%lu].\n", column);
+							printf("+ Row:\t\t[%zu].\n", row);
+							printf("+ Column:\t[%zu].\n", column);
 
 							if (row < _chessboard_rows && column < _chessboard_columns)
 								printf("+ Value:\t[%c].\n", (*(_chessboard + row))[column]);
@@ -349,7 +349,7 @@ size_t Menu(const char _chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS], const siz
 
 						/* Invalid option. */
 						default:
-							printf("\nInvalid option: [%lu]. Please correct it!\n", option);
+							printf("\nInvalid option: [%zu]. Please correct it!\n", option);
 							break;
 					}
 
@@ -371,7 +371,7 @@ size_t Menu(const char _chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS], const siz
 
 		/* Display of output messages. */
 		printf("\nFinal Results.\n");
-		printf("+ Occupied squares: [%lu].\n", count);
+		printf("+ Occupied squares: [%zu].\n", count);
 
 		/* Return the selected option. */
 		return option;
@@ -392,14 +392,14 @@ size_t PrintChessboard(const char _chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS]
 				for (size_t column = V_ZERO; column < _chessboard_columns; column++)
 					{
 						counter++;
-						printf("(%lu, %lu) : [%c].\t", row, column, _chessboard[row][column]);
+						printf("(%zu, %zu) : [%c].\t", row, column, _chessboard[row][column]);
 					}
 
 				printf("\n");
 			}
 
 		/* Final output result message. */
-		printf("[%lu] Output results obtained.\n", counter);
+		printf("[%zu] Output results obtained.\n", counter);
 
 		/* Return, as a preliminary step, the number of board squares displayed on the screen. */
 		return counter;
@@ -456,14 +456,14 @@ size_t ResolveQueens(char _chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS], const 
 							}
 
 						/* The contents of the placed 'queen' piece are displayed. */
-						printf("\n[%s]:\t(Row = [%lu], Column = [%lu]) = {%x} : {%d} : {%c}.\n", (_chessboard[rowQ][columnQ] == QUEEN) ? "Queen position" : (_chessboard[rowQ][columnQ] == ASTERISK) ? "Position held" : "Position available", rowQ, columnQ, _chessboard[rowQ][columnQ], *(_chessboard[rowQ] + columnQ), *(*(_chessboard + rowQ) + columnQ));
-						printf("\t\t\tAccumulated: [%lu]. Counter: [%lu]. Queens: [%lu]. Turns: [%lu].\n", *accumulated += *counter, *counter, *queens, (*spins)++);
+						printf("\n[%s]:\t(Row = [%zu], Column = [%zu]) = {%x} : {%d} : {%c}.\n", (_chessboard[rowQ][columnQ] == QUEEN) ? "Queen position" : (_chessboard[rowQ][columnQ] == ASTERISK) ? "Position held" : "Position available", rowQ, columnQ, _chessboard[rowQ][columnQ], *(_chessboard[rowQ] + columnQ), *(*(_chessboard + rowQ) + columnQ));
+						printf("\t\t\tAccumulated: [%zu]. Counter: [%zu]. Queens: [%zu]. Turns: [%zu].\n", *accumulated += *counter, *counter, *queens, (*spins)++);
 					}
 				else
-					fprintf(stderr, "\nMistake! The value for column: [%lu] is outside the range between: [%d] and: [%lu].\n", columnQ, V_ZERO, _chessboard_columns - V_ONE);
+					fprintf(stderr, "\nMistake! The value for column: [%zu] is outside the range between: [%d] and: [%zu].\n", columnQ, V_ZERO, _chessboard_columns - V_ONE);
 			}
 		else
-			fprintf(stderr, "\nMistake! The value for row: [%lu] is outside the range between: [%d] and: [%lu].\n", rowQ, V_ZERO, _chessboard_rows - V_ONE);
+			fprintf(stderr, "\nMistake! The value for row: [%zu] is outside the range between: [%d] and: [%zu].\n", rowQ, V_ZERO, _chessboard_rows - V_ONE);
 
 		/* Return the number of 'queen' pieces placed on the board. */
 		return *counter;
@@ -477,7 +477,7 @@ int main()
 
 		/* Access the internal menu. */
 		size_t option = Menu(chessboard, chessboard_rows, chessboard_columns);
-		printf("\nChosen option: [%lu].\n", option);
+		printf("\nChosen option: [%zu].\n", option);
 
 		/* Program termination messages. */
 		printf("\nDone!\n");
