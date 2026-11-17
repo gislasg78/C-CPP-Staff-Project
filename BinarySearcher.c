@@ -584,8 +584,8 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 
 						/* Get a correct unsigned long int value. */
 						case enm_type_entry_sizet:
-							if ((int_fields = scanf("%lu%*c%n", (size_t *) void_var_address, &int_chars)))
-								printf("\nFields: [%d]. Input value: [%lu]. Characters: [%d]. OK!\n", int_fields, *((size_t *) void_var_address), int_chars);
+							if ((int_fields = scanf("%zu%*c%n", (size_t *) void_var_address, &int_chars)))
+								printf("\nFields: [%d]. Input value: [%zu]. Characters: [%d]. OK!\n", int_fields, *((size_t *) void_var_address), int_chars);
 							break;
 
 						/* It is specified that if the option is incorrect, an error message should be sent. */
