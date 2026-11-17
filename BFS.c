@@ -10,7 +10,6 @@
 #define	V_ONE		1
 #define	V_ZERO		0
 
-
 /* Definition of movement directions (up, down, left, right). */
 int rowNum[] = {V_MINUS_ONE, V_ONE, V_ZERO, V_ZERO};
 int colNum[] = {V_ZERO, V_ZERO, V_MINUS_ONE, V_ONE};
