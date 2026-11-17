@@ -178,7 +178,7 @@ size_t CopyFile(const char *const strSource, const char *const strTarget, const 
 								if ((int_fields = fscanf(pFSource, "%*c%d%*c%*c%n", &inKey, &inBytes)) && !feof(pFSource) && !ferror(pFSource) && (counter < numRecords))
 									{
 										if ((int_fields = fprintf(pFTarget, "{%d}.%n\n", outKey = inKey, &outBytes)))
-											printf("#: [%lu]\t:\t(%d)\t=\t{%d}.\t<%d>\t=\t<%d>.\n", counter++, inKey, outKey, inBytes, outBytes);
+											printf("#: [%zu]\t:\t(%d)\t=\t{%d}.\t<%d>\t=\t<%d>.\n", counter++, inKey, outKey, inBytes, outBytes);
 									}
 							}
 
@@ -190,7 +190,7 @@ size_t CopyFile(const char *const strSource, const char *const strTarget, const 
 						printf("File size: [%s] with: [%ld] bytes.\n", strSource, ftell(pFSource));
 						fseek(pFTarget, V_ZERO, SEEK_END);
 						printf("File size: [%s] with: [%ld] bytes.\n", strTarget, ftell(pFTarget));
-						printf("File: [%s] was written with: [%lu] records out of a total of: [%lu].\n", strTarget, counter, numRecords);
+						printf("File: [%s] was written with: [%zu] records out of a total of: [%zu].\n", strTarget, counter, numRecords);
 						printf("File: [%s] closed!\n", strSource);
 						fclose(pFSource);
 					}
@@ -234,7 +234,7 @@ size_t CreateFile(const char *const strFile)
 							break;
 
 						if ((int_fields = fprintf(pFile, "(%d).\n%n", key, &int_chars)))
-							printf("#: [%lu]\t:\t[%d].\t<%d>.\n", counter++, key, int_chars);
+							printf("#: [%zu]\t:\t[%d].\t<%d>.\n", counter++, key, int_chars);
 					}
 
 				CheckErrorFile(strFile, pFile);
@@ -242,7 +242,7 @@ size_t CreateFile(const char *const strFile)
 				printf("\nSize of the created file.\n");
 				fseek(pFile, V_ZERO, SEEK_END);
 				printf("File size: [%s] with: [%ld] bytes.\n", strFile, ftell(pFile));
-				printf("File saved: [%s] with: [%lu] records.\n", strFile, counter);
+				printf("File saved: [%s] with: [%zu] records.\n", strFile, counter);
 
 				printf("File: [%s] closed!\n", strFile);
 				fclose(pFile);
@@ -278,7 +278,7 @@ size_t DumpFile(const char *const strFile, const size_t numRecords)
 				while (!feof(pFile) && !ferror(pFile) && counter < numRecords)
 					{
 						if ((int_fields = fscanf(pFile, "%*c%d%*c%*c%n", &key, &int_chars)) && !feof(pFile) && !ferror(pFile) && (counter < numRecords))
-							printf("#: [%lu]\t:\t[%d].\t<%d>.\n", counter++, key, int_chars);
+							printf("#: [%zu]\t:\t[%d].\t<%d>.\n", counter++, key, int_chars);
 					}
 
 				CheckErrorFile(strFile, pFile);
@@ -286,7 +286,7 @@ size_t DumpFile(const char *const strFile, const size_t numRecords)
 				printf("\nSize of the dump file.\n");
 				fseek(pFile, V_ZERO, SEEK_END);
 				printf("File size: [%s] with: [%ld] bytes.\n", strFile, ftell(pFile));
-				printf("File recovered: [%s] with: [%lu] records out of a total of: [%lu].\n", strFile, counter, numRecords);
+				printf("File recovered: [%s] with: [%zu] records out of a total of: [%zu].\n", strFile, counter, numRecords);
 
 				printf("File: [%s] closed!\n", strFile);
 				fclose(pFile);
@@ -395,8 +395,8 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 
 						/* Get a correct unsigned long int value. */
 						case enm_type_entry_sizet:
-							if ((int_fields = scanf("%lu%*c%n", (size_t *) void_var_address, &int_chars)))
-								printf("\nFields: [%d]. Input value: [%lu]. Characters: [%d]. OK!\n", int_fields, *((size_t *) void_var_address), int_chars);
+							if ((int_fields = scanf("%zu%*c%n", (size_t *) void_var_address, &int_chars)))
+								printf("\nFields: [%d]. Input value: [%zu]. Characters: [%d]. OK!\n", int_fields, *((size_t *) void_var_address), int_chars);
 							break;
 
 						/* It is specified that if the option is incorrect, an error message should be sent. */
@@ -475,7 +475,7 @@ char *GetStrFileName(const char *const str_Message, char *const char_var_address
 		if (size_of_char_var_address >= V_ONE && size_of_char_var_address <= default_size)
 			{
 				/* Construct a format string. */
-				if ((int_chars = snprintf(str_format, sizeof(str_format), "%%%lu[^\n]%%*c%%n", size_of_char_var_address)))
+				if ((int_chars = snprintf(str_format, sizeof(str_format), "%%%zu[^\n]%%*c%%n", size_of_char_var_address)))
 					{
 						/* Validate the memory address correctly. */
 						if (char_var_address)
@@ -550,7 +550,7 @@ char *GetStrFileName(const char *const str_Message, char *const char_var_address
 					fprintf(stderr, "\nThe format string was not generated correctly with: [%d] characters.\n", int_chars);
 			}
 		else
-			fprintf(stderr, "Cannot allocate: [%lu] bytes in memory!\n", size_of_char_var_address);
+			fprintf(stderr, "Cannot allocate: [%zu] bytes in memory!\n", size_of_char_var_address);
 
 		/* Return the pointer to the string containing the filename. */
 		return char_aux_var_address;
