@@ -137,8 +137,8 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 
 						/* Get a correct unsigned long int value. */
 						case enm_type_entry_sizet:
-							if ((int_fields = scanf("%lu%*c%n", (size_t *) void_var_address, &int_chars)))
-								printf("\nFields: [%d]. Input value: [%lu]. Characters: [%d]. OK!\n", int_fields, *((size_t *) void_var_address), int_chars);
+							if ((int_fields = scanf("%zu%*c%n", (size_t *) void_var_address, &int_chars)))
+								printf("\nFields: [%d]. Input value: [%zu]. Characters: [%d]. OK!\n", int_fields, *((size_t *) void_var_address), int_chars);
 							break;
 
 						/* It is specified that if the option is incorrect, an error message should be sent. */
@@ -254,14 +254,14 @@ int main()
 		/* The original array is printed. */
 		printf("\nOriginal Array.\n");
 		print_array(array, array_num_elements);
-		printf("[%lu] Output results generated.\n", array_num_elements);
+		printf("[%zu] Output results generated.\n", array_num_elements);
 		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 
 		/* The array sorted in ascending order is shown. */
 		printf("\nSorted Array.\n");
 		qsort(array, array_num_elements, data_size, compare);
 		print_array(array, array_num_elements);
-		printf("[%lu] Output results sorted.\n", array_num_elements);
+		printf("[%zu] Output results sorted.\n", array_num_elements);
 		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 
 		/* An element to search for in the array is requested. */
@@ -271,7 +271,7 @@ int main()
 		/* The binary search function is called to locate it. */
 		printf("\nBinary Search Result.\n");
 		int *ptr_index = (int *) bsearch(&element, array, sizeof(array) / sizeof(*array), sizeof(*array), compare);
-		printf("[%lu] Output results searched.\n", array_num_elements);
+		printf("[%zu] Output results searched.\n", array_num_elements);
 		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 
 		/* It is validated whether the returned pointer holds a valid memory address. */
