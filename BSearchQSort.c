@@ -88,6 +88,7 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 									break;
 
 								default:
+									fputs("\nUnrecognized Option!", stderr);
 									fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
 									break;
 							}
@@ -143,6 +144,7 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 
 						/* It is specified that if the option is incorrect, an error message should be sent. */
 						default:
+							fputs("\nUnrecognized Option!", stderr);
 							fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
 							break;
 					}
@@ -280,6 +282,7 @@ int main()
 		else
 			printf("\nElement: [%x] : [%d] was not found!\n", element, element);
 
+		/* An intermediate pause is established before continuing. */
 		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 
 		/* Program termination messages. */
