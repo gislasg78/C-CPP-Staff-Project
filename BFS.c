@@ -70,21 +70,26 @@ void BFS(int matrix[N][N], int visited[N][N], int x, int y)
 	visited[x][y] = V_ONE;
 	enqueue(&q, x, y);
 
+	printf("\n");
+
 	/* An iterative-recursive loop responsible for visiting each cell in the matrix. */
 	while (!isEmpty(&q))
 	{
+		/* Intermediate Work Initializations. */
 		Cell cell = dequeue(&q);
 		x = cell.x;
 		y = cell.y;
 
-		printf("(%d, %d).\n", x, y);
+		printf("(%d, %d). -> ", x, y);
 
 		/* Traverse each and every neighboring and/or adjacent cell. */
-		for (int i = V_ZERO; i < N; i++)
+		for (int idx = V_ZERO; idx < N; idx++)
 		{
-			int newX = x + rowNum[i];
-			int newY = y + colNum[i];
+			/* Initializations for the new abscissa 'x' and the new ordinate 'y'. */
+			int newX = x + rowNum[idx];
+			int newY = y + colNum[idx];
 
+			/* Verification of the validity of the visit to the given polling station. */
 			if (isValid(matrix, visited, newX, newY))
 			{
 				visited[newX][newY] = V_ONE;
@@ -92,6 +97,8 @@ void BFS(int matrix[N][N], int visited[N][N], int x, int y)
 			}
 		}
 	}
+
+	printf("\n");
 }
 
 //Main function.
@@ -109,8 +116,16 @@ int main()
 	/* Matrix for tracking the cells visited within it. */
 	int visited[N][N] = {V_ZERO};
 
+	/* Initialization and Start of the 'A*' (A-star) Search. */
+	printf("'BFS' (Breadth-First Search) Algorithm Program.\n");
+	printf("A path search is performed from: (%d, %d) to (%d, %d)...\n", V_ZERO, V_ZERO, N + V_MINUS_ONE, N + V_MINUS_ONE);
+
 	/* Begin BFS (Breadth-First Search) from the specified cell, typically from (0, 0). */
 	BFS(matrix, visited, V_ZERO, V_ZERO);
+
+	/* Program termination messages. */
+	printf("\nDone!\n");
+	printf("This program has ended.\n");
 
 	return V_ZERO;
 }
