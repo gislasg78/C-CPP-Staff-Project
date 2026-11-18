@@ -58,6 +58,7 @@ class PiggyBank
 
 		PiggyBank(PiggyBank&& _piggybank) : ptr_coins(_piggybank.ptr_coins)
 		{
+			s_counter++;
 			_piggybank.ptr_coins = nullptr;
 		}
 
