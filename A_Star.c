@@ -1,4 +1,4 @@
-/* Implementation of A* (A-Start Search) in a matrix in C.  */
+/* Implementation of A* (A-Star Search) in a matrix in C.  */
 
 /* Standard Work Libraries. */
 #include <stdio.h>
@@ -31,7 +31,6 @@ typedef struct
 		int in_open;
 		int in_closed;
 	} Cell;
-
 
 /* Function to verify that it is the same node. */
 int is_same_node(Node a, Node b)
@@ -68,7 +67,7 @@ void print_path(Cell grid[SIZE][SIZE], Node end)
 				current = grid[current.x][current.y].parent;
 			}
 
-		printf("START\n");
+		printf("[START].\n");
 	}
 
 /* 'A*' primary function for search with controlled backtracking. */
