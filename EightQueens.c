@@ -61,7 +61,7 @@ enum enm_type_reset
 		enm_type_reset_YES
 	};
 
-/* Create an empty chessboard (initialized to SPACE 0x20 or '\x20'). */
+/* Create an empty chessboard (initialized to SPACE '0x20' or '\x20'). */
 char chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS] =	{
 									{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
 									{SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE, SPACE},
@@ -300,15 +300,15 @@ size_t Menu(const char _chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS], const siz
 						case enm_option_place_change_random_seed:
 							printf("\nChange the random seed for stochastic calculations.\n");
 							random_seed = *((int *) GetEntry("+ Enter a new random seed: ", &random_seed, enm_type_entry_int, enm_type_reset_YES));
-							printf("\nRandom seed: [%d].\n", random_seed);
+							printf("Random seed: [%d].\n", random_seed);
 							break;
 
 						/* Option to randomly calculate the row and column for placement. */
 						case enm_option_place_random_calculation:
-							puts("\nRandom calculation of the positions of the 'queen' piece.");
+							printf("\nRandom calculation of the positions of the 'queen' piece.\n");
 							row = (size_t ) GetRandomInterval(V_ZERO, (int) (_chessboard_rows - V_ONE), &random_seed);
 							column = (size_t) GetRandomInterval(V_ZERO, (int) (_chessboard_columns - V_ONE), &random_seed);
-							printf("\n(Row: [%zu], Column: [%zu]).\n", row, column);
+							printf("(Row: [%zu], Column: [%zu]).\n", row, column);
 							break;
 
 						/* Manually enter the row and column for the 'queen' piece. */
@@ -320,12 +320,12 @@ size_t Menu(const char _chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS], const siz
 							printf("Valid range for column from: [%d] to: [%zu].\n", V_ZERO, _chessboard_columns - V_ONE);
 							column = *((size_t *) GetEntry("+ Enter a column: ", &column, enm_type_entry_sizet, enm_type_reset_YES));
 
-							printf("\nEntry position: (Row: [%zu], Column: [%zu]).\n", row, column);
+							printf("\nPositions entered: (Row: [%zu], Column: [%zu]).\n", row, column);
 							break;
 
 						/* View the current board. */
 						case enm_option_place_view_current_board:
-							puts("\nView the current board.\n");
+							puts("\nView the current board.");
 							PrintChessboard(_chessboard, _chessboard_rows, _chessboard_columns);
 							break;
 
@@ -335,11 +335,11 @@ size_t Menu(const char _chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS], const siz
 							printf("+ Row:\t\t[%zu].\n", row);
 							printf("+ Column:\t[%zu].\n", column);
 
+							/* Validate the limits and intervals of the dashboard matrix indices. */
 							if (row < _chessboard_rows && column < _chessboard_columns)
 								printf("+ Value:\t[%c].\n", (*(_chessboard + row))[column]);
 
-							printf("+ Seed:\t\t[%d].\n", random_seed);
-							chr_pause = *((char *) GetEntry("Press the ENTER key to continue...", &chr_pause, enm_type_entry_char, enm_type_reset_YES));
+							printf("* Seed:\t\t[%d].\n", random_seed);
 							break;
 
 						/* Exit this main menu. */
@@ -349,9 +349,13 @@ size_t Menu(const char _chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS], const siz
 
 						/* Invalid option. */
 						default:
-							printf("\nInvalid option: [%zu]. Please correct it!\n", option);
+							fputs("\nUnrecognized Option!", stderr);
+							fprintf(stderr, "\nInvalid option: [%zu]. Please correct it!\n", option);
 							break;
 					}
+
+				/* A forced pause is inserted for each operation performed or carried out. */
+				chr_pause = *((char *) GetEntry("Press the ENTER key to continue...", &chr_pause, enm_type_entry_char, enm_type_reset_YES));
 
 				/* Ensure that no 'queen' piece attacks another, and print the board for each attempt at their placement. */
 				if (enm_option >= enm_option_place_random_calculation && option <= enm_option_place_manual_entry)
@@ -368,10 +372,12 @@ size_t Menu(const char _chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS], const siz
 		/* Display and show the final board. */
 		puts("\nDisplay and show the final board.");
 		PrintChessboard(_chessboard, _chessboard_rows, _chessboard_columns);
+		chr_pause = *((char *) GetEntry("Press the ENTER key to continue...", &chr_pause, enm_type_entry_char, enm_type_reset_YES));
 
 		/* Display of output messages. */
 		printf("\nFinal Results.\n");
 		printf("+ Occupied squares: [%zu].\n", count);
+		chr_pause = *((char *) GetEntry("Press the ENTER key to continue...", &chr_pause, enm_type_entry_char, enm_type_reset_YES));
 
 		/* Return the selected option. */
 		return option;
@@ -478,6 +484,7 @@ int main()
 		/* Access the internal menu. */
 		size_t option = Menu(chessboard, chessboard_rows, chessboard_columns);
 		printf("\nChosen option: [%zu].\n", option);
+		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 
 		/* Program termination messages. */
 		printf("\nDone!\n");
