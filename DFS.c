@@ -24,14 +24,16 @@ void DFS(int matrix[N][N], int visited[N][N], int x, int y)
 {
 	/* Mark the current cell as visited. */
 	visited[x][y] = V_ONE;
-	printf("(%d, %d).\n", x, y);
+	printf("(%d, %d). -> ", x, y);
 
 	/* Traverse the neighboring and/or adjacent cells. */
-	for (int i = V_ZERO; i < N; i++)
+	for (int idx = V_ZERO; idx < N; idx++)
 	{
-		int newX = x + rowNum[i];
-		int newY = y + colNum[i];
+		/* Intermediate initializations for the new abscissa 'x' and the new ordinate 'y'. */
+		int newX = x + rowNum[idx];
+		int newY = y + colNum[idx];
 
+		/* Verify the validity of the site visit. */
 		if (isValid(matrix, visited, newX, newY))
 		{
 			DFS(matrix, visited, newX, newY);
@@ -54,8 +56,16 @@ int main()
 	/* Matrix for tracking the cells visited. */
 	int visited[N][N] = {V_ZERO};
 
+	/* Initialization and Start of the 'A*' (A-star) Search. */
+	printf("'DFS' (Depth-First Search) Algorithm Program.\n");
+	printf("A path search is performed from: (%d, %d) to (%d, %d)...\n\n", V_ZERO, V_ZERO, N + V_MINUS_ONE, N + V_MINUS_ONE);
+
 	/* Start a DFS (Depth-First Search) from cell (x, y) — typically (0, 0). */
 	DFS(matrix, visited, V_ZERO, V_ZERO);
+
+	/* Program termination messages. */
+	printf("\n\nDone!\n");
+	printf("This program has ended.\n");
 
 	return V_ZERO;
 }
