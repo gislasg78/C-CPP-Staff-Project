@@ -144,7 +144,6 @@ struct zodiac_signs
 			{12, "Pisces", 2, 19, 3, 20}
 		};
 
-
 /* Prototype functions. */
 int DaysInMonth(const int year, const int month);
 int DayOfWeek(const int day, int month, int year);
@@ -169,7 +168,6 @@ int ValidTime(const int hour, const int minute, const int second);
 void WriteDate(const int day, const int month, const int year);
 void WriteTime(const int hour, const int minute, const int second);
 int ZodiacSign(const int day, const int month, int *zodiac_number, char *zodiac_name, int *start_zodiac_day, int *start_zodiac_month, int *finish_zodiac_day, int *finish_zodiac_month);
-
 
 //Main function.
 int main()
@@ -525,6 +523,7 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 									break;
 
 								default:
+									fputs("\nUnrecognized Option!", stderr);
 									fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
 									break;
 							}
@@ -594,6 +593,7 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 
 						/* It is specified that if the option is incorrect, an error message should be sent. */
 						default:
+							fputs("\nUnrecognized Option!", stderr);
 							fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
 							break;
 					}
