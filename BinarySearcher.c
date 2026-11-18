@@ -535,6 +535,7 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 									break;
 
 								default:
+									fputs("\nUnrecognized Option!", stderr);
 									fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
 									break;
 							}
@@ -590,6 +591,7 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 
 						/* It is specified that if the option is incorrect, an error message should be sent. */
 						default:
+							fputs("\nUnrecognized Option!", stderr);
 							fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
 							break;
 					}
