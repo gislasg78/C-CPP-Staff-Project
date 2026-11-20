@@ -31,14 +31,14 @@
 
 /* Working Macros. */
 #define EVEN_AND_ODD(value, addneutr)	((V_TWO) * (value) + (addneutr))
-#define RADIANS(angle)			((angle) * (V_PI) / (V_HALF_CIRC))
+#define RADIANS(angle)			((angle) * (V_PI) / (V_HALF_CIRCLE))
 
 /* Alphanumeric Work Constants. */
 #define	CARRIAGE_RETURN			'\n'
 #define	NULL_CHARACTER			'\0'
 
 /* Numeric Symbolic Constants. */
-#define V_HALF_CIRC			180.0
+#define V_HALF_CIRCLE			180.0
 #define V_MINUS_ONE			-1
 #define	V_NUM_TERMS			11
 #define V_ONE				1
@@ -82,6 +82,7 @@ enum enm_type_reset
 /* Prototypes of the functions to be used in this program. */
 double dbl_factorial(const double dbl_num);
 double dbl_potency(const double dbl_base, const double dbl_exp);
+void *GetEntry(const char *const str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, const enum enm_type_reset enm_type_reset_OK);
 double sinus_cosinus(const double dbl_angle, const size_t szt_num_terms, const enum enm_fn_sin_cos enm_fn_addneutr);
 double tangent(const double dbl_angle, const size_t szt_num_terms);
 void view_outcomes(const double dbl_value, const double dbl_radians, const double dbl_PI, const size_t szt_num_terms, const double dbl_sine, const double dbl_cosine, const double dbl_tangent);
@@ -121,7 +122,7 @@ double dbl_factorial(const double dbl_num)
  **					dbl_exp + V_ONE)	**
  **					/ dbl_base :		**
  **					V_ONE;			**
- ** Input Parms:	const double dbl_base,			**
+ ** Input Parms:	const double dbl_base.			**
  **			const double dbl_exp.			**
  ** Output Parms:	None.					**
  ** Result:		The base raised to a positive power	**
@@ -142,6 +143,7 @@ double dbl_potency(const double dbl_base, const double dbl_exp)
 void *GetEntry(const char *const str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, const enum enm_type_reset enm_type_reset_OK)
 	{
 		/* Preliminary working variables. */
+		static char chr_storage = NULL_CHARACTER;
 		int int_chars = V_ZERO;
 		int int_fields = V_ZERO;
 		int int_key = V_ZERO;
@@ -186,8 +188,8 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 									break;
 
 								default:
-									fputs("\nUnrecognized Option!", stderr);
-									fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
+									fputs("\nUnrecognized Option!\n", stderr);
+									fprintf(stderr, "The selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
 									break;
 							}
 					}
@@ -242,8 +244,8 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 
 						/* It is specified that if the option is incorrect, an error message should be sent. */
 						default:
-							fputs("\nUnrecognized Option!", stderr);
-							fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
+							fputs("\nUnrecognized Option!\n", stderr);
+							fprintf(stderr, "The selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
 							break;
 					}
 
@@ -288,10 +290,13 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 					}
 			}
 		else
-			fprintf(stderr, "\nThe memory address to hold the variable is not valid!\n");
+			{
+				fputs("\nUnrecognized Memory Address!\n", stderr);
+				fprintf(stderr, "The memory address: [%p] to hold the variable is not valid!\n", void_var_address);
+			}
 
 		/* Return of void pointer key value. */
-		return void_var_address;
+		return (void_var_address) ? void_var_address : &chr_storage;
 	}
 
 /*****************************************************************
@@ -305,8 +310,8 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
  **			additive neutral passed as a parameter, **
  **			of a certain value in angles expressed	**
  **			in radians, through the Taylor series.	**
- ** Input Parms:	const double dbl_angle,			**
- **			const size_t szt_num_terms,		**
+ ** Input Parms:	const double dbl_angle.			**
+ **			const size_t szt_num_terms.		**
  **			const enum enm_fn_sin_cos		**
  **				enm_fn_addneutr.		**
  **								**
@@ -365,7 +370,7 @@ double sinus_cosinus(const double dbl_angle, const size_t szt_num_terms, const e
  **			denominator, respectively, are odd for	**
  **			the sine and even for the cosine.	**
  **								**
- ** Input Parms:	const double dbl_angle,			**
+ ** Input Parms:	const double dbl_angle.			**
  **			const size_t szt_num_terms.		**
  ** Output Parms:	None.					**
  ** Result:		Returns sine divided by cosine:		**
@@ -427,7 +432,7 @@ void view_outcomes(const double dbl_value, const double dbl_radians, const doubl
 		printf("| * Sine\t:\t[%lf].\n", dbl_sine);
 		printf("| * Cosine\t:\t[%lf].\n", dbl_cosine);
 		printf("+---+----+---+----+---+----+---+----+\n");
-		printf("| * Tangent\t:\t[%lf].\n", dbl_tangent);
+		printf("| > Tangent\t:\t[%lf].\n", dbl_tangent);
 		printf("+===|====+===|====+===|====+===|====+\n");
 
 		/* Request a pause before continuing. */
@@ -471,9 +476,9 @@ int main()
 		double dbl_value = V_ZERO;
 
 		/* Initial header messages. */
-		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("+ Taylor Series 'Sine' & 'Cosine'.  +\n");
-		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
+		printf("| Taylor Series 'Sine' & 'Cosine'.  |\n");
+		printf("+===|====+===|====+===|====+===|====+\n");
 
 		/* Request the number of degrees to be converted into radians. */
 		dbl_value = *((double *) GetEntry("Degress: ", &dbl_value, enm_type_entry_double, enm_type_reset_YES));
