@@ -388,7 +388,8 @@ long int showTimePanel(long* const tm_elapsed_seconds)
 		printf("+---|----+---|----+---|----+---|----+---|\n");
 		printf("|      PC date and time structure.      |\n");
 		printf("+---|----+---|----+---|----+---|----+---|\n");
-		printf("| Address:\t[%p].\n", (void *) ptr_strct_tm_dt);
+		printf("| Address:\t[%p].\n", (void *) &ptr_strct_tm_dt);
+		printf("| Content:\t[%p].\n", (void *) ptr_strct_tm_dt);
 		printf("+--------+--------+--------+-------+----+\n");
 		printf("| Year day:\t[%03d].\n", ptr_strct_tm_dt->tm_yday);
 		printf("| Week day:\t[%d].\n", ptr_strct_tm_dt->tm_wday);
