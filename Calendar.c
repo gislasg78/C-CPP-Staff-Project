@@ -95,13 +95,13 @@ enum enm_type_reset
 	};
 
 /* Global tables of the names of the days of the week. */
-char day_name[V_SEVEN][V_TEN] = {"Saturday", "Sunday", "Monday",
-				 "Tuesday", "Wednesday", "Thursday",
-				 "Friday"};
+const char day_name[V_SEVEN][V_TEN] =	{"Saturday", "Sunday", "Monday",
+					 "Tuesday", "Wednesday", "Thursday",
+					 "Friday"};
 
-char day_week[V_SEVEN][V_TEN] = {"Sunday", "Monday", "Tuesday",
-				 "Wednesday", "Thursday", "Friday",
-				 "Saturday"};
+const char day_week[V_SEVEN][V_TEN] =	{"Sunday", "Monday", "Tuesday",
+					 "Wednesday", "Thursday", "Friday",
+					 "Saturday"};
 
 /* Global table of the names of the months of the year. */
 struct months_table
@@ -112,10 +112,10 @@ struct months_table
 	}
 	months_array[V_TWELVE] =
 		{
-		 {1, "January", 31}, {2, "February", 28}, {3, "March", 31},
-		 {4, "April", 30}, {5, "May", 31}, {6, "June", 30},
-		 {7, "July", 31}, {8, "August", 31}, {9, "September", 30},
-		 {10, "October", 31}, {11, "November", 30}, {12, "December", 31}
+			{1, "January", 31}, {2, "February", 28}, {3, "March", 31},
+			{4, "April", 30}, {5, "May", 31}, {6, "June", 30},
+			{7, "July", 31}, {8, "August", 31}, {9, "September", 30},
+			{10, "October", 31}, {11, "November", 30}, {12, "December", 31}
 		};
 
 /* Structure of the zodiac signs. */
@@ -123,6 +123,7 @@ struct zodiac_signs
 	{
 		int zodiac_number;
 		char zodiac_name[V_TWELVE];
+		char zodiac_beast[V_TWELVE];
 		int start_zodiac_month;
 		int start_zodiac_day;
 		int finish_zodiac_month;
@@ -130,18 +131,18 @@ struct zodiac_signs
 	}
 	zodiac_signs_array[V_TWELVE] =
 		{
-			{1, "Aries", 3, 21, 4, 19},
-			{2, "Taurus", 4, 20, 5, 20},
-			{3, "Gemini", 5, 21, 6, 20},
-			{4, "Cancer", 6, 21, 7, 22},
-			{5, "Leo", 7, 23, 8, 22},
-			{6, "Virgo", 8, 23, 9, 22},
-			{7, "Libra", 9, 23, 10, 22},
-			{8, "Scorpio", 10, 23, 11, 21},
-			{9, "Sagittarius", 11, 22, 12, 21},
-			{10, "Capricorn", 12, 22, 1, 19},
-			{11, "Aquarius", 1, 20, 2, 18},
-			{12, "Pisces", 2, 19, 3, 20}
+			{1, "Aries", "Ram", 3, 21, 4, 19},			//1. Aries (Ram): March 21 - April 19.
+			{2, "Taurus", "Bull", 4, 20, 5, 20},			//2. Taurus (Bull): April 20 - May 20.
+			{3, "Gemini", "Twins", 5, 21, 6, 20},			//3. Gemini (Twins): May 21 - June 21.			[*]
+			{4, "Cancer", "Crab", 6, 21, 7, 22},			//4. Cancer (Crab): June 22 - July 22.			[*]
+			{5, "Leo", "Lion", 7, 23, 8, 22},			//5. Leo (Lion): July 23 - August 22.
+			{6, "Virgo", "Virgin", 8, 23, 9, 22},			//6. Virgo (Virgin): August 23 - September 22.
+			{7, "Libra", "Scales", 9, 23, 10, 22},			//7. Libra (Scales): September 23 - October 23.		[*]
+			{8, "Scorpio", "Scorpion", 10, 23, 11, 21},		//8. Scorpio (Scorpion): October 24 - November 21.	[*]
+			{9, "Sagittarius", "Archer", 11, 22, 12, 21},		//9. Sagittarius (Archer): November 22 - December 21.
+			{10, "Capricorn", "Goat", 12, 22, 1, 19},		//10. Capricorn (Goat): December 22 - January 19.
+			{11, "Aquarius", "WaterBearer", 1, 20, 2, 18},		//11. Aquarius (WaterBearer): January 20 - February 18.
+			{12, "Pisces", "Fish", 2, 19, 3, 20}			//12. Pisces (Fish): February 19 - March 20.
 		};
 
 /* Prototype functions. */
@@ -149,46 +150,45 @@ int DaysInMonth(const int year, const int month);
 int DayOfWeek(const int day, int month, int year);
 int DifferenceBetweenDates(int start_first_day, int start_first_month, int start_first_year, int first_day, int first_month, int first_year, int start_second_day, int start_second_month, int start_second_year, int second_day, int second_month, int second_year);
 int DifferenceBetweenTimes(int start_first_hour, int start_first_minute, int start_first_second, int first_hour, int first_minute, int first_second, int start_second_hour, int start_second_minute, int start_second_second, int second_hour, int second_minute, int second_second);
-void EasterSunday(const int year, int *month_east, int *day_east);
-void EntryDate(int *day, int *month, int *year);
-void EntryTime(int *hour, int *minute, int *second);
-long int GetCurrentDateTimeInfo(int *julianyeardays, int *dayoftheweek, int *day, int *month, int *year, int *hour, int *minute, int *second);
+void EasterSunday(const int year, int *const month_east, int *const day_east);
+void EntryDate(int *const day, int *const month, int *const year);
+void EntryTime(int *const hour, int *const minute, int *const second);
+long int GetCurrentDateTimeInfo(int *const julianyeardays, int *const dayoftheweek, int *const day, int *const month, int *const year, int *const hour, int *const minute, int *const second);
 void *GetEntry(const char *const str_Message, void *const void_var_address, const enum enm_type_entry enm_type_value_data, const enum enm_type_reset enm_type_reset_OK);
-int JulianYear(const int day, const int month, const int year, int *days_rest);
+int JulianYear(const int day, const int month, const int year, int *const days_rest);
 int LeapYear(const int year);
-int Menu(int *start_day, int *start_month, int *start_year, int *day, int *month, int *year, int *start_hour, int *start_minute, int *start_second, int *hour, int *minute, int *second, int *option, int *counter, char *zodiac_name);
-int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int *month, int *year, int *start_hour, int *start_minute, int *start_second, int *hour, int *minute, int *second, enum enm_CalendarOptions enm_CO_myOption, int *counter, char *zodiac_name);
-void SolveJulianYear(const int year, const int julianyeardays, int *julian_month, int *julian_day);
-void SolveSumOfDays(const int start_day, const int start_month, const int start_year, int sumofdays, int *day, int *month, int *year);
-void SolveSumOfSeconds(int start_hour, int start_minute, int start_second, const int total_number_of_seconds, int *hour, int *minute, int *second);
+int Menu(int *const start_day, int *const start_month, int *const start_year, int *const day, int *const month, int *const year, int *const start_hour, int *const start_minute, int *const start_second, int *const hour, int *const minute, int *const second, int *const option, int *const counter, char *const zodiac_name, char *const zodiac_beast);
+int SelectedOptionMenu(int *const start_day, int *const start_month, int *const start_year, int *const day, int *const month, int *const year, int *const start_hour, int *const start_minute, int *const start_second, int *const hour, int *const minute, int *const second, const enum enm_CalendarOptions enm_CO_myOption, int *const counter, char *const zodiac_name, char *const zodiac_beast);
+void SolveJulianYear(const int year, const int julianyeardays, int *const julian_month, int *const julian_day);
+void SolveSumOfDays(const int start_day, const int start_month, const int start_year, const int sumofdays, int *const day, int *const month, int *const year);
+void SolveSumOfSeconds(const int start_hour, const int start_minute, const int start_second, const int total_number_of_seconds, int *const hour, int *const minute, int *const second);
 int SumOfDays(const int start_day, const int start_month, const int start_year, const int day, const int month, const int year);
 int SumOfSeconds(const int start_hour, const int start_minute, const int start_second, const int first_hour, const int first_minute, const int first_second);
 int ValidDate(const int day, const int month, const int year);
 int ValidTime(const int hour, const int minute, const int second);
 void WriteDate(const int day, const int month, const int year);
 void WriteTime(const int hour, const int minute, const int second);
-int ZodiacSign(const int day, const int month, int *zodiac_number, char *zodiac_name, int *start_zodiac_day, int *start_zodiac_month, int *finish_zodiac_day, int *finish_zodiac_month);
+int ZodiacSign(const int day, const int month, int *const zodiac_number, char *const zodiac_name, char *const zodiac_beast, int *const start_zodiac_day, int *const start_zodiac_month, int *const finish_zodiac_day, int *const finish_zodiac_month);
 
 //Main function.
 int main()
 	{
 		/* Preliminary working variables. */
 		char chr_key = NULL_CHARACTER;
-		int counter = V_ZERO;
+		int counter = V_ZERO, option = V_ZERO;
 		int day = V_ONE, month = V_ONE, year = V_ONE;
 		int start_day = V_ONE, start_month = V_ONE, start_year = V_ONE;
 		int start_hour = V_ZERO, start_minute = V_ZERO, start_second = V_ZERO;
 		int hour = V_ZERO, minute = V_ZERO, second = V_ZERO;
 
-		/* Character array for storing the name of the zodiac sign for a given, specific date. */
-		char zodiac_name[V_TWELVE] = 	{
-							NULL_CHARACTER, NULL_CHARACTER, NULL_CHARACTER, NULL_CHARACTER,
-							NULL_CHARACTER, NULL_CHARACTER, NULL_CHARACTER, NULL_CHARACTER,
-							NULL_CHARACTER, NULL_CHARACTER, NULL_CHARACTER, NULL_CHARACTER
-						};
+		/* Character array for storing the name of the zodiac sign and its beast for a given, specific date. */
+		static char zodiac_name[V_TWELVE] = {V_ZERO};
+		memset(zodiac_name, V_ZERO, sizeof(zodiac_name));
+		static char zodiac_beast[V_TWELVE] = {V_ZERO};
+		memset(zodiac_beast, V_ZERO, sizeof(zodiac_beast));
 
 		/* Call to the main menu of this program. */
-		int option = Menu(&start_day, &start_month, &start_year, &day, &month, &year, &start_hour, &start_minute, &start_second, &hour, &minute, &second, &option, &counter, zodiac_name);
+		option = Menu(&start_day, &start_month, &start_year, &day, &month, &year, &start_hour, &start_minute, &start_second, &hour, &minute, &second, &option, &counter, zodiac_name, zodiac_beast);
 
 		/* Program termination messages. */
 		printf("\nDone!\n");
@@ -198,6 +198,17 @@ int main()
 		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 
 		return V_ZERO;
+	}
+
+/* Number of days in a given month and year. */
+int DaysInMonth(const int year, const int month)
+	{
+		/* Preliminary working variables. */
+		int limitdays = months_array[month - V_ONE].month_totaldays;
+
+		if ((month == V_TWO) && (LeapYear(year))) limitdays = V_29;
+
+		return limitdays;
 	}
 
 /* Function that calculates the number of the day of the week that corresponds to a date. */
@@ -212,17 +223,6 @@ int DayOfWeek(const int day, int month, int year)
 
 		/* Return the result of the arithmetic operation that yields the day-of-the-week number for a given date. */
 		return ((day + V_TWO * month + V_THREE * (month + V_ONE) / V_FIVE + year + year / V_FOUR - year / V_100 + year / V_400 + V_TWO) % V_SEVEN);
-	}
-
-/* Number of days in a given month and year. */
-int DaysInMonth(const int year, const int month)
-	{
-		/* Preliminary working variables. */
-		int limitdays = months_array[month - V_ONE].month_totaldays;
-
-		if ((month == V_TWO) && (LeapYear(year))) limitdays = V_29;
-
-		return limitdays;
 	}
 
 /* Function that calculates the difference between two given dates. */
@@ -365,7 +365,7 @@ int DifferenceBetweenTimes(int start_first_hour, int start_first_minute, int sta
 	}
 
 /* Function that obtains the Easter Sunday of a given date. */
-void EasterSunday(const int year, int *month_east, int *day_east)
+void EasterSunday(const int year, int *const month_east, int *const day_east)
 	{
 		int a = V_ZERO, b = V_ZERO, c = V_ZERO, d = V_ZERO, e = V_ZERO;
 		int f = V_ZERO, g = V_ZERO, h = V_ZERO, i = V_ZERO, k = V_ZERO;
@@ -393,7 +393,7 @@ void EasterSunday(const int year, int *month_east, int *day_east)
 	}
 
 /* Function that receives the date data. */
-void EntryDate(int *day, int *month, int *year)
+void EntryDate(int *const day, int *const month, int *const year)
 	{
 		printf("\nDate validity checker.\n");
 		printf("Please enter the following requested data.\n");
@@ -406,7 +406,7 @@ void EntryDate(int *day, int *month, int *year)
 	}
 
 /* Function that receives the date data. */
-void EntryTime(int *hour, int *minute, int *second)
+void EntryTime(int *const hour, int *const minute, int *const second)
 	{
 		printf("\nTime validity checker.\n");
 		printf("Please enter the following requested data.\n");
@@ -419,7 +419,7 @@ void EntryTime(int *hour, int *minute, int *second)
 	}
 
 /* Get Current Date and Time Information. */
-long int GetCurrentDateTimeInfo(int *julianyeardays, int *dayoftheweek, int *day, int *month, int *year, int *hour, int *minute, int *second)
+long int GetCurrentDateTimeInfo(int *const julianyeardays, int *const dayoftheweek, int *const day, int *const month, int *const year, int *const hour, int *const minute, int *const second)
 	{
 		/* Preliminary working variables. */
 		char chr_key = NULL_CHARACTER;
@@ -585,9 +585,9 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 
 						/* Get a correct unsigned long int value. */
 						case enm_type_entry_sizet:
-							if ((int_fields = scanf("%lu%*c%n", (size_t *) void_var_address, &int_chars)))
+							if ((int_fields = scanf("%zu%*c%n", (size_t *) void_var_address, &int_chars)))
 								{
-									printf("\nFields: [%d]. Input value: [%lu]. Characters: [%d]. OK!\n", int_fields, *((size_t *) void_var_address), int_chars);
+									printf("\nFields: [%d]. Input value: [%zu]. Characters: [%d]. OK!\n", int_fields, *((size_t *) void_var_address), int_chars);
 								}
 							break;
 
@@ -646,7 +646,7 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 	}
 
 /* Function that obtains the current Julian Year and its remainder days. */
-int JulianYear(const int day, const int month, const int year, int *daysrest)
+int JulianYear(const int day, const int month, const int year, int *const daysrest)
 	{
 		/* Preliminary working variables. */
 		int clusterdays = V_ZERO;
@@ -669,7 +669,7 @@ int LeapYear(const int year)
 	}
 
 /* Menu for processing calendar dates and times. */
-int Menu(int *start_day, int *start_month, int *start_year, int *day, int *month, int *year, int *start_hour, int *start_minute, int *start_second, int *hour, int *minute, int *second, int *option, int *counter, char *zodiac_name)
+int Menu(int *const start_day, int *const start_month, int *const start_year, int *const day, int *const month, int *const year, int *const start_hour, int *const start_minute, int *const start_second, int *const hour, int *const minute, int *const second, int *const option, int *const counter, char *const zodiac_name, char *const zodiac_beast)
 	{
 		/* Preliminary working variables. */
 		enum enm_CalendarOptions enm_CO_myOption = (enum enm_CalendarOptions) *option;
@@ -707,11 +707,10 @@ int Menu(int *start_day, int *start_month, int *start_year, int *day, int *month
 				printf("Option: ");
 
 				/* Converting an integer to an enumerated type. */
-				*option = *((int *) GetEntry("", option, enm_type_entry_int, enm_type_reset_YES));
-				enm_CO_myOption = (enum enm_CalendarOptions) *option;
+				enm_CO_myOption = (enum enm_CalendarOptions) (*option = *((int *) GetEntry("", option, enm_type_entry_int, enm_type_reset_YES)));
 
 				/* Execute the requested operation. */
-				*option = SelectMenu(start_day, start_month, start_year, day, month, year, start_hour, start_minute, start_second, hour, minute, second, enm_CO_myOption, counter, zodiac_name);
+				*option = SelectedOptionMenu(start_day, start_month, start_year, day, month, year, start_hour, start_minute, start_second, hour, minute, second, enm_CO_myOption, counter, zodiac_name, zodiac_beast);
 			}
 
 		/* Return the last selected or chosen option as the return value. */
@@ -719,7 +718,7 @@ int Menu(int *start_day, int *start_month, int *start_year, int *day, int *month
 	}
 
 /* Menu that executes the operation of a given selection. */
-int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int *month, int *year, int *start_hour, int *start_minute, int *start_second, int *hour, int *minute, int *second, enum enm_CalendarOptions enm_CO_myOption, int *counter, char *zodiac_name)
+int SelectedOptionMenu(int *const start_day, int *const start_month, int *const start_year, int *const day, int *const month, int *const year, int *const start_hour, int *const start_minute, int *const start_second, int *const hour, int *const minute, int *const second, const enum enm_CalendarOptions enm_CO_myOption, int *const counter, char *const zodiac_name, char *const zodiac_beast)
 	{
 		/* Preliminary working variables. */
 		char chr_key = NULL_CHARACTER;
@@ -845,7 +844,7 @@ int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int 
 					break;
 
 				case enm_CO_difference_between_dates:
-					difference_between_dates = DifferenceBetweenDates(start_first_day, start_first_month, start_first_year, first_day, first_month, first_year, start_second_year, start_second_month, start_second_day, second_day, second_month, second_year);
+					difference_between_dates = DifferenceBetweenDates(start_first_day, start_first_month, start_first_year, first_day, first_month, first_year, start_second_day, start_second_month, start_second_year, second_day, second_month, second_year);
 					printf("\nDifference between dates: [%d].\n", difference_between_dates);
 					break;
 
@@ -939,7 +938,7 @@ int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int 
 					break;
 
 				case enm_CO_zodiac_sign:
-					if (ZodiacSign(*day, *month, &zodiac_number, zodiac_name, &start_zodiac_day, &start_zodiac_month, &finish_zodiac_day, &finish_zodiac_month))
+					if (ZodiacSign(*day, *month, &zodiac_number, zodiac_name, zodiac_beast, &start_zodiac_day, &start_zodiac_month, &finish_zodiac_day, &finish_zodiac_month))
 						{
 							day_of_week = DayOfWeek(*day, *month, *year);
 
@@ -947,6 +946,7 @@ int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int 
 							printf("+ Date   : %s, %s %02d, %04d.\n", day_name[day_of_week], months_array[*month - V_ONE].month_nameofmonth, *day, *year);
 							printf("+ Number : [%02d].\n", zodiac_number);
 							printf("+ Name   : [%s].\n", zodiac_name);
+							printf("+ Beast  : [%s].\n", zodiac_beast);
 							printf("+ Starts : %s, %02d.\n",  months_array[start_zodiac_month - V_ONE].month_nameofmonth, start_zodiac_day);
 							printf("+ Ends   : %s, %02d.\n",  months_array[finish_zodiac_month - V_ONE].month_nameofmonth, finish_zodiac_day);
 						}
@@ -974,7 +974,7 @@ int SelectMenu(int *start_day, int *start_month, int *start_year, int *day, int 
 	}
 
 /* Function that converts the days in a year in Julian format to their corresponding month and day. */
-void SolveJulianYear(const int year, const int julianyeardays, int *julian_month, int *julian_day)
+void SolveJulianYear(const int year, const int julianyeardays, int *const julian_month, int *const julian_day)
 	{
 		/* Preliminary working variables. */
 		int days_remaining = julianyeardays, limitdays = (LeapYear(year) ? V_366 : V_365);
@@ -992,7 +992,7 @@ void SolveJulianYear(const int year, const int julianyeardays, int *julian_month
 	}
 
 /* Function that reconverts the number of days obtained into its variables of day, month and year. */
-void SolveSumOfDays(const int start_day, const int start_month, const int start_year, int sumofdays, int *day, int *month, int *year)
+void SolveSumOfDays(const int start_day, const int start_month, const int start_year, const int sumofdays, int *const day, int *const month, int *const year)
 	{
 		/* Clear the component variables of 'sumofdays'. */
 		int daysrest = V_ZERO;
@@ -1011,7 +1011,7 @@ void SolveSumOfDays(const int start_day, const int start_month, const int start_
 	}
 
 /* Function that converts the total number of seconds to their equivalent in hours, minutes, and seconds. */
-void SolveSumOfSeconds(int start_hour, int start_minute, int start_second, const int total_number_of_seconds, int *hour, int *minute, int *second)
+void SolveSumOfSeconds(const int start_hour, const int start_minute, const int start_second, const int total_number_of_seconds, int *const hour, int *const minute, int *const second)
 	{
 		/* Preliminary working variables. */
 		int total_number_of_seconds_start_time = V_ZERO;
@@ -1183,7 +1183,7 @@ void WriteTime(const int hour, const int minute, const int second)
 	}
 
 /* Function that the zodiac sign achieves for a given month and day. */
-int ZodiacSign(const int day, const int month, int *zodiac_number, char *zodiac_name, int *start_zodiac_day, int *start_zodiac_month, int *finish_zodiac_day, int *finish_zodiac_month)
+int ZodiacSign(const int day, const int month, int *const zodiac_number, char *const zodiac_name, char *const zodiac_beast, int *const start_zodiac_day, int *const start_zodiac_month, int *const finish_zodiac_day, int *const finish_zodiac_month)
 	{
 		/* Preliminary working variables. */
 		int idx = V_ZERO;
@@ -1203,7 +1203,8 @@ int ZodiacSign(const int day, const int month, int *zodiac_number, char *zodiac_
 				    (month > start_month && month < finish_month))
 					{
 						*zodiac_number = zodiac_signs_array[idx].zodiac_number;
-						zodiac_name = strcpy(zodiac_name, zodiac_signs_array[idx].zodiac_name);
+						strcpy(zodiac_name, zodiac_signs_array[idx].zodiac_name);
+						strcpy(zodiac_beast, zodiac_signs_array[idx].zodiac_beast);
 
 						*start_zodiac_day = zodiac_signs_array[idx].start_zodiac_day;
 						*start_zodiac_month = zodiac_signs_array[idx].start_zodiac_month;
