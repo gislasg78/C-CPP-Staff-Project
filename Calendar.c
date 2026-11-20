@@ -454,13 +454,16 @@ long int GetCurrentDateTimeInfo(int *const julianyeardays, int *const dayofthewe
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("|    PC date and time structure.    |\n");
 		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("| - DayYear:\t[%03d].\n", strct_tm_dt->tm_yday);
-		printf("| - DayWeek:\t[%d].\n", strct_tm_dt->tm_wday);
+		printf("| - Year day:\t[%03d].\n", strct_tm_dt->tm_yday);
+		printf("| - Week day:\t[%d].\n", strct_tm_dt->tm_wday);
 		printf("+---+--------+--------+--------+----+\n");
-		printf("| > (%02d/%02d/%04d).\n", strct_tm_dt->tm_mday, strct_tm_dt->tm_mon + V_ONE, strct_tm_dt->tm_year + V_REFERENCE_YEAR);
-		printf("| > [%04d/%02d/%02d].\n", strct_tm_dt->tm_year + V_REFERENCE_YEAR, strct_tm_dt->tm_mon + V_ONE, strct_tm_dt->tm_mday);
-		printf("| < %s, %s %02d, %04d.\n", day_week[strct_tm_dt->tm_wday], months_array[strct_tm_dt->tm_mon].month_nameofmonth, strct_tm_dt->tm_mday, strct_tm_dt->tm_year + V_REFERENCE_YEAR);
-		printf("| > [%02d:%02d:%02d].\n", strct_tm_dt->tm_hour, strct_tm_dt->tm_min, strct_tm_dt->tm_sec);
+		printf("| > YYYY/MM/DD:\t(%04d/%02d/%02d).\n", strct_tm_dt->tm_year + V_REFERENCE_YEAR, strct_tm_dt->tm_mon + V_ONE, strct_tm_dt->tm_mday);
+		printf("| > DD/MM/YYYY:\t{%02d/%02d/%04d}.\n", strct_tm_dt->tm_mday, strct_tm_dt->tm_mon + V_ONE, strct_tm_dt->tm_year + V_REFERENCE_YEAR);
+		printf("| > MM/DD/YYYY:\t[%02d/%02d/%04d].\n", strct_tm_dt->tm_mon + V_ONE, strct_tm_dt->tm_mday, strct_tm_dt->tm_year + V_REFERENCE_YEAR);
+		printf("+---+--------+--------+--------+----+\n");
+		printf("| < %s,\t%s %02d, %04d.\n", day_week[strct_tm_dt->tm_wday], months_array[strct_tm_dt->tm_mon].month_nameofmonth, strct_tm_dt->tm_mday, strct_tm_dt->tm_year + V_REFERENCE_YEAR);
+		printf("+---+--------+--------+--------+----+\n");
+		printf("| > HH:MM:SS:\t[%02d:%02d:%02d].\n", strct_tm_dt->tm_hour, strct_tm_dt->tm_min, strct_tm_dt->tm_sec);
 		printf("+===|====+===|====+===|====+===|====+\n");
 
 		/* The date and time values ​​are returned in the formal parameters of this function. */
