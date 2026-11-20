@@ -332,6 +332,7 @@ struct Node *eliminateNode(struct Node* rootNode, const int data, int *const cou
 void *GetEntry(const char *const str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, const enum enm_type_reset enm_type_reset_OK)
 	{
 		/* Preliminary working variables. */
+		static char chr_storage = NULL_CHARACTER;
 		int int_chars = V_ZERO;
 		int int_fields = V_ZERO;
 		int int_key = V_ZERO;
@@ -376,8 +377,8 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 									break;
 
 								default:
-									fputs("\nUnrecognized Option!", stderr);
-									fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
+									fputs("\nUnrecognized Option!\n", stderr);
+									fprintf(stderr, "The selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
 									break;
 							}
 					}
@@ -432,8 +433,8 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 
 						/* It is specified that if the option is incorrect, an error message should be sent. */
 						default:
-							fputs("\nUnrecognized Option!", stderr);
-							fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
+							fputs("\nUnrecognized Option!\n", stderr);
+							fprintf(stderr, "The selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
 							break;
 					}
 
@@ -478,10 +479,13 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 					}
 			}
 		else
-			fprintf(stderr, "\nThe memory address to hold the variable is not valid!\n");
+			{
+				fputs("\nUnrecognized Memory Address!\n", stderr);
+				fprintf(stderr, "The memory address: [%p] to hold the variable is not valid!\n", void_var_address);
+			}
 
 		/* Return of void pointer key value. */
-		return void_var_address;
+		return (void_var_address) ? void_var_address : &chr_storage;
 	}
 
 /* Main menu for binary search tree maintenance. */
