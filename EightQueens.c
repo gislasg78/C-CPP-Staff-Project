@@ -23,8 +23,8 @@
 #define	V_CHR_UPPER_Y			0x59
 
 /* Limits of the Chess Board. */
-#define V_MAXIMUM_COLUMNS		8	//The size of the chessboard is eight columns.
-#define V_MAXIMUM_ROWS			8	//The size of the chessboard is eight rows.
+#define V_MAXIMUM_COLUMNS		8	//The default size of the chessboard is 'eight' columns.
+#define V_MAXIMUM_ROWS			8	//The default size of the chessboard is 'eight' rows.
 
 /* Symbolic Work Constants. */
 #define	V_MINUS_ONE			-1
@@ -89,6 +89,7 @@ size_t ResolveQueens(char _chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS], const 
 void *GetEntry(const char *const str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, const enum enm_type_reset enm_type_reset_OK)
 	{
 		/* Preliminary working variables. */
+		static char chr_storage = NULL_CHARACTER;
 		int int_chars = V_ZERO;
 		int int_fields = V_ZERO;
 		int int_key = V_ZERO;
@@ -133,8 +134,8 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 									break;
 
 								default:
-									fputs("\nUnrecognized Option!", stderr);
-									fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
+									fputs("\nUnrecognized Option!\n", stderr);
+									fprintf(stderr, "The selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
 									break;
 							}
 					}
@@ -189,8 +190,8 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 
 						/* It is specified that if the option is incorrect, an error message should be sent. */
 						default:
-							fputs("\nUnrecognized Option!", stderr);
-							fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
+							fputs("\nUnrecognized Option!\n", stderr);
+							fprintf(stderr, "The selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
 							break;
 					}
 
@@ -235,10 +236,13 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 					}
 			}
 		else
-			fprintf(stderr, "\nThe memory address to hold the variable is not valid!\n");
+			{
+				fputs("\nUnrecognized Memory Address!\n", stderr);
+				fprintf(stderr, "The memory address: [%p] to hold the variable is not valid!\n", void_var_address);
+			}
 
 		/* Return of void pointer key value. */
-		return void_var_address;
+		return (void_var_address) ? void_var_address : &chr_storage;
 	}
 
 /* Function that obtains a random number within a range. */
@@ -256,16 +260,18 @@ double GetRandomNumber(int *const random_seed)
 /* Function to set up a temporary menu for performing operations on the chessboard. */
 size_t Menu(const char _chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS], const size_t _chessboard_rows, const size_t _chessboard_columns)
 	{
-		/* Preliminary working variables. */
+		/* Preliminary intermediate working variables. */
 		char chr_key = NULL_CHARACTER, chr_pause = V_ZERO;
 		int random_seed = V_ZERO;
 
+		/* Initial preliminary accounting entries. */
 		enum enm_option_place enm_option = V_ZERO;
 		size_t accumulated = V_ZERO, count = V_ZERO, counter = V_ZERO;
 		size_t queens = V_ZERO, spins = V_ZERO;
+		size_t opers = V_ZERO, option = V_ZERO;
 
+		/* Row and column checks for each 'queen' piece on the chessboard. */
 		size_t column = V_ZERO, row = V_ZERO;
-		size_t option = V_ZERO;
 		const size_t total_number_of_cells = _chessboard_rows * _chessboard_columns;
 
 		/* Header messages. */
@@ -294,6 +300,7 @@ size_t Menu(const char _chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS], const siz
 
 				/* Obtain the option and convert it to the given numerator. */
 				enm_option = ((enum enm_option_place) (option = *((size_t *) GetEntry("Option: ", &option, enm_type_entry_sizet, enm_type_reset_YES))));
+				opers += (enm_option != enm_option_place_exit_menu) ? V_ONE : V_ZERO;	//Number of operations performed.
 
 				/* Randomly obtain the row and column, respectively, for the 'queen' piece to be placed on the chessboard. */
 				switch(enm_option)
@@ -351,8 +358,8 @@ size_t Menu(const char _chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS], const siz
 
 						/* Invalid option. */
 						default:
-							fputs("\nUnrecognized Option!", stderr);
-							fprintf(stderr, "\nInvalid option: [%zu]. Please correct it!\n", option);
+							fputs("\nUnrecognized Option!\n", stderr);
+							fprintf(stderr, "Invalid option: [%zu]. Please correct it!\n", option);
 							break;
 					}
 
@@ -360,7 +367,7 @@ size_t Menu(const char _chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS], const siz
 				chr_pause = *((char *) GetEntry("Press the ENTER key to continue...", &chr_pause, enm_type_entry_char, enm_type_reset_YES));
 
 				/* Ensure that no 'queen' piece attacks another, and print the board for each attempt at their placement. */
-				if (enm_option >= enm_option_place_random_calculation && option <= enm_option_place_manual_entry)
+				if (enm_option == enm_option_place_random_calculation || option == enm_option_place_manual_entry)
 					{
 						/* Core mechanism for resolving the placement of 'queen' pieces. */
 						count += ResolveQueens(chessboard, chessboard_rows, chessboard_columns, row, column, &accumulated, &counter, &queens, &spins);
@@ -378,7 +385,8 @@ size_t Menu(const char _chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS], const siz
 
 		/* Display of output messages. */
 		printf("\nFinal Results.\n");
-		printf("+ Occupied squares: [%zu].\n", count);
+		printf("+ Occupied squares:\t[%zu].\n", count);
+		printf("+ Operations performed:\t[%zu].\n", opers);
 		chr_pause = *((char *) GetEntry("Press the ENTER key to continue...", &chr_pause, enm_type_entry_char, enm_type_reset_YES));
 
 		/* Return the selected option. */
@@ -416,65 +424,85 @@ size_t PrintChessboard(const char _chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS]
 /* Function that traces the movements of a given queen. */
 size_t ResolveQueens(char _chessboard[V_MAXIMUM_ROWS][V_MAXIMUM_COLUMNS], const size_t _chessboard_rows, const size_t _chessboard_columns, const size_t rowQ, const size_t columnQ, size_t *const accumulated, size_t *const counter, size_t *const queens, size_t *const spins)
 	{
-		/* Preliminary working variables. */
-		*counter = V_ZERO;
-
-		/* It is verified that the position sent to place the 'queen' piece is free and within range. */
-		if (rowQ < _chessboard_rows)
+		/* Validate and verify that the record 'pointers' have a memory address other than NULL. */
+		if (accumulated && counter && queens && spins)
 			{
-				if (columnQ < _chessboard_columns)
+				/* Preliminary working variables. */
+				*counter = V_ZERO;
+
+				/* It is verified that the position sent to place the 'queen' piece is free and within range. */
+				if (rowQ < _chessboard_rows)
 					{
-						/* Process of validating the positioning of a 'queen' piece that is not attacked. */
-						if (_chessboard[rowQ][columnQ] == SPACE)
+						if (columnQ < _chessboard_columns)
 							{
-								/* Initialization of default values ​​for placing a 'queen' piece. */
-								*counter = V_ONE;
-								_chessboard[rowQ][columnQ] = QUEEN;
-								(*queens)++;
-
-								/* Row-based pipeline process. */
-								for (size_t row = V_ZERO; row < _chessboard_rows; row++)
+								/* Process of validating the positioning of a 'queen' piece that is not attacked. */
+								if (_chessboard[rowQ][columnQ] == SPACE)
 									{
-										/* Filling the rows of a single column. */
-										if (_chessboard[row][columnQ] == SPACE)
-											{
-												(*counter)++;
-												_chessboard[row][columnQ] = ASTERISK;
-											}
+										/* Initialization of default values ​​for placing a 'queen' piece. */
+										*counter = V_ONE;
+										_chessboard[rowQ][columnQ] = QUEEN;
+										(*queens)++;
 
-										/* Column-based pipeline process. */
-										for (size_t column = V_ZERO; column < _chessboard_columns; column++)
+										/* Row-based pipeline process. */
+										for (size_t row = V_ZERO; row < _chessboard_rows; row++)
 											{
-												/* Filling the columns of a single row. */
-												if (_chessboard[rowQ][column] == SPACE)
+												/* Filling the rows of a single column. */
+												if (_chessboard[row][columnQ] == SPACE)
 													{
 														(*counter)++;
-														_chessboard[rowQ][column] = ASTERISK;
+														_chessboard[row][columnQ] = ASTERISK;
 													}
 
-												/* Channeling process for diagonals. */
-												if (_chessboard[row][column] == SPACE)
-													if ((row + column == rowQ + columnQ) || (row - column) == (rowQ - columnQ))
-														{
-															(*counter)++;
-															_chessboard[row][column] = ASTERISK;
-														}
+												/* Column-based pipeline process. */
+												for (size_t column = V_ZERO; column < _chessboard_columns; column++)
+													{
+														/* Filling the columns of a single row. */
+														if (_chessboard[rowQ][column] == SPACE)
+															{
+																(*counter)++;
+																_chessboard[rowQ][column] = ASTERISK;
+															}
+
+														/* Channeling process for diagonals. */
+														if (_chessboard[row][column] == SPACE)
+															if ((row + column == rowQ + columnQ) || (row - column) == (rowQ - columnQ))
+																{
+																	(*counter)++;
+																	_chessboard[row][column] = ASTERISK;
+																}
+													}
 											}
 									}
-							}
 
-						/* The contents of the placed 'queen' piece are displayed. */
-						printf("\n[%s]:\t(Row = [%zu], Column = [%zu]) = {%x} : {%d} : {%c}.\n", (_chessboard[rowQ][columnQ] == QUEEN) ? "Queen position" : (_chessboard[rowQ][columnQ] == ASTERISK) ? "Position held" : "Position available", rowQ, columnQ, _chessboard[rowQ][columnQ], *(_chessboard[rowQ] + columnQ), *(*(_chessboard + rowQ) + columnQ));
-						printf("\t\t\tAccumulated: [%zu]. Counter: [%zu]. Queens: [%zu]. Turns: [%zu].\n", *accumulated += *counter, *counter, *queens, (*spins)++);
+								/* The contents of the placed 'queen' piece are displayed. */
+								puts("\n\'Queen\' Piece Chessboard Information.");
+								printf("[%s]:\t(Row = [%zu], Column = [%zu]) = {%x} : {%d} : {%c}.\n", (_chessboard[rowQ][columnQ] == QUEEN) ? "Queen position" : (_chessboard[rowQ][columnQ] == ASTERISK) ? "Position held" : "Position available", rowQ, columnQ, (int) _chessboard[rowQ][columnQ], *(_chessboard[rowQ] + columnQ), *(*(_chessboard + rowQ) + columnQ));
+								printf("\t\t\tAccumulated: [%zu]. Counter: [%zu]. Queens: [%zu]. Turns: [%zu].\n", *accumulated += *counter, *counter, *queens, (*spins)++);
+							}
+						else
+							{
+								fputs("\nThe value for the Queen\'s column is incorrect!\n", stderr);
+								fprintf(stderr, "Mistake! The value for column: [%zu] is outside the range between: [%d] and: [%zu].\n", columnQ, V_ZERO, _chessboard_columns - V_ONE);
+							}
 					}
 				else
-					fprintf(stderr, "\nMistake! The value for column: [%zu] is outside the range between: [%d] and: [%zu].\n", columnQ, V_ZERO, _chessboard_columns - V_ONE);
+					{
+						fputs("\nThe value for the Queen\'s row is incorrect!\n", stderr);
+						fprintf(stderr, "Mistake! The value for row: [%zu] is outside the range between: [%d] and: [%zu].\n", rowQ, V_ZERO, _chessboard_rows - V_ONE);
+					}
 			}
 		else
-			fprintf(stderr, "\nMistake! The value for row: [%zu] is outside the range between: [%d] and: [%zu].\n", rowQ, V_ZERO, _chessboard_rows - V_ONE);
+			{
+				/* NULL pointer error messages. */
+				fputs("\nUnrecognized Memory Addresses!\n", stderr);
+				fprintf(stderr, "+ Accumulated:\t[%p].\n", (void *) accumulated);
+				fprintf(stderr, "+ Counter:\t[%p].\n", (void *) counter);
+				fprintf(stderr, "+ Queens:\t[%p].\n", (void *) queens);
+				fprintf(stderr, "+ Turns:\t[%p].\n", (void *) spins);
+			}
 
-		/* Return the number of 'queen' pieces placed on the board. */
-		return *counter;
+		/* Return the number of 'queen' pieces placed on the board if the pointer variable 'contador' is not 'NULL'. */
+		return (counter) ? *counter : V_ZERO;
 	}
 
 //Main function.
@@ -485,7 +513,10 @@ int main()
 
 		/* Access the internal menu. */
 		size_t option = Menu(chessboard, chessboard_rows, chessboard_columns);
-		printf("\nChosen option: [%zu].\n", option);
+
+		/* Final Statistics for this program. */
+		printf("\nEnd of the Program.\n");
+		printf("+ Chosen option:\t[%zu].\n", option);
 		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 
 		/* Program termination messages. */
