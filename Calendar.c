@@ -426,7 +426,7 @@ long int GetCurrentDateTimeInfo(int *const julianyeardays, int *const dayofthewe
 		clock_t clck_clock_ticks_latency = clock();
 		double dbl_factor_ticks_latency = (double) ((double) clck_clock_ticks_latency / (double) CLOCKS_PER_SEC);
 		time_t t_tm_seconds = time(&t_tm_seconds);
-		struct tm *strct_tm_dt = localtime(&t_tm_seconds);
+		struct tm *ptr_strct_tm_dt = localtime(&t_tm_seconds);
 
 		/* Print the current date and time to the screen using the default string format. */
 		printf("\n%s", ctime(&t_tm_seconds));
@@ -454,30 +454,31 @@ long int GetCurrentDateTimeInfo(int *const julianyeardays, int *const dayofthewe
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("|    PC date and time structure.    |\n");
 		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("| + Address:\t[%p].\n", (void *) strct_tm_dt);
+		printf("| + Address:\t[%p].\n", (void *) &ptr_strct_tm_dt);
+		printf("| + Content:\t[%p].\n", (void *) ptr_strct_tm_dt);
 		printf("+---+--------+--------+--------+----+\n");
-		printf("| - Year day:\t[%03d].\n", strct_tm_dt->tm_yday);
-		printf("| - Week day:\t[%d].\n", strct_tm_dt->tm_wday);
+		printf("| - Year day:\t[%03d].\n", ptr_strct_tm_dt->tm_yday);
+		printf("| - Week day:\t[%d].\n", ptr_strct_tm_dt->tm_wday);
 		printf("+---+--------+--------+--------+----+\n");
-		printf("| > YYYY/MM/DD:\t(%04d/%02d/%02d).\n", strct_tm_dt->tm_year + V_REFERENCE_YEAR, strct_tm_dt->tm_mon + V_ONE, strct_tm_dt->tm_mday);
-		printf("| > DD/MM/YYYY:\t{%02d/%02d/%04d}.\n", strct_tm_dt->tm_mday, strct_tm_dt->tm_mon + V_ONE, strct_tm_dt->tm_year + V_REFERENCE_YEAR);
-		printf("| > MM/DD/YYYY:\t[%02d/%02d/%04d].\n", strct_tm_dt->tm_mon + V_ONE, strct_tm_dt->tm_mday, strct_tm_dt->tm_year + V_REFERENCE_YEAR);
+		printf("| > YYYY/MM/DD:\t(%04d/%02d/%02d).\n", ptr_strct_tm_dt->tm_year + V_REFERENCE_YEAR, ptr_strct_tm_dt->tm_mon + V_ONE, ptr_strct_tm_dt->tm_mday);
+		printf("| > DD/MM/YYYY:\t{%02d/%02d/%04d}.\n", ptr_strct_tm_dt->tm_mday, ptr_strct_tm_dt->tm_mon + V_ONE, ptr_strct_tm_dt->tm_year + V_REFERENCE_YEAR);
+		printf("| > MM/DD/YYYY:\t[%02d/%02d/%04d].\n", ptr_strct_tm_dt->tm_mon + V_ONE, ptr_strct_tm_dt->tm_mday, ptr_strct_tm_dt->tm_year + V_REFERENCE_YEAR);
 		printf("+---+--------+--------+--------+----+\n");
-		printf("| < %s,\t%s %02d, %04d.\n", day_week[strct_tm_dt->tm_wday], months_array[strct_tm_dt->tm_mon].month_nameofmonth, strct_tm_dt->tm_mday, strct_tm_dt->tm_year + V_REFERENCE_YEAR);
+		printf("| < %s,\t%s %02d, %04d.\n", day_week[ptr_strct_tm_dt->tm_wday], months_array[ptr_strct_tm_dt->tm_mon].month_nameofmonth, ptr_strct_tm_dt->tm_mday, ptr_strct_tm_dt->tm_year + V_REFERENCE_YEAR);
 		printf("+---+--------+--------+--------+----+\n");
-		printf("| > HH:MM:SS:\t[%02d:%02d:%02d].\n", strct_tm_dt->tm_hour, strct_tm_dt->tm_min, strct_tm_dt->tm_sec);
+		printf("| > HH:MM:SS:\t[%02d:%02d:%02d].\n", ptr_strct_tm_dt->tm_hour, ptr_strct_tm_dt->tm_min, ptr_strct_tm_dt->tm_sec);
 		printf("+===|====+===|====+===|====+===|====+\n");
 
 		/* The date and time values ​​are returned in the formal parameters of this function. */
-		if (julianyeardays) *julianyeardays = strct_tm_dt->tm_yday;
-		if (dayoftheweek) *dayoftheweek = strct_tm_dt->tm_wday;
+		if (julianyeardays) *julianyeardays = ptr_strct_tm_dt->tm_yday;
+		if (dayoftheweek) *dayoftheweek = ptr_strct_tm_dt->tm_wday;
 
-		if (day) *day = strct_tm_dt->tm_mday;
-		if (month) *month = strct_tm_dt->tm_mon + V_ONE;
-		if (year) *year = strct_tm_dt->tm_year + V_REFERENCE_YEAR;
-		if (hour) *hour = strct_tm_dt->tm_hour;
-		if (minute) *minute = strct_tm_dt->tm_min;
-		if (second) *second = strct_tm_dt->tm_sec;
+		if (day) *day = ptr_strct_tm_dt->tm_mday;
+		if (month) *month = ptr_strct_tm_dt->tm_mon + V_ONE;
+		if (year) *year = ptr_strct_tm_dt->tm_year + V_REFERENCE_YEAR;
+		if (hour) *hour = ptr_strct_tm_dt->tm_hour;
+		if (minute) *minute = ptr_strct_tm_dt->tm_min;
+		if (second) *second = ptr_strct_tm_dt->tm_sec;
 
 		/* Wait for a key to be pressed to continue. */
 		chr_key = *((char *) GetEntry("Press the ENTER key to continue...", &chr_key, enm_type_entry_char, enm_type_reset_YES));
