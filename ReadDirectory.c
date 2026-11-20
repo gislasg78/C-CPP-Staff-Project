@@ -13,6 +13,10 @@
 #define	CARRIAGE_RETURN	'\n'
 #define	NULL_CHARACTER	'\0'
 
+/* Expected response. */
+#define	V_CHR_LOWER_Y	0x79
+#define	V_CHR_UPPER_Y	0x59
+
 /* Symbolic Work Constants. */
 #define	V_ONE		1
 #define	V_ZERO		0
@@ -36,10 +40,15 @@ enum enm_type_reset
 		enm_type_reset_YES
 	};
 
+/* Preliminary function prototypes. */
+void *GetEntry(const char *const str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, const enum enm_type_reset enm_type_reset_OK);
+char* GetString(const char *const str_Message);
+
 /* Function that gets a correct type value depending on its option. */
 void *GetEntry(const char *const str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, const enum enm_type_reset enm_type_reset_OK)
 	{
 		/* Preliminary working variables. */
+		static char chr_storage = NULL_CHARACTER;
 		int int_chars = V_ZERO;
 		int int_fields = V_ZERO;
 		int int_key = V_ZERO;
@@ -84,8 +93,8 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 									break;
 
 								default:
-									fputs("\nUnrecognized Option!", stderr);
-									fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
+									fputs("\nUnrecognized Option!\n", stderr);
+									fprintf(stderr, "The selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
 									break;
 							}
 					}
@@ -140,8 +149,8 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 
 						/* It is specified that if the option is incorrect, an error message should be sent. */
 						default:
-							fputs("\nUnrecognized Option!", stderr);
-							fprintf(stderr, "\nThe selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
+							fputs("\nUnrecognized Option!\n", stderr);
+							fprintf(stderr, "The selected option: [%d] is invalid. Please correct it!\n", option_type_entry);
 							break;
 					}
 
@@ -186,10 +195,13 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 					}
 			}
 		else
-			fprintf(stderr, "\nThe memory address to hold the variable is not valid!\n");
+			{
+				fputs("\nUnrecognized Memory Address!\n", stderr);
+				fprintf(stderr, "The memory address: [%p] to hold the variable is not valid!\n", void_var_address);
+			}
 
 		/* Return of void pointer key value. */
-		return void_var_address;
+		return (void_var_address) ? void_var_address : &chr_storage;
 	}
 
 /* Function that performs a specified pause with a warning message. */
@@ -201,7 +213,7 @@ char* GetString(const char *const str_Message)
 		int int_key = V_ZERO;
 
 		/* Create a persistent chain. */
-		static char string[BUFSIZ];
+		static char string[BUFSIZ] = {NULL_CHARACTER};
 		memset(string, V_ZERO, sizeof(string));
 
 		/* Header message. */
@@ -263,7 +275,7 @@ char* GetString(const char *const str_Message)
 int main()
 	{
 		/* Preliminary Working Variables. */
-		char chr_pause = NULL_CHARACTER;
+		char chr_key = V_CHR_LOWER_Y, chr_pause = NULL_CHARACTER;
 		DIR *directory = NULL;
 
 		/* Pointers to the character strings for both the filename and the directory name. */
@@ -287,7 +299,7 @@ int main()
 		/* Display the current working directory. */
 		ptr_s_path = getcwd(s_path, sizeof(s_path));
 		printf("Display the current working directory.\n");
-		printf("\x27%s\x27 : %p\n", s_path, ptr_s_path);
+		printf("\x27%s\x27 : %p\x2e\n", s_path, ptr_s_path);
 		chr_pause = *((char *) GetEntry("Press the ENTER key to continue...", &chr_pause, enm_type_entry_char, enm_type_reset_YES));
 
 		/* Code block for obtaining information from a given file. */
@@ -316,17 +328,18 @@ int main()
 		/* A loop that ensures the files contained in a specific directory are read. */
 		if ((directory = opendir(ptr_str_directory)))
 			{
-				while ((file = readdir(directory)))
+				while ((file = readdir(directory)) && (chr_key == V_CHR_LOWER_Y || chr_key == V_CHR_UPPER_Y))	//Read each file entry from the specified directory.
 					{
 						stat(file->d_name, &fstat);	//Function to extract information from each file.
 
+						/* Dumping of information from each file read from the specified directory. */
 						printf("\n# %zu.\n", counter++);
 						printf("* File: %s\n", file->d_name);
 						printf("+ Type: %s.\n", (S_ISDIR(fstat.st_mode)) ? "Directory" : "File");
 						printf("+ Size: %ld bytes long.\n", fstat.st_size);
 						printf("+ It was modified on %s\n", ctime(&fstat.st_mtime));
 
-						chr_pause = *((char *) GetEntry("Press the ENTER key to continue...", &chr_pause, enm_type_entry_char, enm_type_reset_YES));
+						chr_key = *((char *) GetEntry("Do you want to continue reading the next file from the specified directory (y/n)? : ", &chr_key, enm_type_entry_char, enm_type_reset_YES));
 					}
 
 				printf("[%zu] Output results generated.\n", counter);
@@ -339,6 +352,7 @@ int main()
 		printf("\nChange to the directory specified by the user.\n");
 		ptr_str_directory = GetString("Enter the directory to change: ");
 
+		/* Check whether the directory was changed correctly. */
 		if (chdir(ptr_str_directory))
 			printf("\nThe directory: '%s' was not found!\n", ptr_str_directory);
 		else
@@ -350,7 +364,7 @@ int main()
 		/* Print the current directory to verify that it has been changed. */
 		ptr_s_path = getcwd(s_path, sizeof(s_path));
 		printf("\nDisplay the current working directory.\n");
-		printf("Current working directory: \'%s\' in address: %p\n", s_path, ptr_s_path);
+		printf("Current working directory: \'%s\' in address: %p\x2e\n", s_path, ptr_s_path);
 		chr_pause = *((char *) GetEntry("Press the ENTER key to continue...", &chr_pause, enm_type_entry_char, enm_type_reset_YES));
 
 		/* Program termination messages. */
