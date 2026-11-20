@@ -423,10 +423,12 @@ long int GetCurrentDateTimeInfo(int *const julianyeardays, int *const dayofthewe
 	{
 		/* Preliminary working variables. */
 		char chr_key = NULL_CHARACTER;
-		clock_t clock_ticks_latency = clock();
+		clock_t clck_clock_ticks_latency = clock();
+		double dbl_factor_ticks_latency = (double) ((double) clck_clock_ticks_latency / (double) CLOCKS_PER_SEC);
 		time_t t_tm_seconds = time(&t_tm_seconds);
 		struct tm *strct_tm_dt = localtime(&t_tm_seconds);
 
+		/* Print the current date and time to the screen using the default string format. */
 		printf("\n%s", ctime(&t_tm_seconds));
 
 		/* Display of date and time information. */
@@ -434,27 +436,31 @@ long int GetCurrentDateTimeInfo(int *const julianyeardays, int *const dayofthewe
 		printf("|    Date and time information.     |\n");
 		printf("+===|====+===|====+===|====+===|====+\n");
 		printf("| + File:\t[%s].\n", __FILE__);
+		printf("| + Line:\t[%d].\n", __LINE__);
+		printf("+---+--------+--------+--------+----+\n");
 		printf("| + Date:\t[%s].\n", __DATE__);
 		printf("| + Time:\t[%s].\n", __TIME__);
-		printf("| + Line:\t[%d].\n", __LINE__);
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("|  Seconds since January 1th, 1970. |\n");
 		printf("+---|----+---|----+---|----+---|----+\n");
-		printf("| + Value:\t[%ld].\n", t_tm_seconds);
 		printf("| + Address:\t[%p].\n", (void *) &t_tm_seconds);
-		printf("+-----------------------------------+\n");
-		printf("| * Latency:\t[%ld].\n", clock_ticks_latency);
+		printf("| + Value:\t[%ld].\n", t_tm_seconds);
+		printf("+---+--------+--------+--------+----+\n");
+		printf("| * Address:\t[%p].\n", (void *) &clck_clock_ticks_latency);
+		printf("| * Latency:\t[%ld].\n", clck_clock_ticks_latency);
 		printf("| * Tickness:\t[%ld].\n", CLOCKS_PER_SEC);
+		printf("+---+--------+--------+--------+----+\n");
+		printf("| # Factor:\t[%lf].\n", dbl_factor_ticks_latency);
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("|    PC date and time structure.    |\n");
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("| - DayYear:\t[%03d].\n", strct_tm_dt->tm_yday);
 		printf("| - DayWeek:\t[%d].\n", strct_tm_dt->tm_wday);
-		printf("+-----------------------------------+\n");
-		printf("| > %02d/%02d/%04d.\n", strct_tm_dt->tm_mday, strct_tm_dt->tm_mon + V_ONE, strct_tm_dt->tm_year + V_REFERENCE_YEAR);
-		printf("| > %04d/%02d/%02d.\n", strct_tm_dt->tm_year + V_REFERENCE_YEAR, strct_tm_dt->tm_mon + V_ONE, strct_tm_dt->tm_mday);
+		printf("+---+--------+--------+--------+----+\n");
+		printf("| > (%02d/%02d/%04d).\n", strct_tm_dt->tm_mday, strct_tm_dt->tm_mon + V_ONE, strct_tm_dt->tm_year + V_REFERENCE_YEAR);
+		printf("| > [%04d/%02d/%02d].\n", strct_tm_dt->tm_year + V_REFERENCE_YEAR, strct_tm_dt->tm_mon + V_ONE, strct_tm_dt->tm_mday);
 		printf("| < %s, %s %02d, %04d.\n", day_week[strct_tm_dt->tm_wday], months_array[strct_tm_dt->tm_mon].month_nameofmonth, strct_tm_dt->tm_mday, strct_tm_dt->tm_year + V_REFERENCE_YEAR);
-		printf("| > %02d:%02d:%02d.\n", strct_tm_dt->tm_hour, strct_tm_dt->tm_min, strct_tm_dt->tm_sec);
+		printf("| > [%02d:%02d:%02d].\n", strct_tm_dt->tm_hour, strct_tm_dt->tm_min, strct_tm_dt->tm_sec);
 		printf("+===|====+===|====+===|====+===|====+\n");
 
 		/* The date and time values ​​are returned in the formal parameters of this function. */
