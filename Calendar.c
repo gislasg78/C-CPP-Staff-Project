@@ -639,11 +639,11 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 							}
 					}
 			}
-			else
-				{
-					fputs("\nUnrecognized Memory Address!\n", stderr);
-					fprintf(stderr, "The memory address: [%p] to hold the variable is not valid!\n", void_var_address);
-				}
+		else
+			{
+				fputs("\nUnrecognized Memory Address!\n", stderr);
+				fprintf(stderr, "The memory address: [%p] to hold the variable is not valid!\n", void_var_address);
+			}
 
 		/* Return of void pointer key value. */
 		return (void_var_address) ? void_var_address : &chr_storage;
