@@ -454,6 +454,8 @@ long int GetCurrentDateTimeInfo(int *const julianyeardays, int *const dayofthewe
 		printf("+---|----+---|----+---|----+---|----+\n");
 		printf("|    PC date and time structure.    |\n");
 		printf("+---|----+---|----+---|----+---|----+\n");
+		printf("| + Address:\t[%p].\n", (void *) strct_tm_dt);
+		printf("+---+--------+--------+--------+----+\n");
 		printf("| - Year day:\t[%03d].\n", strct_tm_dt->tm_yday);
 		printf("| - Week day:\t[%d].\n", strct_tm_dt->tm_wday);
 		printf("+---+--------+--------+--------+----+\n");
