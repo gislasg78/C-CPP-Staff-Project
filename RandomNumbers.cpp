@@ -58,9 +58,9 @@ class RandomNumber
 				{this->counter++; (*this).random_number = this->giveRandom(random_counter, random_seed);}
 
 			RandomNumber(const RandomNumber<T>& _random_number) : random_counter(_random_number.random_counter), random_number(_random_number.random_number), random_seed(_random_number.random_seed)
-				{this->counter++;}
-			RandomNumber(RandomNumber<T>&& _random_number) : random_counter(_random_number.random_counter), random_number(_random_number.random_seed), random_seed(_random_number.random_seed)
-				{_random_number.reset();}
+				{(*this).counter++;}
+			RandomNumber(RandomNumber<T>&& _random_number) : random_counter(_random_number.random_counter), random_number(_random_number.random_number), random_seed(_random_number.random_seed)
+				{(*this).counter++; _random_number.reset();}
 
 			RandomNumber<T>& operator=(const T& _random_seed)
 				{(*this).random_seed = _random_seed; (*this).restore(); return *this;}
@@ -76,8 +76,8 @@ class RandomNumber
 
 			RandomNumber<T> operator[](const T& _random_counter)
 				{
-					RandomNumber<T> _random_number((*this).random_seed, random_counter);
-					return _random_number;
+					RandomNumber<T> _random_number_instance(_random_counter, this->random_seed);
+					return _random_number_instance;
 				}
 
 			RandomNumber<T> operator+() const
@@ -221,6 +221,8 @@ class RandomNumber
 
 			virtual RandomNumber<T>& copy(const RandomNumber<T>& _random_number)
 				{
+					this->random_counter = _random_number.random_counter;
+					this->random_number = _random_number.random_number;
 					this->random_seed = _random_number.random_seed;
 					return *this;
 				}
@@ -317,7 +319,7 @@ class RandomNumber
 				{std::cout << *this << std::endl; std::cin >> *this; std::cout << *this << std::endl;}
 
 			const T formulaRandomGenerator(const T& _random_seed)
-				{return RANDOM_GENERATOR(static_cast<int>(_random_seed));}
+				{return T(RANDOM_GENERATOR(static_cast<int>(_random_seed)));}
 
 			const T& GenerateRandom()
 				{(*this).random_counter++; return (this->random_number = (*this).formulaRandomGenerator(this->random_number));}
@@ -406,7 +408,7 @@ class RandomNumber
 					std::cout << "+ Number of Objects:\t[" << this->counter << "]." << std::endl;
 					std::cout << "+ Random Count Value:\t[" << (*this).random_counter << "]." << std::endl;
 					std::cout << "+ Random Seed Number:\t[" << (*this).random_seed << "]." << std::endl;
-					std::cout << "+ Last Random Number:\t[" << (*this).random_number << "] = [" << this->getValue() << "]." << std::endl << std::endl;
+					std::cout << "+ Last Random Number:\t[" << (*this).random_number << "] = {" << this->getValue() << "}." << std::endl << std::endl;
 				}
 
 			virtual void reset()
@@ -473,7 +475,7 @@ int main()
 				/* Ask the user for the minimum and maximum values ​​of the range. */
 				std::cout << std::endl << "Range of minimum and maximum values." << std::endl;
 
-				std::cout << std::endl << "Minimum value in range: ";
+				std::cout << "Minimum value in range: ";
 				try {minimum = RandomNumber<double>::enter_a_data(&minimum);}
 				catch (const std::exception& e) {std::cout << std::endl << "Exception occurred: [" << e.what() << "]." << std::endl;}
 
