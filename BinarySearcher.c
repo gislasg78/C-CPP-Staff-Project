@@ -150,35 +150,35 @@ const int *p_array = global_array,
 		};
 
 /* Prototype service functions. */
-int ArrayGrid(const int array[], const int gsize, const int grows, const int gcols);
-int BinarySearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
-int BinarySearchDelta(const int array[], const int start, const int finish, const int target_key, int *delta_factor, int *pos, int *iters);
-int BinarySearchRecursive(const int array[], const int bottom, const int top, const int target_key, int *pos, int *iters, int *itrvs);
-int DumpAllItems(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
-int *Fibonacci_Series_Numbers(const int max_number, size_t *qty_items, int **Fibo_Series_Nums);
-int FibonacciSearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
-int FillArray(int array[], const int quantity, const int last_number);
-int GetElement(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, const int size, const int position, const int calls, const int iterations, const int iters, const int random_seed);
+int ArrayGrid(const int array[], const int gsize, const int grows, const int gcols, int *const iters);
+int BinarySearch(const int array[], const int start, const int finish, const int target_key, int *const pos, int *const iters);
+int BinarySearchDelta(const int array[], const int start, const int finish, const int target_key, int *const delta_factor, int *const pos, int *const iters);
+int BinarySearchRecursive(const int array[], const int bottom, const int top, const int target_key, int *const pos, int *const iters, int *const itrvs);
+int DumpAllItems(const int array[], const int start, const int finish, const int target_key, int *const pos, int *const iters);
+int *Fibonacci_Series_Numbers(const int max_number, size_t *const qty_items, int **Fibo_Series_Nums);
+int FibonacciSearch(const int array[], const int start, const int finish, const int target_key, int *const pos, int *const iters);
+int FillArray(int array[], const int quantity, const int last_number, int *const iters);
+int GetElement(const char *const str_Message, const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, const int size, const int position, const int calls, const int iterations, const int iters, const int random_seed);
 void *GetEntry(const char *const str_Message, void *const void_var_address, const enum enm_type_entry enm_type_data, const enum enm_type_reset enm_type_reset_OK);
-int GetItem(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int position, const int iterations);
-int GetRandomInterval(const int start, const int finish, int *random_seed);
-double GetRandomNumber(int *random_seed);
-int GetValidInputs(int *start, int *finish, int *target_key, int *bottom, int *top);
-int GetValidLimits(const int position, int *start, int *finish);
-int InterpolationLocate(const int array[], const int bottom, const int top, const int target_key, int *middle_bottom, int *middle_top, int *iters);
+int GetItem(const char *const str_Message, const int array[], const int start, const int finish, const int target_key, const int position, const int iterations);
+int GetRandomInterval(const int start, const int finish, int *const random_seed);
+double GetRandomNumber(int *const random_seed);
+int GetValidInputs(int *const start, int *const finish, int *const target_key, int *const bottom, int *const top);
+int GetValidLimits(const int position, int *const start, int *const finish);
+int InterpolationLocate(const int array[], const int bottom, const int top, const int target_key, int *const middle_bottom, int *const middle_top, int *const iters);
 int IsPrime(const int number, const int start);
-int MainMenu(int *option);
-int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls, int *iter, int *iters, int *position, int *random_seed, int *value);
-int SequentialSearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters);
-int SequentialSearchRecursive(const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, int *pos, int *iters);
-void SwapValues(int *left_value, int *right_value);
-void SwappingLimits(const char *str_Message, int *bottom, int *top);
-int ViewAllItems(const int array[], const int start, const int finish, const int target_key, int *pos, int *iter, int *iters);
-int ViewEachElement(const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, const int size, int *pos, const int calls, int *iter, int *iters, const int random_seed);
-int ViewRandomInterval(const int start, const int finish, const int position, int *random_seed);
+int MainMenu(int *const option);
+int SelectedOptionMainMenu(int *const start, int *const finish, int *const target_key, int *const calls, int *const iter, int *const iters, int *const position, int *const random_seed, int *const value);
+int SequentialSearch(const int array[], const int start, const int finish, const int target_key, int *const pos, int *const iters);
+int SequentialSearchRecursive(const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, int *const pos, int *const iters);
+void SwapValues(int *const left_value, int *const right_value);
+void SwappingLimits(const char *const str_Message, int *const bottom, int *const top);
+int ViewAllItems(const int array[], const int start, const int finish, const int target_key, int *const pos, int *const iter, int *const iters);
+int ViewEachElement(const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, const int size, int *const pos, const int calls, int *const iter, int *const iters, const int random_seed);
+int ViewRandomInterval(const int start, const int finish, const int position, int *const random_seed);
 
 /* A function that arranges the calculated array according to a grid of 'n' rows by 'c' columns. */
-int ArrayGrid(const int array[], const int gsize, const int grows, const int gcols)
+int ArrayGrid(const int array[], const int gsize, const int grows, const int gcols, int *const iters)
 	{
 		/* Preliminary Working Variables. */
 		char char_key = NULL_CHARACTER;
@@ -191,7 +191,7 @@ int ArrayGrid(const int array[], const int gsize, const int grows, const int gco
 		/* Nested loops or cycles to accommodate the values. */
 		for (int y = V_ZERO; y < grows; y++)
 			{
-				for (int x = V_ZERO; x < gcols; x++, counter++)
+				for (int x = V_ZERO; x < gcols; x++, counter++, (*iters)++)
 					{
 						/* The 'x' and 'y' positions can be swapped. */
 						position = grows * x + y;
@@ -212,7 +212,7 @@ int ArrayGrid(const int array[], const int gsize, const int grows, const int gco
 	}
 
 /* Improved traditional binary search function. */
-int BinarySearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters)
+int BinarySearch(const int array[], const int start, const int finish, const int target_key, int *const pos, int *const iters)
 	{
 		/* Preliminary working variables. */
 		int high = finish, low = start;
@@ -240,7 +240,7 @@ int BinarySearch(const int array[], const int start, const int finish, const int
 	}
 
 /* Improved binary search function with internal delta factor. */
-int BinarySearchDelta(const int array[], const int start, const int finish, const int target_key, int *delta_factor, int *pos, int *iters)
+int BinarySearchDelta(const int array[], const int start, const int finish, const int target_key, int *const delta_factor, int *const pos, int *const iters)
 	{
 		/* Preliminary working variables. Calculate the midpoint position. */
 		int middle = start + (finish - start) / V_TWO;
@@ -262,7 +262,7 @@ int BinarySearchDelta(const int array[], const int start, const int finish, cons
 	}
 
 /* Improved traditional recursirve and cyclic binary search function. */
-int BinarySearchRecursive(const int array[], const int bottom, const int top, const int target_key, int *pos, int *iters, int *itrvs)
+int BinarySearchRecursive(const int array[], const int bottom, const int top, const int target_key, int *const pos, int *const iters, int *const itrvs)
 	{
 		/* Preliminary working variables. */
 		static int iteratives = V_ZERO;
@@ -283,12 +283,13 @@ int BinarySearchRecursive(const int array[], const int bottom, const int top, co
 			}
 
 		/* Values ​​are returned as the iterations are performed. */
-		*itrvs = iteratives;
+		if (itrvs) *itrvs = iteratives;
+
 		return *pos;	//The located position of the element is returned as a result.
 	}
 
 /* Dump all elements of the array. */
-int DumpAllItems(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters)
+int DumpAllItems(const int array[], const int start, const int finish, const int target_key, int *const pos, int *const iters)
 	{
 		/* Preliminary working variables. */
 		char char_key = V_ZERO;
@@ -315,7 +316,7 @@ int DumpAllItems(const int array[], const int start, const int finish, const int
 	}
 
 /* Function that generates a Fibonacci number up to the maximum value sent. */
-int *Fibonacci_Series_Numbers(const int max_number, size_t *qty_items, int **Fibo_Series_Nums)
+int *Fibonacci_Series_Numbers(const int max_number, size_t *const qty_items, int **Fibo_Series_Nums)
 	{
 		/* Preliminary working variables. */
 		char char_key = V_ZERO;
@@ -359,11 +360,12 @@ int *Fibonacci_Series_Numbers(const int max_number, size_t *qty_items, int **Fib
 		/* Assigning a valid memory address to the created vector. */
 		if (Fibo_Series_Nums) *Fibo_Series_Nums = vector_Fibonacci_Numbers;
 
+		/* Return the created dynamic vector of Fibonacci numbers. */
 		return vector_Fibonacci_Numbers;
 	}
 
 /* Function that searches for an element using Fibonacci numbers. */
-int FibonacciSearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters)
+int FibonacciSearch(const int array[], const int start, const int finish, const int target_key, int *const pos, int *const iters)
 	{
 		/* Preliminary working variables. */
 		int adjust = V_ZERO, fibM_minus_two = V_ZERO, fibM_minus_three = V_ZERO, index = V_ZERO, tmp = V_ZERO;
@@ -414,11 +416,12 @@ int FibonacciSearch(const int array[], const int start, const int finish, const 
 		else
 			perror("There is not enough memory space to allocate the vector of Fibonacci series numbers.");
 
+		/* Return the position based on a search using Fibonacci numbers. */
 		return (*pos = (index >= V_ZERO && index < size) ? index : V_MINUS_ONE);
 	}
 
 /* Function that populates the array with calculated prime numbers. */
-int FillArray(int array[], const int quantity, const int last_number)
+int FillArray(int array[], const int quantity, const int last_number, int *const iters)
 	{
 		/* Preliminary Working Variables. */
 		int counter = V_ZERO;
@@ -427,6 +430,7 @@ int FillArray(int array[], const int quantity, const int last_number)
 		for (int idx = last_number; counter < quantity; idx += (!(idx % V_TWO)) ? V_ONE : V_TWO)
 			if (IsPrime(idx, V_TWO))
 				{
+					(*iters)++;
 					*(array + counter++) = idx;
 				}
 
@@ -435,7 +439,7 @@ int FillArray(int array[], const int quantity, const int last_number)
 	}
 
 /* Getting an integer value from the keyboard and purging its input. */
-int GetElement(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, const int size, const int position, const int calls, const int iterations, const int iters, const int random_seed)
+int GetElement(const char *const str_Message, const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, const int size, const int position, const int calls, const int iterations, const int iters, const int random_seed)
 	{
 		/* Preliminary working variables. */
 		char char_key = NULL_CHARACTER;
@@ -480,10 +484,11 @@ int GetElement(const char *str_Message, const int array[], const int start, cons
 				item = *(array + position);
 			}
 		else
-			printf("\nThe searched value: [%d] was not found in array on the boundaries between: [%d] = {%d} and [%d] = {%d}.\n", target_key, start, array[start], finish, array[finish]);
+			printf("\nThe searched value: [%d] was not found in array on the boundaries between: [%d] = {%d} and: [%d] = {%d}.\n", target_key, start, array[start], finish, array[finish]);
 
 		char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 
+		/* Returns the number of the found element. */
 		return item;
 	}
 
@@ -648,7 +653,7 @@ void *GetEntry(const char *const str_Message, void *const void_var_address, cons
 	}
 
 /* Obtains more succinct information about the queried item. */
-int GetItem(const char *str_Message, const int array[], const int start, const int finish, const int target_key, const int position, const int iterations)
+int GetItem(const char *const str_Message, const int array[], const int start, const int finish, const int target_key, const int position, const int iterations)
 	{
 		/* Preliminary working variables. */
 		char char_key = NULL_CHARACTER;
@@ -677,27 +682,28 @@ int GetItem(const char *str_Message, const int array[], const int start, const i
 				item = array[position];
 			}
 		else
-			printf("\nThe searched value: [%d] was not found in array on the boundaries between: [%d] = {%d} and [%d] = {%d}.\n", target_key, start, array[start], finish, array[finish]);
+			printf("\nThe searched value: [%d] was not found in array on the boundaries between: [%d] = {%d} and: [%d] = {%d}.\n", target_key, start, array[start], finish, array[finish]);
 
 		char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 
+		/* Returns the number of the searched-for item. */
 		return item;
 	}
 
 /* Function that obtains a random number within a range. */
-int GetRandomInterval(const int start, const int finish, int *random_seed)
+int GetRandomInterval(const int start, const int finish, int *const random_seed)
 	{
 		return ((int) ((finish - start + V_ONE) * GetRandomNumber(random_seed) + start));
 	}
 
 /* Function that generates a single-precision floating-point random number between zero and one. */
-double GetRandomNumber(int *random_seed)
+double GetRandomNumber(int *const random_seed)
 	{
 		return ((double) (*random_seed = RANDOM_GENERATOR(*random_seed)) / (double) V_RESIDUAL_MODULUS);
 	}
 
 /* Valid entries for the initial and final search indexes, as well as the value to be searched for, are obtained. */
-int GetValidInputs(int *start, int *finish, int *target_key, int *bottom, int *top)
+int GetValidInputs(int *const start, int *const finish, int *const target_key, int *const bottom, int *const top)
 	{
 		/* Preliminary working variables. */
 		char char_key = NULL_CHARACTER;
@@ -733,11 +739,12 @@ int GetValidInputs(int *start, int *finish, int *target_key, int *bottom, int *t
 
 		char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 
+		/* Verify that the user input is within the minimum and maximum limits of the array. */
 		return ((*start >= *bottom && *start <= *top) && (*finish >= *bottom && *finish <= *top) && (target_key));
 	}
 
 /* Limits validation for the given position. */
-int GetValidLimits(const int position, int *start, int *finish)
+int GetValidLimits(const int position, int *const start, int *const finish)
 	{
 		/* Preliminary working variables. */
 		char char_key = NULL_CHARACTER;
@@ -759,11 +766,12 @@ int GetValidLimits(const int position, int *start, int *finish)
 
 		char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 
+		/* Check that the user input is within the minimum and maximum limits of the array. */
 		return (position >= *start && position <= *finish);
 	}
 
 /* Function to locate a certain value by means of interpolations. */
-int InterpolationLocate(const int array[], const int bottom, const int top, const int target_key, int *middle_bottom, int *middle_top, int *iters)
+int InterpolationLocate(const int array[], const int bottom, const int top, const int target_key, int *const middle_bottom, int *const middle_top, int *const iters)
 	{
 		/* Preliminary working variables. */
 		*middle_top = top + ((target_key - array[top]) * (bottom - top)) / (array[bottom] - array[top] + V_ONE);
@@ -777,14 +785,16 @@ int InterpolationLocate(const int array[], const int bottom, const int top, cons
 /* A function that validates whether a number is prime or not. */
 int IsPrime(const int number, const int start)
 	{
+		/* Each number is cycled through to find the next prime, given a starting position. */
 		for (int divisor = start; divisor <= (number / divisor); divisor += (!(divisor % V_TWO)) ? V_ONE : V_TWO)
 			if (!(number % divisor)) return V_ZERO;
 
+		/* Return the prime number, provided it is greater than one. */
 		return (number > V_ONE);
 	}
 
 /* Options menu. */
-int MainMenu(int *option)
+int MainMenu(int *const option)
 	{
 		/* Preliminary working variables. */
 		int finish = V_ZERO, start = V_ZERO, target_key = V_ZERO;
@@ -814,17 +824,17 @@ int MainMenu(int *option)
 				printf("| [15]. View statistics.            |\n");
 				printf("| [16]. Exit this program.          |\n");
 				printf("+===+====+===+====+===+====+===+====+\n");
-				printf("Choose an option: ");
 
-				*option = value = *((int *) GetEntry("", &value, enm_type_entry_int, enm_type_reset_YES));
+				*option = value = *((int *) GetEntry("Choose an option: ", &value, enm_type_entry_int, enm_type_reset_YES));
 				*option = value = SelectedOptionMainMenu(&start, &finish, &target_key, &calls, &iter, &iters, &position, &random_seed, &value);
 			}
 
+		/* Return the last option entered. */
 		return value;
 	}
 
 /* Function to execute a function given an option. */
-int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls, int *iter, int *iters, int *position, int *random_seed, int *value)
+int SelectedOptionMainMenu(int *const start, int *const finish, int *const target_key, int *const calls, int *const iter, int *const iters, int *const position, int *const random_seed, int *const value)
 	{
 		/* Preliminary working variables. */
 		char char_key = NULL_CHARACTER;					//Variable to obtain a pause character.
@@ -857,7 +867,7 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 
 					/* Present the arrangement in the form of a grid. */
-					*iter = ArrayGrid(global_array, size_of_global_array, grows, gcols);
+					*iter = ArrayGrid(global_array, size_of_global_array, grows, gcols, iter);
 					printf("Output results created: [%d].\n", *iter);
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
@@ -1093,7 +1103,7 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 				case enm_opt_regenerate_original_array:
 					/* Populating the array and calling the main menu. */
 					printf("\nRegenerate original array.\n");
-					*iter = FillArray(global_array, size_of_global_array, V_TWO);
+					*iter = FillArray(global_array, size_of_global_array, V_TWO, iter);
 					printf("Output results created: [%d].\n", *iter);
 					char_key = *((char *) GetEntry("Press the ENTER key to continue...", &char_key, enm_type_entry_char, enm_type_reset_YES));
 					break;
@@ -1206,12 +1216,15 @@ int SelectedOptionMainMenu(int *start, int *finish, int *target_key, int *calls,
 					break;
 			}
 
-		*iters += *iter;
+		/* Return the iterations accumulated for each operation performed. */
+		if (iters) *iters += *iter;
+
+		/* Undo the last action performed. */
 		return *value;
 	}
 
 /* Sequential search function given a start position. */
-int SequentialSearch(const int array[], const int start, const int finish, const int target_key, int *pos, int *iters)
+int SequentialSearch(const int array[], const int start, const int finish, const int target_key, int *const pos, int *const iters)
 	{
 		/* Preliminary working variables. */
 		int idx = V_ZERO;
@@ -1219,11 +1232,12 @@ int SequentialSearch(const int array[], const int start, const int finish, const
 		/* Main cycle of iterations while the searched value is not found. */
 		for (idx = start; idx <= finish && array[idx] < target_key; idx++, (*iters)++);
 
+		/* Return the last position of the searched element. */
 		return(*pos = (array[idx] == target_key) ? idx : V_MINUS_ONE);
 	}
 
 /* Function that performs a recursive sequential search for a given element in a given array. */
-int SequentialSearchRecursive(const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, int *pos, int *iters)
+int SequentialSearchRecursive(const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, int *const pos, int *const iters)
 	{
 		/* Validates that the start and end ranges are within the bounds of the minimum and maximum array index. */
 		if ((start >= bottom && start <= top))
@@ -1250,11 +1264,12 @@ int SequentialSearchRecursive(const int array[], const int start, const int fini
 		else
 			printf("\nThe start index: [%d] are out of range between: [%d] and [%d].\n", start, top, bottom);
 
+		/* Return the last position of the searched element. */
 		return (*pos = (*pos >= start && *pos <= finish) ? *pos : V_MINUS_ONE);
 	}
 
 /* The limits that comprise a given range are exchanged if they are inverted. */
-void SwappingLimits(const char *str_Message, int *start, int *finish)
+void SwappingLimits(const char *const str_Message, int *const start, int *const finish)
 	{
 		/* Preliminary working variables. */
 		char char_key = NULL_CHARACTER;
@@ -1263,22 +1278,22 @@ void SwappingLimits(const char *str_Message, int *start, int *finish)
 		if (*start > *finish || *finish < *start)
 			{
 				printf("\n[%s].\n", str_Message);
-				printf("+---+----+---+----+---+----+---+----+\n");
-				printf("|   Major & Minor Values Exchange.  |\n");
-				printf("+---+----+---+----+---+----+---+----+\n");
+				printf("+---+----+---+----+---+----+\n");
+				printf("|   Major & Minor Values.  |\n");
+				printf("+---+----+---+----+---+----+\n");
 				printf("| Higher  : [%d].\n", *finish);
 				printf("| Lower   : [%d].\n", *start);
-				printf("+---+----+---+----+---+----+---+----+\n");
+				printf("+---+----+---+----+---+----+\n");
 
 				SwapValues(start, finish);
 
-				printf("\n");
-				printf("+---=----=---=----=---=----=---=----+\n");
-				printf("|       Changed limit values.       |\n");
-				printf("+---=----=---=----=---=----=---=----+\n");
+				printf("\n[%s].\n", str_Message);
+				printf("+---=----=---=----=---=----+\n");
+				printf("|   Changed limit values.  |\n");
+				printf("+---=----=---=----=---=----+\n");
 				printf("| Larger  : [%d].\n", *finish);
 				printf("| Smaller : [%d].\n", *start);
-				printf("+---=----=---=----=---=----=---=----+\n");
+				printf("+---=----=---=----=---=----+\n");
 			}
 		else
 			printf("\nCorrect values. Shorter: [%d]. Longer: [%d].\n", *start, *finish);
@@ -1287,7 +1302,7 @@ void SwappingLimits(const char *str_Message, int *start, int *finish)
 	}
 
 /* Exchange of two numerical variables with each other. */
-void SwapValues(int *left_value, int *right_value)
+void SwapValues(int *const left_value, int *const right_value)
 	{
 		int temp_value = *left_value;
 		*left_value = *right_value;
@@ -1295,7 +1310,7 @@ void SwapValues(int *left_value, int *right_value)
 	}
 
 /* Function that sees all the details of the record to be consulted. */
-int ViewAllItems(const int array[], const int start, const int finish, const int target_key, int *pos, int *iter, int *iters)
+int ViewAllItems(const int array[], const int start, const int finish, const int target_key, int *const pos, int *const iter, int *const iters)
 	{
 		/* Preliminary working variables. */
 		char char_key = V_CHR_UPPER_Y;
@@ -1344,13 +1359,15 @@ int ViewAllItems(const int array[], const int start, const int finish, const int
 				char_key = *((char *) GetEntry("Do you want to continue viewing more records (y/n)? : ", &char_key, enm_type_entry_char, enm_type_reset_YES));
 			}
 
-		*iters += *iter;
+		/* Return the iterations performed. */
+		if (iters) *iters += *iter;
 
+		/* Return the correct location position of the item to be found. */
 		return(*pos = (--idx >= start && idx <= finish) ? idx : V_MINUS_ONE);
 	}
 
 /* Visualize each element of the arrangement step by step. */
-int ViewEachElement(const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, const int size, int *pos, const int calls, int *iter, int *iters, const int random_seed)
+int ViewEachElement(const int array[], const int start, const int finish, const int target_key, const int bottom, const int top, const int size, int *const pos, const int calls, int *const iter, int *const iters, const int random_seed)
 	{
 		/* Preliminary working variables. */
 		char char_key = V_CHR_UPPER_Y;
@@ -1370,13 +1387,15 @@ int ViewEachElement(const int array[], const int start, const int finish, const 
 				char_key = *((char *) GetEntry("Do you want to continue viewing more records (y/n)? : ", &char_key, enm_type_entry_char, enm_type_reset_YES));
 			}
 
-		*iters += *iter;
+		/* Return the number of iterations performed. */
+		if (iters) *iters += *iter;
 
+		/* Return the position of the located element. */
 		return((*pos >= start && *pos <= finish) ? *pos : V_MINUS_ONE);
 	}
 
 /* Displays messages about the random number to be generated and its active seed. */
-int ViewRandomInterval(const int start, const int finish, const int position, int *random_seed)
+int ViewRandomInterval(const int start, const int finish, const int position, int *const random_seed)
 	{
 		/* Preliminary working variables. */
 		char char_key = NULL_CHARACTER;
@@ -1395,11 +1414,13 @@ int ViewRandomInterval(const int start, const int finish, const int position, in
 
 		char_key = *((char *) GetEntry("Do you want to modify the initial random seed (y/n)? : ", &char_key, enm_type_entry_char, enm_type_reset_YES));
 
+		/* Ask whether the user wishes to change the seed for the random number generator used to calculate the random position. */
 		if (char_key == V_CHR_LOWER_Y || char_key == V_CHR_UPPER_Y)
 			*random_seed = *((int *) GetEntry("Enter an initial random seed : ", random_seed, enm_type_entry_int, enm_type_reset_YES));
 
 		printf("\nThe random seed is set to: [%d] right now.\n", *random_seed);
 
+		/* Return the calculated random position of the item to be searched for. */
 		return position;
 	}
 
@@ -1414,7 +1435,8 @@ int main()
 		printf("Searching and sorting algorithms for arrays.\n");
 
 		/* Call to the main menu. */
-		int option = MainMenu(&option);
+		int option = V_ZERO;
+		option = MainMenu(&option);
 
 		/* Program termination messages. */
 		printf("\nDone!\n");
