@@ -3,6 +3,7 @@
 
 /* Standard work libraries. */
 #include <algorithm>
+#include <cstdint>
 #include <iostream>
 #include <limits>
 #include <set>
@@ -11,7 +12,20 @@
 
 /* Symbolic character constants. */
 template <typename T>
-constexpr T CARRIAGE_RETURN	{static_cast<T>('\n')};
+constexpr T LINE_FEED		{static_cast<T>('\n')};
+
+/* Generation coefficients for the random number generator function.  */
+static constexpr std::uint32_t INCREMENTER	{13839};
+static constexpr std::uint32_t MULTIPLIER	{25173};
+static constexpr std::uint32_t MODULUS		{65536};
+
+/* Random number generation function using the Hull method- */
+static constexpr std::uint32_t RANDOM_GENERATOR	(std::uint32_t _seed) noexcept
+	{
+		const std::uint64_t result = std::uint64_t {MULTIPLIER} * _seed + INCREMENTER;
+
+		return static_cast<uint32_t>(result % MODULUS);
+	}
 
 /* Numeric symbolic constants. */
 template <typename T>
@@ -19,11 +33,7 @@ constexpr T V_ONE		{T(1)};
 template <typename T>
 constexpr T V_ZERO		{T(0)};
 
-/* Random number generator. */
-#define RANDOM_GENERATOR(s)	(((V_MULTIPLIER) * (s) + (V_INCREMENTER)) % (V_MODULUS))
-#define	V_INCREMENTER		13849
-#define V_MODULUS		65536
-#define V_MULTIPLIER		25173
+/* Residual Modulus for floating-point (single & double precision) numbers. */
 #define V_RESIDUAL_MODULUS	65535
 
 /* Forward prototypes of classes and functions. */
@@ -35,9 +45,9 @@ template <typename T>
 class RandomNumber
 	{
 		private:
-			T random_counter = V_ZERO<T>;
-			T random_number = V_ZERO<T>;
-			T random_seed = V_ZERO<T>;
+			std::size_t random_counter {V_ZERO<size_t>};
+			T random_number {V_ZERO<T>};
+			T random_seed {V_ZERO<T>};
 
 			friend std::istream &operator>> (std::istream &in, RandomNumber<T> &random_number)
 				{random_number.capture(); return in;}
@@ -50,12 +60,12 @@ class RandomNumber
 		public:
 			using value_type = T;
 
-			RandomNumber() : random_counter(V_ZERO<T>), random_number(V_ZERO<T>), random_seed(V_ZERO<T>)
+			RandomNumber() : random_counter(V_ZERO<size_t>), random_number(V_ZERO<T>), random_seed(V_ZERO<T>)
 				{this->counter++; this->capture();}
-			RandomNumber(const T& _random_seed) : random_counter(V_ZERO<T>), random_number(_random_seed), random_seed(_random_seed)
+			RandomNumber(const T& _random_seed) : random_counter(V_ZERO<size_t>), random_number(_random_seed), random_seed(_random_seed)
 				{this->counter++; this->random_number = this->GenerateRandom();}
-			RandomNumber(const T& _random_counter, const T& _random_seed) : random_counter(random_counter), random_number(_random_seed), random_seed(random_seed)
-				{this->counter++; (*this).random_number = this->giveRandom(random_counter, random_seed);}
+			RandomNumber(const T& _random_counter, const T& _random_seed) : random_counter(_random_counter), random_number(_random_seed), random_seed(_random_seed)
+				{this->counter++; (*this).random_number = this->giveRandom(_random_counter, _random_seed);}
 
 			RandomNumber(const RandomNumber<T>& _random_number) : random_counter(_random_number.random_counter), random_number(_random_number.random_number), random_seed(_random_number.random_seed)
 				{(*this).counter++;}
@@ -75,10 +85,7 @@ class RandomNumber
 				{(*this).random_number = this->giveRandom(_random_counter, _random_seed); return *this;}
 
 			RandomNumber<T> operator[](const T& _random_counter)
-				{
-					RandomNumber<T> _random_number_instance(_random_counter, this->random_seed);
-					return _random_number_instance;
-				}
+				{return RandomNumber<T>(_random_number_instance(_random_counter, this->random_seed));}
 
 			RandomNumber<T> operator+() const
 				{return RandomNumber<T>(this->random_seed);}
@@ -124,6 +131,8 @@ class RandomNumber
 
 			RandomNumber<T> operator/(const RandomNumber<T>& _random_number) const
 				{
+					if (!(_random_number.random_seed)) throw std::domain_error("Division by zero!");
+
 					RandomNumber<T> _random_number_instance(_random_number.random_seed);
 					_random_number_instance.random_seed = (_random_number.random_seed) ? (*this).random_seed / random_number.random_seed : V_ZERO<T>;
 					_random_number_instance.restore();
@@ -151,6 +160,8 @@ class RandomNumber
 
 			RandomNumber<T> operator%(const RandomNumber<T>& _random_number) const
 				{
+					static_assert(std::is_integral<T>::value, "Modulo requires an integral type!");
+
 					RandomNumber<T> _random_number_instance((*this).random_seed);
 					_random_number_instance.random_seed = (_random_number.random_seed) ? static_cast<int>((*this).random_seed) % static_cast<int>(_random_number_instance.random_seed) : V_ZERO<T>;
 					_random_number_instance.restore();
@@ -175,17 +186,17 @@ class RandomNumber
 					return *this;
 				}
 
-			const T operator!=(const RandomNumber<T>& _random_number) const
+			bool operator!=(const RandomNumber<T>& _random_number) const
 				{return ((this->random_counter != _random_number.random_counter) || (this->random_number != _random_number.random_number) || (this->random_seed != _random_number.random_seed));}
-			const T operator==(const RandomNumber<T>& _random_number) const
-				{return ((this->random_counter == _random_number.random_counter) && (this->random_number == _random_number.random_number) && (this->random_seed == _random_number.random_number));}
-			const T operator>(const RandomNumber<T>& _random_number) const
+			bool operator==(const RandomNumber<T>& _random_number) const
+				{return ((this->random_counter == _random_number.random_counter) && (this->random_number == _random_number.random_number) && (this->random_seed == _random_number.random_seed));}
+			bool operator>(const RandomNumber<T>& _random_number) const
 				{return ((*this).random_seed > _random_number.random_seed);}
-			const T operator>=(const RandomNumber<T>& _random_number) const
+			bool operator>=(const RandomNumber<T>& _random_number) const
 				{return ((*this).random_seed >= _random_number.random_seed);}
-			const T operator<(const RandomNumber<T>& _random_number) const
+			bool operator<(const RandomNumber<T>& _random_number) const
 				{return ((*this).random_seed < _random_number.random_seed);}
-			const T operator<=(const RandomNumber<T>& _random_number) const
+			bool operator<=(const RandomNumber<T>& _random_number) const
 				{return ((*this).random_seed <= _random_number.random_seed);}
 
 			const T operator>>(RandomNumber<T>& _random_number)
@@ -197,11 +208,11 @@ class RandomNumber
 			RandomNumber<T>& operator<<(const T& _random_seed)
 				{(*this).random_seed = _random_seed; (*this).restore(); return *this;}
 
-			operator T()					{return this->random_number;}
+			operator T()	const 				{return this->random_number;}
 
-			virtual void capture()
+			void capture()
 				{
-					T _random_counter = V_ZERO<T>, _random_seed = V_ZERO<T>;
+					std::size_t _random_counter = V_ZERO<size_t>, _random_seed = V_ZERO<T>;
 
 					std::cout << std::endl << "Random Number Generator Object." << std::endl;
 					std::cout << "+ Enter a counter value: ";
@@ -214,16 +225,20 @@ class RandomNumber
 
 			template <typename C = T>
 			const RandomNumber<C> convert() const
-				{RandomNumber<C> _random_number_instance((*this).random_seed); return _random_number_instance;}
+				{return RandomNumber<C>((*this).random_seed);}
 			template <typename C = T>
 			const RandomNumber<C> convert(const RandomNumber<T>& _random_number) const
-				{RandomNumber<C> _random_number_instance(_random_number.random_seed); return _random_number_instance;}
+				{return RandomNumber<C>(_random_number.random_seed);}
 
-			virtual RandomNumber<T>& copy(const RandomNumber<T>& _random_number)
+			RandomNumber<T>& copy(const RandomNumber<T>& _random_number)
 				{
-					this->random_counter = _random_number.random_counter;
-					this->random_number = _random_number.random_number;
-					this->random_seed = _random_number.random_seed;
+					if (this != &_random_number)
+						{
+							this->random_counter = _random_number.random_counter;
+							this->random_number = _random_number.random_number;
+							this->random_seed = _random_number.random_seed;
+						}
+
 					return *this;
 				}
 
@@ -245,7 +260,7 @@ class RandomNumber
 									if (std::cin.fail())
 										{
 											std::cin.clear();
-											std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN<char>);
+											std::cin.ignore(std::numeric_limits<std::streamsize>::max(), LINE_FEED<char>);
 										}
 
 									throw std::invalid_argument("Invalid captured value!");
@@ -258,7 +273,7 @@ class RandomNumber
 						}
 
 					std::cin.clear();
-					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN<char>);
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), LINE_FEED<char>);
 
 					return (ptr_data) ? *ptr_data : V_ZERO<T>;
 				}
@@ -269,7 +284,7 @@ class RandomNumber
 					std::cin.clear();
 					std::cin.get();
 					std::cin.clear();
-					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN<char>);
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), LINE_FEED<char>);
 				}
 
 			static const T& enter_a_value(T *const &ptr_value)
@@ -280,7 +295,7 @@ class RandomNumber
 
 							if (std::getline(std::cin >> std::ws, str_value))
 								{
-									str_value.erase(std::remove_if(str_value.begin(), str_value.end(), ::isspace), str_value.end());
+									str_value.erase(std::remove_if(str_value.begin(), str_value.end(), [](const unsigned char& ch) {return std::isspace(ch);}), str_value.end());
 									std::stringstream(str_value) >> *ptr_value;
 
 									std::cout << "+ Characters:\t\t[" << std::cin.gcount() << "]." << std::endl;
@@ -300,7 +315,7 @@ class RandomNumber
 									while (std::cin.get(c)) {}
 
 									std::cin.clear();
-									std::cin.ignore(std::numeric_limits<std::streamsize>::max(), CARRIAGE_RETURN<char>);
+									std::cin.ignore(std::numeric_limits<std::streamsize>::max(), LINE_FEED<char>);
 
 									std::cerr << "> Throwing overflow exception..." << std::endl << std::endl;
 									throw std::overflow_error("The information coming from the keyboard input is overloaded.");
@@ -315,21 +330,21 @@ class RandomNumber
 					return (ptr_value) ? *ptr_value : V_ZERO<T>;
 			}
 
-			virtual void explore()
+			void explore()
 				{std::cout << *this << std::endl; std::cin >> *this; std::cout << *this << std::endl;}
 
 			const T formulaRandomGenerator(const T& _random_seed)
-				{return T(RANDOM_GENERATOR(static_cast<int>(_random_seed)));}
+				{return T(RANDOM_GENERATOR(static_cast<uint32_t>(_random_seed)));}
 
 			const T& GenerateRandom()
 				{(*this).random_counter++; return (this->random_number = (*this).formulaRandomGenerator(this->random_number));}
 
-			const T& getCounter()	const			{return (*this).random_counter;}
-			const T& getNumber()	const			{return (*this).random_number;}
+			const std::size_t& getCounter()	const		{return (*this).random_counter;}
+			const T& getNumber()		const		{return (*this).random_number;}
 
 			const T getPosition(const T& _random_counter, const T& _random_seed, const T& _random_number_to_find)
 				{
-					size_t _counter = V_ZERO<T>;
+					std::size_t _counter = V_ZERO<size_t>;
 					T _random_number = _random_seed;
 
 					std::cout << std::endl << "Searching for a random number from a seed." << std::endl;
@@ -339,7 +354,7 @@ class RandomNumber
 					RandomNumber<T>::enter_a_pause("Press ENTER key to continue...");
 
 					std::cout << std::endl;
-					for (_counter = V_ZERO<T>; _counter < _random_counter && _random_number != _random_number_to_find; counter++)
+					for (_counter = V_ZERO<size_t>; _counter < _random_counter && _random_number != _random_number_to_find; _counter++)
 						{
 							_random_number = this->formulaRandomGenerator(_random_number);
 							std::cout << "- Iteration #: [" << (_counter + V_ONE<T>) << "]. Value: {" << _random_number << "}. \r";
@@ -350,10 +365,10 @@ class RandomNumber
 					std::cout << " : {" << std::boolalpha << (_random_number == _random_number_to_find) << "}." << std::endl;
 					RandomNumber<T>::enter_a_pause("Press ENTER key to continue...");
 
-					return counter;
+					return _counter;
 				}
 
-			const T& getQuantity()	const			{return this->counter;}
+			const std::size_t& getQuantity()	const	{return this->counter;}
 
 			const T getRandom(const T &_random_counter = V_ZERO<T>, const T& _random_seed = V_ZERO<T>)
 				{
@@ -376,13 +391,13 @@ class RandomNumber
 			typename std::enable_if<std::is_integral<T>::value, U>::type
 			&getValue()					{return (this->random_number);}
 
-			const T getWithin(const T& minimum = V_ZERO<T>, const T& maximum = V_ZERO<T>) const
+			const T getWithin(const T& _minimum = V_ZERO<T>, const T& _maximum = V_ZERO<T>) const
 				{
-					T highest = std::max(minimum, maximum);
-					T lowest = std::min(minimum, maximum);
-					T interval = highest - lowest + V_ONE<T>;
+					T _highest = std::max(_minimum, _maximum);
+					T _lowest = std::min(_minimum, _maximum);
+					T _interval = (_highest - _lowest + V_ONE<T>);
 
-					return (static_cast<int>(this->random_number) % static_cast<int>(interval) + static_cast<int>(lowest));
+					return (static_cast<int>(this->random_number) % static_cast<int>(_interval) + static_cast<int>(_lowest));
 				}
 
 			const T& giveRandom(const T &_random_counter = V_ZERO<T>, const T& _random_seed = V_ZERO<T>)
@@ -399,10 +414,10 @@ class RandomNumber
 			bool isitme(const RandomNumber<T>& _random_number) const
 				{return (this == &_random_number);}
 
-			virtual RandomNumber<T>& move(RandomNumber<T>&& _random_number)
+			RandomNumber<T>& move(RandomNumber<T>&& _random_number)
 				{(*this).copy(_random_number); _random_number.reset(); return *this;}
 
-			virtual void print()
+			void print()
 				{
 					std::cout << std::endl << "Random Number Information." << std::endl;
 					std::cout << "+ Number of Objects:\t[" << this->counter << "]." << std::endl;
@@ -411,10 +426,10 @@ class RandomNumber
 					std::cout << "+ Last Random Number:\t[" << (*this).random_number << "] = {" << this->getValue() << "}." << std::endl << std::endl;
 				}
 
-			virtual void reset()
+			void reset()
 				{this->random_counter = this->random_number = this->random_seed = V_ZERO<T>;}
 
-			virtual void restore()
+			void restore()
 				{
 					(*this).random_counter = V_ZERO<T>;
 					(*this).random_number = (*this).random_seed;
@@ -424,7 +439,7 @@ class RandomNumber
 			void setSeed(const T &_random_seed = V_ZERO<T>)
 				{this->random_seed = _random_seed; this->restore();}
 
-			virtual void swap()
+			void swap()
 				{
 					T _random_value = this->random_seed;
 					this->random_seed = this->random_number;
@@ -432,7 +447,14 @@ class RandomNumber
 					(*this).restore();
 				}
 
-			virtual ~RandomNumber()				{(*this).counter--;}
+			void swap(RandomNumber<T>& _random_number)
+				{
+					std::swap(random_counter, _random_number.random_counter);
+					std::swap(random_number, _random_number.random_number);
+					std::swap(random_seed, _random_number.random_seed);
+				}
+
+			~RandomNumber()					{(*this).counter--;}
 	};
 
 /* Initialization of the instantiated class counter. */
